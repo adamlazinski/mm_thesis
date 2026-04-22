@@ -1,0 +1,19 @@
+{
+  "date": "2026-04-15",
+  "status": "ok",
+  "n_events": 46800,
+  "total_pnl": -10.142339439406896,
+  "sharpe": -4.708567257188401,
+  "max_drawdown": -10.321216683071558,
+  "total_fills": 2316,
+  "fill_rate": 0.3217560433453737,
+  "avg_spread_bps": 2.004939085316253,
+  "avg_abs_inventory": 0.003292470203719481,
+  "max_abs_inventory": 0.009111717385474179,
+  "total_fees": 0.0,
+  "n_short_gaps": 0,
+  "n_long_gaps": 0,
+  "n_gap_closures": 0,
+  "gap_closure_pnl": 0,
+  "mm_only_pnl": -10.142339439406896
+}

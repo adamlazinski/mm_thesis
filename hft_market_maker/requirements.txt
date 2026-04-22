@@ -1,0 +1,13 @@
+numpy>=1.24.0
+pandas>=2.0.0
+matplotlib>=3.7.0   # for plotting
+pyarrow>=12.0.0     # for parquet support (optional)
+
+# For full RL (replace numpy MLP with proper autograd):
+# torch>=2.0.0
+# or
+# tensorflow>=2.12.0
+
+# For live trading (not included in this repo):
+# python-binance>=1.0.17
+# ccxt>=4.0.0
