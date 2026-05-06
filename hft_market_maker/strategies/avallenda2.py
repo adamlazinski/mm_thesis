@@ -181,7 +181,7 @@ class AvellanedaStoikov2:
             raise ValueError("mid_price must be positive")
 
         sigma = max(float(stats.sigma), 1e-8)
-        raw_kappa = max(float(stats.kappa), 0.0)
+        raw_kappa = max(float(stats.kappa_as), 0.0)
 
         # Use provided horizon, otherwise default
         T = self.inventory_horizon_s if t_remaining is None else float(t_remaining)

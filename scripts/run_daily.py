@@ -96,6 +96,8 @@ DEFAULTS = {
     "vol_window":     120,
     "arrival_window": 60,
     "ewma_alpha":     0.9,
+    "kappa_as_window":     3600.0,
+    "kappa_as_min_fills":  10,
 
     "guardrail":      False,
     "vol_soft":       0.70,
@@ -104,6 +106,8 @@ DEFAULTS = {
 
     "short_gap":      2.0,
     "long_gap":       30.0,
+    "tolerance_ticks": 0.5,
+    "kappa_force_interval": 60.0,
     "timestamp":      "time_exchange",
     "max_rows":       None,
     "quiet":          False,
@@ -162,7 +166,7 @@ def build_snapshot(results) -> "pd.DataFrame | None":
         df = merged
 
     keep = ["close", "pnl", "inv", "bid", "ask", "spread_bps",
-            "sigma", "kappa", "ofi", "vol_percentile",
+            "sigma", "kappa", "A_hat", "ofi", "vol_percentile",
             "bid_size_mult", "ask_size_mult"]
     df = df[[c for c in keep if c in df.columns]]
     for col in df.select_dtypes(include=["float64"]).columns:
@@ -303,6 +307,8 @@ def run_day(dt: date, trades_path: Path, quotes_path: Path,
             vol_window=int(cfg["vol_window"]),
             arrival_window=int(cfg["arrival_window"]),
             ewma_alpha=cfg["ewma_alpha"],
+            kappa_as_window=cfg["kappa_as_window"],
+            kappa_as_min_fills=int(cfg["kappa_as_min_fills"]),
         ),
         order_manager=OrderManager(
             maker_fee=cfg["maker_fee"],
@@ -315,6 +321,8 @@ def run_day(dt: date, trades_path: Path, quotes_path: Path,
         requote_interval=cfg["quote_freq"],
         short_gap_threshold=cfg["short_gap"],
         long_gap_threshold=cfg["long_gap"],
+        tolerance_ticks=cfg["tolerance_ticks"],
+        kappa_force_interval=cfg["kappa_force_interval"],
         verbose=not cfg["quiet"],
         verbose_interval=400_000,
     )

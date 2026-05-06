@@ -142,8 +142,7 @@ class AvellanedaStoikov:
         # sigma is already in log-return/sqrt(sec) units (dimensionless fraction)
         # kappa is in trades/sec — scaled to dimensionless inside optimal_spread
         sigma = stats.sigma
-        kappa = max(stats.kappa, 1e-3)
-        kappa=1
+        kappa = max(stats.kappa_as, 1e-3)
         # 1. Reservation price (inventory-adjusted mid)
         r = self.reservation_price(mid, inventory, sigma, t_remaining)
 

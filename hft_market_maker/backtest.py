@@ -84,6 +84,8 @@ class BacktestResults:
             f"Data Gaps (long):     {m.get('n_long_gaps', 0)}",
             f"PnL from gap closures:{m.get('gap_closure_pnl', 0):.4f}",
             f"MM-only PnL:          {m.get('mm_only_pnl', 0):.4f}",
+            f"Hysteresis skips:     {m.get('n_hysteresis_skips', 0):,}  "
+            f"({m.get('hysteresis_skip_rate', 0):.1%} of recomputes)",
             "=" * 50,
         ]
         return "\n".join(lines)
@@ -159,6 +161,9 @@ class Backtest:
         vol_risk_manager: Optional[VolRiskManager] = None,
         short_gap_threshold: float = 2.0,
         long_gap_threshold: float = 30.0,
+        tolerance_ticks: float = 0.5,
+        tick_size: float = 0.01,
+        kappa_force_interval: float = 60.0,
     ):
         self.strategy = strategy
         self.market_state = market_state or MarketState()
@@ -170,6 +175,9 @@ class Backtest:
         self.vol_risk_manager = vol_risk_manager
         self.short_gap_threshold = short_gap_threshold
         self.long_gap_threshold = long_gap_threshold
+        self.tolerance_ticks = tolerance_ticks
+        self.tick_size = tick_size
+        self.kappa_force_interval = kappa_force_interval
 
     def run(
         self,
@@ -208,6 +216,9 @@ class Backtest:
         n_short_gaps: int = 0
         n_long_gaps: int = 0
         n_events = len(events)
+        self._n_hysteresis_skips: int = 0
+        self._current_half_spread: float = 0.0   # half-spread of currently live quotes
+        self._last_kappa_update: float = 0.0     # timestamp of last force_kappa_update
 
         for i, (timestamp, _, etype, event_data) in enumerate(events):
             if self.verbose and i % self.verbose_interval == 0:
@@ -310,7 +321,7 @@ class Backtest:
                 # 2. Check fills against our open orders
                 fills = self.order_manager.process_trade(t.timestamp, t.price, t.quantity, t.side)
 
-                # 3. Log fills
+                # 3. Log fills and notify kappa estimator
                 for fill in fills:
                     fill_records.append({
                         "timestamp": fill.timestamp,
@@ -323,6 +334,10 @@ class Backtest:
                     # Notify RL agent of fill if applicable
                     if hasattr(self.strategy, "on_fill"):
                         self.strategy.on_fill(timestamp)
+
+                    # Notify kappa estimator: fill at current quoted half-spread
+                    if self._current_half_spread > 0:
+                        self.market_state.on_mm_fill(fill.timestamp, self._current_half_spread)
 
                 # 4. Requote after fill
                 if fills and self.requote_on_fill and last_quote_event is not None:
@@ -340,7 +355,12 @@ class Backtest:
                                            q.bid_size, q.ask_size)
                 self.order_manager.update_mid(q.mid)
 
-                # 2. Requote on every quote event (throttled)
+                # 2. Periodic kappa MLE update (prevents stale estimates in quiet periods)
+                if timestamp - self._last_kappa_update >= self.kappa_force_interval:
+                    self.market_state.force_kappa_update(timestamp)
+                    self._last_kappa_update = timestamp
+
+                # 3. Requote on every quote event (throttled)
                 if (self.market_state.is_ready and
                         timestamp - last_requote_time >= self.requote_interval):
                     self._requote(timestamp, q, quote_records)
@@ -359,25 +379,22 @@ class Backtest:
             gap_closures=gap_closures,
             n_short_gaps=n_short_gaps,
             n_long_gaps=n_long_gaps,
+            n_hysteresis_skips=self._n_hysteresis_skips,
         )
 
     def _requote(self, timestamp: float, quote: QuoteEvent,
                  quote_records: list) -> None:
-        """Cancel existing orders and place new ones based on strategy output."""
+        """Place new quotes if optimal prices have moved beyond tolerance."""
         ms = self.market_state
         om = self.order_manager
 
         if not ms.is_ready:
             return
 
-        # Cancel old orders
-        om.cancel_all(timestamp)
-
-        # Get strategy decision
         inventory = om.inventory
         stats = ms.stats
 
-        # Handle strategies that return (decision, info) tuples (e.g. DQN)
+        # 1. Strategy decision (computed before any cancellation)
         result = self.strategy.compute_quotes(stats, inventory, timestamp,
                                               total_pnl=om.total_pnl)
         if isinstance(result, tuple):
@@ -385,16 +402,14 @@ class Backtest:
         else:
             decision = result
 
-        # Check inventory limits
+        # 2. Inventory-based quoting limits
         if hasattr(self.strategy, "should_quote"):
             base_strategy = getattr(self.strategy, "base", self.strategy)
             quote_bid, quote_ask = base_strategy.should_quote(inventory)
         else:
             quote_bid = quote_ask = True
 
-        # ----------------------------------------------------------------
-        # Vol guardrail — applied after strategy decision, before submission
-        # ----------------------------------------------------------------
+        # 3. Vol guardrail — applied after strategy decision, before submission
         guardrail = None
         if self.vol_risk_manager is not None and self.vol_risk_manager.is_ready:
             max_inv = getattr(
@@ -410,25 +425,22 @@ class Backtest:
                 max_inventory=max_inv,
             )
 
-            # Apply size scaling
             decision.bid_size *= guardrail.bid_size_multiplier
             decision.ask_size *= guardrail.ask_size_multiplier
 
-            # Apply spread widening — shift bid down, ask up symmetrically
             if guardrail.spread_multiplier > 1.0:
                 half_spread = (decision.ask_price - decision.bid_price) / 2.0
                 extra = half_spread * (guardrail.spread_multiplier - 1.0)
                 decision.bid_price -= extra
                 decision.ask_price += extra
 
-            # Override quote_bid/ask if guardrail says stop
             if not guardrail.should_quote_bid:
                 quote_bid = False
             if not guardrail.should_quote_ask:
                 quote_ask = False
 
         elif self.vol_risk_manager is not None:
-            # Guardrail not yet ready — update it silently, don't quote yet
+            # Guardrail not yet ready — update rolling state, skip quoting
             max_inv = getattr(
                 getattr(self.strategy, "base", self.strategy),
                 "max_inventory", 1.0
@@ -441,18 +453,41 @@ class Backtest:
                 inventory=inventory,
                 max_inventory=max_inv,
             )
+            return
 
-        # Sanity check: bid must be below ask
+        # 4. Sanity check: bid must be below ask
         if decision.bid_price >= decision.ask_price:
             return
 
-        # Submit new quotes
+        # 5. Hysteresis: skip cancel+resubmit if both quotes are within tolerance.
+        #    Only applied when quoting both sides — a forced one-sided cancel always
+        #    goes through to avoid leaving a stale order on the suppressed side.
+        if self.tolerance_ticks > 0 and quote_bid and quote_ask:
+            tolerance = self.tolerance_ticks * self.tick_size
+            active = {o.side: o for o in om.get_active_orders()
+                      if o.status in ("open", "partially_filled")}
+            if "bid" in active and "ask" in active:
+                bid_moved = abs(decision.bid_price - active["bid"].price) > tolerance
+                ask_moved = abs(decision.ask_price - active["ask"].price) > tolerance
+                if not bid_moved and not ask_moved:
+                    self._n_hysteresis_skips += 1
+                    return
+
+        # 6. Cancel existing orders and submit new ones
+        om.cancel_all(timestamp)
+
         if quote_bid and decision.bid_size > 0:
             om.submit_order("bid", decision.bid_price, decision.bid_size, timestamp)
         if quote_ask and decision.ask_size > 0:
             om.submit_order("ask", decision.ask_price, decision.ask_size, timestamp)
 
-        # Log
+        # Notify kappa estimator; convert to ticks so kappa_as is in 1/tick units,
+        # consistent with offline calibration (thesis: kappa ≈ 0.311/tick full-day).
+        half_spread_ticks = (decision.ask_price - decision.bid_price) / 2.0 / self.tick_size
+        self.market_state.notify_quote_posted(timestamp, half_spread_ticks)
+        self._current_half_spread = half_spread_ticks
+
+        # 7. Log
         spread_bps = (decision.ask_price - decision.bid_price) / max(stats.mid_price, 1e-6) * 10_000
         quote_records.append({
             "timestamp": timestamp,
@@ -463,9 +498,9 @@ class Backtest:
             "spread_bps": spread_bps,
             "inventory": inventory,
             "sigma": stats.sigma,
-            "kappa": stats.kappa,
+            "kappa": stats.kappa_as,
+            "A_hat": stats.A_hat,
             "ofi": stats.ofi,
-            # Vol guardrail diagnostics (None if guardrail not used)
             "vol_composite": guardrail.vol_percentile if guardrail else None,
             "vol_percentile": guardrail.vol_percentile if guardrail else None,
             "bid_size_mult": guardrail.bid_size_multiplier if guardrail else 1.0,
@@ -479,6 +514,7 @@ class Backtest:
         equity_log, inventory_log, pnl_log,
         fill_records, quote_records, n_events,
         gap_closures=None, n_short_gaps=0, n_long_gaps=0,
+        n_hysteresis_skips=0,
     ) -> BacktestResults:
         def to_series(log, name):
             if not log:
@@ -498,7 +534,8 @@ class Backtest:
         metrics = self._compute_metrics(equity, inventory, fills_df, quotes_df, n_events,
                                           gap_closures=gap_closures,
                                           n_short_gaps=n_short_gaps,
-                                          n_long_gaps=n_long_gaps)
+                                          n_long_gaps=n_long_gaps,
+                                          n_hysteresis_skips=n_hysteresis_skips)
 
         return BacktestResults(
             equity_curve=equity,
@@ -511,7 +548,8 @@ class Backtest:
         )
 
     def _compute_metrics(self, equity, inventory, fills_df, quotes_df, n_events,
-                          gap_closures=None, n_short_gaps=0, n_long_gaps=0) -> dict:
+                          gap_closures=None, n_short_gaps=0, n_long_gaps=0,
+                          n_hysteresis_skips=0) -> dict:
         metrics = {"n_events": n_events}
 
         # PnL
@@ -561,5 +599,13 @@ class Backtest:
         gap_pnl = sum(g.pnl_realised for g in gap_closures)
         metrics["gap_closure_pnl"] = gap_pnl
         metrics["mm_only_pnl"] = metrics["total_pnl"] - gap_pnl
+
+        # Hysteresis
+        n_requotes = len(quotes_df)  # actual cancel+resubmit cycles
+        n_total_recomputes = n_requotes + n_hysteresis_skips
+        metrics["n_hysteresis_skips"] = n_hysteresis_skips
+        metrics["hysteresis_skip_rate"] = (
+            n_hysteresis_skips / n_total_recomputes if n_total_recomputes > 0 else 0.0
+        )
 
         return metrics

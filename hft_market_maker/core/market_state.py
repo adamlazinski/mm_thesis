@@ -20,7 +20,7 @@ from dataclasses import dataclass
 from typing import Deque, Optional
 import numpy as np
 
-from core.kappa_estimator import KappaEstimator
+from .kappa_estimator import KappaEstimator
 
 
 @dataclass
@@ -185,6 +185,14 @@ class MarketState:
         """
         self._kappa_estimator.on_fill(timestamp, half_spread)
         self._sync_kappa_as()
+
+    def notify_quote_posted(self, timestamp: float, half_spread: float) -> None:
+        """
+        Call each time a new quote is actually submitted (not on hysteresis skips).
+        half_spread is the dollar half-spread of the posted quote.
+        """
+        if half_spread > 0:
+            self._kappa_estimator.on_quote_posted(timestamp, half_spread)
 
     def force_kappa_update(self, timestamp: float) -> None:
         """
