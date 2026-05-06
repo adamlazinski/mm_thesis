@@ -260,8 +260,9 @@ class KappaEstimator:
 
             # Recover A at optimal kappa (same formula as inside neg_ll)
             exp_terms = np.exp(-k_hat * deltas)
+            denom_A = np.sum(exp_terms * dts)
             A_hat = np.clip(
-                counts.sum() / np.sum(exp_terms * dts),
+                counts.sum() / denom_A if denom_A > 1e-12 else self.A_hat,
                 1e-6, 1e6
             )
 

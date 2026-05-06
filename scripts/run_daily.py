@@ -75,6 +75,9 @@ from hft_market_maker import (
     OrderManager,
     VolRiskManager,
     OFIAsymmetricAS,
+    GLFTMarketMaker,
+    ShiftedGLFTMarketMaker,
+    RegimeFilter,
 )
 
 
@@ -98,6 +101,9 @@ DEFAULTS = {
     "ewma_alpha":     0.9,
     "kappa_as_window":     3600.0,
     "kappa_as_min_fills":  10,
+    "kappa_as_min":        1.5,
+    "regime_vol_threshold": 3.0,
+    "regime_mom_threshold": 0.5,
 
     "guardrail":      False,
     "vol_soft":       0.70,
@@ -192,7 +198,7 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
     gamma = cfg["gamma"]
 
     if name == "pure_as":
-        return AvellanedaStoikov(gamma=gamma, **common)
+        return AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
     elif name == "OFI":
         return OFIAsymmetricAS(
             gamma=gamma,
@@ -239,6 +245,38 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
             epsilon_decay=cfg.get("epsilon_decay", 0.99999),
             inventory_penalty=cfg.get("inventory_penalty", 0.1),
         )
+    elif name in ("glft", "glft_regime"):
+        base = GLFTMarketMaker(
+            gamma=gamma,
+            A=cfg.get("glft_A", None),
+            kappa=cfg.get("glft_kappa", 1.5),
+            order_size=cfg["order_size"],
+            min_spread_bps=cfg["min_spread_bps"],
+            max_inventory=cfg["max_inventory"],
+            tick_size=tick_size,
+            kappa_from_stats=cfg.get("kappa_from_stats", True),
+        )
+        if name == "glft_regime":
+            return RegimeFilter(base,
+                vol_threshold=cfg["regime_vol_threshold"],
+                mom_threshold=cfg["regime_mom_threshold"])
+        return base
+    elif name in ("shifted_glft", "shifted_glft_regime"):
+        base = ShiftedGLFTMarketMaker(
+            gamma=gamma,
+            A_liq=cfg.get("glft_A_liq", 0.5),
+            kappa=cfg.get("glft_kappa", 1.5),
+            A_mom=cfg.get("glft_A_mom", 0.1),
+            order_size=cfg["order_size"],
+            min_spread_bps=cfg["min_spread_bps"],
+            max_inventory=cfg["max_inventory"],
+            tick_size=tick_size,
+        )
+        if name == "shifted_glft_regime":
+            return RegimeFilter(base,
+                vol_threshold=cfg["regime_vol_threshold"],
+                mom_threshold=cfg["regime_mom_threshold"])
+        return base
     else:
         raise ValueError(f"Unknown strategy: {name}")
 

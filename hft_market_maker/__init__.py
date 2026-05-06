@@ -10,7 +10,9 @@ from .strategies.aggressiveness import (
     InventoryUrgencyAS,
     FullAggressivenessAS,
 )
-from .extensions.regime_detection import RegimeDetector, RegimeAwareAS, Regime
+from .strategies.glft import GLFTMarketMaker
+from .strategies.shifted_glft import ShiftedGLFTMarketMaker
+from .extensions.regime_detection import RegimeDetector, RegimeAwareAS, Regime, RegimeFilter
 from .extensions.reinforcement_learning import TabularQLearning, DQNMarketMaker
 from .data.loader import DataLoader, generate_synthetic_data
 from .core.vol_guardrail import VolRiskManager, VolGuardrail, VolatilityComposite, VolEstimates, GuardrailState
@@ -23,7 +25,8 @@ __all__ = [
     "AvellanedaStoikov", "QuoteDecision",
     "RuleBasedAggressiveness", "VolatilityScaledAS",
     "OFIAsymmetricAS", "InventoryUrgencyAS", "FullAggressivenessAS",
-    "RegimeDetector", "RegimeAwareAS", "Regime",
+    "GLFTMarketMaker", "ShiftedGLFTMarketMaker",
+    "RegimeDetector", "RegimeAwareAS", "Regime", "RegimeFilter",
     "TabularQLearning", "DQNMarketMaker",
     "DataLoader", "generate_synthetic_data",
     "VolRiskManager", "VolGuardrail", "VolatilityComposite", "VolEstimates", "GuardrailState",

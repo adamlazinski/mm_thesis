@@ -317,3 +317,60 @@ class RegimeAwareAS:
         self.strategy.min_spread = original_min_spread
 
         return decision, regime
+
+
+class RegimeFilter:
+    """
+    Lightweight wrapper that suppresses quoting during high-volatility or
+    high-momentum regimes. Works with any strategy (A-S, GLFT, ShiftedGLFT).
+
+    The GLFT/ShiftedGLFT Poisson fill model holds during calm, liquidity-driven
+    windows (R²>0.8 in the kappa analysis). This filter pauses quoting when:
+      - sigma_dollar = stats.sigma × mid > vol_threshold  (price vol too high)
+      - |stats.momentum| > mom_threshold                  (directional drift)
+
+    In bad regimes, sets should_quote_bid = should_quote_ask = False on the
+    decision so the backtest cancels any live orders and skips submission.
+
+    Parameters
+    ----------
+    base : any strategy with compute_quotes()
+    vol_threshold : float
+        Dollar volatility ceiling (sigma × mid). Default 3.0 $/√s, chosen
+        from thesis finding that good GLFT fit windows have σ_$ < 3.
+    mom_threshold : float
+        Normalised momentum ceiling [0,1]. Default 0.5 (= 0.5/3 sigma moves
+        over the 5s window, beyond which momentum adverse selection dominates).
+    """
+
+    def __init__(self, base, vol_threshold: float = 3.0, mom_threshold: float = 0.5):
+        self.base = base
+        self.vol_threshold = vol_threshold
+        self.mom_threshold = mom_threshold
+        self.max_inventory = getattr(base, "max_inventory", 1.0)
+        # track regime state for metrics
+        self.in_bad_regime: bool = False
+
+    def compute_quotes(self, stats, inventory: float, timestamp: float, **kwargs):
+        decision = self.base.compute_quotes(stats, inventory, timestamp, **kwargs)
+
+        sigma_dollar = stats.sigma * stats.mid_price
+        self.in_bad_regime = (
+            sigma_dollar > self.vol_threshold or
+            abs(stats.momentum) > self.mom_threshold
+        )
+
+        if self.in_bad_regime:
+            decision.should_quote_bid = False
+            decision.should_quote_ask = False
+        else:
+            if not hasattr(decision, "should_quote_bid"):
+                decision.should_quote_bid = True
+                decision.should_quote_ask = True
+
+        return decision
+
+    def should_quote(self, inventory: float):
+        if hasattr(self.base, "should_quote"):
+            return self.base.should_quote(inventory)
+        return True, True

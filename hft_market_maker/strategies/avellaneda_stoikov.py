@@ -73,8 +73,10 @@ class AvellanedaStoikov:
         min_spread_bps: float = 5.0,
         max_inventory: float = 1.0,
         tick_size: float = 0.01,
+        kappa_as_min: float = 1.5,
     ):
         self.gamma = gamma*1000
+        self.kappa_as_min = kappa_as_min
         self.T = T
         self.order_size = order_size
         self.min_spread = min_spread_bps / 10_000  # convert bps to fraction
@@ -142,7 +144,7 @@ class AvellanedaStoikov:
         # sigma is already in log-return/sqrt(sec) units (dimensionless fraction)
         # kappa is in trades/sec — scaled to dimensionless inside optimal_spread
         sigma = stats.sigma
-        kappa = max(stats.kappa_as, 1e-3)
+        kappa = max(stats.kappa_as, self.kappa_as_min)
         # 1. Reservation price (inventory-adjusted mid)
         r = self.reservation_price(mid, inventory, sigma, t_remaining)
 

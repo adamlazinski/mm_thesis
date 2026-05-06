@@ -1,0 +1,42 @@
+{
+    "data_dir":         "data/real",
+    "start":            "2025-05-13",
+    "end":              "2025-05-13",
+    "output_dir":       "experiments/07_glft_baseline/results",
+
+    "strategy":         "glft",
+    "gamma":            1.0,
+    "glft_kappa":       1.5,
+    "glft_A":           null,
+    "kappa_from_stats": true,
+
+    "order_size":       0.001,
+    "min_spread_bps":   1.0,
+    "max_inventory":    0.02,
+    "maker_fee":        0.0,
+    "latency":          0.1,
+    "quote_freq":       0.5,
+
+    "vol_window":       120,
+    "arrival_window":   60,
+    "ewma_alpha":       0.9,
+    "kappa_as_window":  3600.0,
+    "kappa_as_min_fills": 10,
+
+    "guardrail":        false,
+    "vol_soft":         0.70,
+    "vol_hard":         0.90,
+    "min_size":         0.40,
+
+    "short_gap":        2.0,
+    "long_gap":         30.0,
+    "tolerance_ticks":  0.5,
+    "kappa_force_interval": 60.0,
+    "timestamp":        "time_exchange",
+    "max_rows":         null,
+    "quiet":            false,
+    "skip_existing":    false,
+    "save_full":        false,
+
+    "notes":            "GLFT ergodic baseline. kappa=1.5/dollar, gamma=1.0, A from live KappaEstimator."
+}

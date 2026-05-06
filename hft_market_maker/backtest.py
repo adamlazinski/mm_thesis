@@ -402,8 +402,13 @@ class Backtest:
         else:
             decision = result
 
-        # 2. Inventory-based quoting limits
-        if hasattr(self.strategy, "should_quote"):
+        # 2. Inventory-based quoting limits.
+        # GLFT embeds should_quote_bid/ask in the decision object itself;
+        # A-S exposes a should_quote() method on the strategy.
+        if hasattr(decision, "should_quote_bid"):
+            quote_bid = decision.should_quote_bid
+            quote_ask = decision.should_quote_ask
+        elif hasattr(self.strategy, "should_quote"):
             base_strategy = getattr(self.strategy, "base", self.strategy)
             quote_bid, quote_ask = base_strategy.should_quote(inventory)
         else:
@@ -476,10 +481,19 @@ class Backtest:
         # 6. Cancel existing orders and submit new ones
         om.cancel_all(timestamp)
 
-        if quote_bid and decision.bid_size > 0:
+        submitted_bid = quote_bid and decision.bid_size > 0
+        submitted_ask = quote_ask and decision.ask_size > 0
+
+        if submitted_bid:
             om.submit_order("bid", decision.bid_price, decision.bid_size, timestamp)
-        if quote_ask and decision.ask_size > 0:
+        if submitted_ask:
             om.submit_order("ask", decision.ask_price, decision.ask_size, timestamp)
+
+        # Only notify the kappa estimator and log when at least one side is live.
+        # In regime-paused cycles (should_quote_bid/ask both False) we cancel but
+        # do not record a quote event — preserving fill_rate denominator integrity.
+        if not submitted_bid and not submitted_ask:
+            return
 
         # Notify kappa estimator; convert to ticks so kappa_as is in 1/tick units,
         # consistent with offline calibration (thesis: kappa ≈ 0.311/tick full-day).
@@ -494,7 +508,8 @@ class Backtest:
             "bid": decision.bid_price,
             "ask": decision.ask_price,
             "mid": stats.mid_price,
-            "reservation": decision.reservation_price,
+            "reservation": getattr(decision, "reservation_price",
+                                   getattr(decision, "reservation", None)),
             "spread_bps": spread_bps,
             "inventory": inventory,
             "sigma": stats.sigma,
