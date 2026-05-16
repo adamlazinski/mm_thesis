@@ -1,0 +1,41 @@
+{
+    "data_dir":         "data/real",
+    "start":            "2025-05-13",
+    "end":              "2025-05-24",
+    "output_dir":       "experiments/14_vol_inventory_wide/results",
+
+    "strategy":         "vol_inventory",
+    "vi_alpha":         0.3,
+    "vi_gamma_inv":     1.0,
+
+    "order_size":       0.001,
+    "min_spread_bps":   0.0,
+    "max_inventory":    0.02,
+    "maker_fee":        0.0,
+    "latency":          0.1,
+    "quote_freq":       0.5,
+
+    "vol_window":       120,
+    "arrival_window":   60,
+    "ewma_alpha":       0.9,
+    "kappa_as_window":  3600.0,
+    "kappa_as_min_fills": 10,
+    "kappa_as_min":     1.5,
+
+    "guardrail":        false,
+    "vol_soft":         0.70,
+    "vol_hard":         0.90,
+    "min_size":         0.40,
+
+    "tolerance_ticks":  10.0,
+    "short_gap":        2.0,
+    "long_gap":         30.0,
+    "kappa_force_interval": 60.0,
+    "timestamp":        "time_exchange",
+    "max_rows":         null,
+    "quiet":            true,
+    "skip_existing":    true,
+    "save_full":        false,
+
+    "notes": "Wide-spread vol-inventory: alpha=0.3 targets ~64 ticks at median vol (40-200 ticks across vol distribution). tolerance_ticks=10 gives orders a long lifetime — only repost when optimal quote shifts >$0.10. Tests whether patient limit orders can catch mean reversion in the 40-200 tick band rather than chasing tight fills in the momentum plateau."
+}

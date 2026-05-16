@@ -254,8 +254,10 @@ def run_single_day(
             vol_risk_manager=vol_rm,
             requote_on_fill=True,
             requote_interval=fixed["quote_freq"],
-            short_gap_threshold=2.0,
-            long_gap_threshold=30.0,
+            short_gap_threshold=fixed.get("short_gap", 2.0),
+            long_gap_threshold=fixed.get("long_gap", 30.0),
+            tolerance_ticks=fixed.get("tolerance_ticks", 0.5),
+            kappa_force_interval=fixed.get("kappa_force_interval", 60.0),
             verbose=False,
         )
 

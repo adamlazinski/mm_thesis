@@ -141,10 +141,12 @@ Run: `python scripts/random_search.py --config experiments/12_vol_inventory/sear
 | 09 | shifted_glft_regime | same + RegimeFilter | 11 days done | -$737 total, ~5k fills/day |
 | 10 | shifted_glft (calibrated) | κ=31, γ=31, A=22 | not run | Option 1, proper units |
 | 11 | shifted_glft_regime (calibrated) | same + RegimeFilter | not run | Option 1 + filter |
-| 12 | vol_inventory | α=0.14, γ_inv=1.5 | not run | Option 3 |
+| 12 | vol_inventory | α=0.14, γ_inv=1.5 | not run | Option 3, tight spread |
 | 13 | vol_inventory_regime | same + RegimeFilter | not run | Option 3 + filter |
+| 14 | vol_inventory_wide | α=0.3, γ_inv=1.0, tol=10 | not run | Patient orders, ~64 ticks at median vol |
+| 15 | vol_inventory_wide_regime | same + RegimeFilter | not run | Patient + regime gate |
 
-Ablation table covers experiments 01, 08, 09 and can be extended to 10–13:
+Ablation table covers experiments 01, 08, 09 and can be extended to 10–15:
 ```bash
 source .venv/bin/activate && python scripts/ablation_table.py
 ```
@@ -169,6 +171,13 @@ python scripts/run_daily.py --config experiments/13_vol_inventory_regime/config.
 
 # Option 3 search
 python scripts/random_search.py --config experiments/12_vol_inventory/search_config.json
+
+# Option 4 — wide-spread patient orders (40-200 ticks, tolerance=10)
+python scripts/run_daily.py --config experiments/14_vol_inventory_wide/config.json
+python scripts/run_daily.py --config experiments/15_vol_inventory_wide_regime/config.json
+
+# Option 4 search (sweeps alpha + tolerance_ticks jointly)
+python scripts/random_search.py --config experiments/14_vol_inventory_wide/search_config.json
 ```
 
 ---

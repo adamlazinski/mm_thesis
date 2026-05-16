@@ -1,0 +1,44 @@
+{
+    "data_dir":         "data/real",
+    "start":            "2025-05-13",
+    "end":              "2025-05-24",
+    "output_dir":       "experiments/15_vol_inventory_wide_regime/results",
+
+    "strategy":         "vol_inventory_regime",
+    "vi_alpha":         0.3,
+    "vi_gamma_inv":     1.0,
+
+    "regime_vol_threshold":  3.0,
+    "regime_mom_threshold":  0.5,
+
+    "order_size":       0.001,
+    "min_spread_bps":   0.0,
+    "max_inventory":    0.02,
+    "maker_fee":        0.0,
+    "latency":          0.1,
+    "quote_freq":       0.5,
+
+    "vol_window":       120,
+    "arrival_window":   60,
+    "ewma_alpha":       0.9,
+    "kappa_as_window":  3600.0,
+    "kappa_as_min_fills": 10,
+    "kappa_as_min":     1.5,
+
+    "guardrail":        false,
+    "vol_soft":         0.70,
+    "vol_hard":         0.90,
+    "min_size":         0.40,
+
+    "tolerance_ticks":  10.0,
+    "short_gap":        2.0,
+    "long_gap":         30.0,
+    "kappa_force_interval": 60.0,
+    "timestamp":        "time_exchange",
+    "max_rows":         null,
+    "quiet":            true,
+    "skip_existing":    true,
+    "save_full":        false,
+
+    "notes": "Wide-spread vol-inventory + RegimeFilter. Same as exp 14 (alpha=0.3, tolerance=10) but sits out during momentum regimes (sigma_dollar>3 or |momentum|>0.5). Tests if regime-gating removes the worst adverse selection episodes while keeping the patient placement logic."
+}
