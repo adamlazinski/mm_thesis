@@ -65,8 +65,9 @@ from multiprocessing import Pool, cpu_count
 from pathlib import Path
 from typing import List, Optional
 import warnings
+import sys, os
 warnings.filterwarnings("ignore")
-
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import numpy as np
 import pandas as pd
 

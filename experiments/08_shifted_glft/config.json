@@ -1,7 +1,7 @@
 {
     "data_dir":         "data/real",
     "start":            "2025-05-13",
-    "end":              "2025-05-13",
+    "end":              "2025-05-24",
     "output_dir":       "experiments/08_shifted_glft/results",
 
     "strategy":         "shifted_glft",
@@ -34,8 +34,8 @@
     "kappa_force_interval": 60.0,
     "timestamp":        "time_exchange",
     "max_rows":         null,
-    "quiet":            false,
-    "skip_existing":    false,
+    "quiet":            true,
+    "skip_existing":    true,
     "save_full":        false,
 
     "notes":            "ShiftedGLFT with notebook-calibrated params: kappa=4.455/tick, A_liq=5.0, A_mom=0.15 (3% mom fraction), gamma=100."

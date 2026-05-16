@@ -1,12 +1,12 @@
 {
     "data_dir":         "data/real",
     "start":            "2025-05-13",
-    "end":              "2025-05-13",
+    "end":              "2025-05-24",
     "output_dir":       "experiments/01_baseline_pure_as/results",
 
     "strategy":         "pure_as",
     "gamma":            0.086,
-    "t_scaling":        9702.0,
+    "t_scaling":        100,
     "order_size":       0.001,
     "min_spread_bps":   0.05,
     "max_inventory":    0.02,

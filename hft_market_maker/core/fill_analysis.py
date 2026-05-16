@@ -487,6 +487,7 @@ def rolling_fit(
         df['window_mid'] = pd.to_datetime(df['window_mid'])
         df['hour']       = df['window_mid'].dt.hour
     return df
+
 def simulate_survival_data_fast(
     trades, quotes,
     half_spread_ticks,

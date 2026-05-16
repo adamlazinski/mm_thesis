@@ -77,6 +77,7 @@ from hft_market_maker import (
     OFIAsymmetricAS,
     GLFTMarketMaker,
     ShiftedGLFTMarketMaker,
+    VolInventoryMarketMaker,
     RegimeFilter,
 )
 
@@ -104,6 +105,8 @@ DEFAULTS = {
     "kappa_as_min":        1.5,
     "regime_vol_threshold": 3.0,
     "regime_mom_threshold": 0.5,
+    "vi_alpha":            0.3,
+    "vi_gamma_inv":        1.0,
 
     "guardrail":      False,
     "vol_soft":       0.70,
@@ -273,6 +276,21 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
             tick_size=tick_size,
         )
         if name == "shifted_glft_regime":
+            return RegimeFilter(base,
+                vol_threshold=cfg["regime_vol_threshold"],
+                mom_threshold=cfg["regime_mom_threshold"])
+        return base
+    elif name in ("vol_inventory", "vol_inventory_regime"):
+        base = VolInventoryMarketMaker(
+            alpha=cfg["vi_alpha"],
+            gamma_inv=cfg["vi_gamma_inv"],
+            quote_freq=cfg["quote_freq"],
+            order_size=cfg["order_size"],
+            min_spread_bps=cfg["min_spread_bps"],
+            max_inventory=cfg["max_inventory"],
+            tick_size=tick_size,
+        )
+        if name == "vol_inventory_regime":
             return RegimeFilter(base,
                 vol_threshold=cfg["regime_vol_threshold"],
                 mom_threshold=cfg["regime_mom_threshold"])

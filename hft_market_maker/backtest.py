@@ -161,7 +161,7 @@ class Backtest:
         vol_risk_manager: Optional[VolRiskManager] = None,
         short_gap_threshold: float = 2.0,
         long_gap_threshold: float = 30.0,
-        tolerance_ticks: float = 0.5,
+        tolerance_ticks: float = 8,
         tick_size: float = 0.01,
         kappa_force_interval: float = 60.0,
     ):

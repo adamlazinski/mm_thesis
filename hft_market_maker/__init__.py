@@ -12,6 +12,7 @@ from .strategies.aggressiveness import (
 )
 from .strategies.glft import GLFTMarketMaker
 from .strategies.shifted_glft import ShiftedGLFTMarketMaker
+from .strategies.vol_inventory import VolInventoryMarketMaker
 from .extensions.regime_detection import RegimeDetector, RegimeAwareAS, Regime, RegimeFilter
 from .extensions.reinforcement_learning import TabularQLearning, DQNMarketMaker
 from .data.loader import DataLoader, generate_synthetic_data
@@ -25,7 +26,7 @@ __all__ = [
     "AvellanedaStoikov", "QuoteDecision",
     "RuleBasedAggressiveness", "VolatilityScaledAS",
     "OFIAsymmetricAS", "InventoryUrgencyAS", "FullAggressivenessAS",
-    "GLFTMarketMaker", "ShiftedGLFTMarketMaker",
+    "GLFTMarketMaker", "ShiftedGLFTMarketMaker", "VolInventoryMarketMaker",
     "RegimeDetector", "RegimeAwareAS", "Regime", "RegimeFilter",
     "TabularQLearning", "DQNMarketMaker",
     "DataLoader", "generate_synthetic_data",

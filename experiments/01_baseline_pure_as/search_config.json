@@ -1,8 +1,8 @@
 {
     "data_dir":   "data/real",
     "start":      "2025-05-13",
-    "end":        "2025-05-17",
-    "output":     "search/01_baseline_search.csv",
+    "end":        "2025-05-13",
+    "output":     "search/01_baseline_search_2.csv",
 
     "strategy":   "pure_as",
     "order_size": 0.001,
@@ -12,7 +12,7 @@
 
     "fixed": {
         "latency":          0.1,
-        "quote_freq":       0.5,
+        "quote_freq":       0.2,
         "min_spread_bps":   0.05,
         "max_inventory":    0.02,
         "vol_window":       120,
@@ -22,19 +22,19 @@
     },
 
     "search": {
-        "gamma":     ["log_uniform", 0.001, 0.015],
-        "t_scaling": ["log_uniform", 4000, 18000]
+        "gamma":     ["log_uniform", 0.001, 0.005],
+        "t_scaling": ["log_uniform", 2000, 4000]
     },
 
     "scoring": {
         "metric":        "mean_pnl",
         "min_fills":     10,
-        "min_fill_rate": 0.001
+        "min_fill_rate": 0.0001
     },
 
-    "n_trials":  100,
+    "n_trials":  7,
     "n_workers": 7,
-    "seed":      42,
-    "top_n":     10,
-    "notes":     "baseline gamma/T search"
+    "seed":      41,
+    "top_n":     7,
+    "notes":     "baseline gamma/flight_fun"
 }

@@ -2,19 +2,14 @@
     "data_dir":         "data/real",
     "start":            "2025-05-13",
     "end":              "2025-05-24",
-    "output_dir":       "experiments/09_shifted_glft_regime/results",
+    "output_dir":       "experiments/12_vol_inventory/results",
 
-    "strategy":         "shifted_glft_regime",
-    "gamma":            100.0,
-    "glft_kappa":       4.455,
-    "glft_A_liq":       5.0,
-    "glft_A_mom":       0.15,
-
-    "regime_vol_threshold":  3.0,
-    "regime_mom_threshold":  0.5,
+    "strategy":         "vol_inventory",
+    "vi_alpha":         0.14,
+    "vi_gamma_inv":     1.5,
 
     "order_size":       0.001,
-    "min_spread_bps":   0.5,
+    "min_spread_bps":   0.0,
     "max_inventory":    0.02,
     "maker_fee":        0.0,
     "latency":          0.1,
@@ -42,5 +37,5 @@
     "skip_existing":    true,
     "save_full":        false,
 
-    "notes":            "ShiftedGLFT + RegimeFilter: pause when sigma_dollar>3 or |momentum|>0.5"
+    "notes": "Option 3: Vol-Inventory strategy. half_spread = alpha*sigma_dollar*sqrt(quote_freq). alpha=0.14 targets ~30-tick half-spread at median vol (break-even adverse selection compensation from momentum autocorrelation analysis). vi_gamma_inv=1.5 for moderate inventory skew. No kappa, no t_scaling."
 }

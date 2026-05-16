@@ -1,0 +1,48 @@
+{
+    "data_dir":   "data/real",
+    "start":      "2025-05-13",
+    "end":        "2025-05-13",
+    "output":     "search/08_shifted_glft_search.csv",
+
+    "strategy":   "shifted_glft",
+    "order_size": 0.001,
+    "tick_size":  0.01,
+    "maker_fee":  0.0,
+    "timestamp":  "time_exchange",
+
+    "fixed": {
+        "latency":            0.1,
+        "quote_freq":         0.5,
+        "max_inventory":      0.02,
+        "vol_window":         120,
+        "arrival_window":     60,
+        "ewma_alpha":         0.9,
+        "kappa_as_window":    3600.0,
+        "kappa_as_min_fills": 10,
+        "guardrail":          false,
+        "short_gap":          2.0,
+        "long_gap":           30.0,
+        "tolerance_ticks":    0.5,
+        "kappa_force_interval": 60.0
+    },
+
+    "search": {
+        "gamma":          ["log_uniform", 0.5, 500.0],
+        "glft_kappa":     ["log_uniform", 1.0, 400.0],
+        "glft_A_liq":     ["log_uniform", 1.0, 100.0],
+        "glft_A_mom":     ["uniform", 0.0, 10.0],
+        "min_spread_bps": ["log_uniform", 0.05, 5.0]
+    },
+
+    "scoring": {
+        "metric":        "mm_only_pnl",
+        "min_fills":     20,
+        "min_fill_rate": 0.0001
+    },
+
+    "n_trials":  50,
+    "n_workers": 7,
+    "seed":      42,
+    "top_n":     10,
+    "notes":     "Option 2: kappa/gamma/A as hyperparameters — let search find whether any GLFT parameter regime is profitable on BTC. mm_only_pnl excludes gap-closure distortions."
+}
