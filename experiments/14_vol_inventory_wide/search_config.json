@@ -27,7 +27,7 @@
     "search": {
         "vi_alpha":        ["log_uniform", 0.15, 1.5],
         "vi_gamma_inv":    ["log_uniform", 0.2, 5.0],
-        "tolerance_ticks": ["uniform", 1.0, 20.0]
+        "tolerance_ticks": ["uniform", 5.0, 25.0]
     },
 
     "scoring": {

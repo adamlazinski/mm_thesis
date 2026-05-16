@@ -80,6 +80,10 @@ from hft_market_maker import (
     OFIAsymmetricAS,
     FullAggressivenessAS,
     VolRiskManager,
+    GLFTMarketMaker,
+    ShiftedGLFTMarketMaker,
+    VolInventoryMarketMaker,
+    RegimeFilter,
 )
 
 
@@ -127,9 +131,10 @@ def load_config(path: str) -> dict:
     with open(path) as f:
         user = json.load(f)
     cfg = {**SEARCH_DEFAULTS}
-    # Merge top-level keys
     for k, v in user.items():
-        if k in ("fixed", "search", "scoring") and k in cfg:
+        if k == "search":
+            cfg[k] = v  # user's search space fully replaces defaults — no gamma/t_scaling bleed-in
+        elif k in ("fixed", "scoring") and k in cfg:
             cfg[k] = {**cfg[k], **v}
         else:
             cfg[k] = v
@@ -161,32 +166,88 @@ def sample_params(search_space: dict, seed: int) -> dict:
 # ============================================================
 
 def make_strategy(cfg: dict, all_params: dict, mid_est: float = 102000.0):
-    common = dict(
-        T=all_params.get("t_scaling", 3600.0),
-        order_size=cfg["order_size"],
-        min_spread_bps=all_params["min_spread_bps"],
-        max_inventory=all_params["max_inventory"],
-        tick_size=cfg["tick_size"],
-    )
     name = cfg["strategy"]
-    gamma = all_params["gamma"]
+    tick_size = cfg["tick_size"]
+    order_size = cfg["order_size"]
+    min_spread_bps = all_params.get("min_spread_bps", 0.0)
+    max_inventory = all_params.get("max_inventory", 0.02)
 
-    if name == "pure_as":
-        return AvellanedaStoikov(gamma=gamma, **common)
-    elif name == "OFI":
-        return OFIAsymmetricAS(
-            gamma=gamma,
-            ofi_sensitivity=all_params.get("ofi_sensitivity", 15.0),
-            **common,
+    if name in ("pure_as", "OFI", "aggressiveness"):
+        common = dict(
+            T=all_params.get("t_scaling", 3600.0),
+            order_size=order_size,
+            min_spread_bps=min_spread_bps,
+            max_inventory=max_inventory,
+            tick_size=tick_size,
         )
-    elif name == "aggressiveness":
-        return FullAggressivenessAS(
-            gamma_base=gamma, gamma_min=gamma * 0.1, gamma_max=gamma * 10,
-            sensitivity=all_params.get("sensitivity", 1.5),
-            ofi_sensitivity=all_params.get("ofi_sensitivity", 0.5),
-            urgency_factor=all_params.get("urgency_factor", 3.0),
-            **common,
+        gamma = all_params["gamma"]
+        if name == "pure_as":
+            return AvellanedaStoikov(gamma=gamma, **common)
+        elif name == "OFI":
+            return OFIAsymmetricAS(
+                gamma=gamma,
+                ofi_sensitivity=all_params.get("ofi_sensitivity", 15.0),
+                **common,
+            )
+        elif name == "aggressiveness":
+            return FullAggressivenessAS(
+                gamma_base=gamma, gamma_min=gamma * 0.1, gamma_max=gamma * 10,
+                sensitivity=all_params.get("sensitivity", 1.5),
+                ofi_sensitivity=all_params.get("ofi_sensitivity", 0.5),
+                urgency_factor=all_params.get("urgency_factor", 3.0),
+                **common,
+            )
+
+    elif name in ("glft", "glft_regime"):
+        base = GLFTMarketMaker(
+            gamma=all_params["gamma"],
+            A=all_params.get("glft_A", None),
+            kappa=all_params.get("glft_kappa", 1.5),
+            order_size=order_size,
+            min_spread_bps=min_spread_bps,
+            max_inventory=max_inventory,
+            tick_size=tick_size,
+            kappa_from_stats=all_params.get("kappa_from_stats", True),
         )
+        if name == "glft_regime":
+            return RegimeFilter(base,
+                vol_threshold=all_params.get("regime_vol_threshold", 3.0),
+                mom_threshold=all_params.get("regime_mom_threshold", 0.5))
+        return base
+
+    elif name in ("shifted_glft", "shifted_glft_regime"):
+        base = ShiftedGLFTMarketMaker(
+            gamma=all_params["gamma"],
+            A_liq=all_params.get("glft_A_liq", 0.5),
+            kappa=all_params.get("glft_kappa", 1.5),
+            A_mom=all_params.get("glft_A_mom", 0.1),
+            order_size=order_size,
+            min_spread_bps=min_spread_bps,
+            max_inventory=max_inventory,
+            tick_size=tick_size,
+        )
+        if name == "shifted_glft_regime":
+            return RegimeFilter(base,
+                vol_threshold=all_params.get("regime_vol_threshold", 3.0),
+                mom_threshold=all_params.get("regime_mom_threshold", 0.5))
+        return base
+
+    elif name in ("vol_inventory", "vol_inventory_regime"):
+        base = VolInventoryMarketMaker(
+            alpha=all_params["vi_alpha"],
+            gamma_inv=all_params["vi_gamma_inv"],
+            quote_freq=all_params.get("quote_freq", 0.5),
+            order_size=order_size,
+            min_spread_bps=min_spread_bps,
+            max_inventory=max_inventory,
+            tick_size=tick_size,
+        )
+        if name == "vol_inventory_regime":
+            return RegimeFilter(base,
+                vol_threshold=all_params.get("regime_vol_threshold", 3.0),
+                mom_threshold=all_params.get("regime_mom_threshold", 0.5))
+        return base
+
     else:
         raise ValueError(f"Unknown strategy: {name}")
 

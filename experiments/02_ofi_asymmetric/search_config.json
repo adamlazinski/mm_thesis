@@ -1,0 +1,45 @@
+{
+    "data_dir":   "data/real",
+    "start":      "2025-05-13",
+    "end":        "2025-05-15",
+    "output":     "search/02_ofi_asymmetric_search.csv",
+
+    "strategy":   "OFI",
+    "order_size": 0.001,
+    "tick_size":  0.01,
+    "maker_fee":  0.0,
+    "timestamp":  "time_exchange",
+
+    "fixed": {
+        "latency":            0.1,
+        "quote_freq":         0.5,
+        "max_inventory":      0.02,
+        "min_spread_bps":     0.0,
+        "vol_window":         120,
+        "arrival_window":     60,
+        "ewma_alpha":         0.9,
+        "guardrail":          false,
+        "short_gap":          2.0,
+        "long_gap":           30.0,
+        "tolerance_ticks":    0.5,
+        "kappa_force_interval": 60.0
+    },
+
+    "search": {
+        "gamma":           ["log_uniform", 0.01, 5.0],
+        "t_scaling":       ["log_uniform", 50, 5000],
+        "ofi_sensitivity": ["log_uniform", 0.001, 0.05]
+    },
+
+    "scoring": {
+        "metric":        "mm_only_pnl",
+        "min_fills":     20,
+        "min_fill_rate": 0.0001
+    },
+
+    "n_trials":  80,
+    "n_workers": 6,
+    "seed":      55,
+    "top_n":     10,
+    "notes":     "OFI asymmetric A-S search. ofi_sensitivity controls quote skew size: 0.001→~1 tick max skew at mid=104k, 0.05→~50 ticks. Search over gamma (risk aversion), t_scaling (spread width), and ofi_sensitivity (lean aggressiveness). 3-day window to reduce single-day overfit."
+}
