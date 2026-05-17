@@ -237,6 +237,80 @@ implementation of the GLFT ergodic solution calibrated to crypto tick data, with
 
 ---
 
+## 12. Post-Fill Markout Analysis and Adverse Selection Quantification
+
+**Finding:** By measuring the mid price 1 second after each fill and comparing to fill price,
+we can directly quantify adverse selection per fill across strategies and regimes — a direct
+replication of the metric used in Albers et al. 2025.
+
+**Implementation:** Added `avg_markout_bps` and `pct_adverse_fills` to every backtest metrics
+output. For a bid fill at price P and mid M one second later:
+
+```
+markout = (M - P) / P × 10000 bps
+```
+
+Positive = favorable (price moved up after buying). Negative = adverse selection.
+
+**Findings on June 2025 data (all strategies):**
+- 60–100% of fills are adversely selected
+- Mean markout ranges from −1.4 bps to −12.6 bps depending on strategy and day
+- Wider spreads do not eliminate adverse selection — they only reduce fill rate
+- Jun 12 is the worst day: directional trending caused inventory to accumulate to the cap
+
+**Contribution:** Provides an empirical adverse selection benchmark for BTC market making
+that is directly comparable with academic literature. Confirms that the June 2025 regime
+is structurally unfavorable for passive market making under all tested strategies.
+
+---
+
+## 13. Regime Contrast: May vs June 2025
+
+**Finding:** Pure A-S is profitable on May 2025 (calmer, mean-reverting) but not on June
+2025 (volatile, directional). Random search over gamma and T on May 13–15 found:
+
+| gamma | T_scaling | Mean PnL/day | Fills/day |
+|-------|-----------|--------------|-----------|
+| 0.010 | 6535      | +$11.48      | 465       |
+| 0.002 | 4278      | +$2.56       | 167       |
+| 0.003 | 4094      | +$2.15       | 136       |
+
+The same strategy on June 2025 produced a best result of −$4.89/day. This contrast is itself
+a thesis contribution: it isolates regime as the primary determinant of market making
+profitability, not model or parameter choice.
+
+**Contribution:** Provides quantitative evidence that market making profitability on BTC is
+highly regime-dependent. Characterises the May vs June 2025 contrast in terms of sigma,
+autocorrelation, fill rate, and adverse selection metrics. Motivates the regime filter as a
+necessary (not optional) component of any practical market making strategy on crypto.
+
+---
+
+## 14. OBI-Based Counter-Trade Strategy and Queue Limitation
+
+**Finding:** Albers et al. 2025 ("The Market Maker's Dilemma") show that counter-trading
+the instantaneous order book imbalance (OBI = (bid_size − ask_size)/(bid_size + ask_size))
+achieves near-zero adverse selection (−0.058 bps markout) on BTC perpetuals. We replicated
+this finding using `OBIDirectedFilter` — post ASK when OBI > threshold (buy pressure), post
+BID when OBI < −threshold (sell pressure), suppress both when balanced.
+
+**Implementation:** Added `stats.obi` (instantaneous top-of-book size imbalance) to
+`MicrostructureStats`, distinct from the lagged 60s trade-flow `stats.ofi`. Implemented
+`OBIDirectedFilter` wrapping any base strategy.
+
+**Finding:** The OBI counter-trade strategy is unprofitable in our backtest (best: −$238/day
+on June data). The mechanism requires queue position — the paper's orders fill during
+reversals because they are at the front of the queue and only get hit when the expected move
+doesn't materialise. Our fill model fills any order at the price level immediately, regardless
+of queue depth, so the reversal-selection mechanism cannot operate.
+
+**Contribution:** Identifies the queue position gap between the Albers et al. mechanism and
+a standard backtest fill model. Validates the paper's core finding (adverse selection
+asymmetry documented via markout analysis) while demonstrating that replication requires
+LOB depth data not available in trade/quote tick feeds.
+
+---
+
 ## Planned Extensions
 
 - ML-based kappa estimation: XGBoost fill probability model conditioned on regime features

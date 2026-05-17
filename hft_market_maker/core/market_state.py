@@ -9,7 +9,8 @@ Statistics tracked
   kappa_as_se   : standard error of kappa_as estimate
   trades_per_sec: background market order arrival rate (secondary, for regime info)
   lambda_buy / lambda_sell : directional arrival rates
-  ofi           : order flow imbalance [-1, 1]
+  ofi           : order flow imbalance [-1, 1]  (trade-flow, rolling window)
+  obi           : order book imbalance [-1, 1]  (quote-size snapshot, instantaneous)
   sigma         : realised volatility (per second)
   mid_price     : latest mid
   momentum      : normalised momentum [-1, 1]
@@ -34,6 +35,7 @@ class MicrostructureStats:
     lambda_buy:    float = 0.5
     lambda_sell:   float = 0.5
     ofi:           float = 0.0
+    obi:           float = 0.0
     spread:        float = 0.0
     momentum:      float = 0.0
     momentum_raw:  float = 0.0
@@ -138,6 +140,8 @@ class MarketState:
         self.stats.spread       = best_ask - best_bid
         self.stats.sigma        = self._get_sigma()
         self.stats.momentum_raw, self.stats.momentum = self._get_momentum(timestamp, mid)
+        total_size = bid_size + ask_size
+        self.stats.obi = (bid_size - ask_size) / total_size if total_size > 0 else 0.0
 
         if mm_half_spread is not None and mm_half_spread > 0:
             self._kappa_estimator.on_quote_posted(timestamp, mm_half_spread)

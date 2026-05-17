@@ -1,0 +1,58 @@
+{
+    "data_dir": "data/real",
+    "start": "2025-06-12",
+    "end": "2025-06-12",
+    "output": "search/20_obi_counter_search_partial.csv",
+    "strategy": "vol_inventory_obi_directed",
+    "order_size": 0.001,
+    "tick_size": 0.01,
+    "maker_fee": 0.0,
+    "timestamp": "time_exchange",
+    "fixed": {
+        "latency": 0.1,
+        "quote_freq": 0.5,
+        "max_inventory": 0.01,
+        "min_spread_bps": 0.0,
+        "vol_window": 120,
+        "arrival_window": 60,
+        "ewma_alpha": 0.9,
+        "kappa_as_min": 15.0,
+        "guardrail": false,
+        "short_gap": 2.0,
+        "long_gap": 30.0,
+        "tolerance_ticks": 0.5,
+        "kappa_force_interval": 60.0
+    },
+    "search": {
+        "vi_alpha": [
+            "log_uniform",
+            0.002,
+            0.025
+        ],
+        "vi_gamma_inv": [
+            "log_uniform",
+            0.5,
+            5.0
+        ],
+        "obi_threshold": [
+            "uniform",
+            0.1,
+            0.7
+        ],
+        "obi_mom_threshold": [
+            "uniform",
+            0.3,
+            2.0
+        ]
+    },
+    "scoring": {
+        "metric": "mm_only_pnl",
+        "min_fills": 15,
+        "min_fill_rate": 0.00005
+    },
+    "n_trials": 12,
+    "n_workers": 2,
+    "seed": 42,
+    "top_n": 10,
+    "notes": "Counter-OBI strategy replicating Albers et al. 2025 (Market Maker Dilemma). OBI=(bid_size-ask_size)/(bid_size+ask_size) is instantaneous top-of-book signal (leading, unlike lagged trade-flow OFI). Counter-trade: post ASK when OBI>threshold (buy pressure), BID when OBI<-threshold (sell pressure), suppress both when balanced. vi_alpha [0.002,0.025] = 0.5-5 tick half-spread at June sigma_dollar~1.86 (tight, near-touch per paper). max_inventory reduced to 0.01 to cap directional risk. tolerance_ticks=0 (no hysteresis) so OBI signal is acted on immediately. Markout metrics (avg_markout_bps, pct_adverse_fills) in results allow direct comparison with paper Table 1."
+}

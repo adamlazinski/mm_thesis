@@ -343,12 +343,18 @@ class RegimeFilter:
         over the 5s window, beyond which momentum adverse selection dominates).
     """
 
-    def __init__(self, base, vol_threshold: float = 3.0, mom_threshold: float = 0.5):
+    def __init__(
+        self,
+        base,
+        vol_threshold: float = 3.0,
+        mom_threshold: float = 0.5,
+        ofi_threshold: float = float("inf"),
+    ):
         self.base = base
         self.vol_threshold = vol_threshold
         self.mom_threshold = mom_threshold
+        self.ofi_threshold = ofi_threshold   # |OFI| ceiling; inf = disabled
         self.max_inventory = getattr(base, "max_inventory", 1.0)
-        # track regime state for metrics
         self.in_bad_regime: bool = False
 
     def compute_quotes(self, stats, inventory: float, timestamp: float, **kwargs):
@@ -357,7 +363,8 @@ class RegimeFilter:
         sigma_dollar = stats.sigma * stats.mid_price
         self.in_bad_regime = (
             sigma_dollar > self.vol_threshold or
-            abs(stats.momentum) > self.mom_threshold
+            abs(stats.momentum) > self.mom_threshold or
+            abs(stats.ofi) > self.ofi_threshold
         )
 
         if self.in_bad_regime:
@@ -367,6 +374,155 @@ class RegimeFilter:
             if not hasattr(decision, "should_quote_bid"):
                 decision.should_quote_bid = True
                 decision.should_quote_ask = True
+
+        return decision
+
+    def should_quote(self, inventory: float):
+        if hasattr(self.base, "should_quote"):
+            return self.base.should_quote(inventory)
+        return True, True
+
+
+class OFIDirectedFilter:
+    """
+    One-sided quoting based on real-time order flow imbalance.
+
+    Instead of suppressing all quotes during strong OFI (RegimeFilter),
+    this wrapper participates on ONLY the side that is "safe" given the
+    current flow direction:
+
+      OFI > +ofi_threshold  (buy pressure):
+          quote ASK only — sell to buyers at mid+δ
+          suppress BID  — avoid catching the knife if the bid gets hit by informed sellers
+      OFI < -ofi_threshold  (sell pressure):
+          quote BID only — buy from sellers at mid-δ
+          suppress ASK  — avoid selling cheap into informed selling
+      |OFI| ≤ ofi_threshold  (balanced):
+          quote both sides normally
+
+    Parameters
+    ----------
+    base : any strategy with compute_quotes()
+    ofi_threshold : float
+        OFI magnitude above which one-sided quoting activates. [0, 1].
+        0.0 = always one-sided (never two-sided).
+        1.0 = effectively disabled (always two-sided).
+        Typical range to search: [0.1, 0.6].
+    mom_threshold : float
+        Supplementary momentum gate — full suppression if |momentum| exceeds
+        this (avoids quoting into strong sustained trends). inf = disabled.
+    """
+
+    def __init__(
+        self,
+        base,
+        ofi_threshold: float = 0.3,
+        mom_threshold: float = float("inf"),
+    ):
+        self.base = base
+        self.ofi_threshold = ofi_threshold
+        self.mom_threshold = mom_threshold
+        self.max_inventory = getattr(base, "max_inventory", 1.0)
+
+    def compute_quotes(self, stats, inventory: float, timestamp: float, **kwargs):
+        decision = self.base.compute_quotes(stats, inventory, timestamp, **kwargs)
+
+        ofi = stats.ofi
+        mom = stats.momentum
+
+        # Full suppression if momentum is extreme (trend too strong to fade)
+        if abs(mom) > self.mom_threshold:
+            decision.should_quote_bid = False
+            decision.should_quote_ask = False
+            return decision
+
+        if ofi > self.ofi_threshold:
+            # Buy pressure: quote ask only (sell to buyers, avoid bid adverse selection)
+            decision.should_quote_bid = False
+            decision.should_quote_ask = True
+        elif ofi < -self.ofi_threshold:
+            # Sell pressure: quote bid only (buy from sellers, avoid ask adverse selection)
+            decision.should_quote_bid = True
+            decision.should_quote_ask = False
+        else:
+            # Balanced: quote both sides
+            if not hasattr(decision, "should_quote_bid"):
+                decision.should_quote_bid = True
+                decision.should_quote_ask = True
+
+        return decision
+
+    def should_quote(self, inventory: float):
+        if hasattr(self.base, "should_quote"):
+            return self.base.should_quote(inventory)
+        return True, True
+
+
+class OBIDirectedFilter:
+    """
+    Counter-OBI maker strategy (Albers et al. 2025, "The Market Maker's Dilemma").
+
+    Posts maker orders on the side OPPOSITE to the current quote-size imbalance.
+    The key distinction from OFIDirectedFilter:
+      - OFI is trade-flow based (rolling window, lagged)
+      - OBI = (bid_size - ask_size)/(bid_size + ask_size) is a top-of-book
+        snapshot (instantaneous, leading signal for next tick direction)
+
+    Strategy logic:
+      OBI > +threshold  (large bid queue, buy pressure):
+          quote ASK only — fills only during reversals when bid pressure fades
+      OBI < -threshold  (large ask queue, sell pressure):
+          quote BID only — fills only during reversals when ask pressure fades
+      |OBI| < threshold (balanced):
+          suppress both — no directional edge, risk of symmetric adverse selection
+
+    The reversal-only fill selection produces near-zero adverse selection per
+    Albers et al. 2025 Table 1 (−0.058 bps mean markout vs −0.775 bps natural).
+
+    Parameters
+    ----------
+    base : any strategy with compute_quotes()
+    obi_threshold : float
+        OBI magnitude above which counter-quoting activates. [0, 1].
+        Typical search range: [0.1, 0.7].
+    mom_threshold : float
+        Full suppression if |momentum| exceeds this. inf = disabled.
+    """
+
+    def __init__(
+        self,
+        base,
+        obi_threshold: float = 0.3,
+        mom_threshold: float = float("inf"),
+    ):
+        self.base = base
+        self.obi_threshold = obi_threshold
+        self.mom_threshold = mom_threshold
+        self.max_inventory = getattr(base, "max_inventory", 1.0)
+
+    def compute_quotes(self, stats, inventory: float, timestamp: float, **kwargs):
+        decision = self.base.compute_quotes(stats, inventory, timestamp, **kwargs)
+
+        obi = stats.obi
+        mom = stats.momentum
+
+        if abs(mom) > self.mom_threshold:
+            decision.should_quote_bid = False
+            decision.should_quote_ask = False
+            return decision
+
+        if obi > self.obi_threshold:
+            # Buy pressure: counter-trade by quoting ASK only (reversal fills)
+            decision.should_quote_bid = False
+            decision.should_quote_ask = True
+        elif obi < -self.obi_threshold:
+            # Sell pressure: counter-trade by quoting BID only (reversal fills)
+            decision.should_quote_bid = True
+            decision.should_quote_ask = False
+        else:
+            # No clear imbalance: suppress both (no edge per paper)
+            decision.should_quote_bid = False
+            decision.should_quote_ask = False
 
         return decision
 

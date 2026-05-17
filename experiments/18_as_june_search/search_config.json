@@ -1,0 +1,48 @@
+{
+    "data_dir": "data/real",
+    "start": "2025-06-11",
+    "end": "2025-06-13",
+    "output": "search/18_as_june_search.csv",
+    "strategy": "pure_as",
+    "order_size": 0.001,
+    "tick_size": 0.01,
+    "maker_fee": 0.0,
+    "timestamp": "time_exchange",
+    "fixed": {
+        "latency": 0.1,
+        "quote_freq": 0.5,
+        "max_inventory": 0.02,
+        "min_spread_bps": 0.0,
+        "vol_window": 120,
+        "arrival_window": 60,
+        "ewma_alpha": 0.9,
+        "kappa_as_min": 15.0,
+        "guardrail": false,
+        "short_gap": 2.0,
+        "long_gap": 30.0,
+        "tolerance_ticks": 0.5,
+        "kappa_force_interval": 60.0
+    },
+    "search": {
+        "gamma": [
+            "log_uniform",
+            0.001,
+            0.5
+        ],
+        "t_scaling": [
+            "log_uniform",
+            100,
+            10000
+        ]
+    },
+    "scoring": {
+        "metric": "mm_only_pnl",
+        "min_fills": 20,
+        "min_fill_rate": 0.0001
+    },
+    "n_trials": 60,
+    "n_workers": 2,
+    "seed": 88,
+    "top_n": 10,
+    "notes": "Pure A-S search on June data. kappa_as_min=15 (realistic June market rate ~15/side). Searching gamma [0.001,0.5] and T [100,10000]. T controls kappa_scaled=kappa*T (adverse selection term); gamma*1000 is internal. First A-S search on June \u2014 find whether any parameter combo is profitable."
+}

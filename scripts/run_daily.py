@@ -79,6 +79,8 @@ from hft_market_maker import (
     ShiftedGLFTMarketMaker,
     VolInventoryMarketMaker,
     RegimeFilter,
+    OFIDirectedFilter,
+    OBIDirectedFilter,
 )
 
 
@@ -105,6 +107,7 @@ DEFAULTS = {
     "kappa_as_min":        1.5,
     "regime_vol_threshold": 3.0,
     "regime_mom_threshold": 0.5,
+    "regime_ofi_threshold": float("inf"),
     "vi_alpha":            0.3,
     "vi_gamma_inv":        1.0,
 
@@ -262,7 +265,8 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
         if name == "glft_regime":
             return RegimeFilter(base,
                 vol_threshold=cfg["regime_vol_threshold"],
-                mom_threshold=cfg["regime_mom_threshold"])
+                mom_threshold=cfg["regime_mom_threshold"],
+                ofi_threshold=cfg.get("regime_ofi_threshold", float("inf")))
         return base
     elif name in ("shifted_glft", "shifted_glft_regime"):
         base = ShiftedGLFTMarketMaker(
@@ -278,9 +282,10 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
         if name == "shifted_glft_regime":
             return RegimeFilter(base,
                 vol_threshold=cfg["regime_vol_threshold"],
-                mom_threshold=cfg["regime_mom_threshold"])
+                mom_threshold=cfg["regime_mom_threshold"],
+                ofi_threshold=cfg.get("regime_ofi_threshold", float("inf")))
         return base
-    elif name in ("vol_inventory", "vol_inventory_regime"):
+    elif name in ("vol_inventory", "vol_inventory_regime", "vol_inventory_ofi_directed", "vol_inventory_obi_directed"):
         base = VolInventoryMarketMaker(
             alpha=cfg["vi_alpha"],
             gamma_inv=cfg["vi_gamma_inv"],
@@ -293,7 +298,16 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
         if name == "vol_inventory_regime":
             return RegimeFilter(base,
                 vol_threshold=cfg["regime_vol_threshold"],
-                mom_threshold=cfg["regime_mom_threshold"])
+                mom_threshold=cfg["regime_mom_threshold"],
+                ofi_threshold=cfg.get("regime_ofi_threshold", float("inf")))
+        if name == "vol_inventory_ofi_directed":
+            return OFIDirectedFilter(base,
+                ofi_threshold=cfg.get("ofi_directed_threshold", 0.3),
+                mom_threshold=cfg.get("ofi_directed_mom_threshold", float("inf")))
+        if name == "vol_inventory_obi_directed":
+            return OBIDirectedFilter(base,
+                obi_threshold=cfg.get("obi_threshold", 0.3),
+                mom_threshold=cfg.get("obi_mom_threshold", float("inf")))
         return base
     else:
         raise ValueError(f"Unknown strategy: {name}")

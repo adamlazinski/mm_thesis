@@ -178,6 +178,7 @@ class Backtest:
         self.tolerance_ticks = tolerance_ticks
         self.tick_size = tick_size
         self.kappa_force_interval = kappa_force_interval
+        self.markout_horizon = 1.0  # seconds; post-fill mid comparison window
 
     def run(
         self,
@@ -219,6 +220,10 @@ class Backtest:
         self._n_hysteresis_skips: int = 0
         self._current_half_spread: float = 0.0   # half-spread of currently live quotes
         self._last_kappa_update: float = 0.0     # timestamp of last force_kappa_update
+        # Post-fill markout: queue of (cutoff_ts, fill_side, fill_price)
+        from collections import deque as _deque
+        _markout_queue: _deque = _deque()
+        _markout_results: list = []
 
         for i, (timestamp, _, etype, event_data) in enumerate(events):
             if self.verbose and i % self.verbose_interval == 0:
@@ -330,6 +335,9 @@ class Backtest:
                         "quantity": fill.quantity,
                         "fee": fill.fee,
                     })
+                    _markout_queue.append(
+                        (fill.timestamp + self.markout_horizon, fill.side, fill.price)
+                    )
 
                     # Notify RL agent of fill if applicable
                     if hasattr(self.strategy, "on_fill"):
@@ -349,6 +357,14 @@ class Backtest:
                 q: QuoteEvent = event_data
                 last_quote_event = q
                 last_mid = q.mid  # track for gap closure price
+
+                # Resolve any pending markouts whose 1s window has elapsed
+                while _markout_queue and timestamp >= _markout_queue[0][0]:
+                    _, f_side, f_price = _markout_queue.popleft()
+                    sign = 1.0 if f_side == "bid" else -1.0
+                    _markout_results.append(
+                        sign * (q.mid / f_price - 1.0) * 10_000.0
+                    )
 
                 # 1. Update market state
                 self.market_state.on_quote(q.timestamp, q.best_bid, q.best_ask,
@@ -380,6 +396,7 @@ class Backtest:
             n_short_gaps=n_short_gaps,
             n_long_gaps=n_long_gaps,
             n_hysteresis_skips=self._n_hysteresis_skips,
+            markout_results=_markout_results,
         )
 
     def _requote(self, timestamp: float, quote: QuoteEvent,
@@ -529,7 +546,7 @@ class Backtest:
         equity_log, inventory_log, pnl_log,
         fill_records, quote_records, n_events,
         gap_closures=None, n_short_gaps=0, n_long_gaps=0,
-        n_hysteresis_skips=0,
+        n_hysteresis_skips=0, markout_results=None,
     ) -> BacktestResults:
         def to_series(log, name):
             if not log:
@@ -550,7 +567,8 @@ class Backtest:
                                           gap_closures=gap_closures,
                                           n_short_gaps=n_short_gaps,
                                           n_long_gaps=n_long_gaps,
-                                          n_hysteresis_skips=n_hysteresis_skips)
+                                          n_hysteresis_skips=n_hysteresis_skips,
+                                          markout_results=markout_results or [])
 
         return BacktestResults(
             equity_curve=equity,
@@ -564,7 +582,7 @@ class Backtest:
 
     def _compute_metrics(self, equity, inventory, fills_df, quotes_df, n_events,
                           gap_closures=None, n_short_gaps=0, n_long_gaps=0,
-                          n_hysteresis_skips=0) -> dict:
+                          n_hysteresis_skips=0, markout_results=None) -> dict:
         metrics = {"n_events": n_events}
 
         # PnL
@@ -622,5 +640,18 @@ class Backtest:
         metrics["hysteresis_skip_rate"] = (
             n_hysteresis_skips / n_total_recomputes if n_total_recomputes > 0 else 0.0
         )
+
+        # Post-fill markout (Albers et al. 2025): 1s horizon, signed by fill side
+        # Positive = favorable (price moved in our direction after fill)
+        # Negative = adverse selection
+        markout_results = markout_results or []
+        if markout_results:
+            metrics["avg_markout_bps"] = float(np.mean(markout_results))
+            metrics["pct_adverse_fills"] = float(np.mean([m < 0 for m in markout_results]))
+            metrics["n_markouts"] = len(markout_results)
+        else:
+            metrics["avg_markout_bps"] = 0.0
+            metrics["pct_adverse_fills"] = 0.0
+            metrics["n_markouts"] = 0
 
         return metrics

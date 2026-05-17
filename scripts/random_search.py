@@ -84,6 +84,8 @@ from hft_market_maker import (
     ShiftedGLFTMarketMaker,
     VolInventoryMarketMaker,
     RegimeFilter,
+    OFIDirectedFilter,
+    OBIDirectedFilter,
 )
 
 
@@ -212,7 +214,8 @@ def make_strategy(cfg: dict, all_params: dict, mid_est: float = 102000.0):
         if name == "glft_regime":
             return RegimeFilter(base,
                 vol_threshold=all_params.get("regime_vol_threshold", 3.0),
-                mom_threshold=all_params.get("regime_mom_threshold", 0.5))
+                mom_threshold=all_params.get("regime_mom_threshold", 0.5),
+                ofi_threshold=all_params.get("regime_ofi_threshold", float("inf")))
         return base
 
     elif name in ("shifted_glft", "shifted_glft_regime"):
@@ -229,10 +232,11 @@ def make_strategy(cfg: dict, all_params: dict, mid_est: float = 102000.0):
         if name == "shifted_glft_regime":
             return RegimeFilter(base,
                 vol_threshold=all_params.get("regime_vol_threshold", 3.0),
-                mom_threshold=all_params.get("regime_mom_threshold", 0.5))
+                mom_threshold=all_params.get("regime_mom_threshold", 0.5),
+                ofi_threshold=all_params.get("regime_ofi_threshold", float("inf")))
         return base
 
-    elif name in ("vol_inventory", "vol_inventory_regime"):
+    elif name in ("vol_inventory", "vol_inventory_regime", "vol_inventory_ofi_directed", "vol_inventory_obi_directed"):
         base = VolInventoryMarketMaker(
             alpha=all_params["vi_alpha"],
             gamma_inv=all_params["vi_gamma_inv"],
@@ -245,7 +249,16 @@ def make_strategy(cfg: dict, all_params: dict, mid_est: float = 102000.0):
         if name == "vol_inventory_regime":
             return RegimeFilter(base,
                 vol_threshold=all_params.get("regime_vol_threshold", 3.0),
-                mom_threshold=all_params.get("regime_mom_threshold", 0.5))
+                mom_threshold=all_params.get("regime_mom_threshold", 0.5),
+                ofi_threshold=all_params.get("regime_ofi_threshold", float("inf")))
+        if name == "vol_inventory_ofi_directed":
+            return OFIDirectedFilter(base,
+                ofi_threshold=all_params.get("ofi_directed_threshold", 0.3),
+                mom_threshold=all_params.get("ofi_directed_mom_threshold", float("inf")))
+        if name == "vol_inventory_obi_directed":
+            return OBIDirectedFilter(base,
+                obi_threshold=all_params.get("obi_threshold", 0.3),
+                mom_threshold=all_params.get("obi_mom_threshold", float("inf")))
         return base
 
     else:
@@ -308,8 +321,8 @@ def run_single_day(
             ),
             order_manager=OrderManager(
                 maker_fee=cfg["maker_fee"],
-                queue_model="none",
-                queue_depth_estimate=0.3,
+                queue_model=fixed.get("queue_model", "partial"),
+                queue_depth_estimate=fixed.get("queue_depth_estimate", 0.3),
                 latency=fixed["latency"],
             ),
             vol_risk_manager=vol_rm,
@@ -439,8 +452,10 @@ def main():
     ]
 
     results = []
-    with Pool(processes=n_workers) as pool:
-        for i, result in enumerate(pool.imap_unordered(run_trial, work)):
+    if n_workers <= 1:
+        # Sequential — avoids multiprocessing.Pool spawn deadlocks on macOS/Python 3.14
+        for i, work_item in enumerate(work):
+            result = run_trial(work_item)
             results.append(result)
             if (i + 1) % 10 == 0 or (i + 1) == n_trials:
                 best = max(results, key=lambda r: r.score)
@@ -449,6 +464,20 @@ def main():
                       f"pnl={best.mean_pnl:.4f}  "
                       f"fills={best.mean_fills:.0f}  "
                       f"trial={best.trial_id}")
+    else:
+        # Use fork context — avoids spawn deadlocks on macOS/Python 3.14
+        import multiprocessing as _mp
+        _ctx = _mp.get_context("fork")
+        with _ctx.Pool(processes=n_workers) as pool:
+            for i, result in enumerate(pool.imap_unordered(run_trial, work)):
+                results.append(result)
+                if (i + 1) % 10 == 0 or (i + 1) == n_trials:
+                    best = max(results, key=lambda r: r.score)
+                    print(f"  [{i+1:>4}/{n_trials}]  "
+                          f"best score={best.score:.3f}  "
+                          f"pnl={best.mean_pnl:.4f}  "
+                          f"fills={best.mean_fills:.0f}  "
+                          f"trial={best.trial_id}")
 
     results.sort(key=lambda r: r.score, reverse=True)
 
