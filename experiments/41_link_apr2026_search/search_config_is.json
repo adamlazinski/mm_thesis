@@ -1,0 +1,39 @@
+{
+    "data_dir":   "data/real",
+    "start":      "2026-04-01",
+    "end":        "2026-04-15",
+    "output":     "search/41_link_apr2026_is.csv",
+    "strategy":   "pure_as_loss_limit",
+    "symbol":     "LINK",
+    "order_size": 5.0,
+    "tick_size":  0.001,
+    "maker_fee":  0.0,
+    "timestamp":  "time_exchange",
+    "fixed": {
+        "latency":               0.1,
+        "quote_freq":            0.5,
+        "vol_window":            120,
+        "arrival_window":        60,
+        "ewma_alpha":            0.9,
+        "guardrail":             false,
+        "tolerance_ticks":       0.5,
+        "kappa_force_interval":  60.0
+    },
+    "search": {
+        "gamma":            ["log_uniform", 0.000005, 0.005],
+        "t_scaling":        ["log_uniform", 2000, 86400],
+        "min_spread_bps":   ["uniform", 4.0, 10.0],
+        "max_inventory":    ["uniform", 20.0, 200.0],
+        "daily_loss_limit": ["log_uniform", 5.0, 150.0]
+    },
+    "scoring": {
+        "metric":        "mean_pnl",
+        "min_fills":     10,
+        "min_fill_rate": 0.001
+    },
+    "n_trials":  200,
+    "n_workers": 2,
+    "seed":      42,
+    "top_n":     15,
+    "notes":     "LINK Apr 2026 IS search (Apr 1-15). Same space as exp 30. OOS: Apr 16-30 via config_oos.json."
+}
