@@ -248,9 +248,14 @@ in the DQN state vector.
 
 ### Figures
 
-- `fig4_full_30day.png` — 30-day cumulative equity (IS + OOS) and daily bars
-- `fig5_markout_30day.png` — markout and adverse fill rate across all 30 days
-- `fig6_fills_spread_30day.png` — fill volume and spread consistency
+![30-day cumulative equity](analysis/fig4_full_30day.png)
+*fig4 — 30-day cumulative equity (IS + OOS) and daily bars*
+
+![Markout and adverse fill rate](analysis/fig5_markout_30day.png)
+*fig5 — markout and adverse fill rate across all 30 days*
+
+![Fill volume and spread consistency](analysis/fig6_fills_spread_30day.png)
+*fig6 — fill volume and spread consistency*
 
 ---
 
@@ -388,18 +393,32 @@ winner sits at a structurally-motivated inflection point in each dimension.
 ## Figures
 
 **OOS comparison (Jun 28–Jul 10, GLFT vs A-S control)**
-- `fig1_oos_comparison.png` — Cumulative PnL, daily bars, spread dynamics, adverse selection scatter
-- `fig2_intraday_jul3.png` — Jul 3 intraday PnL, inventory saw-tooth (1,799 zero-crossings), mid price
-- `fig3_fill_volume.png` — Daily fill count: A-S control fills 25% more per day than GLFT
+
+![OOS comparison](analysis/fig1_oos_comparison.png)
+*fig1 — Cumulative PnL, daily bars, spread dynamics, adverse selection scatter*
+
+![Jul 3 intraday](analysis/fig2_intraday_jul3.png)
+*fig2 — Jul 3 intraday PnL, inventory saw-tooth (1,799 zero-crossings), mid price*
+
+![Daily fill volume](analysis/fig3_fill_volume.png)
+*fig3 — Daily fill count: A-S control fills 25% more per day than GLFT*
 
 **Full 30-day view (Jun 11–Jul 10, A-S winner only)**
-- `fig4_full_30day.png` — Cumulative equity (IS shaded blue / OOS orange), daily bars with Jun 22-23 annotated
-- `fig5_markout_30day.png` — Avg markout and % adverse fills across all 30 days
-- `fig6_fills_spread_30day.png` — Fill volume and quoted spread consistency
+
+![30-day cumulative equity](analysis/fig4_full_30day.png)
+*fig4 — Cumulative equity (IS shaded blue / OOS orange), daily bars with Jun 22-23 annotated*
+
+![Markout 30-day](analysis/fig5_markout_30day.png)
+*fig5 — Avg markout and % adverse fills across all 30 days*
+
+![Fills and spread 30-day](analysis/fig6_fills_spread_30day.png)
+*fig6 — Fill volume and quoted spread consistency*
 
 **Sensitivity analysis**
-- `fig7_sensitivity.png` — One-at-a-time sweeps: PnL, Sharpe, worst day, worst intra DD, fills, markout
+
+![Sensitivity sweeps](analysis/fig7_sensitivity.png)
+*fig7 — One-at-a-time sweeps: PnL, Sharpe, worst day, worst intra DD, fills, markout*
 
 **Data**
-- `risk_metrics.csv` — Full risk metric table (GLFT winner vs A-S control)
-- `sensitivity_results.csv` — Full sensitivity sweep results (all param × metric combinations)
+- [`risk_metrics.csv`](analysis/risk_metrics.csv) — Full risk metric table (GLFT winner vs A-S control)
+- [`sensitivity_results.csv`](analysis/sensitivity_results.csv) — Full sensitivity sweep results (all param × metric combinations)
