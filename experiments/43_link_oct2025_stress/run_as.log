@@ -1,0 +1,3218 @@
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+/Users/adamlazinski/Desktop/master2/scripts/run_daily.py:214: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col] = df[col].astype("float32")
+
+Config:     experiments/43_link_oct2025_stress/config_as.json
+Strategy:   pure_as_loss_limit  gamma=1e-08  T=9702.0  quote_freq=0.5s
+Date range: 2025-10-01 → 2025-10-31  (31 days)
+Found: 31  |  Missing: 0
+Notes: Stress test: A-S winner (unchanged params) on Oct 2025. LINK at $17-22 (+23% higher than Apr 2026). Large directional days: Oct1 +6%, Oct6 +6.2%, Oct21 -5.6%. Tests loss limit under trending conditions.
+
+============================================================
+  2025-10-01
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-01.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-01.parquet
+Loaded 165,643 trades and 377,208 quotes.
+  Trades: 1759276801.760 to 1759363195.767
+  Quotes: 1759276800.046 to 1759363198.846
+  Price range: 21.05 to 22.63
+  Processing event 0 / 542,851  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 542,851  (73.7%)  PnL: 27.5600  Inv: 15.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            30.7600
+Sharpe Ratio:         1.352
+Max Drawdown:         -13.4350
+Total Fills:          1094
+Fill Rate:            1.3%
+Avg Spread Quoted:    7.08 bps
+Avg Abs Inventory:    27.5548
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     542,851
+Data Gaps (short):    831
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          30.7600
+Hysteresis skips:     71,349  (62.8% of recomputes)
+==================================================
+
+============================================================
+  2025-10-02
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-02.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-02.parquet
+Loaded 181,893 trades and 400,276 quotes.
+  Trades: 1759363200.126 to 1759449598.519
+  Quotes: 1759363200.146 to 1759449599.446
+  Price range: 21.93 to 23.13
+  Processing event 0 / 582,169  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 582,169  (68.7%)  PnL: -17.9100  Inv: 30.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -9.2100
+Sharpe Ratio:         -0.400
+Max Drawdown:         -37.1600
+Total Fills:          786
+Fill Rate:            1.2%
+Avg Spread Quoted:    7.08 bps
+Avg Abs Inventory:    31.2444
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     582,169
+Data Gaps (short):    766
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -9.2100
+Hysteresis skips:     34,453  (50.7% of recomputes)
+==================================================
+
+============================================================
+  2025-10-03
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-03.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-03.parquet
+Loaded 200,735 trades and 407,182 quotes.
+  Trades: 1759449603.047 to 1759535998.010
+  Quotes: 1759449600.146 to 1759535999.846
+  Price range: 22.09 to 23.09
+  Processing event 0 / 607,917  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 607,917  (65.8%)  PnL: -10.5100  Inv: 5.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -12.4200
+Sharpe Ratio:         -0.434
+Max Drawdown:         -28.5800
+Total Fills:          1052
+Fill Rate:            1.4%
+Avg Spread Quoted:    7.14 bps
+Avg Abs Inventory:    33.1974
+Max Abs Inventory:    45.0000
+Total Fees Paid:      0.000000
+Runtime (events):     607,917
+Data Gaps (short):    756
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -12.4200
+Hysteresis skips:     44,342  (53.7% of recomputes)
+==================================================
+
+============================================================
+  2025-10-04
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-04.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-04.parquet
+Loaded 107,823 trades and 314,460 quotes.
+  Trades: 1759536000.771 to 1759622395.711
+  Quotes: 1759536000.046 to 1759622399.446
+  Price range: 21.76 to 22.62
+  Processing event 0 / 422,283  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  [GAP 125s] Closed long 40.0000 @ 21.95 | PnL impact: +878.2000 | Total PnL: -22.1100
+  Processing event 400,000 / 422,283  (94.7%)  PnL: -22.1100  Inv: 0.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -22.1100
+Sharpe Ratio:         -1.767
+Max Drawdown:         -25.7100
+Total Fills:          326
+Fill Rate:            0.6%
+Avg Spread Quoted:    7.21 bps
+Avg Abs Inventory:    15.4191
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     422,283
+Data Gaps (short):    2248
+Data Gaps (long):     1
+PnL from gap closures:0.0000
+MM-only PnL:          -22.1100
+Hysteresis skips:     14,204  (36.0% of recomputes)
+==================================================
+
+============================================================
+  2025-10-05
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-05.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-05.parquet
+Loaded 172,012 trades and 354,348 quotes.
+  Trades: 1759622401.100 to 1759708799.564
+  Quotes: 1759622400.046 to 1759708799.846
+  Price range: 21.88 to 22.94
+  Processing event 0 / 526,360  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 526,360  (76.0%)  PnL: 3.3000  Inv: 25.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -13.3650
+Sharpe Ratio:         -0.504
+Max Drawdown:         -46.7550
+Total Fills:          1360
+Fill Rate:            1.1%
+Avg Spread Quoted:    7.16 bps
+Avg Abs Inventory:    33.4888
+Max Abs Inventory:    45.0000
+Total Fees Paid:      0.000000
+Runtime (events):     526,360
+Data Gaps (short):    1591
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -13.3650
+Hysteresis skips:     44,493  (41.2% of recomputes)
+==================================================
+
+============================================================
+  2025-10-06
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-06.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-06.parquet
+Loaded 248,379 trades and 443,413 quotes.
+  Trades: 1759708800.709 to 1759795197.653
+  Quotes: 1759708800.646 to 1759795199.946
+  Price range: 21.47 to 23.60
+  Processing event 0 / 691,792  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 691,792  (57.8%)  PnL: 11.3400  Inv: 40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -22.7600
+Sharpe Ratio:         -0.745
+Max Drawdown:         -45.1800
+Total Fills:          1307
+Fill Rate:            1.4%
+Avg Spread Quoted:    7.17 bps
+Avg Abs Inventory:    32.1697
+Max Abs Inventory:    45.0000
+Total Fees Paid:      0.000000
+Runtime (events):     691,792
+Data Gaps (short):    648
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -22.7600
+Hysteresis skips:     47,360  (50.7% of recomputes)
+==================================================
+
+============================================================
+  2025-10-07
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-07.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-07.parquet
+Loaded 296,539 trades and 483,814 quotes.
+  Trades: 1759795201.420 to 1759881598.203
+  Quotes: 1759795200.046 to 1759881599.046
+  Price range: 21.75 to 23.73
+  Processing event 0 / 780,353  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 780,353  (51.3%)  PnL: -8.3200  Inv: 40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -52.0300
+Sharpe Ratio:         -1.507
+Max Drawdown:         -64.1300
+Total Fills:          1218
+Fill Rate:            1.4%
+Avg Spread Quoted:    6.92 bps
+Avg Abs Inventory:    36.3826
+Max Abs Inventory:    45.0000
+Total Fees Paid:      0.000000
+Runtime (events):     780,353
+Data Gaps (short):    453
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -52.0300
+Hysteresis skips:     30,490  (40.7% of recomputes)
+==================================================
+
+============================================================
+  2025-10-08
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-08.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-08.parquet
+Loaded 172,665 trades and 372,721 quotes.
+  Trades: 1759881600.115 to 1759967998.888
+  Quotes: 1759881600.046 to 1759967999.946
+  Price range: 21.62 to 22.67
+  Processing event 0 / 545,386  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 545,386  (73.3%)  PnL: -5.0500  Inv: 20.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -4.8900
+Sharpe Ratio:         -0.214
+Max Drawdown:         -20.6150
+Total Fills:          1296
+Fill Rate:            1.8%
+Avg Spread Quoted:    7.22 bps
+Avg Abs Inventory:    25.3594
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     545,386
+Data Gaps (short):    1296
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -4.8900
+Hysteresis skips:     75,542  (68.0% of recomputes)
+==================================================
+
+============================================================
+  2025-10-09
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-09.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-09.parquet
+Loaded 182,763 trades and 373,780 quotes.
+  Trades: 1759968000.363 to 1760054398.782
+  Quotes: 1759968000.046 to 1760054399.846
+  Price range: 21.32 to 22.67
+  Processing event 0 / 556,543  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 556,543  (71.9%)  PnL: -19.0150  Inv: 40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -1.4150
+Sharpe Ratio:         -0.049
+Max Drawdown:         -43.2150
+Total Fills:          1116
+Fill Rate:            1.8%
+Avg Spread Quoted:    6.91 bps
+Avg Abs Inventory:    32.2619
+Max Abs Inventory:    45.0000
+Total Fees Paid:      0.000000
+Runtime (events):     556,543
+Data Gaps (short):    1467
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -1.4150
+Hysteresis skips:     43,364  (57.7% of recomputes)
+==================================================
+
+============================================================
+  2025-10-10
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-10.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-10.parquet
+Loaded 1,378,007 trades and 493,066 quotes.
+  Trades: 1760054400.399 to 1760140799.962
+  Quotes: 1760054400.046 to 1760140799.946
+  Price range: 7.90 to 22.78
+  Processing event 0 / 1,871,073  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 1,871,073  (21.4%)  PnL: -16.2350  Inv: -20.0000
+  Processing event 800,000 / 1,871,073  (42.8%)  PnL: 103.2600  Inv: -40.0000
+  Processing event 1,200,000 / 1,871,073  (64.1%)  PnL: 172.8600  Inv: -40.0000
+  Processing event 1,600,000 / 1,871,073  (85.5%)  PnL: 172.2600  Inv: -40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            141.2600
+Sharpe Ratio:         0.857
+Max Drawdown:         -395.4000
+Total Fills:          2086
+Fill Rate:            4.1%
+Avg Spread Quoted:    7.12 bps
+Avg Abs Inventory:    36.8233
+Max Abs Inventory:    45.0000
+Total Fees Paid:      0.000000
+Runtime (events):     1,871,073
+Data Gaps (short):    993
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          141.2600
+Hysteresis skips:     46,593  (64.4% of recomputes)
+==================================================
+
+============================================================
+  2025-10-11
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-11.parquet
+Loaded 700,547 trades and 541,765 quotes.
+  Trades: 1760140800.001 to 1760227199.645
+  Quotes: 1760140800.046 to 1760227199.946
+  Price range: 16.60 to 19.00
+  Processing event 0 / 1,242,312  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 1,242,312  (32.2%)  PnL: -12.9800  Inv: 35.0000
+  Processing event 800,000 / 1,242,312  (64.4%)  PnL: 11.8700  Inv: 35.0000
+  Processing event 1,200,000 / 1,242,312  (96.6%)  PnL: -18.9300  Inv: 35.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -17.5300
+Sharpe Ratio:         -0.330
+Max Drawdown:         -66.8500
+Total Fills:          709
+Fill Rate:            29.2%
+Avg Spread Quoted:    6.90 bps
+Avg Abs Inventory:    34.6475
+Max Abs Inventory:    45.0000
+Total Fees Paid:      0.000000
+Runtime (events):     1,242,312
+Data Gaps (short):    391
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -17.5300
+Hysteresis skips:     724  (37.3% of recomputes)
+==================================================
+
+============================================================
+  2025-10-12
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-12.parquet
+Loaded 421,334 trades and 427,738 quotes.
+  Trades: 1760227201.051 to 1760313597.049
+  Quotes: 1760227200.246 to 1760313599.846
+  Price range: 16.68 to 19.42
+  Processing event 0 / 849,072  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 849,072  (47.1%)  PnL: -15.7400  Inv: -35.0000
+  Processing event 800,000 / 849,072  (94.2%)  PnL: -64.3300  Inv: -40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -61.1300
+Sharpe Ratio:         -1.348
+Max Drawdown:         -85.1700
+Total Fills:          1564
+Fill Rate:            3.0%
+Avg Spread Quoted:    6.95 bps
+Avg Abs Inventory:    32.4944
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     849,072
+Data Gaps (short):    720
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -61.1300
+Hysteresis skips:     44,162  (62.6% of recomputes)
+==================================================
+
+============================================================
+  2025-10-13
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-13.parquet
+Loaded 472,289 trades and 505,613 quotes.
+  Trades: 1760313603.077 to 1760399998.095
+  Quotes: 1760313600.246 to 1760399999.946
+  Price range: 18.73 to 20.19
+  Processing event 0 / 977,902  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 977,902  (40.9%)  PnL: -37.4700  Inv: -40.0000
+  Processing event 800,000 / 977,902  (81.8%)  PnL: -42.6700  Inv: -40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -49.8700
+Sharpe Ratio:         -0.981
+Max Drawdown:         -72.0600
+Total Fills:          458
+Fill Rate:            1.9%
+Avg Spread Quoted:    7.36 bps
+Avg Abs Inventory:    38.0874
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     977,902
+Data Gaps (short):    354
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -49.8700
+Hysteresis skips:     13,480  (53.0% of recomputes)
+==================================================
+
+============================================================
+  2025-10-14
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-14.parquet
+Loaded 459,702 trades and 535,759 quotes.
+  Trades: 1760400000.347 to 1760486399.846
+  Quotes: 1760400000.046 to 1760486399.946
+  Price range: 18.07 to 20.07
+  Processing event 0 / 995,461  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 995,461  (40.2%)  PnL: -18.3700  Inv: -40.0000
+  Processing event 800,000 / 995,461  (80.4%)  PnL: -36.3700  Inv: -40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -36.3700
+Sharpe Ratio:         -0.735
+Max Drawdown:         -51.2000
+Total Fills:          924
+Fill Rate:            3.3%
+Avg Spread Quoted:    7.19 bps
+Avg Abs Inventory:    36.7639
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     995,461
+Data Gaps (short):    190
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -36.3700
+Hysteresis skips:     21,595  (60.9% of recomputes)
+==================================================
+
+============================================================
+  2025-10-15
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-15.parquet
+Loaded 273,935 trades and 470,291 quotes.
+  Trades: 1760486401.183 to 1760572799.513
+  Quotes: 1760486400.446 to 1760572799.946
+  Price range: 17.73 to 19.26
+  Processing event 0 / 744,226  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 744,226  (53.7%)  PnL: -20.5100  Inv: 10.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -39.9950
+Sharpe Ratio:         -1.158
+Max Drawdown:         -56.3550
+Total Fills:          1328
+Fill Rate:            1.8%
+Avg Spread Quoted:    7.27 bps
+Avg Abs Inventory:    34.0662
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     744,226
+Data Gaps (short):    255
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -39.9950
+Hysteresis skips:     37,939  (50.3% of recomputes)
+==================================================
+
+============================================================
+  2025-10-16
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-16.parquet
+Loaded 336,873 trades and 468,936 quotes.
+  Trades: 1760572800.858 to 1760659197.049
+  Quotes: 1760572800.046 to 1760659199.746
+  Price range: 17.10 to 18.63
+  Processing event 0 / 805,809  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 805,809  (49.6%)  PnL: -8.9700  Inv: 40.0000
+  Processing event 800,000 / 805,809  (99.3%)  PnL: -35.3700  Inv: 40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -33.7700
+Sharpe Ratio:         -0.806
+Max Drawdown:         -60.4000
+Total Fills:          256
+Fill Rate:            0.6%
+Avg Spread Quoted:    6.64 bps
+Avg Abs Inventory:    37.3154
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     805,809
+Data Gaps (short):    440
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -33.7700
+Hysteresis skips:     26,415  (57.3% of recomputes)
+==================================================
+
+============================================================
+  2025-10-17
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-17.parquet
+Loaded 441,087 trades and 502,074 quotes.
+  Trades: 1760659200.207 to 1760745599.172
+  Quotes: 1760659200.046 to 1760745599.546
+  Price range: 15.69 to 17.69
+  Processing event 0 / 943,161  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 943,161  (42.4%)  PnL: 11.1350  Inv: -25.0000
+  [GAP 133s] Closed short 40.0000 @ 16.49 | PnL impact: -659.8000 | Total PnL: 13.4350
+  Processing event 800,000 / 943,161  (84.8%)  PnL: 10.5950  Inv: -40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -3.4550
+Sharpe Ratio:         -0.092
+Max Drawdown:         -33.1100
+Total Fills:          3403
+Fill Rate:            2.6%
+Avg Spread Quoted:    7.24 bps
+Avg Abs Inventory:    31.6031
+Max Abs Inventory:    45.0000
+Total Fees Paid:      0.000000
+Runtime (events):     943,161
+Data Gaps (short):    397
+Data Gaps (long):     1
+PnL from gap closures:0.0000
+MM-only PnL:          -3.4550
+Hysteresis skips:     60,010  (47.8% of recomputes)
+==================================================
+
+============================================================
+  2025-10-18
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-18.parquet
+Loaded 116,763 trades and 349,884 quotes.
+  Trades: 1760745602.869 to 1760831980.644
+  Quotes: 1760745600.046 to 1760831999.546
+  Price range: 16.57 to 17.01
+  Processing event 0 / 466,647  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 466,647  (85.7%)  PnL: -1.4600  Inv: 40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -3.8800
+Sharpe Ratio:         -0.194
+Max Drawdown:         -21.2500
+Total Fills:          724
+Fill Rate:            0.6%
+Avg Spread Quoted:    7.15 bps
+Avg Abs Inventory:    31.6574
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     466,647
+Data Gaps (short):    1155
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -3.8800
+Hysteresis skips:     53,320  (48.8% of recomputes)
+==================================================
+
+============================================================
+  2025-10-19
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-19.parquet
+Loaded 191,696 trades and 354,949 quotes.
+  Trades: 1760832001.122 to 1760918365.309
+  Quotes: 1760832000.148 to 1760918399.346
+  Price range: 16.53 to 17.66
+  Processing event 0 / 546,645  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 546,645  (73.2%)  PnL: -13.9600  Inv: 40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -17.9600
+Sharpe Ratio:         -0.696
+Max Drawdown:         -32.1500
+Total Fills:          878
+Fill Rate:            1.3%
+Avg Spread Quoted:    7.15 bps
+Avg Abs Inventory:    35.7189
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     546,645
+Data Gaps (short):    903
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -17.9600
+Hysteresis skips:     19,243  (35.7% of recomputes)
+==================================================
+
+============================================================
+  2025-10-20
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-20.parquet
+Loaded 318,527 trades and 428,664 quotes.
+  Trades: 1760918401.967 to 1761004796.733
+  Quotes: 1760918400.146 to 1761004799.746
+  Price range: 16.93 to 19.19
+  Processing event 0 / 747,191  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 747,191  (53.5%)  PnL: 9.6500  Inv: 20.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -22.8200
+Sharpe Ratio:         -0.681
+Max Drawdown:         -53.8800
+Total Fills:          2466
+Fill Rate:            2.5%
+Avg Spread Quoted:    7.14 bps
+Avg Abs Inventory:    32.3555
+Max Abs Inventory:    45.0000
+Total Fees Paid:      0.000000
+Runtime (events):     747,191
+Data Gaps (short):    454
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -22.8200
+Hysteresis skips:     41,142  (45.4% of recomputes)
+==================================================
+
+============================================================
+  2025-10-21
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-21.parquet
+Loaded 353,918 trades and 441,334 quotes.
+  Trades: 1761004801.217 to 1761091191.829
+  Quotes: 1761004800.046 to 1761091199.746
+  Price range: 17.53 to 18.97
+  Processing event 0 / 795,252  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 795,252  (50.3%)  PnL: 10.1100  Inv: -30.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            11.9650
+Sharpe Ratio:         0.393
+Max Drawdown:         -30.6500
+Total Fills:          2316
+Fill Rate:            2.2%
+Avg Spread Quoted:    6.75 bps
+Avg Abs Inventory:    28.1070
+Max Abs Inventory:    45.0000
+Total Fees Paid:      0.000000
+Runtime (events):     795,252
+Data Gaps (short):    375
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          11.9650
+Hysteresis skips:     69,379  (57.2% of recomputes)
+==================================================
+
+============================================================
+  2025-10-22
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-22.parquet
+Loaded 270,048 trades and 407,246 quotes.
+  Trades: 1761091200.511 to 1761177596.954
+  Quotes: 1761091200.046 to 1761177599.946
+  Price range: 16.71 to 17.84
+  Processing event 0 / 677,294  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 677,294  (59.1%)  PnL: -19.6200  Inv: 40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -32.8200
+Sharpe Ratio:         -0.949
+Max Drawdown:         -56.2800
+Total Fills:          666
+Fill Rate:            1.2%
+Avg Spread Quoted:    6.84 bps
+Avg Abs Inventory:    35.9501
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     677,294
+Data Gaps (short):    857
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -32.8200
+Hysteresis skips:     28,095  (50.9% of recomputes)
+==================================================
+
+============================================================
+  2025-10-23
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-23.parquet
+Loaded 159,477 trades and 314,498 quotes.
+  Trades: 1761177600.280 to 1761263998.019
+  Quotes: 1761177600.046 to 1761263999.846
+  Price range: 17.09 to 17.79
+  Processing event 0 / 473,975  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 473,975  (84.4%)  PnL: 14.1500  Inv: -40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            13.3500
+Sharpe Ratio:         0.634
+Max Drawdown:         -27.4600
+Total Fills:          1230
+Fill Rate:            1.3%
+Avg Spread Quoted:    6.90 bps
+Avg Abs Inventory:    30.3787
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     473,975
+Data Gaps (short):    2192
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          13.3500
+Hysteresis skips:     52,619  (51.8% of recomputes)
+==================================================
+
+============================================================
+  2025-10-24
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-24.parquet
+Loaded 155,679 trades and 309,314 quotes.
+  Trades: 1761264003.379 to 1761350378.339
+  Quotes: 1761264000.046 to 1761350399.946
+  Price range: 17.29 to 18.10
+  Processing event 0 / 464,993  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 464,993  (86.0%)  PnL: 3.5650  Inv: -40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -2.0950
+Sharpe Ratio:         -0.087
+Max Drawdown:         -20.5500
+Total Fills:          856
+Fill Rate:            0.7%
+Avg Spread Quoted:    6.79 bps
+Avg Abs Inventory:    34.6763
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     464,993
+Data Gaps (short):    1989
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -2.0950
+Hysteresis skips:     38,652  (38.0% of recomputes)
+==================================================
+
+============================================================
+  2025-10-25
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-25.parquet
+Loaded 70,313 trades and 223,693 quotes.
+  Trades: 1761350400.231 to 1761436764.811
+  Quotes: 1761350400.146 to 1761436799.946
+  Price range: 17.79 to 18.25
+  Processing event 0 / 294,006  (0.0%)  PnL: 0.0000  Inv: 0.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            5.6400
+Sharpe Ratio:         0.342
+Max Drawdown:         -9.5400
+Total Fills:          288
+Fill Rate:            0.2%
+Avg Spread Quoted:    6.68 bps
+Avg Abs Inventory:    36.8684
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     294,006
+Data Gaps (short):    4071
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          5.6400
+Hysteresis skips:     23,833  (28.0% of recomputes)
+==================================================
+
+============================================================
+  2025-10-26
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-26.parquet
+Loaded 146,248 trades and 302,636 quotes.
+  Trades: 1761436805.134 to 1761523193.806
+  Quotes: 1761436800.046 to 1761523199.946
+  Price range: 17.69 to 18.69
+  Processing event 0 / 448,884  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 448,884  (89.1%)  PnL: -36.3000  Inv: -40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -38.3000
+Sharpe Ratio:         -1.745
+Max Drawdown:         -45.7100
+Total Fills:          560
+Fill Rate:            0.9%
+Avg Spread Quoted:    6.64 bps
+Avg Abs Inventory:    32.6788
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     448,884
+Data Gaps (short):    1214
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -38.3000
+Hysteresis skips:     45,238  (60.0% of recomputes)
+==================================================
+
+============================================================
+  2025-10-27
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-27.parquet
+Loaded 233,019 trades and 377,343 quotes.
+  Trades: 1761523200.948 to 1761609597.568
+  Quotes: 1761523200.346 to 1761609599.146
+  Price range: 18.08 to 19.06
+  Processing event 0 / 610,362  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 610,362  (65.5%)  PnL: -6.8700  Inv: 40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -0.8300
+Sharpe Ratio:         -0.031
+Max Drawdown:         -28.9800
+Total Fills:          2101
+Fill Rate:            1.8%
+Avg Spread Quoted:    6.85 bps
+Avg Abs Inventory:    31.8955
+Max Abs Inventory:    45.0000
+Total Fees Paid:      0.000000
+Runtime (events):     610,362
+Data Gaps (short):    832
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -0.8300
+Hysteresis skips:     53,904  (47.4% of recomputes)
+==================================================
+
+============================================================
+  2025-10-28
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-28.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-28.parquet
+Loaded 243,713 trades and 391,758 quotes.
+  Trades: 1761609600.974 to 1761695999.568
+  Quotes: 1761609600.446 to 1761695999.846
+  Price range: 17.43 to 18.83
+  Processing event 0 / 635,471  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 635,471  (62.9%)  PnL: -28.3500  Inv: -40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -1.5500
+Sharpe Ratio:         -0.048
+Max Drawdown:         -42.3200
+Total Fills:          190
+Fill Rate:            1.3%
+Avg Spread Quoted:    6.58 bps
+Avg Abs Inventory:    35.8505
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     635,471
+Data Gaps (short):    1167
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -1.5500
+Hysteresis skips:     24,065  (77.2% of recomputes)
+==================================================
+
+============================================================
+  2025-10-29
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-29.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-29.parquet
+Loaded 289,813 trades and 388,176 quotes.
+  Trades: 1761696000.031 to 1761782389.330
+  Quotes: 1761696000.046 to 1761782399.746
+  Price range: 17.54 to 18.67
+  Processing event 0 / 677,989  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 677,989  (59.0%)  PnL: -16.7200  Inv: 40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -25.1200
+Sharpe Ratio:         -0.684
+Max Drawdown:         -52.7100
+Total Fills:          656
+Fill Rate:            0.8%
+Avg Spread Quoted:    6.68 bps
+Avg Abs Inventory:    35.7493
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     677,989
+Data Gaps (short):    1162
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -25.1200
+Hysteresis skips:     34,141  (45.2% of recomputes)
+==================================================
+
+============================================================
+  2025-10-30
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-30.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-30.parquet
+Loaded 345,655 trades and 455,952 quotes.
+  Trades: 1761782400.930 to 1761868799.500
+  Quotes: 1761782400.246 to 1761868799.946
+  Price range: 16.32 to 18.43
+  Processing event 0 / 801,607  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 801,607  (49.9%)  PnL: -27.2600  Inv: 40.0000
+  Processing event 800,000 / 801,607  (99.8%)  PnL: -59.2600  Inv: 40.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -59.2600
+Sharpe Ratio:         -1.486
+Max Drawdown:         -84.0000
+Total Fills:          488
+Fill Rate:            2.4%
+Avg Spread Quoted:    6.65 bps
+Avg Abs Inventory:    38.2026
+Max Abs Inventory:    40.0000
+Total Fees Paid:      0.000000
+Runtime (events):     801,607
+Data Gaps (short):    500
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -59.2600
+Hysteresis skips:     14,769  (59.0% of recomputes)
+==================================================
+
+============================================================
+  2025-10-31
+============================================================
+Loading trades from: data/real/trades_LINK_2025-10-31.parquet
+Loading quotes from: data/real/quotes_LINK_2025-10-31.parquet
+Loaded 150,766 trades and 395,175 quotes.
+  Trades: 1761868800.058 to 1761955192.043
+  Quotes: 1761868800.046 to 1761955199.446
+  Price range: 16.73 to 17.46
+  Processing event 0 / 545,941  (0.0%)  PnL: 0.0000  Inv: 0.0000
+  Processing event 400,000 / 545,941  (73.3%)  PnL: -10.0400  Inv: 10.0000
+==================================================
+BACKTEST RESULTS SUMMARY
+==================================================
+Total PnL:            -10.3700
+Sharpe Ratio:         -0.413
+Max Drawdown:         -28.1800
+Total Fills:          756
+Fill Rate:            0.7%
+Avg Spread Quoted:    6.99 bps
+Avg Abs Inventory:    30.3443
+Max Abs Inventory:    45.0000
+Total Fees Paid:      0.000000
+Runtime (events):     545,941
+Data Gaps (short):    776
+Data Gaps (long):     0
+PnL from gap closures:0.0000
+MM-only PnL:          -10.3700
+Hysteresis skips:     62,166  (53.8% of recomputes)
+==================================================
+
+============================================================
+RUN COMPLETE
+============================================================
+Attempted: 31  |  OK: 31  |  Failed: 0
+Total PnL:   -392.3500
+MM-only PnL: -392.3500

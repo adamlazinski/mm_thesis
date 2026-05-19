@@ -1,0 +1,45 @@
+{
+    "data_dir":   "data/real",
+    "start":      "2026-04-01",
+    "end":        "2026-04-15",
+    "output":     "search/42_link_glft_proper_apr.csv",
+    "strategy":   "glft_loss_limit",
+    "symbol":     "LINK",
+    "order_size": 5.0,
+    "tick_size":  0.001,
+    "maker_fee":  0.0,
+    "timestamp":  "time_exchange",
+
+    "fixed": {
+        "latency":               0.1,
+        "quote_freq":            0.5,
+        "vol_window":            120,
+        "arrival_window":        60,
+        "ewma_alpha":            0.9,
+        "guardrail":             false,
+        "tolerance_ticks":       0.5,
+        "kappa_force_interval":  60.0,
+        "kappa_from_stats":      false,
+        "glft_A":                0.5,
+        "daily_loss_limit":      25.0
+    },
+
+    "search": {
+        "gamma":          ["log_uniform", 50.0, 20000.0],
+        "glft_kappa":     ["log_uniform", 50.0, 10000.0],
+        "min_spread_bps": ["uniform", 4.0, 9.0],
+        "max_inventory":  ["uniform", 20.0, 100.0]
+    },
+
+    "scoring": {
+        "metric":        "mean_pnl",
+        "min_fills":     10,
+        "min_fill_rate": 0.001
+    },
+
+    "n_trials":  150,
+    "n_workers": 2,
+    "seed":      42,
+    "top_n":     15,
+    "notes":     "Proper GLFT on LINK Apr 2026 IS (Apr 1-15). kappa_from_stats=False, glft_A=0.5 fixed (calibrated median). Search gamma/kappa/spread/inventory. A-S winner baseline: +$43.78/day."
+}
