@@ -31,7 +31,8 @@ class MicrostructureStats:
     kappa_as:      float = 1.5    # AS fill-sensitivity (1/$)  ← primary kappa
     A_hat:         float = 2.0    # AS baseline fill intensity
     kappa_as_se:   float = float('inf')
-    trades_per_sec: float = 1.0   # background arrival rate (secondary)
+    trades_per_sec:       float = 1.0   # background arrival rate (60s window)
+    trades_per_sec_short: float = 1.0   # short-window arrival rate (spike detection)
     lambda_buy:    float = 0.5
     lambda_sell:   float = 0.5
     ofi:           float = 0.0
@@ -39,6 +40,104 @@ class MicrostructureStats:
     spread:        float = 0.0
     momentum:      float = 0.0
     momentum_raw:  float = 0.0
+    vpin:          float = 0.5    # VPIN toxicity [0,1]; 0.5 = uninitialised
+    kyle_lambda:   float = 0.0   # Kyle's lambda: price impact ($/BTC); 0 = uninitialised
+
+
+class VPINEstimator:
+    """
+    Volume-Synchronized Probability of Informed Trading (Easley, López de Prado, O'Hara 2012).
+
+    Divides volume into equal-sized buckets of `bucket_volume` BTC. For each bucket
+    VPIN_τ = |V_buy - V_sell| / bucket_volume. The running VPIN is the mean over
+    the last `n_buckets` completed buckets.
+
+    Uses actual taker_side from the trade feed (superior to bulk volume classification
+    since we have the raw side).
+
+    Parameters
+    ----------
+    bucket_volume : float
+        BTC per bucket. Default 0.5 BTC (~1 min of trading at normal pace).
+    n_buckets : int
+        Number of completed buckets to average over. Default 50.
+    """
+
+    def __init__(self, bucket_volume: float = 0.5, n_buckets: int = 50):
+        self.bucket_volume = bucket_volume
+        self.n_buckets = n_buckets
+
+        self._bucket_buy: float = 0.0
+        self._bucket_sell: float = 0.0
+        self._bucket_total: float = 0.0
+        self._completed: deque = deque(maxlen=n_buckets)  # stores per-bucket imbalance
+        self.vpin: float = 0.5  # uninitialised sentinel
+
+    def on_trade(self, volume: float, side: str) -> None:
+        remaining = volume
+        while remaining > 0:
+            space = self.bucket_volume - self._bucket_total
+            fill = min(remaining, space)
+            if side == "buy":
+                self._bucket_buy += fill
+            else:
+                self._bucket_sell += fill
+            self._bucket_total += fill
+            remaining -= fill
+
+            if self._bucket_total >= self.bucket_volume - 1e-9:
+                imbalance = abs(self._bucket_buy - self._bucket_sell) / self.bucket_volume
+                self._completed.append(imbalance)
+                self._bucket_buy = 0.0
+                self._bucket_sell = 0.0
+                self._bucket_total = 0.0
+
+        if self._completed:
+            self.vpin = float(np.mean(self._completed))
+
+
+class KyleLambdaEstimator:
+    """
+    Kyle's lambda: measures price impact per unit of signed order flow.
+
+    Estimated via EWMA OLS at each quote interval:
+      ΔP_t = λ × Q_t + ε
+    where Q_t = net signed volume (buy - sell BTC) since the last quote event.
+
+    λ > 0 always in liquid markets (buy pressure → price rises).
+    High λ = high price impact = more informed flow per unit volume.
+
+    Parameters
+    ----------
+    alpha : float
+        EWMA decay for covariance/variance estimates. Default 0.01
+        (slow decay over ~100 quote intervals ≈ 12 seconds at 8 quotes/sec).
+    min_obs : int
+        Minimum quote intervals before the estimate is trusted.
+    """
+
+    def __init__(self, alpha: float = 0.01, min_obs: int = 50):
+        self.alpha = alpha
+        self.min_obs = min_obs
+        self._ewma_cov: float = 0.0   # EWMA of Q * ΔP
+        self._ewma_var: float = 0.0   # EWMA of Q²
+        self._n_obs: int = 0
+        self.kyle_lambda: float = 0.0
+
+    def on_quote(self, signed_vol: float, delta_mid: float) -> None:
+        """
+        Called at each quote event with accumulated signed volume and mid change
+        since the previous quote.
+        """
+        self._ewma_cov = self.alpha * (signed_vol * delta_mid) + (1 - self.alpha) * self._ewma_cov
+        self._ewma_var = self.alpha * (signed_vol ** 2) + (1 - self.alpha) * self._ewma_var
+        self._n_obs += 1
+        if self._n_obs >= self.min_obs and self._ewma_var > 1e-16:
+            self.kyle_lambda = self._ewma_cov / self._ewma_var
+
+    @property
+    def is_ready(self) -> bool:
+        return self._n_obs >= self.min_obs
 
 
 class MarketState:
@@ -76,6 +175,11 @@ class MarketState:
         kappa_as_min_fills: int = 50,
         kappa_as_lam_base: float = 0.5,
         kappa_as_update_every: int = 10,
+        vpin_bucket_volume: float = 0.5,
+        vpin_n_buckets: int = 50,
+        spike_window: float = 5.0,
+        kyle_alpha: float = 0.01,
+        kyle_min_obs: int = 50,
     ):
         self.vol_window     = vol_window
         self.arrival_window = arrival_window
@@ -84,9 +188,11 @@ class MarketState:
         self._mid_prices: Deque[float] = deque(maxlen=vol_window)
         self._mid_times:  Deque[float] = deque(maxlen=vol_window)
 
-        self._trade_times: Deque[float] = deque()
-        self._buy_times:   Deque[float] = deque()
-        self._sell_times:  Deque[float] = deque()
+        self._trade_times:       Deque[float] = deque()
+        self._trade_times_short: Deque[float] = deque()
+        self._buy_times:         Deque[float] = deque()
+        self._sell_times:        Deque[float] = deque()
+        self.spike_window = spike_window
 
         self._ewma_var: float = 0.0
         self._ewma_initialised: bool = False
@@ -109,6 +215,15 @@ class MarketState:
             lam_base=kappa_as_lam_base,
             update_every=kappa_as_update_every,
         )
+
+        self._vpin = VPINEstimator(
+            bucket_volume=vpin_bucket_volume,
+            n_buckets=vpin_n_buckets,
+        )
+
+        self._kyle = KyleLambdaEstimator(alpha=kyle_alpha, min_obs=kyle_min_obs)
+        self._kyle_signed_vol_acc: float = 0.0   # signed vol since last quote event
+        self._kyle_last_mid: float = 0.0
 
         self.stats = MicrostructureStats(
             kappa_as=kappa_as_prior,
@@ -134,6 +249,13 @@ class MarketState:
         self._best_bid = best_bid
         self._best_ask = best_ask
 
+        if self._kyle_last_mid > 0:
+            delta_mid = mid - self._kyle_last_mid
+            self._kyle.on_quote(self._kyle_signed_vol_acc, delta_mid)
+            self.stats.kyle_lambda = self._kyle.kyle_lambda
+        self._kyle_signed_vol_acc = 0.0
+        self._kyle_last_mid = mid
+
         self._update_volatility(timestamp, mid)
 
         self.stats.mid_price    = mid
@@ -153,6 +275,7 @@ class MarketState:
         Does NOT update kappa_as — use on_mm_fill for that.
         """
         self._trade_times.append(timestamp)
+        self._trade_times_short.append(timestamp)
         if side == "buy":
             self._buy_times.append(timestamp)
             self._ofi_buys += quantity
@@ -161,6 +284,8 @@ class MarketState:
             self._ofi_sells += quantity
 
         self._ofi_window_trades.append((timestamp, side, quantity))
+        self._vpin.on_trade(quantity, side)
+        self._kyle_signed_vol_acc += quantity if side == "buy" else -quantity
 
         cutoff = timestamp - self.arrival_window
         while self._trade_times and self._trade_times[0] < cutoff:
@@ -176,10 +301,16 @@ class MarketState:
             else:
                 self._ofi_sells -= old_qty
 
-        self.stats.trades_per_sec = self._get_trades_per_sec()
-        self.stats.lambda_buy     = self._get_lambda("buy")
-        self.stats.lambda_sell    = self._get_lambda("sell")
-        self.stats.ofi            = self._get_ofi()
+        spike_cutoff = timestamp - self.spike_window
+        while self._trade_times_short and self._trade_times_short[0] < spike_cutoff:
+            self._trade_times_short.popleft()
+
+        self.stats.trades_per_sec       = self._get_trades_per_sec()
+        self.stats.trades_per_sec_short = len(self._trade_times_short) / max(self.spike_window, 1e-6)
+        self.stats.lambda_buy           = self._get_lambda("buy")
+        self.stats.lambda_sell          = self._get_lambda("sell")
+        self.stats.ofi                  = self._get_ofi()
+        self.stats.vpin                 = self._vpin.vpin
 
     def on_mm_fill(self, timestamp: float, half_spread: float) -> None:
         """

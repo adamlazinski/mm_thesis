@@ -458,6 +458,408 @@ class OFIDirectedFilter:
         return True, True
 
 
+class KyleLambdaFilter:
+    """
+    Suppresses quoting when Kyle's lambda (price impact per unit signed volume)
+    exceeds a threshold, indicating elevated informed trading activity.
+
+    lambda is computed in MarketState via EWMA OLS over quote intervals.
+    High lambda = each BTC of net flow moves price a lot = informed flow.
+
+    Parameters
+    ----------
+    base : any strategy with compute_quotes()
+    lambda_threshold : float
+        Kyle's lambda above which quoting is suppressed. Units: $/BTC.
+        Typical intraday BTC range: 0.001–0.10 $/BTC.
+    """
+
+    def __init__(self, base, lambda_threshold: float = 0.01):
+        self.base = base
+        self.lambda_threshold = lambda_threshold
+        self.max_inventory = getattr(base, "max_inventory", 1.0)
+        self.in_high_impact: bool = False
+
+    def compute_quotes(self, stats, inventory: float, timestamp: float, **kwargs):
+        decision = self.base.compute_quotes(stats, inventory, timestamp, **kwargs)
+
+        lam = stats.kyle_lambda
+        self.in_high_impact = lam != 0.0 and lam > self.lambda_threshold
+
+        if self.in_high_impact:
+            decision.should_quote_bid = False
+            decision.should_quote_ask = False
+
+        return decision
+
+    def should_quote(self, inventory: float):
+        if hasattr(self.base, "should_quote"):
+            return self.base.should_quote(inventory)
+        return True, True
+
+
+class DynamicSizeFilter:
+    """
+    Scales order sizes down when the market is in a high-toxicity state,
+    without suppressing quoting entirely. Reduces adverse selection exposure
+    while maintaining presence in the order book.
+
+    Uses the trade-rate spike ratio (short/long window) as the toxicity proxy.
+    size_multiplier = clip(1 / (1 + sensitivity * max(spike_ratio - 1, 0)), min_mult, 1)
+
+    Parameters
+    ----------
+    base : any strategy with compute_quotes()
+    sensitivity : float
+        Controls how aggressively size is reduced on spikes. Default 0.5.
+    min_mult : float
+        Minimum size multiplier (floor). Default 0.2 (20% of normal size).
+    """
+
+    def __init__(self, base, sensitivity: float = 0.5, min_mult: float = 0.2):
+        self.base = base
+        self.sensitivity = sensitivity
+        self.min_mult = min_mult
+        self.max_inventory = getattr(base, "max_inventory", 1.0)
+
+    def compute_quotes(self, stats, inventory: float, timestamp: float, **kwargs):
+        decision = self.base.compute_quotes(stats, inventory, timestamp, **kwargs)
+
+        baseline = stats.trades_per_sec
+        short_rate = stats.trades_per_sec_short
+        spike_ratio = (short_rate / baseline) if baseline > 0.1 else 1.0
+        excess = max(spike_ratio - 1.0, 0.0)
+        mult = max(1.0 / (1.0 + self.sensitivity * excess), self.min_mult)
+
+        decision.bid_size = decision.bid_size * mult
+        decision.ask_size = decision.ask_size * mult
+
+        return decision
+
+    def should_quote(self, inventory: float):
+        if hasattr(self.base, "should_quote"):
+            return self.base.should_quote(inventory)
+        return True, True
+
+
+class SpreadMultiplierFilter:
+    """
+    Widens the quoted spread by a toxicity-dependent multiplier instead of
+    suppressing quoting entirely. More conservative than hard-stop filters —
+    the strategy remains in the book but demands a larger premium in toxic regimes.
+
+    spread_mult = 1 + alpha * toxicity_signal
+
+    Toxicity signal options (toxicity_signal param):
+      "vpin"   : stats.vpin (calibrated bucket size needed)
+      "spike"  : short/long trade-rate ratio
+      "lambda" : stats.kyle_lambda (normalised by lambda_scale)
+      "ofi"    : |stats.ofi|
+
+    Applies the multiplier to the optimal_spread, shifting bid/ask symmetrically
+    around the reservation price.
+
+    Parameters
+    ----------
+    base : any strategy with compute_quotes()
+    alpha : float
+        Sensitivity to the toxicity signal. spread_mult = 1 + alpha * signal.
+    signal : str
+        Which signal to use. One of {"vpin", "spike", "lambda", "ofi"}.
+    lambda_scale : float
+        Scale for normalising kyle_lambda. Default 0.01 ($/BTC).
+    max_mult : float
+        Cap on the spread multiplier. Default 5.0.
+    """
+
+    def __init__(
+        self,
+        base,
+        alpha: float = 2.0,
+        signal: str = "spike",
+        lambda_scale: float = 0.01,
+        max_mult: float = 5.0,
+    ):
+        self.base = base
+        self.alpha = alpha
+        self.signal = signal
+        self.lambda_scale = lambda_scale
+        self.max_mult = max_mult
+        self.max_inventory = getattr(base, "max_inventory", 1.0)
+
+    def _get_toxicity(self, stats) -> float:
+        if self.signal == "vpin":
+            return max(stats.vpin - 0.5, 0.0) * 2.0  # map [0.5,1] → [0,1]
+        elif self.signal == "spike":
+            baseline = stats.trades_per_sec
+            short = stats.trades_per_sec_short
+            return max((short / baseline) - 1.0, 0.0) if baseline > 0.1 else 0.0
+        elif self.signal == "lambda":
+            return max(stats.kyle_lambda / self.lambda_scale, 0.0)
+        elif self.signal == "ofi":
+            return abs(stats.ofi)
+        return 0.0
+
+    def compute_quotes(self, stats, inventory: float, timestamp: float, **kwargs):
+        decision = self.base.compute_quotes(stats, inventory, timestamp, **kwargs)
+
+        toxicity = self._get_toxicity(stats)
+        mult = min(1.0 + self.alpha * toxicity, self.max_mult)
+
+        # Re-centre bid/ask around reservation price with widened spread
+        r = decision.reservation_price
+        new_half = (decision.optimal_spread / 2.0) * mult
+        from ..strategies.avellaneda_stoikov import QuoteDecision
+        tick = getattr(getattr(self.base, "base", self.base), "tick_size", 0.01)
+
+        import numpy as np
+        decision.bid_price = np.floor((r - new_half) / tick) * tick
+        decision.ask_price = np.ceil((r + new_half) / tick) * tick
+        decision.optimal_spread = new_half * 2.0
+
+        return decision
+
+    def should_quote(self, inventory: float):
+        if hasattr(self.base, "should_quote"):
+            return self.base.should_quote(inventory)
+        return True, True
+
+
+class TradeSpikeFilter:
+    """
+    Pauses quoting when the short-window trade arrival rate spikes above
+    the long-window baseline by a multiplier — a sign of informed flow bursts.
+
+    Uses stats.trades_per_sec_short (spike_window, default 5s) vs
+    stats.trades_per_sec (arrival_window, default 60s).
+
+    Parameters
+    ----------
+    base : any strategy with compute_quotes()
+    spike_multiplier : float
+        Suppress when short_rate > multiplier × long_rate. Default 3.0.
+    spike_cooldown : float
+        Seconds to remain suppressed after the spike clears. Default 5.0.
+    min_baseline : float
+        Minimum baseline trades/sec before spike detection is active.
+        Prevents false positives at session open. Default 0.5.
+    """
+
+    def __init__(
+        self,
+        base,
+        spike_multiplier: float = 3.0,
+        spike_cooldown: float = 5.0,
+        min_baseline: float = 0.5,
+    ):
+        self.base = base
+        self.spike_multiplier = spike_multiplier
+        self.spike_cooldown = spike_cooldown
+        self.min_baseline = min_baseline
+        self.max_inventory = getattr(base, "max_inventory", 1.0)
+        self._cooldown_until: float = 0.0
+        self.in_spike: bool = False
+
+    def compute_quotes(self, stats, inventory: float, timestamp: float, **kwargs):
+        decision = self.base.compute_quotes(stats, inventory, timestamp, **kwargs)
+
+        baseline = stats.trades_per_sec
+        short_rate = stats.trades_per_sec_short
+
+        is_spike = (
+            baseline >= self.min_baseline and
+            short_rate > self.spike_multiplier * baseline
+        )
+
+        if is_spike:
+            self._cooldown_until = timestamp + self.spike_cooldown
+
+        self.in_spike = timestamp < self._cooldown_until
+
+        if self.in_spike:
+            decision.should_quote_bid = False
+            decision.should_quote_ask = False
+
+        return decision
+
+    def should_quote(self, inventory: float):
+        if hasattr(self.base, "should_quote"):
+            return self.base.should_quote(inventory)
+        return True, True
+
+
+class DailyLossLimit:
+    """
+    Stops quoting for the rest of the calendar day (UTC) once cumulative
+    daily P&L falls below -daily_limit.
+
+    Receives total_pnl via the kwarg that Backtest passes to compute_quotes().
+    Tracks day boundaries from the event timestamp.
+
+    Parameters
+    ----------
+    base : any strategy with compute_quotes()
+    daily_limit : float
+        Maximum allowed loss per day (positive number). Default 20.0.
+    liquidate_ticks : float or None
+        When set and the limit fires, quote aggressively on the inventory-
+        reducing side (bid at mid+ticks when short, ask at mid-ticks when
+        long) to unwind the position. None = old behaviour (halt only).
+    """
+
+    def __init__(self, base, daily_limit: float = 20.0,
+                 liquidate_ticks: float = None):
+        self.base = base
+        self.daily_limit = daily_limit
+        self.liquidate_ticks = liquidate_ticks
+        self.max_inventory = getattr(base, "max_inventory", 1.0)
+        # Traverse filter chain to find tick_size on the innermost strategy
+        _b = base
+        while not hasattr(_b, "tick_size") and hasattr(_b, "base"):
+            _b = _b.base
+        self._tick_size: float = getattr(_b, "tick_size", 0.01)
+        self._day_start_pnl: float = 0.0
+        self._current_day: int = -1
+        self.limit_hit: bool = False
+
+    def compute_quotes(self, stats, inventory: float, timestamp: float, **kwargs):
+        import datetime
+        decision = self.base.compute_quotes(stats, inventory, timestamp, **kwargs)
+
+        total_pnl = kwargs.get("total_pnl", None)
+        if total_pnl is None:
+            return decision
+
+        day = datetime.datetime.utcfromtimestamp(timestamp).toordinal()
+        if day != self._current_day:
+            self._current_day = day
+            self._day_start_pnl = total_pnl
+            self.limit_hit = False
+
+        daily_pnl = total_pnl - self._day_start_pnl
+        if daily_pnl < -self.daily_limit:
+            self.limit_hit = True
+
+        if self.limit_hit:
+            if self.liquidate_ticks is not None and abs(inventory) > 1e-9:
+                tick = self._tick_size
+                mid = stats.mid_price if stats.mid_price > 0 else (
+                    (decision.bid_price + decision.ask_price) / 2
+                    if (decision.bid_price and decision.ask_price) else 0.0
+                )
+                size = abs(inventory)
+                if inventory > 0:
+                    # Long: sell aggressively — quote ask below mid to get filled
+                    decision.should_quote_bid = False
+                    decision.should_quote_ask = True
+                    decision.ask_price = mid - self.liquidate_ticks * tick
+                    decision.ask_size = size
+                else:
+                    # Short: buy aggressively — quote bid above mid to get filled
+                    decision.should_quote_bid = True
+                    decision.should_quote_ask = False
+                    decision.bid_price = mid + self.liquidate_ticks * tick
+                    decision.bid_size = size
+            else:
+                decision.should_quote_bid = False
+                decision.should_quote_ask = False
+
+        return decision
+
+    def should_quote(self, inventory: float):
+        if hasattr(self.base, "should_quote"):
+            return self.base.should_quote(inventory)
+        return True, True
+
+
+class HourFilter:
+    """
+    Suppresses quoting during specified UTC hours.
+
+    Calibrated by computing per-hour PnL from a training period and blocking
+    the hours with negative expected P&L. The filter is transparent to the
+    underlying strategy — all other mechanics (spread, inventory skew, etc.)
+    are unchanged.
+
+    Parameters
+    ----------
+    base : any strategy with compute_quotes()
+    bad_hours : iterable of int
+        UTC hours [0-23] during which quoting is suppressed.
+    """
+
+    def __init__(self, base, bad_hours=()):
+        self.base = base
+        self.bad_hours: frozenset = frozenset(bad_hours)
+        self.max_inventory = getattr(base, "max_inventory", 1.0)
+
+    def compute_quotes(self, stats, inventory: float, timestamp: float, **kwargs):
+        import datetime
+        decision = self.base.compute_quotes(stats, inventory, timestamp, **kwargs)
+
+        hour = datetime.datetime.utcfromtimestamp(timestamp).hour
+        if hour in self.bad_hours:
+            decision.should_quote_bid = False
+            decision.should_quote_ask = False
+
+        return decision
+
+    def should_quote(self, inventory: float):
+        if hasattr(self.base, "should_quote"):
+            return self.base.should_quote(inventory)
+        return True, True
+
+
+class VPINFilter:
+    """
+    Pauses quoting when VPIN (Volume-Synchronized Probability of Informed Trading)
+    exceeds a threshold, indicating elevated toxic flow.
+
+    VPIN is computed in MarketState.on_trade() using actual taker_side and equal
+    volume buckets. It ranges [0, 1]: near 0 = balanced flow, near 1 = one-sided
+    (informed) flow. Typical toxic threshold in literature: 0.3–0.6.
+
+    Parameters
+    ----------
+    base : any strategy with compute_quotes()
+    vpin_threshold : float
+        VPIN above which quoting is suppressed. Default 0.4.
+    min_buckets : int
+        Minimum completed buckets before VPIN signal is trusted.
+        Below this count the estimator outputs 0.5 (neutral sentinel).
+    """
+
+    def __init__(
+        self,
+        base,
+        vpin_threshold: float = 0.4,
+        min_buckets: int = 10,
+    ):
+        self.base = base
+        self.vpin_threshold = vpin_threshold
+        self.min_buckets = min_buckets
+        self.max_inventory = getattr(base, "max_inventory", 1.0)
+        self.in_toxic_regime: bool = False
+
+    def compute_quotes(self, stats, inventory: float, timestamp: float, **kwargs):
+        decision = self.base.compute_quotes(stats, inventory, timestamp, **kwargs)
+
+        # stats.vpin == 0.5 is the uninitialised sentinel — don't suppress yet
+        vpin = stats.vpin
+        self.in_toxic_regime = vpin != 0.5 and vpin > self.vpin_threshold
+
+        if self.in_toxic_regime:
+            decision.should_quote_bid = False
+            decision.should_quote_ask = False
+
+        return decision
+
+    def should_quote(self, inventory: float):
+        if hasattr(self.base, "should_quote"):
+            return self.base.should_quote(inventory)
+        return True, True
+
+
 class OBIDirectedFilter:
     """
     Counter-OBI maker strategy (Albers et al. 2025, "The Market Maker's Dilemma").

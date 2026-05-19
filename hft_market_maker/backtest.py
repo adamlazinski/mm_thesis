@@ -292,6 +292,9 @@ class Backtest:
                         vol_window=self.market_state.vol_window,
                         arrival_window=self.market_state.arrival_window,
                         ewma_alpha=self.market_state.ewma_alpha,
+                        spike_window=self.market_state.spike_window,
+                        kyle_alpha=self.market_state._kyle.alpha,
+                        kyle_min_obs=self.market_state._kyle.min_obs,
                     )
                     # Reset vol guardrail history too
                     if self.vol_risk_manager is not None:

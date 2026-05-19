@@ -1,0 +1,30 @@
+{
+    "data_dir":       "data/real",
+    "start":          "2025-06-28",
+    "end":            "2025-07-10",
+    "output_dir":     "experiments/33_link_glft/results_oos",
+    "symbol":         "LINK",
+    "tick_size":      0.001,
+    "strategy":       "glft_loss_limit",
+
+    "gamma":          37074.0,
+    "glft_kappa":     2691.2,
+    "kappa_from_stats": true,
+
+    "order_size":     5.0,
+    "min_spread_bps": 6.6,
+    "max_inventory":  100.0,
+    "maker_fee":      0.0,
+    "latency":        0.1,
+    "quote_freq":     0.5,
+    "vol_window":     120,
+    "arrival_window": 60,
+    "ewma_alpha":     0.9,
+    "guardrail":      false,
+    "tolerance_ticks": 0.5,
+    "kappa_force_interval": 60.0,
+    "daily_loss_limit": 30.0,
+    "liquidate_ticks":  null,
+
+    "notes": "GLFT OOS test on Jun 28 - Jul 10. Same params as in-sample. True holdout."
+}

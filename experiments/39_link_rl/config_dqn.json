@@ -1,0 +1,40 @@
+{
+    "data_dir":       "data/real",
+    "train_start":    "2025-06-11",
+    "train_end":      "2025-06-27",
+    "eval_start":     "2025-06-28",
+    "eval_end":       "2025-07-10",
+    "symbol":         "LINK",
+    "output_dir":     "experiments/39_link_rl/results_dqn",
+    "checkpoint_dir": "experiments/39_link_rl/checkpoints_dqn",
+    "agent":          "dqn",
+
+    "tick_size":      0.001,
+    "order_size":     5.0,
+    "max_inventory":  38.0,
+    "daily_loss_limit": 25.0,
+    "maker_fee":      0.0,
+    "latency":        0.1,
+    "quote_freq":     0.5,
+    "vol_window":     120,
+    "arrival_window": 60,
+    "ewma_alpha":     0.9,
+    "inventory_penalty": 0.02,
+
+    "hidden_dim":     128,
+    "lr":             3e-4,
+    "discount":       0.99,
+    "epsilon_start":  1.0,
+    "epsilon_end":    0.05,
+    "epsilon_decay":  0.999999,
+    "batch_size":     256,
+    "target_update":  200,
+    "replay_capacity": 100000,
+
+    "n_epochs":       50,
+    "eval_every":     5,
+    "save_every":     10,
+    "seed":           42,
+
+    "notes": "DQN on LINK. IS=Jun11-27 (17d), OOS=Jun28-Jul10 (13d). max_inv=38 (A-S winner). Action space: 19 tick-based quote modes. State: 6-dim (inv, vol, mom, ofi, spike, drawdown)."
+}

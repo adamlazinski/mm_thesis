@@ -1,0 +1,40 @@
+{
+    "data_dir":   "data/real",
+    "start":      "2025-06-11",
+    "end":        "2025-06-27",
+    "output":     "search/34_link_glft_search.csv",
+    "strategy":   "glft_loss_limit",
+    "symbol":     "LINK",
+    "order_size": 5.0,
+    "tick_size":  0.001,
+    "maker_fee":  0.0,
+    "timestamp":  "time_exchange",
+    "fixed": {
+        "latency":          0.1,
+        "quote_freq":       0.5,
+        "vol_window":       120,
+        "arrival_window":   60,
+        "ewma_alpha":       0.9,
+        "guardrail":        false,
+        "tolerance_ticks":  0.5,
+        "kappa_force_interval": 60.0,
+        "kappa_from_stats": true
+    },
+    "search": {
+        "gamma":            ["log_uniform", 5000, 500000],
+        "glft_kappa":       ["log_uniform", 200, 10000],
+        "min_spread_bps":   ["uniform", 4.5, 10.0],
+        "max_inventory":    ["uniform", 25.0, 250.0],
+        "daily_loss_limit": ["log_uniform", 5.0, 150.0]
+    },
+    "scoring": {
+        "metric":        "mean_pnl",
+        "min_fills":     10,
+        "min_fill_rate": 0.001
+    },
+    "n_trials":  75,
+    "n_workers": 3,
+    "seed":      77,
+    "top_n":     15,
+    "notes":     "GLFT ergodic + daily loss limit on LINK Jun 11-27. Search over gamma/kappa/spread/inventory/loss_limit."
+}

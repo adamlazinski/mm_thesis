@@ -1,0 +1,39 @@
+{
+    "data_dir":       "data/real",
+    "train_start":    "2025-06-11",
+    "train_end":      "2025-06-27",
+    "eval_start":     "2025-06-28",
+    "eval_end":       "2025-07-10",
+    "symbol":         "LINK",
+    "output_dir":     "experiments/36_link_rl_dqn/results",
+    "checkpoint_dir": "experiments/36_link_rl_dqn/checkpoints",
+    "agent":          "dqn",
+
+    "tick_size":      0.001,
+    "order_size":     5.0,
+    "max_inventory":  100.0,
+    "daily_loss_limit": 30.0,
+    "latency":        0.1,
+    "quote_freq":     0.5,
+    "vol_window":     120,
+    "arrival_window": 60,
+    "ewma_alpha":     0.9,
+    "inventory_penalty": 0.05,
+
+    "hidden_dim":     128,
+    "lr":             3e-4,
+    "discount":       0.99,
+    "epsilon_start":  1.0,
+    "epsilon_end":    0.05,
+    "epsilon_decay":  0.9999,
+    "batch_size":     128,
+    "target_update":  50,
+    "replay_capacity": 50000,
+
+    "n_epochs":       30,
+    "eval_every":     5,
+    "save_every":     10,
+    "seed":           42,
+
+    "notes": "DQN on LINK Jun 11-27 train / Jun 28-Jul 10 eval. 10-action space (halt + 9 quote modes). 6-dim state."
+}

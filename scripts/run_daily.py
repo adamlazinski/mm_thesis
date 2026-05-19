@@ -81,6 +81,13 @@ from hft_market_maker import (
     RegimeFilter,
     OFIDirectedFilter,
     OBIDirectedFilter,
+    VPINFilter,
+    HourFilter,
+    TradeSpikeFilter,
+    DailyLossLimit,
+    KyleLambdaFilter,
+    DynamicSizeFilter,
+    SpreadMultiplierFilter,
 )
 
 
@@ -108,6 +115,27 @@ DEFAULTS = {
     "regime_vol_threshold": 3.0,
     "regime_mom_threshold": 0.5,
     "regime_ofi_threshold": float("inf"),
+    "ofi_directed_threshold": 0.3,
+    "ofi_directed_mom_threshold": float("inf"),
+    "vpin_threshold":       0.4,
+    "vpin_bucket_volume":   0.5,
+    "vpin_n_buckets":       50,
+    "bad_hours":            [],
+    "spike_multiplier":     3.0,
+    "spike_cooldown":       5.0,
+    "spike_min_baseline":   0.5,
+    "spike_window":         5.0,
+    "daily_loss_limit":     20.0,
+    "liquidate_ticks":      None,
+    "kyle_lambda_threshold": 0.01,
+    "kyle_alpha":            0.01,
+    "kyle_min_obs":          50,
+    "dynsize_sensitivity":   0.5,
+    "dynsize_min_mult":      0.2,
+    "spread_mult_alpha":     2.0,
+    "spread_mult_signal":    "spike",
+    "spread_mult_lambda_scale": 0.01,
+    "spread_mult_max":       5.0,
     "vi_alpha":            0.3,
     "vi_gamma_inv":        1.0,
 
@@ -121,6 +149,7 @@ DEFAULTS = {
     "tolerance_ticks": 0.5,
     "kappa_force_interval": 60.0,
     "timestamp":      "time_exchange",
+    "symbol":         "BTC",
     "max_rows":       None,
     "quiet":          False,
     "skip_existing":  False,
@@ -192,7 +221,7 @@ def build_snapshot(results) -> "pd.DataFrame | None":
 # ============================================================
 
 def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
-    tick_size = 0.01
+    tick_size = cfg.get("tick_size", 0.01)
     common = dict(
         T=cfg["t_scaling"],
         order_size=cfg["order_size"],
@@ -205,6 +234,74 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
 
     if name == "pure_as":
         return AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+    elif name == "pure_as_vpin":
+        base = AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+        return VPINFilter(base,
+            vpin_threshold=cfg["vpin_threshold"])
+    elif name == "pure_as_hour":
+        base = AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+        return HourFilter(base, bad_hours=cfg["bad_hours"])
+    elif name == "pure_as_spike":
+        base = AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+        return TradeSpikeFilter(base,
+            spike_multiplier=cfg["spike_multiplier"],
+            spike_cooldown=cfg["spike_cooldown"],
+            min_baseline=cfg["spike_min_baseline"])
+    elif name == "pure_as_loss_limit":
+        base = AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+        return DailyLossLimit(base, daily_limit=cfg["daily_loss_limit"],
+                              liquidate_ticks=cfg["liquidate_ticks"])
+    elif name == "pure_as_spike_loss":
+        base = AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+        return DailyLossLimit(TradeSpikeFilter(base,
+            spike_multiplier=cfg["spike_multiplier"],
+            spike_cooldown=cfg["spike_cooldown"],
+            min_baseline=cfg["spike_min_baseline"]),
+            daily_limit=cfg["daily_loss_limit"],
+            liquidate_ticks=cfg["liquidate_ticks"])
+    elif name == "pure_as_kyle":
+        base = AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+        return KyleLambdaFilter(base, lambda_threshold=cfg["kyle_lambda_threshold"])
+    elif name == "pure_as_dynsize":
+        base = AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+        return DynamicSizeFilter(base,
+            sensitivity=cfg["dynsize_sensitivity"],
+            min_mult=cfg["dynsize_min_mult"])
+    elif name == "pure_as_spread_mult":
+        base = AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+        return SpreadMultiplierFilter(base,
+            alpha=cfg["spread_mult_alpha"],
+            signal=cfg["spread_mult_signal"],
+            lambda_scale=cfg["spread_mult_lambda_scale"],
+            max_mult=cfg["spread_mult_max"])
+    elif name == "pure_as_kitchen_sink":
+        # All classical filters stacked: dynsize → spread_mult → loss_limit
+        base = AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+        base = DynamicSizeFilter(base,
+            sensitivity=cfg["dynsize_sensitivity"],
+            min_mult=cfg["dynsize_min_mult"])
+        base = SpreadMultiplierFilter(base,
+            alpha=cfg["spread_mult_alpha"],
+            signal=cfg["spread_mult_signal"],
+            lambda_scale=cfg["spread_mult_lambda_scale"],
+            max_mult=cfg["spread_mult_max"])
+        return DailyLossLimit(base, daily_limit=cfg["daily_loss_limit"],
+                              liquidate_ticks=cfg["liquidate_ticks"])
+    elif name == "as_ofi_directed":
+        base = AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+        base = OFIDirectedFilter(base,
+            ofi_threshold=cfg.get("ofi_directed_threshold", 0.3),
+            mom_threshold=cfg.get("ofi_directed_mom_threshold", float("inf")))
+        return DailyLossLimit(base, daily_limit=cfg["daily_loss_limit"],
+                              liquidate_ticks=cfg["liquidate_ticks"])
+    elif name == "as_mom_filter":
+        base = AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+        base = RegimeFilter(base,
+            vol_threshold=float("inf"),
+            mom_threshold=cfg["regime_mom_threshold"],
+            ofi_threshold=float("inf"))
+        return DailyLossLimit(base, daily_limit=cfg["daily_loss_limit"],
+                              liquidate_ticks=cfg["liquidate_ticks"])
     elif name == "OFI":
         return OFIAsymmetricAS(
             gamma=gamma,
@@ -230,28 +327,37 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
         return RegimeAwareAS(base, RegimeDetector(
             update_interval=cfg.get("regime_update_interval", 30.0)))
     elif name == "tabular_rl":
-        base = AvellanedaStoikov(gamma=gamma, **common)
         return TabularQLearning(
-            base_strategy=base,
-            learning_rate=cfg.get("lr", 0.05),
-            discount=cfg.get("discount", 0.99),
-            epsilon_start=cfg.get("epsilon_start", 0.5),
-            epsilon_end=cfg.get("epsilon_end", 0.02),
-            epsilon_decay=cfg.get("epsilon_decay", 0.99999),
-            inventory_penalty=cfg.get("inventory_penalty", 0.05),
+            tick_size       = tick_size,
+            order_size      = cfg["order_size"],
+            max_inventory   = cfg["max_inventory"],
+            daily_loss_limit = cfg.get("daily_loss_limit", 9999.0),
+            learning_rate   = cfg.get("lr", 0.05),
+            discount        = cfg.get("discount", 0.99),
+            epsilon_start   = cfg.get("epsilon_start", 1.0),
+            epsilon_end     = cfg.get("epsilon_end", 0.05),
+            epsilon_decay   = cfg.get("epsilon_decay", 0.99995),
+            inventory_penalty = cfg.get("inventory_penalty", 0.05),
         )
     elif name == "dqn":
-        base = AvellanedaStoikov(gamma=gamma, **common)
         return DQNMarketMaker(
-            base_strategy=base,
-            hidden_dim=cfg.get("hidden_dim", 64),
-            lr=cfg.get("lr", 5e-4),
-            epsilon_start=cfg.get("epsilon_start", 0.5),
-            epsilon_end=cfg.get("epsilon_end", 0.02),
-            epsilon_decay=cfg.get("epsilon_decay", 0.99999),
-            inventory_penalty=cfg.get("inventory_penalty", 0.1),
+            tick_size       = tick_size,
+            order_size      = cfg["order_size"],
+            max_inventory   = cfg["max_inventory"],
+            daily_loss_limit = cfg.get("daily_loss_limit", 9999.0),
+            hidden_dim      = cfg.get("hidden_dim", 128),
+            lr              = cfg.get("lr", 3e-4),
+            discount        = cfg.get("discount", 0.99),
+            epsilon_start   = cfg.get("epsilon_start", 1.0),
+            epsilon_end     = cfg.get("epsilon_end", 0.05),
+            epsilon_decay   = cfg.get("epsilon_decay", 0.9999),
+            batch_size      = cfg.get("batch_size", 128),
+            target_update   = cfg.get("target_update", 50),
+            replay_capacity = cfg.get("replay_capacity", 50_000),
+            inventory_penalty = cfg.get("inventory_penalty", 0.05),
+            train_mode      = cfg.get("rl_train_mode", False),
         )
-    elif name in ("glft", "glft_regime"):
+    elif name in ("glft", "glft_regime", "glft_loss_limit", "glft_spike_loss"):
         base = GLFTMarketMaker(
             gamma=gamma,
             A=cfg.get("glft_A", None),
@@ -267,6 +373,16 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
                 vol_threshold=cfg["regime_vol_threshold"],
                 mom_threshold=cfg["regime_mom_threshold"],
                 ofi_threshold=cfg.get("regime_ofi_threshold", float("inf")))
+        if name == "glft_loss_limit":
+            return DailyLossLimit(base, daily_limit=cfg["daily_loss_limit"],
+                                  liquidate_ticks=cfg["liquidate_ticks"])
+        if name == "glft_spike_loss":
+            return DailyLossLimit(TradeSpikeFilter(base,
+                spike_multiplier=cfg["spike_multiplier"],
+                spike_cooldown=cfg["spike_cooldown"],
+                min_baseline=cfg["spike_min_baseline"]),
+                daily_limit=cfg["daily_loss_limit"],
+                liquidate_ticks=cfg["liquidate_ticks"])
         return base
     elif name in ("shifted_glft", "shifted_glft_regime"):
         base = ShiftedGLFTMarketMaker(
@@ -317,10 +433,10 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
 # File discovery
 # ============================================================
 
-def find_daily_files(data_dir: Path, dt: date):
+def find_daily_files(data_dir: Path, dt: date, symbol: str = "BTC"):
     date_str = dt.strftime("%Y-%m-%d")
-    trades = data_dir / f"trades_BTC_{date_str}.parquet"
-    quotes = data_dir / f"quotes_BTC_{date_str}.parquet"
+    trades = data_dir / f"trades_{symbol}_{date_str}.parquet"
+    quotes = data_dir / f"quotes_{symbol}_{date_str}.parquet"
     if not trades.exists() or not quotes.exists():
         return None, None
     return trades, quotes
@@ -379,6 +495,11 @@ def run_day(dt: date, trades_path: Path, quotes_path: Path,
             ewma_alpha=cfg["ewma_alpha"],
             kappa_as_window=cfg["kappa_as_window"],
             kappa_as_min_fills=int(cfg["kappa_as_min_fills"]),
+            vpin_bucket_volume=cfg["vpin_bucket_volume"],
+            vpin_n_buckets=int(cfg["vpin_n_buckets"]),
+            spike_window=cfg["spike_window"],
+            kyle_alpha=cfg["kyle_alpha"],
+            kyle_min_obs=int(cfg["kyle_min_obs"]),
         ),
         order_manager=OrderManager(
             maker_fee=cfg["maker_fee"],
@@ -518,7 +639,7 @@ def main():
     all_dates = list(date_range(start_date, end_date))
     available, missing = [], []
     for dt in all_dates:
-        t, q = find_daily_files(data_dir, dt)
+        t, q = find_daily_files(data_dir, dt, cfg.get("symbol", "BTC"))
         if t is not None:
             available.append((dt, t, q))
         else:

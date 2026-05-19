@@ -1,0 +1,36 @@
+{
+    "data_dir":       "data/real",
+    "train_start":    "2025-06-11",
+    "train_end":      "2025-06-27",
+    "eval_start":     "2025-06-28",
+    "eval_end":       "2025-07-10",
+    "symbol":         "LINK",
+    "output_dir":     "experiments/39_link_rl/results_tabular",
+    "checkpoint_dir": "experiments/39_link_rl/checkpoints_tabular",
+    "agent":          "tabular",
+
+    "tick_size":      0.001,
+    "order_size":     5.0,
+    "max_inventory":  38.0,
+    "daily_loss_limit": 25.0,
+    "maker_fee":      0.0,
+    "latency":        0.1,
+    "quote_freq":     0.5,
+    "vol_window":     120,
+    "arrival_window": 60,
+    "ewma_alpha":     0.9,
+    "inventory_penalty": 0.02,
+
+    "learning_rate":  0.1,
+    "discount":       0.99,
+    "epsilon_start":  1.0,
+    "epsilon_end":    0.05,
+    "epsilon_decay":  0.999995,
+
+    "n_epochs":       30,
+    "eval_every":     5,
+    "save_every":     10,
+    "seed":           42,
+
+    "notes": "TabularQ on LINK. IS=Jun11-27 (17d), OOS=Jun28-Jul10 (13d). 120 states (5 inv x 4 vol x 3 mom x 2 spike), 19 actions. Interpretable baseline for DQN comparison."
+}

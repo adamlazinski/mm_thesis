@@ -1,0 +1,39 @@
+{
+    "data_dir":   "data/real",
+    "start":      "2025-06-11",
+    "end":        "2025-06-27",
+    "output":     "search/30_link_as_loss.csv",
+    "strategy":   "pure_as_loss_limit",
+    "symbol":     "LINK",
+    "order_size": 5.0,
+    "tick_size":  0.001,
+    "maker_fee":  0.0,
+    "timestamp":  "time_exchange",
+    "fixed": {
+        "latency":        0.1,
+        "quote_freq":     0.5,
+        "vol_window":     120,
+        "arrival_window": 60,
+        "ewma_alpha":     0.9,
+        "guardrail":      false,
+        "tolerance_ticks": 0.5,
+        "kappa_force_interval": 60.0
+    },
+    "search": {
+        "gamma":            ["log_uniform", 0.000005, 0.005],
+        "t_scaling":        ["log_uniform", 2000, 86400],
+        "min_spread_bps":   ["uniform", 4.5, 10.0],
+        "max_inventory":    ["uniform", 25.0, 250.0],
+        "daily_loss_limit": ["log_uniform", 5.0, 150.0]
+    },
+    "scoring": {
+        "metric":        "mean_pnl",
+        "min_fills":     10,
+        "min_fill_rate": 0.001
+    },
+    "n_trials":  75,
+    "n_workers": 3,
+    "seed":      99,
+    "top_n":     15,
+    "notes":     "LINK pure_as + daily loss limit — Jun 11-27. Search over gamma/t_scaling/spread/inventory/loss_limit."
+}

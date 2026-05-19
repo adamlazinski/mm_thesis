@@ -13,7 +13,12 @@ from .strategies.aggressiveness import (
 from .strategies.glft import GLFTMarketMaker
 from .strategies.shifted_glft import ShiftedGLFTMarketMaker
 from .strategies.vol_inventory import VolInventoryMarketMaker
-from .extensions.regime_detection import RegimeDetector, RegimeAwareAS, Regime, RegimeFilter, OFIDirectedFilter, OBIDirectedFilter
+from .extensions.regime_detection import (
+    RegimeDetector, RegimeAwareAS, Regime, RegimeFilter,
+    OFIDirectedFilter, OBIDirectedFilter,
+    VPINFilter, HourFilter, TradeSpikeFilter, DailyLossLimit,
+    KyleLambdaFilter, DynamicSizeFilter, SpreadMultiplierFilter,
+)
 from .extensions.reinforcement_learning import TabularQLearning, DQNMarketMaker
 from .data.loader import DataLoader, generate_synthetic_data
 from .core.vol_guardrail import VolRiskManager, VolGuardrail, VolatilityComposite, VolEstimates, GuardrailState
@@ -27,7 +32,10 @@ __all__ = [
     "RuleBasedAggressiveness", "VolatilityScaledAS",
     "OFIAsymmetricAS", "InventoryUrgencyAS", "FullAggressivenessAS",
     "GLFTMarketMaker", "ShiftedGLFTMarketMaker", "VolInventoryMarketMaker",
-    "RegimeDetector", "RegimeAwareAS", "Regime", "RegimeFilter", "OFIDirectedFilter", "OBIDirectedFilter",
+    "RegimeDetector", "RegimeAwareAS", "Regime", "RegimeFilter",
+    "OFIDirectedFilter", "OBIDirectedFilter",
+    "VPINFilter", "HourFilter", "TradeSpikeFilter", "DailyLossLimit",
+    "KyleLambdaFilter", "DynamicSizeFilter", "SpreadMultiplierFilter",
     "TabularQLearning", "DQNMarketMaker",
     "DataLoader", "generate_synthetic_data",
     "VolRiskManager", "VolGuardrail", "VolatilityComposite", "VolEstimates", "GuardrailState",

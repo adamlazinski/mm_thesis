@@ -86,6 +86,13 @@ from hft_market_maker import (
     RegimeFilter,
     OFIDirectedFilter,
     OBIDirectedFilter,
+    VPINFilter,
+    TradeSpikeFilter,
+    DailyLossLimit,
+    KyleLambdaFilter,
+    DynamicSizeFilter,
+    SpreadMultiplierFilter,
+    HourFilter,
 )
 
 
@@ -99,6 +106,7 @@ SEARCH_DEFAULTS = {
     "tick_size":    0.01,
     "maker_fee":    0.0,
     "timestamp":    "time_exchange",
+    "symbol":       "BTC",
     "n_trials":     100,
     "n_workers":    None,
     "seed":         42,
@@ -174,7 +182,7 @@ def make_strategy(cfg: dict, all_params: dict, mid_est: float = 102000.0):
     min_spread_bps = all_params.get("min_spread_bps", 0.0)
     max_inventory = all_params.get("max_inventory", 0.02)
 
-    if name in ("pure_as", "OFI", "aggressiveness"):
+    if name in ("pure_as", "pure_as_vpin", "OFI", "aggressiveness"):
         common = dict(
             T=all_params.get("t_scaling", 3600.0),
             order_size=order_size,
@@ -185,6 +193,10 @@ def make_strategy(cfg: dict, all_params: dict, mid_est: float = 102000.0):
         gamma = all_params["gamma"]
         if name == "pure_as":
             return AvellanedaStoikov(gamma=gamma, **common)
+        elif name == "pure_as_vpin":
+            base = AvellanedaStoikov(gamma=gamma, **common)
+            return VPINFilter(base,
+                vpin_threshold=all_params.get("vpin_threshold", 0.4))
         elif name == "OFI":
             return OFIAsymmetricAS(
                 gamma=gamma,
@@ -261,6 +273,80 @@ def make_strategy(cfg: dict, all_params: dict, mid_est: float = 102000.0):
                 mom_threshold=all_params.get("obi_mom_threshold", float("inf")))
         return base
 
+    elif name in ("pure_as_loss_limit", "pure_as_spike", "pure_as_spike_loss",
+                  "pure_as_kyle", "pure_as_dynsize", "pure_as_spread_mult",
+                  "pure_as_hour", "pure_as_kitchen_sink"):
+        common = dict(
+            T=all_params.get("t_scaling", 3600.0),
+            order_size=order_size,
+            min_spread_bps=min_spread_bps,
+            max_inventory=max_inventory,
+            tick_size=tick_size,
+        )
+        gamma = all_params["gamma"]
+        base = AvellanedaStoikov(gamma=gamma, **common)
+        liq_ticks = all_params.get("liquidate_ticks", None)
+        if name == "pure_as_loss_limit":
+            return DailyLossLimit(base,
+                daily_limit=all_params.get("daily_loss_limit", 20.0),
+                liquidate_ticks=liq_ticks)
+        elif name == "pure_as_spike":
+            return TradeSpikeFilter(base,
+                spike_multiplier=all_params.get("spike_multiplier", 3.0),
+                spike_cooldown=all_params.get("spike_cooldown", 5.0),
+                min_baseline=all_params.get("spike_min_baseline", 0.5))
+        elif name == "pure_as_spike_loss":
+            return DailyLossLimit(TradeSpikeFilter(base,
+                spike_multiplier=all_params.get("spike_multiplier", 3.0),
+                spike_cooldown=all_params.get("spike_cooldown", 5.0),
+                min_baseline=all_params.get("spike_min_baseline", 0.5)),
+                daily_limit=all_params.get("daily_loss_limit", 20.0),
+                liquidate_ticks=liq_ticks)
+        elif name == "pure_as_kyle":
+            return KyleLambdaFilter(base,
+                lambda_threshold=all_params.get("kyle_lambda_threshold", 0.01))
+        elif name == "pure_as_dynsize":
+            return DynamicSizeFilter(base,
+                sensitivity=all_params.get("dynsize_sensitivity", 0.5),
+                min_mult=all_params.get("dynsize_min_mult", 0.2))
+        elif name == "pure_as_spread_mult":
+            return SpreadMultiplierFilter(base,
+                alpha=all_params.get("spread_mult_alpha", 2.0),
+                signal=all_params.get("spread_mult_signal", "spike"),
+                lambda_scale=all_params.get("spread_mult_lambda_scale", 0.01),
+                max_mult=all_params.get("spread_mult_max", 5.0))
+        elif name == "pure_as_hour":
+            return HourFilter(base,
+                bad_hours=all_params.get("bad_hours", []))
+        elif name == "pure_as_kitchen_sink":
+            base = DynamicSizeFilter(base,
+                sensitivity=all_params.get("dynsize_sensitivity", 0.5),
+                min_mult=all_params.get("dynsize_min_mult", 0.2))
+            base = SpreadMultiplierFilter(base,
+                alpha=all_params.get("spread_mult_alpha", 2.0),
+                signal=all_params.get("spread_mult_signal", "spike"),
+                lambda_scale=all_params.get("spread_mult_lambda_scale", 0.01),
+                max_mult=all_params.get("spread_mult_max", 5.0))
+            return DailyLossLimit(base,
+                daily_limit=all_params.get("daily_loss_limit", 20.0),
+                liquidate_ticks=liq_ticks)
+
+    elif name in ("glft_loss_limit",):
+        glft_base = GLFTMarketMaker(
+            gamma=all_params["gamma"],
+            A=all_params.get("glft_A", None),
+            kappa=all_params.get("glft_kappa", 1.5),
+            order_size=order_size,
+            min_spread_bps=min_spread_bps,
+            max_inventory=max_inventory,
+            tick_size=tick_size,
+            kappa_from_stats=all_params.get("kappa_from_stats", True),
+        )
+        liq_ticks = all_params.get("liquidate_ticks", None)
+        return DailyLossLimit(glft_base,
+            daily_limit=all_params.get("daily_loss_limit", 20.0),
+            liquidate_ticks=liq_ticks)
+
     else:
         raise ValueError(f"Unknown strategy: {name}")
 
@@ -318,6 +404,11 @@ def run_single_day(
                 vol_window=int(fixed["vol_window"]),
                 arrival_window=int(fixed["arrival_window"]),
                 ewma_alpha=fixed["ewma_alpha"],
+                vpin_bucket_volume=fixed.get("vpin_bucket_volume", 0.5),
+                vpin_n_buckets=int(fixed.get("vpin_n_buckets", 50)),
+                spike_window=fixed.get("spike_window", 5.0),
+                kyle_alpha=fixed.get("kyle_alpha", 0.01),
+                kyle_min_obs=int(fixed.get("kyle_min_obs", 50)),
             ),
             order_manager=OrderManager(
                 maker_fee=cfg["maker_fee"],
@@ -395,13 +486,13 @@ def run_trial(args_tuple) -> TrialResult:
 # File discovery
 # ============================================================
 
-def find_daily_files(data_dir: Path, start: date, end: date) -> List[tuple]:
+def find_daily_files(data_dir: Path, start: date, end: date, symbol: str = "BTC") -> List[tuple]:
     files = []
     current = start
     while current <= end:
         date_str = current.strftime("%Y-%m-%d")
-        t = data_dir / f"trades_BTC_{date_str}.parquet"
-        q = data_dir / f"quotes_BTC_{date_str}.parquet"
+        t = data_dir / f"trades_{symbol}_{date_str}.parquet"
+        q = data_dir / f"quotes_{symbol}_{date_str}.parquet"
         if t.exists() and q.exists():
             files.append((str(t), str(q)))
         current += timedelta(days=1)
@@ -430,7 +521,7 @@ def main():
 
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    day_files = find_daily_files(data_dir, start, end)
+    day_files = find_daily_files(data_dir, start, end, cfg.get("symbol", "BTC"))
     if not day_files:
         print(f"ERROR: No data files found in {data_dir} for {start}→{end}")
         return
@@ -457,13 +548,13 @@ def main():
         for i, work_item in enumerate(work):
             result = run_trial(work_item)
             results.append(result)
-            if (i + 1) % 10 == 0 or (i + 1) == n_trials:
+            if (i + 1) % 5 == 0 or (i + 1) == n_trials:
                 best = max(results, key=lambda r: r.score)
                 print(f"  [{i+1:>4}/{n_trials}]  "
                       f"best score={best.score:.3f}  "
                       f"pnl={best.mean_pnl:.4f}  "
                       f"fills={best.mean_fills:.0f}  "
-                      f"trial={best.trial_id}")
+                      f"trial={best.trial_id}", flush=True)
     else:
         # Use fork context — avoids spawn deadlocks on macOS/Python 3.14
         import multiprocessing as _mp
@@ -471,13 +562,13 @@ def main():
         with _ctx.Pool(processes=n_workers) as pool:
             for i, result in enumerate(pool.imap_unordered(run_trial, work)):
                 results.append(result)
-                if (i + 1) % 10 == 0 or (i + 1) == n_trials:
+                if (i + 1) % 5 == 0 or (i + 1) == n_trials:
                     best = max(results, key=lambda r: r.score)
                     print(f"  [{i+1:>4}/{n_trials}]  "
                           f"best score={best.score:.3f}  "
                           f"pnl={best.mean_pnl:.4f}  "
                           f"fills={best.mean_fills:.0f}  "
-                          f"trial={best.trial_id}")
+                          f"trial={best.trial_id}", flush=True)
 
     results.sort(key=lambda r: r.score, reverse=True)
 

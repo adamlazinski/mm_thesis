@@ -1,0 +1,21 @@
+{
+  "date": "2025-06-12",
+  "status": "ok",
+  "n_events": 4230089,
+  "total_pnl": -56.3781199999944,
+  "sharpe": -4.38795040623447,
+  "max_drawdown": -64.36546999999626,
+  "total_fills": 5538,
+  "fill_rate": 0.0946407820083396,
+  "avg_spread_bps": 0.5009309951675341,
+  "avg_abs_inventory": 0.010121510129784171,
+  "max_abs_inventory": 0.02100000000000001,
+  "total_fees": 0.0,
+  "n_short_gaps": 0,
+  "n_long_gaps": 0,
+  "n_gap_closures": 0,
+  "gap_closure_pnl": 0,
+  "mm_only_pnl": -56.3781199999944,
+  "n_hysteresis_skips": 54100,
+  "hysteresis_skip_rate": 0.6490078936634757
+}

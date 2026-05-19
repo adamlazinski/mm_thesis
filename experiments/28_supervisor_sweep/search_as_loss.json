@@ -1,0 +1,36 @@
+{
+    "data_dir":   "data/real",
+    "start":      "2025-05-17",
+    "end":        "2025-06-12",
+    "output":     "search/28_as_loss.csv",
+    "strategy":   "pure_as_loss_limit",
+    "order_size": 0.001,
+    "tick_size":  0.01,
+    "maker_fee":  0.0,
+    "timestamp":  "time_exchange",
+    "fixed": {
+        "latency":        0.1,
+        "quote_freq":     0.5,
+        "vol_window":     120,
+        "arrival_window": 60,
+        "ewma_alpha":     0.9,
+        "guardrail":      false
+    },
+    "search": {
+        "gamma":            ["log_uniform", 0.001, 500.0],
+        "t_scaling":        ["log_uniform", 500, 86400],
+        "min_spread_bps":   ["log_uniform", 0.01, 100.0],
+        "max_inventory":    ["log_uniform", 0.002, 0.2],
+        "daily_loss_limit": ["log_uniform", 1.0, 500.0]
+    },
+    "scoring": {
+        "metric":        "mean_pnl",
+        "min_fills":     5,
+        "min_fill_rate": 0.0001
+    },
+    "n_trials":  100,
+    "n_workers": 1,
+    "seed":      42,
+    "top_n":     15,
+    "notes":     "A-S + daily loss limit — May17, May20, Jun12. Supervisor sweep."
+}

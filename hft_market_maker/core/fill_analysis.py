@@ -37,13 +37,13 @@ ROLL_STEP       = 5       # minutes
 # Data loading
 # ============================================================
 
-def load_day(date_str: str, data_dir: Path) -> tuple:
+def load_day(date_str: str, data_dir: Path, symbol: str = "BTC") -> tuple:
     """
-    Load one day of CoinAPI BTC/USDT trades and quotes.
+    Load one day of CoinAPI tick data for any symbol.
     Returns (trades, quotes) DataFrames with 'ts' column and 'mid' on quotes.
     """
-    trades = pd.read_parquet(data_dir / f'trades_BTC_{date_str}.parquet')
-    quotes = pd.read_parquet(data_dir / f'quotes_BTC_{date_str}.parquet')
+    trades = pd.read_parquet(data_dir / f'trades_{symbol}_{date_str}.parquet')
+    quotes = pd.read_parquet(data_dir / f'quotes_{symbol}_{date_str}.parquet')
     trades['ts'] = pd.to_datetime(trades['time_exchange'], utc=True)
     quotes['ts'] = pd.to_datetime(quotes['time_exchange'], utc=True)
     trades = trades.sort_values('ts').reset_index(drop=True)

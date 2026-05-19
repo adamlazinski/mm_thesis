@@ -1,0 +1,44 @@
+{
+    "data_dir":   "data/real",
+    "start":      "2025-05-13",
+    "end":        "2025-05-24",
+    "output":     "search/26_kitchen_sink_may.csv",
+    "strategy":   "pure_as_kitchen_sink",
+    "order_size": 0.001,
+    "tick_size":  0.01,
+    "maker_fee":  0.0,
+    "timestamp":  "time_exchange",
+    "fixed": {
+        "latency":          0.1,
+        "quote_freq":       0.5,
+        "min_spread_bps":   0.05,
+        "max_inventory":    0.02,
+        "vol_window":       120,
+        "arrival_window":   60,
+        "ewma_alpha":       0.9,
+        "guardrail":        false,
+        "spread_mult_signal": "spike",
+        "spike_window":     5.0,
+        "kyle_alpha":       0.01,
+        "kyle_min_obs":     50
+    },
+    "search": {
+        "gamma":              ["log_uniform", 0.02, 2.0],
+        "t_scaling":          ["log_uniform", 3000, 20000],
+        "daily_loss_limit":   ["log_uniform", 5.0, 100.0],
+        "dynsize_sensitivity":["log_uniform", 0.1, 5.0],
+        "dynsize_min_mult":   ["uniform", 0.1, 0.8],
+        "spread_mult_alpha":  ["log_uniform", 0.1, 10.0],
+        "spread_mult_max":    ["log_uniform", 1.5, 10.0]
+    },
+    "scoring": {
+        "metric":        "mean_pnl",
+        "min_fills":     20,
+        "min_fill_rate": 0.001
+    },
+    "n_trials":  400,
+    "n_workers": 7,
+    "seed":      99,
+    "top_n":     15,
+    "notes":     "Kitchen-sink search: dynsize + spread_mult + loss_limit — May 2025"
+}

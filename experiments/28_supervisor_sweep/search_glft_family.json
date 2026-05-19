@@ -1,0 +1,37 @@
+{
+    "data_dir":   "data/real",
+    "start":      "2025-05-14",
+    "end":        "2025-05-20",
+    "output":     "search/28_glft_family.csv",
+    "strategy":   "shifted_glft",
+    "order_size": 0.001,
+    "tick_size":  0.01,
+    "maker_fee":  0.0,
+    "timestamp":  "time_exchange",
+    "fixed": {
+        "latency":        0.1,
+        "quote_freq":     0.5,
+        "vol_window":     120,
+        "arrival_window": 60,
+        "ewma_alpha":     0.9,
+        "guardrail":      false
+    },
+    "search": {
+        "gamma":       ["log_uniform", 1.0, 1000.0],
+        "glft_kappa":  ["log_uniform", 0.01, 20.0],
+        "glft_A_liq":  ["log_uniform", 0.001, 10.0],
+        "glft_A_mom":  ["log_uniform", 0.01, 2.0],
+        "min_spread_bps": ["log_uniform", 0.1, 50.0],
+        "max_inventory":  ["log_uniform", 0.005, 0.2]
+    },
+    "scoring": {
+        "metric":        "mean_pnl",
+        "min_fills":     10,
+        "min_fill_rate": 0.0005
+    },
+    "n_trials":  1000,
+    "n_workers": 7,
+    "seed":      3,
+    "top_n":     20,
+    "notes":     "ShiftedGLFT wide sweep — all kappa/A/gamma combos, May 14-20"
+}
