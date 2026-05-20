@@ -87,9 +87,11 @@ class MarketMakingEnv:
         day_files: List[Tuple[str, str]],
         cfg: dict,
         shuffle: bool = True,
+        orderbook_files: List[Optional[str]] = None,
     ):
-        self.day_files     = day_files
-        self.cfg           = cfg
+        self.day_files      = day_files
+        self.cfg            = cfg
+        self.orderbook_files = orderbook_files or [None] * len(day_files)
         self.shuffle       = shuffle
 
         self.order_size      = cfg["order_size"]
@@ -163,6 +165,17 @@ class MarketMakingEnv:
         self._step_log      = []
         self._daily_start_pnl = 0.0
         self._episode_done  = False
+
+        # Load L2 snapshots if available for this day
+        self._l2_tracker = None
+        ob_path = self.orderbook_files[day_idx]
+        if ob_path is not None:
+            try:
+                from ..core.l2_features import L2BookTracker
+                snaps = loader.load_orderbook(ob_path)
+                self._l2_tracker = L2BookTracker(snaps)
+            except Exception:
+                pass
 
         return self._initial_obs()
 
@@ -301,6 +314,10 @@ class MarketMakingEnv:
                 ms.on_quote(ev.timestamp, ev.best_bid, ev.best_ask,
                             ev.bid_size, ev.ask_size)
                 om.update_mid((ev.best_bid + ev.best_ask) / 2.0)
+                if self._l2_tracker is not None:
+                    snap = self._l2_tracker.advance(ev.timestamp)
+                    if snap is not None:
+                        ms.on_book(snap)
 
         # Process the boundary quote event
         if self._q_idx < len(q):
@@ -308,6 +325,10 @@ class MarketMakingEnv:
             ms.on_quote(ev.timestamp, ev.best_bid, ev.best_ask,
                         ev.bid_size, ev.ask_size)
             om.update_mid((ev.best_bid + ev.best_ask) / 2.0)
+            if self._l2_tracker is not None:
+                snap = self._l2_tracker.advance(ev.timestamp)
+                if snap is not None:
+                    ms.on_book(snap)
             self._q_idx += 1
 
         return next_q_ts, n_fills

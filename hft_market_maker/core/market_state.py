@@ -336,6 +336,18 @@ class MarketState:
         if half_spread > 0:
             self._kappa_estimator.on_quote_posted(timestamp, half_spread)
 
+    def on_book(self, snap) -> None:
+        """
+        Update L2 features from a BookSnapshot. Call after on_quote() at each
+        quote event when an L2BookTracker is available.
+        """
+        self.stats.bid_depth_touch = snap.best_bid_depth
+        self.stats.ask_depth_touch = snap.best_ask_depth
+        self.stats.obi_l1  = snap.obi_l1
+        self.stats.obi_l3  = snap.obi_l3
+        self.stats.obi_l5  = snap.obi_l5
+        self.stats.obi_l10 = snap.obi_l10
+
     def force_kappa_update(self, timestamp: float) -> None:
         """
         Force a kappa_as MLE update. Call on a timer (~60s) so estimates

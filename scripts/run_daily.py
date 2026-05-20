@@ -442,6 +442,12 @@ def find_daily_files(data_dir: Path, dt: date, symbol: str = "BTC"):
     return trades, quotes
 
 
+def find_orderbook_file(data_dir: Path, dt: date, symbol: str = "LINK"):
+    date_str = dt.strftime("%Y-%m-%d")
+    path = data_dir / f"orderbooks_{symbol}_{date_str}.parquet"
+    return path if path.exists() else None
+
+
 def date_range(start: date, end: date):
     current = start
     while current <= end:
@@ -454,7 +460,7 @@ def date_range(start: date, end: date):
 # ============================================================
 
 def run_day(dt: date, trades_path: Path, quotes_path: Path,
-            output_dir: Path, cfg: dict) -> dict:
+            output_dir: Path, cfg: dict, orderbook_path: Path = None) -> dict:
     date_str = dt.strftime("%Y-%m-%d")
     print(f"\n{'='*60}")
     print(f"  {date_str}")
@@ -518,8 +524,18 @@ def run_day(dt: date, trades_path: Path, quotes_path: Path,
         verbose_interval=400_000,
     )
 
+    l2_tracker = None
+    if orderbook_path is not None and orderbook_path.exists():
+        try:
+            from hft_market_maker.core.l2_features import L2BookTracker
+            snaps = loader.load_orderbook(str(orderbook_path))
+            l2_tracker = L2BookTracker(snaps)
+            print(f"  L2: loaded {len(snaps):,} book snapshots")
+        except Exception as e:
+            print(f"  L2: skipped ({e})")
+
     try:
-        results = bt.run(trades, quotes)
+        results = bt.run(trades, quotes, l2_tracker=l2_tracker)
     except Exception as e:
         print(f"  ERROR during backtest: {e}")
         traceback.print_exc()
@@ -666,7 +682,8 @@ def main():
         if cfg["skip_existing"] and (output_dir / f"{date_str}_metrics.json").exists():
             print(f"  {date_str}  SKIP (exists)")
             continue
-        metrics = run_day(dt, t_path, q_path, output_dir, cfg)
+        ob_path = find_orderbook_file(data_dir, dt, cfg.get("symbol", "BTC"))
+        metrics = run_day(dt, t_path, q_path, output_dir, cfg, orderbook_path=ob_path)
         all_metrics.append(metrics)
         if metrics.get("status") != "ok":
             failed.append((date_str, metrics.get("error", "unknown")))

@@ -136,7 +136,7 @@ def action_hold(action: int) -> float:
 # State encoder (shared by all agents)
 # ---------------------------------------------------------------------------
 
-STATE_DIM = 6
+STATE_DIM = 9  # 6 base + 3 L2 features (obi_l1, obi_l3, depth_imbalance)
 
 
 def encode_state(
@@ -148,7 +148,14 @@ def encode_state(
     vol_history: deque,
 ) -> np.ndarray:
     """
-    Encode market observables into a normalised 6-dim state vector.
+    Encode market observables into a normalised 9-dim state vector.
+
+    Dims 0-5: base features (unchanged)
+    Dims 6-8: L2 book features (zero if no L2 data loaded)
+      6: obi_l1  — top-of-book imbalance [-1, 1]
+      7: obi_l3  — 3-level imbalance [-1, 1]
+      8: depth_ratio — ask_depth / (bid_depth + ask_depth), [0, 1];
+                       > 0.5 = ask-heavy (sell pressure), < 0.5 = bid-heavy
     """
     inv_ratio = np.clip(inventory / (max_inventory + 1e-9), -1.0, 1.0)
 
@@ -169,7 +176,14 @@ def encode_state(
     else:
         pnl_draw = 0.0
 
-    return np.array([inv_ratio, vol_ratio, momentum, ofi, spike_ratio, pnl_draw],
+    # L2 features — zero when L2 data not available
+    obi_l1 = np.clip(stats.obi_l1, -1.0, 1.0)
+    obi_l3 = np.clip(stats.obi_l3, -1.0, 1.0)
+    total  = stats.bid_depth_touch + stats.ask_depth_touch
+    depth_ratio = (stats.ask_depth_touch / total) if total > 0 else 0.5
+
+    return np.array([inv_ratio, vol_ratio, momentum, ofi, spike_ratio, pnl_draw,
+                     obi_l1, obi_l3, depth_ratio],
                     dtype=np.float32)
 
 

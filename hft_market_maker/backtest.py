@@ -184,6 +184,7 @@ class Backtest:
         self,
         trades: List[TradeEvent],
         quotes: List[QuoteEvent],
+        l2_tracker=None,
     ) -> BacktestResults:
         """
         Main backtest loop.
@@ -373,6 +374,10 @@ class Backtest:
                 self.market_state.on_quote(q.timestamp, q.best_bid, q.best_ask,
                                            q.bid_size, q.ask_size)
                 self.order_manager.update_mid(q.mid)
+                if l2_tracker is not None:
+                    snap = l2_tracker.advance(q.timestamp)
+                    if snap is not None:
+                        self.market_state.on_book(snap)
 
                 # 2. Periodic kappa MLE update (prevents stale estimates in quiet periods)
                 if timestamp - self._last_kappa_update >= self.kappa_force_interval:

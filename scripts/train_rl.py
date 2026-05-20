@@ -101,6 +101,19 @@ def find_day_files(data_dir: Path, start: date, end: date, symbol: str = "LINK")
     return files
 
 
+def find_orderbook_files(data_dir: Path, day_files: list, symbol: str = "LINK"):
+    """Return L2 orderbook path for each day_file, or None if not available."""
+    result = []
+    for trades_path, _ in day_files:
+        ds = Path(trades_path).stem.split("_")[-1]
+        ob = data_dir / f"orderbooks_{symbol}_{ds}.parquet"
+        result.append(str(ob) if ob.exists() else None)
+    n_found = sum(1 for x in result if x is not None)
+    if n_found:
+        print(f"  L2 orderbook files found: {n_found}/{len(result)}")
+    return result
+
+
 def evaluate(agent, env: MarketMakingEnv, n_days: int) -> dict:
     """Greedy evaluation on all eval days; returns aggregate stats."""
     orig_eps = getattr(agent, "epsilon", None)
@@ -185,8 +198,10 @@ def main():
     if cfg.get("notes"):
         print(f"Notes: {cfg['notes']}")
 
-    train_env = MarketMakingEnv(train_files, cfg, shuffle=True)
-    eval_env  = MarketMakingEnv(eval_files,  cfg, shuffle=False)
+    train_ob = find_orderbook_files(data_dir, train_files, symbol)
+    eval_ob  = find_orderbook_files(data_dir, eval_files,  symbol)
+    train_env = MarketMakingEnv(train_files, cfg, shuffle=True,  orderbook_files=train_ob)
+    eval_env  = MarketMakingEnv(eval_files,  cfg, shuffle=False, orderbook_files=eval_ob)
 
     agent_type = cfg.get("agent", "dqn")
     common_kw  = dict(
