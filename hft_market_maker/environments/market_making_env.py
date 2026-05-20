@@ -172,7 +172,7 @@ class MarketMakingEnv:
 
         hold = action_hold(action) or self.quote_freq
         timestamp, n_fills = self._advance_window(hold)
-        done = (self._q_idx >= len(self._quotes) and self._t_idx >= len(self._trades))
+        done = (self._q_idx >= len(self._quotes)) or (self._t_idx >= len(self._trades))
 
         om   = self._order_manager
         ms   = self._market_state
@@ -277,10 +277,8 @@ class MarketMakingEnv:
         om = self._order_manager
         ms = self._market_state
 
-        if self._q_idx >= len(q):
-            return (t[-1].timestamp if t else 0.0), 0
-
-        current_q_ts = q[self._q_idx].timestamp
+        current_q_ts = q[self._q_idx].timestamp if self._q_idx < len(q) else (
+            t[self._t_idx].timestamp if self._t_idx < len(t) else 0.0)
         next_q_ts    = current_q_ts + duration
         n_fills = 0
 
