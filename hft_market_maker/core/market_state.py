@@ -42,6 +42,13 @@ class MicrostructureStats:
     momentum_raw:  float = 0.0
     vpin:          float = 0.5    # VPIN toxicity [0,1]; 0.5 = uninitialised
     kyle_lambda:   float = 0.0   # Kyle's lambda: price impact ($/BTC); 0 = uninitialised
+    # L2 book features (populated when L2BookTracker is attached)
+    bid_depth_touch: float = 0.0  # LINK at best bid
+    ask_depth_touch: float = 0.0  # LINK at best ask
+    obi_l1:  float = 0.0          # OBI using top-1 level (same as obi but explicit)
+    obi_l3:  float = 0.0          # OBI using top-3 levels
+    obi_l5:  float = 0.0          # OBI using top-5 levels
+    obi_l10: float = 0.0          # OBI using top-10 levels
 
 
 class VPINEstimator:

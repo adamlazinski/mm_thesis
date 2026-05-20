@@ -135,6 +135,24 @@ class DataLoader:
             df = df.head(max_rows)
         return self._parse_coinapi_quotes(df, timestamp_col)
 
+    def load_orderbook(self, path: str, timestamp_col: str = "time_exchange",
+                       max_rows=None):
+        """
+        Load a CoinAPI orderbook snapshot parquet into a list of BookSnapshot objects.
+        File naming convention: orderbooks_LINK_YYYY-MM-DD.parquet
+        """
+        from ..core.l2_features import parse_snapshot, BookSnapshot
+        df = pd.read_parquet(path)
+        if max_rows:
+            df = df.head(max_rows)
+        ts = self._parse_coinapi_timestamps(df[timestamp_col])
+        snapshots = []
+        for i, (_, row) in enumerate(df.iterrows()):
+            snap = parse_snapshot(row)
+            snap.timestamp = float(ts[i])
+            snapshots.append(snap)
+        return snapshots
+
     def _parse_coinapi_trades(self, df, timestamp_col):
         ts = self._parse_coinapi_timestamps(df[timestamp_col])
         sides = self._normalise_sides(df["taker_side"].values)
