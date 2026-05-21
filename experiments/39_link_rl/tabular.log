@@ -1,0 +1,3571 @@
+Train days: 17   Eval days: 13
+Agent: tabular   Symbol: LINK
+Notes: TabularQ on LINK. IS=Jun11-27 (17d), OOS=Jun28-Jul10 (13d). 120 states (5 inv x 4 vol x 3 mom x 2 spike), 19 actions. Interpretable baseline for DQN comparison.
+
+ Epoch   TrainPnL    EvalPnL   Sharpe    Win    Fills         ε
+-----------------------------------------------------------------
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+     1     +53.24          —        —   1.00     8873    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+     2     +62.51          —        —   1.00     9608    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+     3     +65.61          —        —   1.00     9712    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+     4     +67.94          —        —   1.00     9763    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-28.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-28.parquet
+Loaded 45,088 trades and 258,324 quotes.
+  Trades: 1751068800.551 to 1751155182.101
+  Quotes: 1751068800.046 to 1751155199.646
+  Price range: 13.00 to 13.45
+Loading trades from: data/real/trades_LINK_2025-06-29.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-29.parquet
+Loaded 61,327 trades and 261,791 quotes.
+  Trades: 1751155208.696 to 1751241599.933
+  Quotes: 1751155200.046 to 1751241599.946
+  Price range: 13.24 to 13.88
+Loading trades from: data/real/trades_LINK_2025-06-30.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-30.parquet
+Loaded 89,552 trades and 310,765 quotes.
+  Trades: 1751241602.258 to 1751327993.973
+  Quotes: 1751241600.046 to 1751327999.846
+  Price range: 13.12 to 13.78
+Loading trades from: data/real/trades_LINK_2025-07-01.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-01.parquet
+Loaded 63,052 trades and 289,163 quotes.
+  Trades: 1751328027.310 to 1751414389.226
+  Quotes: 1751328000.246 to 1751414399.946
+  Price range: 12.78 to 13.44
+Loading trades from: data/real/trades_LINK_2025-07-02.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-02.parquet
+Loaded 103,212 trades and 325,434 quotes.
+  Trades: 1751414400.031 to 1751500797.955
+  Quotes: 1751414400.046 to 1751500799.746
+  Price range: 12.73 to 13.85
+Loading trades from: data/real/trades_LINK_2025-07-03.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-03.parquet
+Loaded 108,893 trades and 339,521 quotes.
+  Trades: 1751500801.346 to 1751587189.425
+  Quotes: 1751500800.446 to 1751587199.946
+  Price range: 13.43 to 14.08
+Loading trades from: data/real/trades_LINK_2025-07-04.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-04.parquet
+Loaded 84,226 trades and 292,547 quotes.
+  Trades: 1751587207.390 to 1751673592.043
+  Quotes: 1751587200.046 to 1751673599.946
+  Price range: 12.93 to 13.78
+Loading trades from: data/real/trades_LINK_2025-07-05.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-05.parquet
+Loaded 36,072 trades and 217,430 quotes.
+  Trades: 1751673601.386 to 1751759999.671
+  Quotes: 1751673600.046 to 1751759999.746
+  Price range: 12.99 to 13.27
+Loading trades from: data/real/trades_LINK_2025-07-06.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-06.parquet
+Loaded 57,069 trades and 258,909 quotes.
+  Trades: 1751760000.336 to 1751846382.104
+  Quotes: 1751760000.046 to 1751846399.946
+  Price range: 13.10 to 13.70
+Loading trades from: data/real/trades_LINK_2025-07-07.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-07.parquet
+Loaded 79,726 trades and 296,384 quotes.
+  Trades: 1751846400.600 to 1751932787.999
+  Quotes: 1751846400.046 to 1751932799.946
+  Price range: 13.25 to 13.73
+Loading trades from: data/real/trades_LINK_2025-07-08.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-08.parquet
+Loaded 89,228 trades and 310,084 quotes.
+  Trades: 1751932801.305 to 1752019197.464
+  Quotes: 1751932800.046 to 1752019199.946
+  Price range: 13.20 to 14.00
+Loading trades from: data/real/trades_LINK_2025-07-09.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-09.parquet
+Loaded 132,891 trades and 338,799 quotes.
+  Trades: 1752019200.131 to 1752105592.184
+  Quotes: 1752019200.046 to 1752105597.346
+  Price range: 13.81 to 14.38
+Loading trades from: data/real/trades_LINK_2025-07-10.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-10.parquet
+Loaded 156,405 trades and 372,958 quotes.
+  Trades: 1752105606.552 to 1752191998.604
+  Quotes: 1752105600.046 to 1752191999.946
+  Price range: 14.15 to 15.34
+     5     +63.99     +75.10     53.7   1.00    10077    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+     6     +64.09          —        —   1.00     9749    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+     7     +68.02          —        —   1.00     9767    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+     8     +65.02          —        —   1.00    10024    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+     9     +63.94          —        —   1.00     9846    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-28.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-28.parquet
+Loaded 45,088 trades and 258,324 quotes.
+  Trades: 1751068800.551 to 1751155182.101
+  Quotes: 1751068800.046 to 1751155199.646
+  Price range: 13.00 to 13.45
+Loading trades from: data/real/trades_LINK_2025-06-29.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-29.parquet
+Loaded 61,327 trades and 261,791 quotes.
+  Trades: 1751155208.696 to 1751241599.933
+  Quotes: 1751155200.046 to 1751241599.946
+  Price range: 13.24 to 13.88
+Loading trades from: data/real/trades_LINK_2025-06-30.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-30.parquet
+Loaded 89,552 trades and 310,765 quotes.
+  Trades: 1751241602.258 to 1751327993.973
+  Quotes: 1751241600.046 to 1751327999.846
+  Price range: 13.12 to 13.78
+Loading trades from: data/real/trades_LINK_2025-07-01.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-01.parquet
+Loaded 63,052 trades and 289,163 quotes.
+  Trades: 1751328027.310 to 1751414389.226
+  Quotes: 1751328000.246 to 1751414399.946
+  Price range: 12.78 to 13.44
+Loading trades from: data/real/trades_LINK_2025-07-02.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-02.parquet
+Loaded 103,212 trades and 325,434 quotes.
+  Trades: 1751414400.031 to 1751500797.955
+  Quotes: 1751414400.046 to 1751500799.746
+  Price range: 12.73 to 13.85
+Loading trades from: data/real/trades_LINK_2025-07-03.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-03.parquet
+Loaded 108,893 trades and 339,521 quotes.
+  Trades: 1751500801.346 to 1751587189.425
+  Quotes: 1751500800.446 to 1751587199.946
+  Price range: 13.43 to 14.08
+Loading trades from: data/real/trades_LINK_2025-07-04.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-04.parquet
+Loaded 84,226 trades and 292,547 quotes.
+  Trades: 1751587207.390 to 1751673592.043
+  Quotes: 1751587200.046 to 1751673599.946
+  Price range: 12.93 to 13.78
+Loading trades from: data/real/trades_LINK_2025-07-05.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-05.parquet
+Loaded 36,072 trades and 217,430 quotes.
+  Trades: 1751673601.386 to 1751759999.671
+  Quotes: 1751673600.046 to 1751759999.746
+  Price range: 12.99 to 13.27
+Loading trades from: data/real/trades_LINK_2025-07-06.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-06.parquet
+Loaded 57,069 trades and 258,909 quotes.
+  Trades: 1751760000.336 to 1751846382.104
+  Quotes: 1751760000.046 to 1751846399.946
+  Price range: 13.10 to 13.70
+Loading trades from: data/real/trades_LINK_2025-07-07.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-07.parquet
+Loaded 79,726 trades and 296,384 quotes.
+  Trades: 1751846400.600 to 1751932787.999
+  Quotes: 1751846400.046 to 1751932799.946
+  Price range: 13.25 to 13.73
+Loading trades from: data/real/trades_LINK_2025-07-08.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-08.parquet
+Loaded 89,228 trades and 310,084 quotes.
+  Trades: 1751932801.305 to 1752019197.464
+  Quotes: 1751932800.046 to 1752019199.946
+  Price range: 13.20 to 14.00
+Loading trades from: data/real/trades_LINK_2025-07-09.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-09.parquet
+Loaded 132,891 trades and 338,799 quotes.
+  Trades: 1752019200.131 to 1752105592.184
+  Quotes: 1752019200.046 to 1752105597.346
+  Price range: 13.81 to 14.38
+Loading trades from: data/real/trades_LINK_2025-07-10.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-10.parquet
+Loaded 156,405 trades and 372,958 quotes.
+  Trades: 1752105606.552 to 1752191998.604
+  Quotes: 1752105600.046 to 1752191999.946
+  Price range: 14.15 to 15.34
+    10     +66.71     +51.47     57.1   1.00     9781    0.0500
+  → checkpoint saved: experiments/39_link_rl/checkpoints_tabular/epoch_010
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+    11     +61.50          —        —   1.00     9891    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+    12     +67.73          —        —   1.00     9917    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+    13     +63.35          —        —   1.00     9968    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+    14     +62.24          —        —   1.00     9948    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-28.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-28.parquet
+Loaded 45,088 trades and 258,324 quotes.
+  Trades: 1751068800.551 to 1751155182.101
+  Quotes: 1751068800.046 to 1751155199.646
+  Price range: 13.00 to 13.45
+Loading trades from: data/real/trades_LINK_2025-06-29.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-29.parquet
+Loaded 61,327 trades and 261,791 quotes.
+  Trades: 1751155208.696 to 1751241599.933
+  Quotes: 1751155200.046 to 1751241599.946
+  Price range: 13.24 to 13.88
+Loading trades from: data/real/trades_LINK_2025-06-30.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-30.parquet
+Loaded 89,552 trades and 310,765 quotes.
+  Trades: 1751241602.258 to 1751327993.973
+  Quotes: 1751241600.046 to 1751327999.846
+  Price range: 13.12 to 13.78
+Loading trades from: data/real/trades_LINK_2025-07-01.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-01.parquet
+Loaded 63,052 trades and 289,163 quotes.
+  Trades: 1751328027.310 to 1751414389.226
+  Quotes: 1751328000.246 to 1751414399.946
+  Price range: 12.78 to 13.44
+Loading trades from: data/real/trades_LINK_2025-07-02.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-02.parquet
+Loaded 103,212 trades and 325,434 quotes.
+  Trades: 1751414400.031 to 1751500797.955
+  Quotes: 1751414400.046 to 1751500799.746
+  Price range: 12.73 to 13.85
+Loading trades from: data/real/trades_LINK_2025-07-03.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-03.parquet
+Loaded 108,893 trades and 339,521 quotes.
+  Trades: 1751500801.346 to 1751587189.425
+  Quotes: 1751500800.446 to 1751587199.946
+  Price range: 13.43 to 14.08
+Loading trades from: data/real/trades_LINK_2025-07-04.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-04.parquet
+Loaded 84,226 trades and 292,547 quotes.
+  Trades: 1751587207.390 to 1751673592.043
+  Quotes: 1751587200.046 to 1751673599.946
+  Price range: 12.93 to 13.78
+Loading trades from: data/real/trades_LINK_2025-07-05.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-05.parquet
+Loaded 36,072 trades and 217,430 quotes.
+  Trades: 1751673601.386 to 1751759999.671
+  Quotes: 1751673600.046 to 1751759999.746
+  Price range: 12.99 to 13.27
+Loading trades from: data/real/trades_LINK_2025-07-06.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-06.parquet
+Loaded 57,069 trades and 258,909 quotes.
+  Trades: 1751760000.336 to 1751846382.104
+  Quotes: 1751760000.046 to 1751846399.946
+  Price range: 13.10 to 13.70
+Loading trades from: data/real/trades_LINK_2025-07-07.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-07.parquet
+Loaded 79,726 trades and 296,384 quotes.
+  Trades: 1751846400.600 to 1751932787.999
+  Quotes: 1751846400.046 to 1751932799.946
+  Price range: 13.25 to 13.73
+Loading trades from: data/real/trades_LINK_2025-07-08.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-08.parquet
+Loaded 89,228 trades and 310,084 quotes.
+  Trades: 1751932801.305 to 1752019197.464
+  Quotes: 1751932800.046 to 1752019199.946
+  Price range: 13.20 to 14.00
+Loading trades from: data/real/trades_LINK_2025-07-09.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-09.parquet
+Loaded 132,891 trades and 338,799 quotes.
+  Trades: 1752019200.131 to 1752105592.184
+  Quotes: 1752019200.046 to 1752105597.346
+  Price range: 13.81 to 14.38
+Loading trades from: data/real/trades_LINK_2025-07-10.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-10.parquet
+Loaded 156,405 trades and 372,958 quotes.
+  Trades: 1752105606.552 to 1752191998.604
+  Quotes: 1752105600.046 to 1752191999.946
+  Price range: 14.15 to 15.34
+    15     +61.12     +41.18     80.7   1.00     9736    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+    16     +62.16          —        —   1.00     9822    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+    17     +62.30          —        —   0.94     9092    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+    18     +63.84          —        —   1.00     9857    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+    19     +57.49          —        —   0.94     9100    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-28.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-28.parquet
+Loaded 45,088 trades and 258,324 quotes.
+  Trades: 1751068800.551 to 1751155182.101
+  Quotes: 1751068800.046 to 1751155199.646
+  Price range: 13.00 to 13.45
+Loading trades from: data/real/trades_LINK_2025-06-29.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-29.parquet
+Loaded 61,327 trades and 261,791 quotes.
+  Trades: 1751155208.696 to 1751241599.933
+  Quotes: 1751155200.046 to 1751241599.946
+  Price range: 13.24 to 13.88
+Loading trades from: data/real/trades_LINK_2025-06-30.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-30.parquet
+Loaded 89,552 trades and 310,765 quotes.
+  Trades: 1751241602.258 to 1751327993.973
+  Quotes: 1751241600.046 to 1751327999.846
+  Price range: 13.12 to 13.78
+Loading trades from: data/real/trades_LINK_2025-07-01.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-01.parquet
+Loaded 63,052 trades and 289,163 quotes.
+  Trades: 1751328027.310 to 1751414389.226
+  Quotes: 1751328000.246 to 1751414399.946
+  Price range: 12.78 to 13.44
+Loading trades from: data/real/trades_LINK_2025-07-02.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-02.parquet
+Loaded 103,212 trades and 325,434 quotes.
+  Trades: 1751414400.031 to 1751500797.955
+  Quotes: 1751414400.046 to 1751500799.746
+  Price range: 12.73 to 13.85
+Loading trades from: data/real/trades_LINK_2025-07-03.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-03.parquet
+Loaded 108,893 trades and 339,521 quotes.
+  Trades: 1751500801.346 to 1751587189.425
+  Quotes: 1751500800.446 to 1751587199.946
+  Price range: 13.43 to 14.08
+Loading trades from: data/real/trades_LINK_2025-07-04.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-04.parquet
+Loaded 84,226 trades and 292,547 quotes.
+  Trades: 1751587207.390 to 1751673592.043
+  Quotes: 1751587200.046 to 1751673599.946
+  Price range: 12.93 to 13.78
+Loading trades from: data/real/trades_LINK_2025-07-05.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-05.parquet
+Loaded 36,072 trades and 217,430 quotes.
+  Trades: 1751673601.386 to 1751759999.671
+  Quotes: 1751673600.046 to 1751759999.746
+  Price range: 12.99 to 13.27
+Loading trades from: data/real/trades_LINK_2025-07-06.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-06.parquet
+Loaded 57,069 trades and 258,909 quotes.
+  Trades: 1751760000.336 to 1751846382.104
+  Quotes: 1751760000.046 to 1751846399.946
+  Price range: 13.10 to 13.70
+Loading trades from: data/real/trades_LINK_2025-07-07.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-07.parquet
+Loaded 79,726 trades and 296,384 quotes.
+  Trades: 1751846400.600 to 1751932787.999
+  Quotes: 1751846400.046 to 1751932799.946
+  Price range: 13.25 to 13.73
+Loading trades from: data/real/trades_LINK_2025-07-08.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-08.parquet
+Loaded 89,228 trades and 310,084 quotes.
+  Trades: 1751932801.305 to 1752019197.464
+  Quotes: 1751932800.046 to 1752019199.946
+  Price range: 13.20 to 14.00
+Loading trades from: data/real/trades_LINK_2025-07-09.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-09.parquet
+Loaded 132,891 trades and 338,799 quotes.
+  Trades: 1752019200.131 to 1752105592.184
+  Quotes: 1752019200.046 to 1752105597.346
+  Price range: 13.81 to 14.38
+Loading trades from: data/real/trades_LINK_2025-07-10.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-10.parquet
+Loaded 156,405 trades and 372,958 quotes.
+  Trades: 1752105606.552 to 1752191998.604
+  Quotes: 1752105600.046 to 1752191999.946
+  Price range: 14.15 to 15.34
+    20     +64.97     +98.51     59.9   1.00     9924    0.0500
+  → checkpoint saved: experiments/39_link_rl/checkpoints_tabular/epoch_020
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+    21     +60.24          —        —   1.00     9733    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+    22     +64.48          —        —   1.00    10073    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+    23     +61.03          —        —   1.00     9960    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+    24     +63.66          —        —   1.00     9801    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-28.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-28.parquet
+Loaded 45,088 trades and 258,324 quotes.
+  Trades: 1751068800.551 to 1751155182.101
+  Quotes: 1751068800.046 to 1751155199.646
+  Price range: 13.00 to 13.45
+Loading trades from: data/real/trades_LINK_2025-06-29.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-29.parquet
+Loaded 61,327 trades and 261,791 quotes.
+  Trades: 1751155208.696 to 1751241599.933
+  Quotes: 1751155200.046 to 1751241599.946
+  Price range: 13.24 to 13.88
+Loading trades from: data/real/trades_LINK_2025-06-30.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-30.parquet
+Loaded 89,552 trades and 310,765 quotes.
+  Trades: 1751241602.258 to 1751327993.973
+  Quotes: 1751241600.046 to 1751327999.846
+  Price range: 13.12 to 13.78
+Loading trades from: data/real/trades_LINK_2025-07-01.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-01.parquet
+Loaded 63,052 trades and 289,163 quotes.
+  Trades: 1751328027.310 to 1751414389.226
+  Quotes: 1751328000.246 to 1751414399.946
+  Price range: 12.78 to 13.44
+Loading trades from: data/real/trades_LINK_2025-07-02.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-02.parquet
+Loaded 103,212 trades and 325,434 quotes.
+  Trades: 1751414400.031 to 1751500797.955
+  Quotes: 1751414400.046 to 1751500799.746
+  Price range: 12.73 to 13.85
+Loading trades from: data/real/trades_LINK_2025-07-03.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-03.parquet
+Loaded 108,893 trades and 339,521 quotes.
+  Trades: 1751500801.346 to 1751587189.425
+  Quotes: 1751500800.446 to 1751587199.946
+  Price range: 13.43 to 14.08
+Loading trades from: data/real/trades_LINK_2025-07-04.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-04.parquet
+Loaded 84,226 trades and 292,547 quotes.
+  Trades: 1751587207.390 to 1751673592.043
+  Quotes: 1751587200.046 to 1751673599.946
+  Price range: 12.93 to 13.78
+Loading trades from: data/real/trades_LINK_2025-07-05.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-05.parquet
+Loaded 36,072 trades and 217,430 quotes.
+  Trades: 1751673601.386 to 1751759999.671
+  Quotes: 1751673600.046 to 1751759999.746
+  Price range: 12.99 to 13.27
+Loading trades from: data/real/trades_LINK_2025-07-06.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-06.parquet
+Loaded 57,069 trades and 258,909 quotes.
+  Trades: 1751760000.336 to 1751846382.104
+  Quotes: 1751760000.046 to 1751846399.946
+  Price range: 13.10 to 13.70
+Loading trades from: data/real/trades_LINK_2025-07-07.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-07.parquet
+Loaded 79,726 trades and 296,384 quotes.
+  Trades: 1751846400.600 to 1751932787.999
+  Quotes: 1751846400.046 to 1751932799.946
+  Price range: 13.25 to 13.73
+Loading trades from: data/real/trades_LINK_2025-07-08.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-08.parquet
+Loaded 89,228 trades and 310,084 quotes.
+  Trades: 1751932801.305 to 1752019197.464
+  Quotes: 1751932800.046 to 1752019199.946
+  Price range: 13.20 to 14.00
+Loading trades from: data/real/trades_LINK_2025-07-09.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-09.parquet
+Loaded 132,891 trades and 338,799 quotes.
+  Trades: 1752019200.131 to 1752105592.184
+  Quotes: 1752019200.046 to 1752105597.346
+  Price range: 13.81 to 14.38
+Loading trades from: data/real/trades_LINK_2025-07-10.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-10.parquet
+Loaded 156,405 trades and 372,958 quotes.
+  Trades: 1752105606.552 to 1752191998.604
+  Quotes: 1752105600.046 to 1752191999.946
+  Price range: 14.15 to 15.34
+    25     +69.52     +63.49     44.0   1.00    10065    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+    26     +64.49          —        —   1.00     9857    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+    27     +61.10          —        —   1.00     9765    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+    28     +65.41          —        —   1.00     9904    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+    29     +62.72          —        —   1.00     9750    0.0500
+Loading trades from: data/real/trades_LINK_2025-06-15.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-21.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-21.parquet
+Loaded 109,879 trades and 309,257 quotes.
+  Trades: 1750464003.680 to 1750550396.612
+  Quotes: 1750464000.046 to 1750550399.946
+  Price range: 11.69 to 12.75
+Loading trades from: data/real/trades_LINK_2025-06-18.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-18.parquet
+Loaded 117,526 trades and 358,852 quotes.
+  Trades: 1750204800.317 to 1750291182.164
+  Quotes: 1750204800.046 to 1750291199.446
+  Price range: 12.63 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-17.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-17.parquet
+Loaded 150,294 trades and 370,341 quotes.
+  Trades: 1750118403.266 to 1750204788.881
+  Quotes: 1750118400.046 to 1750204799.246
+  Price range: 12.80 to 13.79
+Loading trades from: data/real/trades_LINK_2025-06-26.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-26.parquet
+Loaded 101,721 trades and 380,652 quotes.
+  Trades: 1750896010.865 to 1750982367.422
+  Quotes: 1750896000.046 to 1750982399.946
+  Price range: 12.88 to 13.57
+Loading trades from: data/real/trades_LINK_2025-06-16.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-16.parquet
+Loaded 114,247 trades and 336,086 quotes.
+  Trades: 1750032004.998 to 1750118318.762
+  Quotes: 1750032000.046 to 1750118319.046
+  Price range: 13.17 to 14.17
+Loading trades from: data/real/trades_LINK_2025-06-12.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-12.parquet
+Loaded 160,540 trades and 391,284 quotes.
+  Trades: 1749686404.111 to 1749772799.994
+  Quotes: 1749686400.046 to 1749772799.946
+  Price range: 13.83 to 14.93
+Loading trades from: data/real/trades_LINK_2025-06-22.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-22.parquet
+Loaded 184,162 trades and 400,084 quotes.
+  Trades: 1750550401.205 to 1750636790.683
+  Quotes: 1750550400.046 to 1750636799.646
+  Price range: 10.94 to 12.20
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
+Loading trades from: data/real/trades_LINK_2025-06-27.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-27.parquet
+Loaded 86,321 trades and 322,505 quotes.
+  Trades: 1750982400.302 to 1751068799.926
+  Quotes: 1750982400.046 to 1751068799.946
+  Price range: 12.73 to 13.23
+Loading trades from: data/real/trades_LINK_2025-06-23.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-23.parquet
+Loaded 171,594 trades and 400,013 quotes.
+  Trades: 1750636801.028 to 1750723199.225
+  Quotes: 1750636800.046 to 1750723199.246
+  Price range: 11.39 to 12.97
+Loading trades from: data/real/trades_LINK_2025-06-14.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-14.parquet
+Loaded 77,471 trades and 261,972 quotes.
+  Trades: 1749859207.235 to 1749945563.395
+  Quotes: 1749859200.046 to 1749945599.546
+  Price range: 12.83 to 13.46
+Loading trades from: data/real/trades_LINK_2025-06-13.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-13.parquet
+Loaded 217,399 trades and 396,509 quotes.
+  Trades: 1749772800.323 to 1749859196.058
+  Quotes: 1749772800.055 to 1749859199.746
+  Price range: 12.75 to 13.99
+Loading trades from: data/real/trades_LINK_2025-06-25.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-25.parquet
+Loaded 108,619 trades and 433,471 quotes.
+  Trades: 1750809603.363 to 1750895990.195
+  Quotes: 1750809600.146 to 1750895999.946
+  Price range: 12.99 to 13.51
+Loading trades from: data/real/trades_LINK_2025-06-11.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-11.parquet
+Loaded 176,120 trades and 415,442 quotes.
+  Trades: 1749600001.453 to 1749686396.213
+  Quotes: 1749600000.246 to 1749686399.946
+  Price range: 14.77 to 15.66
+Loading trades from: data/real/trades_LINK_2025-06-19.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-19.parquet
+Loaded 72,703 trades and 279,045 quotes.
+  Trades: 1750291204.233 to 1750377588.364
+  Quotes: 1750291200.046 to 1750377599.446
+  Price range: 12.91 to 13.38
+Loading trades from: data/real/trades_LINK_2025-06-24.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-24.parquet
+Loaded 174,612 trades and 396,942 quotes.
+  Trades: 1750723202.170 to 1750809594.966
+  Quotes: 1750723200.046 to 1750809599.946
+  Price range: 12.78 to 13.73
+Loading trades from: data/real/trades_LINK_2025-06-28.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-28.parquet
+Loaded 45,088 trades and 258,324 quotes.
+  Trades: 1751068800.551 to 1751155182.101
+  Quotes: 1751068800.046 to 1751155199.646
+  Price range: 13.00 to 13.45
+Loading trades from: data/real/trades_LINK_2025-06-29.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-29.parquet
+Loaded 61,327 trades and 261,791 quotes.
+  Trades: 1751155208.696 to 1751241599.933
+  Quotes: 1751155200.046 to 1751241599.946
+  Price range: 13.24 to 13.88
+Loading trades from: data/real/trades_LINK_2025-06-30.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-30.parquet
+Loaded 89,552 trades and 310,765 quotes.
+  Trades: 1751241602.258 to 1751327993.973
+  Quotes: 1751241600.046 to 1751327999.846
+  Price range: 13.12 to 13.78
+Loading trades from: data/real/trades_LINK_2025-07-01.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-01.parquet
+Loaded 63,052 trades and 289,163 quotes.
+  Trades: 1751328027.310 to 1751414389.226
+  Quotes: 1751328000.246 to 1751414399.946
+  Price range: 12.78 to 13.44
+Loading trades from: data/real/trades_LINK_2025-07-02.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-02.parquet
+Loaded 103,212 trades and 325,434 quotes.
+  Trades: 1751414400.031 to 1751500797.955
+  Quotes: 1751414400.046 to 1751500799.746
+  Price range: 12.73 to 13.85
+Loading trades from: data/real/trades_LINK_2025-07-03.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-03.parquet
+Loaded 108,893 trades and 339,521 quotes.
+  Trades: 1751500801.346 to 1751587189.425
+  Quotes: 1751500800.446 to 1751587199.946
+  Price range: 13.43 to 14.08
+Loading trades from: data/real/trades_LINK_2025-07-04.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-04.parquet
+Loaded 84,226 trades and 292,547 quotes.
+  Trades: 1751587207.390 to 1751673592.043
+  Quotes: 1751587200.046 to 1751673599.946
+  Price range: 12.93 to 13.78
+Loading trades from: data/real/trades_LINK_2025-07-05.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-05.parquet
+Loaded 36,072 trades and 217,430 quotes.
+  Trades: 1751673601.386 to 1751759999.671
+  Quotes: 1751673600.046 to 1751759999.746
+  Price range: 12.99 to 13.27
+Loading trades from: data/real/trades_LINK_2025-07-06.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-06.parquet
+Loaded 57,069 trades and 258,909 quotes.
+  Trades: 1751760000.336 to 1751846382.104
+  Quotes: 1751760000.046 to 1751846399.946
+  Price range: 13.10 to 13.70
+Loading trades from: data/real/trades_LINK_2025-07-07.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-07.parquet
+Loaded 79,726 trades and 296,384 quotes.
+  Trades: 1751846400.600 to 1751932787.999
+  Quotes: 1751846400.046 to 1751932799.946
+  Price range: 13.25 to 13.73
+Loading trades from: data/real/trades_LINK_2025-07-08.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-08.parquet
+Loaded 89,228 trades and 310,084 quotes.
+  Trades: 1751932801.305 to 1752019197.464
+  Quotes: 1751932800.046 to 1752019199.946
+  Price range: 13.20 to 14.00
+Loading trades from: data/real/trades_LINK_2025-07-09.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-09.parquet
+Loaded 132,891 trades and 338,799 quotes.
+  Trades: 1752019200.131 to 1752105592.184
+  Quotes: 1752019200.046 to 1752105597.346
+  Price range: 13.81 to 14.38
+Loading trades from: data/real/trades_LINK_2025-07-10.parquet
+Loading quotes from: data/real/quotes_LINK_2025-07-10.parquet
+Loaded 156,405 trades and 372,958 quotes.
+  Trades: 1752105606.552 to 1752191998.604
+  Quotes: 1752105600.046 to 1752191999.946
+  Price range: 14.15 to 15.34
+    30     +65.47     +71.05     49.0   1.00     9889    0.0500
+  → checkpoint saved: experiments/39_link_rl/checkpoints_tabular/epoch_030
+
+Training complete.
+  Train log: experiments/39_link_rl/results_tabular/train_log.csv
+  Eval log:  experiments/39_link_rl/results_tabular/eval_log.csv
