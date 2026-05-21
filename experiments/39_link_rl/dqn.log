@@ -2592,3 +2592,13 @@ Loaded 77,471 trades and 261,972 quotes.
   Price range: 12.83 to 13.46
 Loading trades from: data/real/trades_LINK_2025-06-15.parquet
 Loading quotes from: data/real/quotes_LINK_2025-06-15.parquet
+Loaded 60,626 trades and 249,286 quotes.
+  Trades: 1749945613.781 to 1750031997.388
+  Quotes: 1749945600.046 to 1750031999.846
+  Price range: 13.00 to 13.33
+Loading trades from: data/real/trades_LINK_2025-06-20.parquet
+Loading quotes from: data/real/quotes_LINK_2025-06-20.parquet
+Loaded 105,780 trades and 326,738 quotes.
+  Trades: 1750377604.706 to 1750463997.018
+  Quotes: 1750377600.046 to 1750463999.546
+  Price range: 12.30 to 13.29
