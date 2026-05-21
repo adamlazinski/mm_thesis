@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/ubuntu/mm_thesis/scripts/train_rl.py", line 80, in <module>
+    from hft_market_maker.data.loader import DataLoader
+  File "/home/ubuntu/mm_thesis/hft_market_maker/__init__.py", line 23, in <module>
+    from .data.loader import DataLoader, generate_synthetic_data
+ModuleNotFoundError: No module named 'hft_market_maker.data'
+env: 'python': No such file or directory
+env: use -[v]S to pass options in shebang lines
