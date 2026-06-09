@@ -33,7 +33,8 @@ from ..core.order_manager import OrderManager
 from ..core.events import QuoteEvent, TradeEvent
 from ..strategies.avellaneda_stoikov import QuoteDecision
 from ..extensions.reinforcement_learning import (
-    encode_state, build_quote, action_hold, N_ACTIONS, STATE_DIM
+    encode_state, build_quote, action_hold, N_ACTIONS, STATE_DIM,
+    ACTION_PARAMS, ACTION_SPACES,
 )
 
 
@@ -61,7 +62,7 @@ class EpisodeStats:
     mean_reward:   float
     n_steps:       int
     halts:         int
-    action_counts: List[int] = field(default_factory=lambda: [0]*N_ACTIONS)
+    action_counts: List[int] = field(default_factory=list)
 
 
 class MarketMakingEnv:
@@ -88,11 +89,19 @@ class MarketMakingEnv:
         cfg: dict,
         shuffle: bool = True,
         orderbook_files: List[Optional[str]] = None,
+        action_params=None,
     ):
         self.day_files      = day_files
         self.cfg            = cfg
         self.orderbook_files = orderbook_files or [None] * len(day_files)
         self.shuffle       = shuffle
+
+        # Resolve action table: explicit arg > config key > default LINK table
+        if action_params is not None:
+            self._action_params = action_params
+        else:
+            key = cfg.get("action_space", "link")
+            self._action_params = ACTION_SPACES.get(key, ACTION_SPACES["link"])[0]
 
         self.order_size      = cfg["order_size"]
         self.max_inventory   = cfg["max_inventory"]
@@ -183,7 +192,7 @@ class MarketMakingEnv:
         if self._episode_done:
             raise RuntimeError("Call reset() before step().")
 
-        hold = action_hold(action) or self.quote_freq
+        hold = action_hold(action, self._action_params) or self.quote_freq
         timestamp, n_fills = self._advance_window(hold)
         done = (self._q_idx >= len(self._quotes)) or (self._t_idx >= len(self._trades))
 
@@ -197,7 +206,8 @@ class MarketMakingEnv:
         # Cancel stale quotes, submit new ones for this action
         om.cancel_all(timestamp)
         decision = build_quote(action, stats, self.tick_size,
-                               self.order_size, self.max_inventory, inv)
+                               self.order_size, self.max_inventory, inv,
+                               action_params=self._action_params)
         if decision.should_quote_bid:
             om.submit_order("bid", decision.bid_price, decision.bid_size, timestamp)
         if decision.should_quote_ask:
