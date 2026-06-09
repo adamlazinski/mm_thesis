@@ -63,6 +63,7 @@ import pandas as pd
 import numpy as np
 
 from hft_market_maker.data.loader import DataLoader
+from hft_market_maker.strategies.forecast_as import ForecastAS
 from hft_market_maker import (
     AvellanedaStoikov,
     FullAggressivenessAS,
@@ -364,6 +365,7 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
             kappa=cfg.get("glft_kappa", 1.5),
             order_size=cfg["order_size"],
             min_spread_bps=cfg["min_spread_bps"],
+            max_spread_bps=cfg.get("max_spread_bps", None),
             max_inventory=cfg["max_inventory"],
             tick_size=tick_size,
             kappa_from_stats=cfg.get("kappa_from_stats", True),
@@ -425,6 +427,22 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
                 obi_threshold=cfg.get("obi_threshold", 0.3),
                 mom_threshold=cfg.get("obi_mom_threshold", float("inf")))
         return base
+    elif name in ("forecast_as", "forecast_as_spike"):
+        base = AvellanedaStoikov(gamma=gamma, kappa_as_min=cfg["kappa_as_min"], **common)
+        forecast = ForecastAS(
+            base=base,
+            model_path=cfg["forecast_model_path"],
+            alpha=cfg.get("forecast_alpha", 2.0),
+            gate_threshold=cfg.get("forecast_gate_threshold", 0.0),
+        )
+        if name == "forecast_as_spike":
+            return TradeSpikeFilter(
+                forecast,
+                spike_multiplier=cfg.get("spike_multiplier", 3.0),
+                spike_cooldown=cfg.get("spike_cooldown", 5.0),
+                min_baseline=cfg.get("spike_min_baseline", 0.5),
+            )
+        return forecast
     else:
         raise ValueError(f"Unknown strategy: {name}")
 
@@ -453,6 +471,24 @@ def date_range(start: date, end: date):
     while current <= end:
         yield current
         current += timedelta(days=1)
+
+
+# ============================================================
+# Helpers
+# ============================================================
+
+def _make_order_manager(cfg: dict) -> "OrderManager":
+    om = OrderManager(
+        maker_fee=cfg["maker_fee"],
+        queue_model=cfg.get("queue_model", "none"),
+        queue_depth_estimate=cfg.get("queue_depth_estimate", 0.3),
+        latency=cfg["latency"],
+    )
+    # queue_fraction scales raw L2 depth for the 'l2' queue model.
+    # Raw Binance depth at best bid/ask includes large passive resting orders;
+    # typical competing-HFT share is a small fraction of visible depth.
+    om.queue_fraction = cfg.get("queue_fraction", 1.0)
+    return om
 
 
 # ============================================================
@@ -507,12 +543,7 @@ def run_day(dt: date, trades_path: Path, quotes_path: Path,
             kyle_alpha=cfg["kyle_alpha"],
             kyle_min_obs=int(cfg["kyle_min_obs"]),
         ),
-        order_manager=OrderManager(
-            maker_fee=cfg["maker_fee"],
-            queue_model="none",
-            queue_depth_estimate=0.3,
-            latency=cfg["latency"],
-        ),
+        order_manager=_make_order_manager(cfg),
         vol_risk_manager=vol_rm,
         requote_on_fill=True,
         requote_interval=cfg["quote_freq"],

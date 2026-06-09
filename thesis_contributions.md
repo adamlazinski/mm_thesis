@@ -717,6 +717,381 @@ sizes to generate economically meaningful spread capture relative to BTC's price
 
 ---
 
+## 25. Approach C: Model-Free Crossing Intensity Kappa Estimation (LINK)
+
+**Motivation:** Approaches A and B to kappa estimation both rely on fitting an exponential
+fill curve to empirical data, which is unreliable when the underlying curve is not exponential.
+A third approach avoids exponential curve fitting entirely by using the *mid-price crossing
+intensity* directly.
+
+**Method (Approach C):** For each spread distance δ, estimate the arrival rate of price moves
+that cross δ ticks from mid as:
+
+```
+λ(δ) = P(|Δm(h)| ≥ δ) / h
+```
+
+where Δm(h) is the mid price change over horizon h (typically 60s, 120s). This is the
+model-free limit of the theoretical GLFT arrival intensity. Fitting λ(δ) to an exponential
+decay extracts kappa without any fill simulation or order placement model.
+
+**Result on LINK/USDT April 2026 (30 days, h=60s):**
+- κ = 2.08 / tick, R² = 0.97, pure exponential fit
+- No A_mom component (A_mom ≈ 0): the crossing intensity decays cleanly to zero
+- This contrasts with BTC (Contribution 6) where a momentum floor A_mom ≈ 15% of total
+  arrivals persists at large δ
+
+**Interpretation:** LINK price moves are small and infrequent relative to the natural 10-tick
+spread (5 ticks per side). The probability of a ≥5-tick price move in 60s is low, and
+decays exponentially beyond that — there is no fat-tailed momentum floor. This finding is
+consistent with the step-function fill curve (Contribution 15): the fill curve is flat
+*inside* the natural spread (because any trade at the touch fills everything inside), and
+flat *outside* (because no trades cross to that level), not because of a momentum floor.
+
+**A-S optimal spread at γ→0:** With κ=2.08/tick, the A-S formula spread limit is:
+
+```
+lim_{γ→0} spread = 2/κ = 2/2.08 ≈ 0.96 ticks ≈ 1 tick
+```
+
+At LINK's $9 price, 1 tick = $0.01 ≈ 11 bps. The formula itself prescribes touch posting —
+min_spread_bps=11 is not an arbitrary floor but exactly what the theory recommends. This
+provides empirical grounding for the "flat MM" result: the optimal A-S policy at LINK's
+microstructure is approximately a fixed-spread touch-poster with zero inventory skew.
+
+**Contribution:** Introduces crossing-intensity kappa as a third estimation approach that
+requires no order placement simulation and is robust to non-exponential fill curves (the
+exponential fit is applied to the crossing intensity, not the fill probability). Provides
+calibration of κ=2.08/tick for LINK April 2026 with R²=0.97, and derives the implication
+that the A-S formula prescribes touch posting for this asset.
+
+---
+
+## 26. A-S Gamma×1000 Calibration Bug: Cross-Asset Failure Mode
+
+**Bug identification:** The `avellaneda_stoikov.py` implementation contained:
+
+```python
+self.gamma = gamma * 1000   # compensate for tiny BTC sigma
+```
+
+This was intentional for BTC/USDT where σ ≈ 2.9e-5/sec, σ² ≈ 8.4e-10, and the formula
+skew `q × γ × σ² × T` requires γ ~ 10,000 to produce a $0.01 reservation price shift at
+q=50. The ×1000 hack was applied at construction so config files could use human-scale
+gamma values (e.g., 1e-6 instead of 1e-3).
+
+**Failure on LINK:** LINK/USDT has σ ≈ 5.9e-3/sec (log-return), σ² ≈ 3.5e-5 — approximately
+40,000× larger per unit time than BTC. With the ×1000 hack and config gamma=1e-6:
+
+```
+effective gamma = 1e-6 × 1000 = 1e-3
+skew at q=50  = 50 × 1e-3 × 3.5e-5 × 3600 × 9.0 ≈ 56.7 ticks
+```
+
+The reservation price is shifted 56.7 ticks ($0.567) from mid for a 50 LINK inventory
+— 5.67 natural spreads. Every requote places an inventory-skewed bid or ask far outside
+any rational pricing, producing catastrophic adverse fills and essentially zero fill rate
+on the un-skewed side.
+
+**Fix:** Removed the ×1000 factor entirely. All configs must now supply the actual gamma
+value that produces the desired dollar skew. For the calibrated A-S on LINK with 2-tick
+(≈$0.02) skew at q=50:
+
+```
+γ = target_skew / (q × σ² × T × mid)
+  = 0.02 / (50 × 3.47e-5 × 3600 × 8.98)
+  = 3.57e-4
+```
+
+**Breaking change:** All BTC configs using gamma=0.086 (calibrated for the ×1000 era)
+now produce 1000× smaller skew. BTC configs need gamma ≈ 86 for equivalent behaviour.
+
+**Contribution:** Documents this cross-asset calibration failure mode. Identifies the root
+cause (implicit unit rescaling at construction that was not visible in config files) and
+provides the correct per-asset gamma derivation formula. Shows that sigma² varies by
+40,000× across BTC and LINK, making it impossible for a single hardcoded scaling constant
+to be appropriate for both assets.
+
+---
+
+## 27. GLFT Formula Spread Blowup on Low-Kappa Assets
+
+**Finding:** The GLFT ergodic spread formula contains the term:
+
+```
+(1 + κ/γ)^(1 + κ/γ)
+```
+
+which grows superexponentially as κ/γ increases. For LINK parameters
+(σ_d=0.053 $/√s, A=0.072 /s, κ=208 /tick, γ=feasible values):
+
+| γ | κ/γ | (1+κ/γ)^(1+κ/γ) | Half-spread |
+|---|-----|-----------------|-------------|
+| 4.3 | 48 | ~10^78 | >> $1 |
+| 43 | 4.8 | ~8,300 | ~8.5 ticks |
+| 430 | 0.48 | ~1.6 | ~1.0 tick |
+
+Even at γ=430 (producing 200× stronger inventory skew than desired), the formula spread
+is barely touch-posting. For any economically sensible γ the spread blows up to dozens
+of ticks — the formula makes GLFT unquotable on LINK.
+
+**Root cause:** LINK has κ ≈ 2.08/tick (from Contribution 25), but the GLFT formula uses
+κ in units of 1/dollar. At $9 price, 1 tick = $0.01/9 = $0.0011 in fractional terms. The
+GLFT A=0.072 and κ=208 are calibrated from the fill curve in tick units, but the dollar
+sigma σ_d=0.053 interacts with these parameters to make the spread term dominate.
+
+**Fix:** Added `max_spread_bps` parameter to GLFT strategy. When set, the formula spread
+is capped:
+
+```python
+if self.max_spread_bps is not None:
+    max_half_spread = self.max_spread_bps * mid / 20000.0
+    half_spread = min(half_spread, max_half_spread)
+```
+
+With `max_spread_bps=11.0` (≈1.1 ticks for $9 LINK), GLFT posts at touch while its
+reservation price formula continues to manage inventory. This decouples the spread
+decision from the spread formula and uses the formula only for inventory skew.
+
+**Implication:** GLFT is practically unusable on assets where the formula spread dominates
+inventory considerations. The `max_spread_bps` ceiling is a pragmatic fix that preserves
+the reservation price component while discarding the (blowup-prone) formula spread. This
+exposes a design limitation of the original GLFT framework for assets outside the
+parameter range it was calibrated for.
+
+**Contribution:** Characterises the GLFT spread blowup phenomenon for low-kappa, moderate-
+volatility assets. Provides the `max_spread_bps` ceiling as a minimal fix, and identifies
+the underlying cause (superexponential growth in (1+κ/γ)^(1+κ/γ)) as a warning for applying
+GLFT outside its originally intended parameter range.
+
+---
+
+## 28. Classical MM Calibration Workflow on LINK: Flat A-S Outperforms Calibrated by 2×
+
+**Experiment (Exp 52):** Ran three variants of the A-S/GLFT framework on LINK/USDT April 2026
+(30 days, Apr 1–30) using Approach C kappa (κ=2.08) and corrected calibration throughout:
+
+| Strategy | Description | Total PnL | Mean/day | Std/day | Sharpe | Win rate | Fills |
+|---|---|---|---|---|---|---|---|
+| **A-S flat** (γ≈0) | No inventory skew, touch posting | **+$1,428** | +$47.6 | $49.0 | **0.97** | **90%** | 94,226 |
+| A-S calibrated v2 | γ=3.57e-4, 2-tick skew at q=50 | +$677 | +$22.6 | $37.0 | 0.61 | 67% | 95,651 |
+| GLFT touch v2 | γ=4.3, max_spread=11bps | +$648 | +$21.6 | $37.3 | 0.58 | 67% | 95,672 |
+
+Both calibrated variants are matched to produce identical theoretical skew (2 ticks at q=50
+LINK) using correctly derived parameters. All three post at touch (11 bps). Fill counts are
+nearly identical (~95k). The flat A-S outperforms by **2.1× in PnL** and **60% in Sharpe**.
+
+**Mechanistic explanation:** LINK fills are sweep-driven, not spread-sensitive. With a permanent
+10-tick natural spread, fills occur when a large market order sweeps through the entire book to
+our price level. These sweeps are not correlated with our inventory state — they arrive randomly.
+The moment a sweep arrives, it fills us regardless of which direction the inventory is being
+managed. The reservation price skew means that:
+
+- When long, our bid is shifted down → we quote further from mid → fewer fills on the ask
+  side (where we *want* to fill to reduce inventory)
+- When short, our ask is shifted up → symmetrically, fewer fills where we want them
+
+The net effect is that inventory skew *reduces* the rate of inventory-unwinding fills without
+protecting against adverse sweeps. The flat MM stays at touch on both sides and lets the
+inventory cycle naturally, capturing both sides of random sweeps.
+
+**A-S optimal spread insight:** At γ→0, the formula spread = 2/κ ≈ 1 tick = 11 bps. The
+flat A-S is not an arbitrary simplification — it is the formula's own recommendation when
+inventory skew is zero. The calibrated v2 provides no spread advantage because both post at
+the same 11 bps min_spread_bps floor.
+
+**Contribution:** Provides a direct controlled experiment showing that inventory skew management
+is counterproductive on step-function fill curve assets. Derives a general condition: when fills
+are sweep-driven rather than spread-sensitive, reservation price skew reduces fill rate on the
+desired side without compensating protection. The result generalises beyond LINK: any asset where
+the fill curve is approximately flat (or step-function) across the range of inventory skew applied
+will exhibit this same degradation under calibrated A-S or GLFT.
+
+---
+
+## 29. L2 Queue Simulation: Quantifying Backtest Optimism on LINK
+
+**Motivation:** The standard backtest fill model (`queue_model='none'`) fills any resting order
+immediately when price is matched. Contribution 20 showed that the L2 queue at LINK's best bid
+contains ~4,000–8,700 LINK of resting orders — 1,000×–4,000× our 5-LINK order. The backtest
+model thus over-counts fills severely at any quoted price outside the inside-spread regime.
+
+**Implementation:** Extended the `OrderManager` with a `queue_model='l2'` mode using a proper
+queue-clearing fill mechanism. Each submitted order carries `queue_ahead` — the estimated depth
+ahead of us at submission (scaled by `queue_fraction`). Fills accumulate traded volume from
+the moment of submission; the order only fills once cumulative volume exceeds `queue_ahead`:
+
+```python
+vol_to_us = vol_after - max(order.queue_ahead, vol_before)
+fill_qty = min(order.remaining, vol_to_us)
+```
+
+**Queue scaling:** Raw Binance best-bid depth is ~8,600 LINK (mean). Posting a 5-LINK order at
+the touch, queue_fraction=1.0 would mean 8,600 LINK must trade before we fill — essentially
+never in a 0.5s window (median trade = 2 LINK, ~1 trade/window). `queue_fraction=0.001` models
+~1 competing MM of our size: 8.6 LINK ahead, still at the conservative end.
+
+**Results (A-S flat + L2 queue, queue_fraction=0.001 vs no queue):**
+
+| Metric | No queue | L2 queue | Change |
+|---|---|---|---|
+| Total PnL (30 days) | +$1,428 | +$588 | **−59%** |
+| Mean PnL/day | +$47.6 | +$19.6 | −59% |
+| Daily std | $49.0 | $18.3 | **−63%** |
+| Daily Sharpe | 0.97 | **1.07** | +10% |
+| Win rate | 90% | 83% | −7pp |
+| Fill records | 94,226 | 107,562 | +14% (partial fills) |
+| Avg markout bps | +4.14 | +2.73 | −34% |
+| Typical adverse fill rate | ~24% | ~45% | +21pp |
+
+**Key insight — Sharpe paradox:** Despite a 59% PnL drop, Sharpe *increases* from 0.97 to 1.07.
+The queue model eliminates most fills on normal days (only large sweeps clear the queue), so
+daily PnL variance collapses from $49² to $18². P&L now comes in infrequent large pulses
+(bulk fills when a sweep clears the queue), making each "fill day" highly profitable and most
+days near-zero.
+
+**Adverse selection under queue model:** Adverse fill rate rises from 24% to 45%. When an order
+*does* fill (i.e., a sweep large enough to clear ~8 LINK), it is almost always an informed sweep
+— the market was already moving against us while we waited in the queue. This is the actual
+adverse selection cost that the no-queue model cannot capture.
+
+**Fill record vs fill volume:** Fill records increase (+14%) because each partial fill as volume
+trickles past queue_ahead creates a separate `Fill` entry. However, filled volume *per record*
+is lower on average. The total filled notional is less, not more.
+
+**Interpretation:** The no-queue model overstates PnL by ~2.4× for LINK touch posting. The queue
+model provides a lower bound: in reality queue position is dynamic (we may be placed anywhere in
+the queue based on order submission timing). The true answer lies between the two models. The
++$588 result should be viewed as a conservative estimate and +$1,428 as an upper bound.
+
+**Contribution:** Implements and validates an L2-based queue-clearing fill mechanism in the
+backtest engine. Quantifies the optimism of the standard fill model at 2.4× on LINK — a
+significant source of backtest overstatement. Introduces `queue_fraction` as a calibration
+handle for the "effective competing depth" ahead of our order, derived from L2 snapshot data
+(Contribution 20's finding that median depth is ~8,600 LINK). Demonstrates the Sharpe paradox:
+queue models simultaneously reduce PnL and improve risk-adjusted metrics because they select
+only the rarest, most adversely selected fills, concentrating P&L variance while reducing its
+mean. The adverse selection spike (24% → 45%) is the direct empirical consequence of queue
+position: resting deeper in the queue means filling only when the market has already moved.
+
+---
+
+## 30. The Queue-Priority Decomposition: All Profitable Results Are Inside-Spread Artifacts
+
+**Motivation:** Across the entire project, every profitable backtest (classical A-S/GLFT and RL,
+on LINK) shares one structural feature: it quotes *inside* the natural bid-ask spread. The
+backtest fill model (`order_manager.py`, `queue_model='none'`) fills a resting order on the
+**first** trade that touches its price, granting the simulated market maker **absolute queue
+priority** — as if it were the only participant at that price level. This contribution decomposes
+all results by quote regime and shows that profitability is entirely a function of this
+unphysical priority assumption, not of strategy class.
+
+**The fill-model artifact (verified in code):** The strategy posts a bid at `mid − δ` ticks
+(`avellaneda_stoikov.py:157`, `reinforcement_learning.py:433`). LINK's natural spread is exactly
+10 ticks (5 per side) for 99.9% of April 2026 (median = mean = 10 ticks, p10 = p90 = 10).
+The fill condition (`order_manager.py:181`) fills the bid on **any** sell trade at price ≤ bid.
+Ordinary sells print at the natural bid (`mid − 5t`), which is ≤ any inside quote (`mid − δ`,
+δ < 5), so **every** ordinary sell fills the inside order. The backtest thus credits the inside
+quote with the entire taker flow that, in reality, would clear against the ~8,600 LINK of orders
+already resting at the natural bid ahead of it.
+
+**Regime decomposition (LINK April 2026, 30 days, zero fees, A-S flat):**
+
+| Regime | Half-spread | Inside natural touch? | Honest fill model? | Fills/day | PnL/day | 1s markout |
+|---|---|---|---|---|---|---|
+| Deep inside | 2 ticks | yes (3t inside) | **no** | 7,673 | +$35 | +0.98 bps |
+| Inside (opt) | 4 ticks | yes (1t inside) | **no** | 7,288 | **+$94** | +2.80 bps |
+| At touch | 5 ticks | at | partial | 2,502 | +$33 | −0.41 bps |
+| Outside | 8 ticks | no (3t outside) | **yes** | 216 | +$2.5 | −0.65 bps |
+
+The only regime where the price-only fill model is physically honest is **outside the natural
+spread**: there, filling genuinely requires the price to trade *through* your level (a sweep),
+so there is no queue to jump. That regime earns **+$2.5/day** with a *negative* 1s markout —
+i.e. every fill is initially adverse, and the small positive total comes only from longer-horizon
+inventory mean-reversion.
+
+**Queue-position sensitivity (at-touch + L2 queue model, `queue_fraction` = share of visible
+depth ahead of us):**
+
+| Position | Depth ahead | PnL/day | Markout |
+|---|---|---|---|
+| Front (~1 competing order) | 9 LINK | +$11.8 | — |
+| ~17 orders | 86 LINK | +$2.8 | — |
+| ~86 orders | 431 LINK | +$0.4 | — |
+| ~170 orders | 863 LINK | +$0.9 | — |
+| Mid-queue (realistic retail) | 4,313 LINK | +$1.0 | **−2.9 bps** |
+
+From 5% of visible depth onward, PnL is pinned at a sub-$1/day noise floor with a negative
+markout: the only fills that clear a large queue are informed sweeps moving against the maker.
+
+**RL is the same artifact, harder.** The TabularQ policy (Contribution 23, +$45.94/day on
+April 2026) runs through the identical engine and fill model. Its action space
+(`reinforcement_learning.py:124`) is anchored on the natural spread with explicit
+`inside_sym` / `near_sym` / `at_sym` / `outside_sym` actions. The trained greedy policy chose
+inside/at-touch actions almost exclusively — proven by its fill rate: **median 4,970 fills/day
+(min 1,495, max 8,311)**, every single day 7–38× above the honest outside-spread ceiling of
+216 fills/day. The RL did not discover a real edge; it discovered that the backtest rewards
+inside-spread quoting with free priority and learned to harvest it (the genuine, transferable
+part of its behaviour is regime-dependent halting, not the spread capture). Contribution 23's
+"TabularQ outperforms A-S" is therefore true only *relative to* A-S within the same fictitious
+fill regime — both are inside-spread artifacts.
+
+**BTC is the control that confirms the mechanism.** BTC RL (Contribution 24, −$2.09/day, 0% win)
+is not an independent failure. BTC's natural spread is 1 tick; the BTC action space
+(`reinforcement_learning.py:169`) starts at 5 ticks and ranges to 80 — **every action posts
+outside the natural touch**. BTC RL is therefore forced into the honest fill regime and loses,
+exactly as LINK does in its outside-spread (+$2.5) and at-touch-with-real-queue (~$1) regimes.
+The asset that *cannot* quote inside its spread (because the spread is 1 tick) cannot produce
+the artifact, and produces no profit.
+
+**The unified law:**
+
+> Every positive backtest in this project lives inside the natural spread under the no-queue
+> fill model. Every result in the physically honest regime — outside the spread, or at-touch
+> behind a realistic L2 queue — is ≈0 or negative. This holds across both assets (BTC, LINK)
+> and both strategy classes (classical A-S/GLFT, tabular/deep RL). The microstructure "edge"
+> is not a strategy edge at all; it is a **queue-priority rent**. No strategy can capture it
+> without being first in the queue, which is a function of latency and venue infrastructure,
+> not of quoting logic.
+
+**Contribution:** Provides a single decomposition that explains every result in the project —
+profitable and unprofitable, classical and RL, LINK and BTC — through one variable: whether the
+quote sits inside the natural spread under an absolute-priority fill model. Demonstrates that the
+LINK "profitability" (including the RL outperformance) is an artifact of unmodelled queue
+position, and that the only physically honest regime (outside-spread / behind-queue) is
+break-even-to-negative on every asset and strategy tested. Reframes Contributions 16–23 as
+measurements *within* the artifact rather than evidence of a retail-accessible edge, and
+establishes that distinguishing a genuine market-making edge from a queue-priority rent requires
+either L2 queue-position modelling or live order placement — neither of which is captured by
+the standard trade/quote backtest.
+
+**Addendum — regime-conditional honest markout (does any regime escape?).** To test whether a
+regime/timing filter could rescue honest passive MM, the outside-spread (8-tick) fills were
+re-run with per-fill capture (`config_spread_17p8_full.json`, `save_full=true`) and each fill's
+1s markout was conditioned on UTC hour, trailing-120s realized-vol tercile, and post-sweep
+timing (largest trade in prior 5s ≥ p95). Across 6,476 fills over 30 days
+(`analyze_honest_markout.py`):
+
+- **Overall: −0.634 bps, 12.6% positive** — adverse, confirming the verdict.
+- **By hour:** every hour negative except hour 23 UTC (+0.020 bps — a statistical zero).
+- **By vol:** adverse selection shrinks sharply with volatility (low −0.91, med −0.90,
+  **high −0.095 bps**).
+- **By post-sweep:** *less* adverse after a sweep (−0.46 vs −0.64) — refuting the prior
+  hypothesis that thin-queue post-sweep fills would be more adverse.
+- **high-vol × post-sweep: +0.381 bps (n=142)** — the only genuinely positive cell.
+
+The positive cell is the **overshoot-catch** effect: a large sweep in volatile conditions
+overshoots, and a passive order resting beyond the touch catches the bounce-back. It is real and
+directionally sensible, but **economically negligible for passive MM**: 142 fills over 30 days
+(~5/day) at +0.38 bps ≈ **$0.24 total over the month** (~$0.01/day), and statistically marginal
+given single-fill markout noise. The regime/timing escape is therefore effectively closed: the
+honest passive-MM edge is zero-to-negative in every economically meaningful regime. Notably, the
+overshoot-catch is the *first positive-markout signal* found in the project, and it is naturally
+a **taker** trigger (deliberately place to catch the bounce, instantly, no queue), not a passive
+one — motivating the maker→taker pivot rather than rescuing passive MM.
+
+---
+
 ## Planned Extensions
 
 - **Stressed regime validation**: download LINK data from high-volatility or crash periods

@@ -1,0 +1,246 @@
+{
+  "overall": {
+    "mean_markout_bps": -0.6338869153601151,
+    "pct_positive": 12.60037059913527,
+    "n": 6476,
+    "p95_sweep_size_LINK": 2402.135
+  },
+  "by_hour": [
+    {
+      "hour": 0,
+      "mean_markout_bps": -0.3410150341699826,
+      "pct_positive": 14.545454545454545,
+      "n": 440.0
+    },
+    {
+      "hour": 1,
+      "mean_markout_bps": -0.7029481765498931,
+      "pct_positive": 15.426997245179063,
+      "n": 363.0
+    },
+    {
+      "hour": 2,
+      "mean_markout_bps": -0.743545275908662,
+      "pct_positive": 9.16030534351145,
+      "n": 262.0
+    },
+    {
+      "hour": 3,
+      "mean_markout_bps": -1.123035065964196,
+      "pct_positive": 6.382978723404255,
+      "n": 141.0
+    },
+    {
+      "hour": 4,
+      "mean_markout_bps": -1.793966083915673,
+      "pct_positive": 3.6231884057971016,
+      "n": 138.0
+    },
+    {
+      "hour": 5,
+      "mean_markout_bps": -0.9187554730374883,
+      "pct_positive": 11.797752808988763,
+      "n": 178.0
+    },
+    {
+      "hour": 6,
+      "mean_markout_bps": -0.8057432821376365,
+      "pct_positive": 9.278350515463918,
+      "n": 194.0
+    },
+    {
+      "hour": 7,
+      "mean_markout_bps": -0.8405962878090104,
+      "pct_positive": 9.090909090909092,
+      "n": 220.0
+    },
+    {
+      "hour": 8,
+      "mean_markout_bps": -0.789130611415503,
+      "pct_positive": 7.423580786026202,
+      "n": 229.0
+    },
+    {
+      "hour": 9,
+      "mean_markout_bps": -0.39327497197001565,
+      "pct_positive": 9.44206008583691,
+      "n": 233.0
+    },
+    {
+      "hour": 10,
+      "mean_markout_bps": -1.132521298736635,
+      "pct_positive": 11.363636363636363,
+      "n": 176.0
+    },
+    {
+      "hour": 11,
+      "mean_markout_bps": -0.6206782503602895,
+      "pct_positive": 11.428571428571429,
+      "n": 140.0
+    },
+    {
+      "hour": 12,
+      "mean_markout_bps": -1.3083990413831414,
+      "pct_positive": 15.19756838905775,
+      "n": 329.0
+    },
+    {
+      "hour": 13,
+      "mean_markout_bps": -0.6825878317331867,
+      "pct_positive": 13.315926892950392,
+      "n": 383.0
+    },
+    {
+      "hour": 14,
+      "mean_markout_bps": -0.4907230993925043,
+      "pct_positive": 14.077669902912621,
+      "n": 412.0
+    },
+    {
+      "hour": 15,
+      "mean_markout_bps": -0.178116451897888,
+      "pct_positive": 14.081145584725538,
+      "n": 419.0
+    },
+    {
+      "hour": 16,
+      "mean_markout_bps": -0.723724020837322,
+      "pct_positive": 11.705685618729097,
+      "n": 299.0
+    },
+    {
+      "hour": 17,
+      "mean_markout_bps": -0.8533105357838988,
+      "pct_positive": 10.40268456375839,
+      "n": 298.0
+    },
+    {
+      "hour": 18,
+      "mean_markout_bps": -0.4401049357860738,
+      "pct_positive": 14.018691588785046,
+      "n": 321.0
+    },
+    {
+      "hour": 19,
+      "mean_markout_bps": -1.0078597766793984,
+      "pct_positive": 9.405940594059405,
+      "n": 202.0
+    },
+    {
+      "hour": 20,
+      "mean_markout_bps": -0.4917273913574508,
+      "pct_positive": 11.875,
+      "n": 160.0
+    },
+    {
+      "hour": 21,
+      "mean_markout_bps": -0.2930955458035513,
+      "pct_positive": 15.11627906976744,
+      "n": 172.0
+    },
+    {
+      "hour": 22,
+      "mean_markout_bps": -0.3421097472012655,
+      "pct_positive": 16.315789473684212,
+      "n": 380.0
+    },
+    {
+      "hour": 23,
+      "mean_markout_bps": 0.019562888502569986,
+      "pct_positive": 17.829457364341085,
+      "n": 387.0
+    }
+  ],
+  "by_vol": [
+    {
+      "vol_bucket": "low",
+      "mean_markout_bps": -0.9080073847498041,
+      "pct_positive": 7.410838351088467,
+      "n": 2159.0
+    },
+    {
+      "vol_bucket": "med",
+      "mean_markout_bps": -0.8985223803506528,
+      "pct_positive": 10.56533827618165,
+      "n": 2158.0
+    },
+    {
+      "vol_bucket": "high",
+      "mean_markout_bps": -0.09525355414570152,
+      "pct_positive": 19.823992589161648,
+      "n": 2159.0
+    }
+  ],
+  "by_sweep": [
+    {
+      "post_sweep": false,
+      "mean_markout_bps": -0.6428480060307054,
+      "pct_positive": 12.51625487646294,
+      "n": 6152.0
+    },
+    {
+      "post_sweep": true,
+      "mean_markout_bps": -0.4637368233679211,
+      "pct_positive": 14.19753086419753,
+      "n": 324.0
+    }
+  ],
+  "by_vol_sweep": [
+    {
+      "vol_bucket": "low",
+      "post_sweep": false,
+      "mean_markout_bps": -0.896295197595668,
+      "pct_positive": 7.503607503607504,
+      "n": 2079.0
+    },
+    {
+      "vol_bucket": "low",
+      "post_sweep": true,
+      "mean_markout_bps": -1.2123778484179197,
+      "pct_positive": 5.0,
+      "n": 80.0
+    },
+    {
+      "vol_bucket": "med",
+      "post_sweep": false,
+      "mean_markout_bps": -0.890852339985117,
+      "pct_positive": 10.749027237354086,
+      "n": 2056.0
+    },
+    {
+      "vol_bucket": "med",
+      "post_sweep": true,
+      "mean_markout_bps": -1.0531263312481194,
+      "pct_positive": 6.862745098039216,
+      "n": 102.0
+    },
+    {
+      "vol_bucket": "high",
+      "post_sweep": false,
+      "mean_markout_bps": -0.12881051377794006,
+      "pct_positive": 19.484382746653445,
+      "n": 2017.0
+    },
+    {
+      "vol_bucket": "high",
+      "post_sweep": true,
+      "mean_markout_bps": 0.3813970626023615,
+      "pct_positive": 24.647887323943664,
+      "n": 142.0
+    }
+  ],
+  "positive_cells": [
+    {
+      "dim": "hour",
+      "bucket": "23",
+      "markout": 0.019562888502569986,
+      "n": 387
+    },
+    {
+      "dim": "vol\u00d7sweep",
+      "bucket": "('high', True)",
+      "markout": 0.3813970626023615,
+      "n": 142
+    }
+  ]
+}

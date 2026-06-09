@@ -1,0 +1,29 @@
+{
+  "symbol": "BTC",
+  "horizon": 1.0,
+  "train_start": "2025-06-11",
+  "train_end": "2025-06-22",
+  "test_start": "2025-06-23",
+  "test_end": "2025-06-27",
+  "features": [
+    "ofi",
+    "momentum",
+    "obi",
+    "sigma_norm",
+    "spike_ratio",
+    "lambda_imbalance",
+    "mid_ret_lag1",
+    "spread_norm"
+  ],
+  "n_train": 2071964,
+  "n_test": 863387,
+  "test_auc_up": 0.8459487214994136,
+  "test_auc_down": 0.8486042981651938,
+  "test_acc": 0.8430472082623436,
+  "n_classes": 3,
+  "label_map": {
+    "0": "down",
+    "1": "flat",
+    "2": "up"
+  }
+}

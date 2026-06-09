@@ -42,6 +42,8 @@ class Order:
     status: str = "open"        # open | partially_filled | filled | cancelled
     active_from: float = 0.0    # matchable only after this timestamp
     cancel_from: float = 0.0    # cancel effective only after this timestamp
+    queue_ahead: float = 0.0    # L2 depth ahead of us at submission (for 'l2' model)
+    vol_since_submit: float = 0.0  # cumulative volume at our price since submission
 
     @property
     def remaining(self) -> float:
@@ -94,6 +96,7 @@ class OrderManager:
         self.maker_fee = maker_fee
         self.queue_model = queue_model
         self.queue_depth_estimate = queue_depth_estimate
+        self.queue_fraction = 1.0  # set externally by backtest for 'l2' mode
         self.latency = latency
 
         # _active: only live/pending-cancel orders — ≤2 for a basic MM
@@ -118,7 +121,7 @@ class OrderManager:
     # ------------------------------------------------------------------
 
     def submit_order(self, side: str, price: float, quantity: float,
-                     timestamp: float) -> str:
+                     timestamp: float, queue_ahead: float = 0.0) -> str:
         order_id = str(uuid.uuid4())[:8]
         self._active[order_id] = Order(
             order_id=order_id,
@@ -127,6 +130,7 @@ class OrderManager:
             quantity=quantity,
             timestamp=timestamp,
             active_from=timestamp + self.latency,
+            queue_ahead=queue_ahead,
         )
         return order_id
 
@@ -185,7 +189,18 @@ class OrderManager:
             # Fill quantity
             if self.queue_model == "none":
                 fill_qty = order.remaining
-            else:
+            elif self.queue_model == "l2":
+                # Queue-clearing model: accumulate volume at our price level.
+                # We only fill after cumulative volume exceeds queue_ahead.
+                vol_before = order.vol_since_submit
+                order.vol_since_submit += trade_qty
+                vol_after = order.vol_since_submit
+                if vol_after <= order.queue_ahead:
+                    continue  # queue not yet cleared
+                # Volume of this trade that reaches us after clearing the queue
+                vol_to_us = vol_after - max(order.queue_ahead, vol_before)
+                fill_qty = min(order.remaining, vol_to_us)
+            else:  # 'partial'
                 fill_qty = min(order.remaining,
                                trade_qty * (1.0 - self.queue_depth_estimate))
 

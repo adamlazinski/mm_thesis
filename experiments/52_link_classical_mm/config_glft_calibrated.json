@@ -1,0 +1,31 @@
+{
+  "data_dir":       "data/real",
+  "start":          "2026-04-01",
+  "end":            "2026-04-30",
+  "symbol":         "LINK",
+  "output_dir":     "experiments/52_link_classical_mm/results_glft_calibrated",
+
+  "strategy":       "glft",
+  "gamma":          150.0,
+  "glft_A":         0.072,
+  "glft_kappa":     208.0,
+  "kappa_from_stats": false,
+  "t_scaling":      3600,
+  "order_size":     5.0,
+  "tick_size":      0.01,
+  "min_spread_bps": 11.0,
+  "max_inventory":  50.0,
+  "maker_fee":      0.0,
+  "latency":        0.1,
+  "quote_freq":     0.5,
+
+  "vol_window":     120,
+  "arrival_window": 60,
+  "ewma_alpha":     0.9,
+  "guardrail":      false,
+  "short_gap":      2.0,
+  "long_gap":       30.0,
+  "timestamp":      "time_exchange",
+
+  "notes": "GLFT ergodic: A=0.072/s and kappa=208/$ from crossing-intensity calibration (exp 51). gamma=150 -> ~5.9-tick reservation skew at max_inv=50. Formula spread (~5.25t) overrides 11-bps floor. Proper closed-form market making on LINK."
+}

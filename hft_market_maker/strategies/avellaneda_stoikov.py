@@ -75,7 +75,7 @@ class AvellanedaStoikov:
         tick_size: float = 0.01,
         kappa_as_min: float = 1.5,
     ):
-        self.gamma = gamma*1000
+        self.gamma = gamma
         self.kappa_as_min = kappa_as_min
         self.T = T
         self.order_size = order_size
@@ -95,7 +95,6 @@ class AvellanedaStoikov:
         sigma is normalised (relative), so the skew term is in relative units.
         Multiply by mid to convert back to dollar terms.
         """
-        t_remaining=3600
         skew_rel = inventory * self.gamma * (sigma ** 2) * t_remaining
         return mid - skew_rel * mid
 
@@ -111,9 +110,7 @@ class AvellanedaStoikov:
         First term:  inventory risk — grows with vol and horizon
         Second term: adverse selection — shrinks with arrival rate
         """
-        #t_remaining=
-        inventory_term = self.gamma * (sigma ** 2) * 3600
-        #kappa=1
+        inventory_term = self.gamma * (sigma ** 2) * t_remaining
         # Scale kappa to dimensionless expected arrivals over remaining horizon
         kappa_scaled = max(kappa * t_remaining, 1e-6)
         adverse_selection_term = (2.0 / self.gamma) * np.log(1.0 + self.gamma / kappa_scaled)

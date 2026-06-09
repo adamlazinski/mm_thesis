@@ -19,6 +19,13 @@ from .extensions.regime_detection import (
     VPINFilter, HourFilter, TradeSpikeFilter, DailyLossLimit,
     KyleLambdaFilter, DynamicSizeFilter, SpreadMultiplierFilter,
 )
+# Pre-import xgboost before torch to avoid macOS OpenMP dylib conflict
+# (both torch and xgboost link libomp; xgboost must win the first-load race)
+try:
+    import xgboost as _xgb  # noqa: F401
+except ImportError:
+    pass
+
 from .extensions.reinforcement_learning import TabularQLearning, DQNMarketMaker
 from .data.loader import DataLoader, generate_synthetic_data
 from .core.vol_guardrail import VolRiskManager, VolGuardrail, VolatilityComposite, VolEstimates, GuardrailState

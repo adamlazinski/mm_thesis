@@ -150,6 +150,7 @@ class GLFTMarketMaker:
         kappa: float = 1.5,
         order_size: float = 0.001,
         min_spread_bps: float = 0.1,
+        max_spread_bps: Optional[float] = None,
         max_inventory: float = 0.1,
         tick_size: float = 0.01,
         kappa_from_stats: bool = True,
@@ -159,6 +160,7 @@ class GLFTMarketMaker:
         self.kappa = kappa
         self.order_size = order_size
         self.min_spread_bps = min_spread_bps
+        self.max_spread_bps = max_spread_bps
         self.max_inventory = max_inventory
         self.tick_size = tick_size
         self.kappa_from_stats = kappa_from_stats
@@ -297,6 +299,11 @@ class GLFTMarketMaker:
         # Apply min spread floor (in price units)
         min_half_spread = self.min_spread_bps * mid / 20000.0  # bps → half-spread in dollars
         half_spread = max(half_spread, min_half_spread)
+
+        # Optional ceiling — cap spread so the reservation price formula does the work
+        if self.max_spread_bps is not None:
+            max_half_spread = self.max_spread_bps * mid / 20000.0
+            half_spread = min(half_spread, max_half_spread)
 
         # --- Raw quotes ---
         bid_raw = r - half_spread

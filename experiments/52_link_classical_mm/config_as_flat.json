@@ -1,0 +1,29 @@
+{
+  "data_dir":       "data/real",
+  "start":          "2026-04-01",
+  "end":            "2026-04-30",
+  "symbol":         "LINK",
+  "output_dir":     "experiments/52_link_classical_mm/results_as_flat",
+
+  "strategy":       "pure_as",
+  "gamma":          1e-9,
+  "t_scaling":      3600,
+  "order_size":     5.0,
+  "tick_size":      0.01,
+  "min_spread_bps": 11.0,
+  "max_inventory":  50.0,
+  "maker_fee":      0.0,
+  "latency":        0.1,
+  "quote_freq":     0.5,
+  "kappa_as_min":   2.08,
+
+  "vol_window":     120,
+  "arrival_window": 60,
+  "ewma_alpha":     0.9,
+  "guardrail":      false,
+  "short_gap":      2.0,
+  "long_gap":       30.0,
+  "timestamp":      "time_exchange",
+
+  "notes": "A-S flat: gamma~0, no inventory skew. Posts at 0.5-tick touch (11 bps). Baseline showing adverse-selection cost without any inventory management."
+}

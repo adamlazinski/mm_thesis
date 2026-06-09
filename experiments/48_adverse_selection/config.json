@@ -1,0 +1,10 @@
+{
+  "data_dir":    "data/real",
+  "start":       "2025-06-11",
+  "end":         "2025-06-27",
+  "symbol":      "BTC",
+  "tick_size":   0.01,
+  "horizons":    [1, 5, 30, 60, 300, 1800],
+  "output_dir":  "experiments/48_adverse_selection/analysis",
+  "notes": "Adverse selection decomposition: E[AS|delta,h] and net PnL = delta - AS for BTC/USDT. Tests whether wider spreads are profitable after accounting for direction-conditional mid drift. Key question: is there a delta* > 0 maximising net PnL?"
+}

@@ -488,6 +488,236 @@ def rolling_fit(
         df['hour']       = df['window_mid'].dt.hour
     return df
 
+# ============================================================
+# Approach C — crossing intensity kappa
+# ============================================================
+
+def crossing_intensity_curve(
+    quotes: pd.DataFrame,
+    horizon: float = 1.0,
+    eval_step: float = 0.5,
+    max_delta_ticks: int = 10,
+    tick: float = TICK,
+) -> pd.DataFrame:
+    """
+    Compute empirical mid-price crossing rate λ(δ) = P(|Δm(h)| ≥ δ) / h.
+
+    Evaluates on a uniform eval_step grid, looks up mid(t+horizon) from quotes.
+    Returns DataFrame with columns: delta_ticks, delta, rate.
+    """
+    ts  = (quotes['ts'].astype(np.int64) / 1e9).values
+    mid = quotes['mid'].values
+
+    t_grid = np.arange(ts[0], ts[-1] - horizon, eval_step)
+
+    idx_t  = np.searchsorted(ts, t_grid,           side='right') - 1
+    idx_th = np.searchsorted(ts, t_grid + horizon, side='right') - 1
+
+    valid = (idx_t >= 0) & (idx_th >= 0) & (idx_th < len(mid))
+    mid_t  = mid[idx_t[valid]]
+    mid_th = mid[idx_th[valid]]
+    abs_move = np.abs(mid_th - mid_t)
+
+    deltas_ticks = np.arange(0.5, max_delta_ticks + 0.5, 0.5)
+    rows = []
+    for dt in deltas_ticks:
+        d = dt * tick
+        rate = (abs_move >= d).mean() / horizon
+        rows.append({'delta_ticks': dt, 'delta': d, 'rate': rate, 'n': valid.sum()})
+    return pd.DataFrame(rows)
+
+
+def fit_crossing_intensity(
+    curve: pd.DataFrame,
+    min_delta_ticks: float = 0.5,
+    tick: float = TICK,
+) -> dict:
+    """
+    Fit pure and two-component exponential to a crossing intensity curve.
+
+    Parameters
+    ----------
+    curve : output of crossing_intensity_curve()
+    min_delta_ticks : skip sub-tick noise near δ=0
+
+    Returns dict with keys: exponential, shifted, preferred, delta_aic
+    Same structure as compare_fits() — drop-in comparable.
+    """
+    sub = curve[curve['delta_ticks'] >= min_delta_ticks].copy()
+    x   = sub['delta_ticks'].values
+    y   = sub['rate'].values
+
+    rate_df = pd.DataFrame({'delta': x, 'fill_prob': y})
+    return compare_fits(rate_df, min_delta=min_delta_ticks)
+
+
+def crossing_intensity_rolling(
+    quotes: pd.DataFrame,
+    horizon: float = 1.0,
+    eval_step: float = 0.5,
+    window_min: int = ROLL_WINDOW,
+    step_min: int = ROLL_STEP,
+    max_delta_ticks: int = 10,
+    tick: float = TICK,
+) -> pd.DataFrame:
+    """
+    Rolling crossing intensity — one fit per time window.
+    Returns DataFrame with kappa_exp, kappa_sh, A_mom, mom_frac per window.
+    """
+    t_min = quotes['ts'].min()
+    t_max = quotes['ts'].max()
+    window = pd.Timedelta(minutes=window_min)
+    step   = pd.Timedelta(minutes=step_min)
+
+    results = []
+    t = t_min
+    while t + window <= t_max:
+        t_end = t + window
+        sub_q = quotes[
+            (quotes['ts'] >= t) & (quotes['ts'] < t_end + pd.Timedelta(seconds=horizon))
+        ]
+        if len(sub_q) < 100:
+            t += step
+            continue
+
+        curve = crossing_intensity_curve(sub_q, horizon, eval_step, max_delta_ticks, tick)
+        fits  = fit_crossing_intensity(curve)
+
+        ex = fits.get('exponential') or {}
+        sh = fits.get('shifted') or {}
+        results.append({
+            'window_mid':  t + window / 2,
+            'kappa_exp':   ex.get('kappa'),
+            'A_exp':       ex.get('A'),
+            'r2_exp':      ex.get('r2'),
+            'kappa_sh':    sh.get('kappa'),
+            'A_liq':       sh.get('A_liq'),
+            'A_mom':       sh.get('A_floor'),
+            'mom_frac':    sh.get('mom_fraction'),
+            'r2_sh':       sh.get('r2'),
+            'preferred':   fits.get('preferred'),
+        })
+        t += step
+
+    df = pd.DataFrame(results)
+    if len(df):
+        df['window_mid'] = pd.to_datetime(df['window_mid'])
+        df['hour']       = df['window_mid'].dt.hour
+    return df
+
+
+# ============================================================
+# L2-conditioned crossing intensity (requires orderbook data)
+# ============================================================
+
+def _depth_at_level(levels: list, target_price: float, side: str) -> float:
+    """Cumulative size from best quote out to target_price (inclusive)."""
+    total = 0.0
+    for lvl in levels:
+        p = lvl['price']
+        if side == 'bid' and p >= target_price:
+            total += lvl['size']
+        elif side == 'ask' and p <= target_price:
+            total += lvl['size']
+        else:
+            break
+    return total
+
+
+def l2_conditioned_crossing(
+    quotes: pd.DataFrame,
+    orderbooks: pd.DataFrame,
+    horizon: float = 1.0,
+    eval_step: float = 0.5,
+    delta_ticks: float = 0.5,
+    n_depth_bins: int = 4,
+    tick: float = 0.01,
+) -> pd.DataFrame:
+    """
+    L2-conditioned crossing intensity at a single δ.
+
+    For each evaluation point t:
+      - Record |Δm(h)| (crossed or not at δ)
+      - Look up queue depth Q at the target level from the nearest orderbook snapshot
+    Then bin events by Q and compute λ(δ | Q) for each bin.
+
+    Returns DataFrame with columns: depth_bin, depth_lo, depth_hi,
+                                    rate, n, depth_mean.
+    """
+    if 'ts' not in orderbooks.columns:
+        orderbooks = orderbooks.copy()
+        orderbooks['ts'] = pd.to_datetime(orderbooks['time_exchange'], utc=True)
+    ob_ts  = (orderbooks['ts'].astype(np.int64) / 1e9).values
+    ob_bids = orderbooks['bids'].values
+    ob_asks = orderbooks['asks'].values
+
+    ts  = (quotes['ts'].astype(np.int64) / 1e9).values
+    mid = quotes['mid'].values
+
+    t_grid = np.arange(ts[0], ts[-1] - horizon, eval_step)
+    idx_t  = np.searchsorted(ts, t_grid,           side='right') - 1
+    idx_th = np.searchsorted(ts, t_grid + horizon, side='right') - 1
+    valid  = (idx_t >= 0) & (idx_th >= 0) & (idx_th < len(mid))
+
+    delta = delta_ticks * tick
+
+    crossed  = []
+    q_depths = []
+    for i in np.where(valid)[0]:
+        m0  = mid[idx_t[i]]
+        m1  = mid[idx_th[i]]
+        t0  = t_grid[i]
+        moved = abs(m1 - m0) >= delta
+
+        ob_idx = np.searchsorted(ob_ts, t0, side='right') - 1
+        if ob_idx < 0:
+            continue
+
+        bids = ob_bids[ob_idx]
+        asks = ob_asks[ob_idx]
+        best_bid = float(bids[0]['price']) if len(bids) > 0 else np.nan
+        best_ask = float(asks[0]['price']) if len(asks) > 0 else np.nan
+        mid_snap = (best_bid + best_ask) / 2 if not (np.isnan(best_bid) or np.isnan(best_ask)) else m0
+
+        # Depth on both sides out to δ from mid_snap
+        bid_target = mid_snap - delta
+        ask_target = mid_snap + delta
+        q_bid = _depth_at_level(list(bids), bid_target, 'bid')
+        q_ask = _depth_at_level(list(asks), ask_target, 'ask')
+        q_avg = (q_bid + q_ask) / 2
+
+        crossed.append(float(moved))
+        q_depths.append(q_avg)
+
+    if not crossed:
+        return pd.DataFrame()
+
+    crossed  = np.array(crossed)
+    q_depths = np.array(q_depths)
+
+    quantiles = np.linspace(0, 100, n_depth_bins + 1)
+    edges     = np.percentile(q_depths, quantiles)
+
+    rows = []
+    for k in range(n_depth_bins):
+        lo, hi = edges[k], edges[k + 1]
+        mask = (q_depths >= lo) & (q_depths < hi) if k < n_depth_bins - 1 \
+               else (q_depths >= lo) & (q_depths <= hi)
+        n  = mask.sum()
+        if n == 0:
+            continue
+        rate = crossed[mask].mean() / horizon
+        rows.append({
+            'depth_bin':  k + 1,
+            'depth_lo':   lo,
+            'depth_hi':   hi,
+            'depth_mean': q_depths[mask].mean(),
+            'rate':       rate,
+            'n':          int(n),
+        })
+    return pd.DataFrame(rows)
+
+
 def simulate_survival_data_fast(
     trades, quotes,
     half_spread_ticks,

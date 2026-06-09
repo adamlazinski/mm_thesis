@@ -1,0 +1,32 @@
+{
+  "data_dir":       "data/real",
+  "start":          "2026-04-01",
+  "end":            "2026-04-30",
+  "symbol":         "LINK",
+  "output_dir":     "experiments/52_link_classical_mm/results_as_flat_queue",
+
+  "strategy":       "pure_as",
+  "gamma":          1e-9,
+  "t_scaling":      3600,
+  "order_size":     5.0,
+  "tick_size":      0.01,
+  "min_spread_bps": 11.0,
+  "max_inventory":  50.0,
+  "maker_fee":      0.0,
+  "latency":        0.1,
+  "quote_freq":     0.5,
+  "kappa_as_min":   2.08,
+
+  "queue_model":          "l2",
+  "queue_fraction":       0.001,
+
+  "vol_window":     120,
+  "arrival_window": 60,
+  "ewma_alpha":     0.9,
+  "guardrail":      false,
+  "short_gap":      2.0,
+  "long_gap":       30.0,
+  "timestamp":      "time_exchange",
+
+  "notes": "A-S flat with L2 queue model. queue_fraction=0.001 = ~0.1% of visible depth ahead of us (~5 LINK). Raw Binance best-bid depth is ~5000 LINK; queue_fraction scales it down to the competing-HFT share."
+}

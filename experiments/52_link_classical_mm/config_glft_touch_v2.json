@@ -1,0 +1,32 @@
+{
+  "data_dir":       "data/real",
+  "start":          "2026-04-01",
+  "end":            "2026-04-30",
+  "symbol":         "LINK",
+  "output_dir":     "experiments/52_link_classical_mm/results_glft_touch_v2",
+
+  "strategy":       "glft",
+  "gamma":          4.3,
+  "glft_A":         0.072,
+  "glft_kappa":     208.0,
+  "kappa_from_stats": false,
+  "t_scaling":      3600,
+  "order_size":     5.0,
+  "tick_size":      0.01,
+  "min_spread_bps": 11.0,
+  "max_spread_bps": 11.0,
+  "max_inventory":  50.0,
+  "maker_fee":      0.0,
+  "latency":        0.1,
+  "quote_freq":     0.5,
+
+  "vol_window":     120,
+  "arrival_window": 60,
+  "ewma_alpha":     0.9,
+  "guardrail":      false,
+  "short_gap":      2.0,
+  "long_gap":       30.0,
+  "timestamp":      "time_exchange",
+
+  "notes": "GLFT touch v2: max_spread_bps=11 forces touch posting (identical spread to A-S flat/calibrated). gamma=4.3 gives ~2-tick reservation skew at max_inv=50 LINK (same as A-S calibrated v2). A=0.072, kappa=208 from Approach C. GLFT value is purely in reservation price / inventory skew, not spread width."
+}

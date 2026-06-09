@@ -1,0 +1,62 @@
+{
+  "n_days": 17,
+  "by_horizon": {
+    "1": {
+      "delta_star_ticks": 500.0,
+      "breakeven_delta_ticks": null,
+      "at_touch_mean_as_ticks": 119.608,
+      "at_touch_net_pnl_ticks": -119.108
+    },
+    "5": {
+      "delta_star_ticks": 500.0,
+      "breakeven_delta_ticks": null,
+      "at_touch_mean_as_ticks": 181.506,
+      "at_touch_net_pnl_ticks": -181.006
+    },
+    "30": {
+      "delta_star_ticks": 500.0,
+      "breakeven_delta_ticks": null,
+      "at_touch_mean_as_ticks": 243.873,
+      "at_touch_net_pnl_ticks": -243.373
+    },
+    "60": {
+      "delta_star_ticks": 500.0,
+      "breakeven_delta_ticks": null,
+      "at_touch_mean_as_ticks": 243.605,
+      "at_touch_net_pnl_ticks": -243.105
+    },
+    "300": {
+      "delta_star_ticks": 500.0,
+      "breakeven_delta_ticks": null,
+      "at_touch_mean_as_ticks": 247.93,
+      "at_touch_net_pnl_ticks": -247.43
+    },
+    "1800": {
+      "delta_star_ticks": 500.0,
+      "breakeven_delta_ticks": null,
+      "at_touch_mean_as_ticks": 336.062,
+      "at_touch_net_pnl_ticks": -335.562
+    }
+  },
+  "fill_rates": {
+    "0.5": 34.8,
+    "1.0": 5.02,
+    "1.5": 4.95,
+    "2.0": 4.93,
+    "3.0": 4.92,
+    "5.0": 4.91,
+    "8.0": 4.89,
+    "10.0": 4.88,
+    "15.0": 4.86,
+    "20.0": 4.84,
+    "30.0": 4.8,
+    "50.0": 4.73,
+    "70.0": 4.66,
+    "80.0": 4.62,
+    "100.0": 4.54,
+    "150.0": 4.34,
+    "200.0": 4.12,
+    "350.0": 3.34,
+    "500.0": 2.52
+  }
+}

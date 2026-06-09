@@ -217,6 +217,94 @@ BTC_ACTION_NAMES = [
     "bid_only", "ask_only", "wide_bid_only",
 ]
 
+def make_action_space(
+    natural_spread_ticks: int,
+    min_delta: int = 0,
+    max_delta: Optional[int] = None,
+    n_levels: int = 4,
+    n_lean: int = 1,
+    include_patient: bool = True,
+    include_onesided: bool = False,
+) -> Tuple[List[Tuple[int, int, float]], List[str]]:
+    """
+    Build an action table from parameters instead of hardcoding asset-specific values.
+
+    Parameters
+    ----------
+    natural_spread_ticks : int
+        Half-spread of the natural market in ticks. Used as the anchor for
+        level spacing. E.g. 5 for LINK (5-tick half-spread), 0 for BTC at-touch.
+    min_delta : int
+        Minimum half-spread in ticks (0 = at-touch, natural_spread_ticks = at market).
+    max_delta : int or None
+        Maximum half-spread. Defaults to max(natural_spread_ticks * 3, min_delta + 10).
+    n_levels : int
+        Number of distance levels between min_delta and max_delta (log-spaced).
+    n_lean : int
+        Lean variants per symmetric action. 0 = symmetric only; 1 = add lean_bid +
+        lean_ask at ±1 tick; 2 = add ±2 tick lean as well.
+    include_patient : bool
+        Add a patient (2 s hold) variant at each level.
+    include_onesided : bool
+        Add bid_only / ask_only actions at the tightest level.
+
+    Returns
+    -------
+    params : list of (bid_ticks, ask_ticks, hold_sec)
+    names  : list of str
+    """
+    if max_delta is None:
+        max_delta = max(natural_spread_ticks * 3, min_delta + 10)
+
+    # Log-spaced levels rounded to nearest int, deduplicated
+    raw = np.logspace(np.log10(max(min_delta, 1)), np.log10(max_delta), n_levels)
+    levels: List[int] = []
+    seen = set()
+    if min_delta == 0:
+        levels.append(0)
+        seen.add(0)
+    for v in raw:
+        iv = int(round(v))
+        if iv not in seen:
+            levels.append(iv)
+            seen.add(iv)
+
+    params: List[Tuple[int, int, float]] = [(0, 0, 0.0)]
+    names: List[str] = ["halt"]
+
+    hold_normal = 0.5
+    hold_fast   = 0.25
+    hold_patient = 2.0
+
+    for d in levels:
+        label = f"d{d}"
+        # Symmetric fast
+        params.append((d, d, hold_fast))
+        names.append(f"{label}_sym_fast")
+        # Symmetric normal
+        params.append((d, d, hold_normal))
+        names.append(f"{label}_sym")
+        # Lean variants
+        for lean in range(1, n_lean + 1):
+            params.append((d - lean, d + lean, hold_normal))
+            names.append(f"{label}_lean_bid_l{lean}")
+            params.append((d + lean, d - lean, hold_normal))
+            names.append(f"{label}_lean_ask_l{lean}")
+        # Patient
+        if include_patient:
+            params.append((d, d, hold_patient))
+            names.append(f"{label}_patient")
+
+    if include_onesided and levels:
+        d0 = levels[0]
+        params.append((d0, -1, hold_normal))
+        names.append(f"d{d0}_bid_only")
+        params.append((-1, d0, hold_normal))
+        names.append(f"d{d0}_ask_only")
+
+    return params, names
+
+
 # Mapping from config "action_space" key to (params, names)
 ACTION_SPACES = {
     "link": (ACTION_PARAMS, ACTION_NAMES),

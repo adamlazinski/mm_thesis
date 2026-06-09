@@ -164,6 +164,7 @@ class Backtest:
         tolerance_ticks: float = 8,
         tick_size: float = 0.01,
         kappa_force_interval: float = 60.0,
+        markout_horizon: float = 1.0,
     ):
         self.strategy = strategy
         self.market_state = market_state or MarketState()
@@ -178,7 +179,8 @@ class Backtest:
         self.tolerance_ticks = tolerance_ticks
         self.tick_size = tick_size
         self.kappa_force_interval = kappa_force_interval
-        self.markout_horizon = 1.0  # seconds; post-fill mid comparison window
+        self.markout_horizon = markout_horizon
+        self._current_l2_snap = None
 
     def run(
         self,
@@ -288,15 +290,10 @@ class Backtest:
                             pnl_after=pnl_before,
                         ))
 
-                    # Full market state reset — pre-gap estimates are stale
-                    self.market_state = MarketState(
-                        vol_window=self.market_state.vol_window,
-                        arrival_window=self.market_state.arrival_window,
-                        ewma_alpha=self.market_state.ewma_alpha,
-                        spike_window=self.market_state.spike_window,
-                        kyle_alpha=self.market_state._kyle.alpha,
-                        kyle_min_obs=self.market_state._kyle.min_obs,
-                    )
+                    # Full market state reset — pre-gap estimates are stale.
+                    # clone_empty() preserves all hyperparams (kappa priors, VPIN
+                    # bucket size, momentum window, etc.) without carrying over history.
+                    self.market_state = self.market_state.clone_empty()
                     # Reset vol guardrail history too
                     if self.vol_risk_manager is not None:
                         max_inv = getattr(
@@ -378,6 +375,7 @@ class Backtest:
                     snap = l2_tracker.advance(q.timestamp)
                     if snap is not None:
                         self.market_state.on_book(snap)
+                        self._current_l2_snap = snap
 
                 # 2. Periodic kappa MLE update (prevents stale estimates in quiet periods)
                 if timestamp - self._last_kappa_update >= self.kappa_force_interval:
@@ -509,10 +507,26 @@ class Backtest:
         submitted_bid = quote_bid and decision.bid_size > 0
         submitted_ask = quote_ask and decision.ask_size > 0
 
+        # For L2 queue model, look up depth ahead of our order at submission time.
+        # queue_fraction scales raw L2 depth to approximate the HFT-competing
+        # portion of the queue (raw Binance depth includes large passive resting
+        # orders; typical competing HFT share is 1-10% of visible depth).
+        bid_queue = 0.0
+        ask_queue = 0.0
+        if om.queue_model == "l2" and self._current_l2_snap is not None:
+            snap = self._current_l2_snap
+            frac = getattr(om, "queue_fraction", 1.0)
+            if decision.bid_price <= snap.best_bid_price + 1e-9:
+                bid_queue = snap.best_bid_depth * frac
+            if decision.ask_price >= snap.best_ask_price - 1e-9:
+                ask_queue = snap.best_ask_depth * frac
+
         if submitted_bid:
-            om.submit_order("bid", decision.bid_price, decision.bid_size, timestamp)
+            om.submit_order("bid", decision.bid_price, decision.bid_size, timestamp,
+                            queue_ahead=bid_queue)
         if submitted_ask:
-            om.submit_order("ask", decision.ask_price, decision.ask_size, timestamp)
+            om.submit_order("ask", decision.ask_price, decision.ask_size, timestamp,
+                            queue_ahead=ask_queue)
 
         # Only notify the kappa estimator and log when at least one side is live.
         # In regime-paused cycles (should_quote_bid/ask both False) we cancel but

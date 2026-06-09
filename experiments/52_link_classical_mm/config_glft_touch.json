@@ -1,0 +1,31 @@
+{
+  "data_dir":       "data/real",
+  "start":          "2026-04-01",
+  "end":            "2026-04-30",
+  "symbol":         "LINK",
+  "output_dir":     "experiments/52_link_classical_mm/results_glft_touch",
+
+  "strategy":       "glft",
+  "gamma":          25.0,
+  "glft_A":         0.072,
+  "glft_kappa":     208.0,
+  "kappa_from_stats": false,
+  "t_scaling":      3600,
+  "order_size":     5.0,
+  "tick_size":      0.01,
+  "min_spread_bps": 11.0,
+  "max_inventory":  50.0,
+  "maker_fee":      0.0,
+  "latency":        0.1,
+  "quote_freq":     0.5,
+
+  "vol_window":     120,
+  "arrival_window": 60,
+  "ewma_alpha":     0.9,
+  "guardrail":      false,
+  "short_gap":      2.0,
+  "long_gap":       30.0,
+  "timestamp":      "time_exchange",
+
+  "notes": "GLFT touch: gamma=25 gives ~1-tick reservation skew at max_inv=50 (gentle). min_spread=11bps overrides the formula spread (touch posting). The GLFT value is purely in inventory skew formula, not spread width. Proper practical usage of ergodic calibration."
+}

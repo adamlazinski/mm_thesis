@@ -26,11 +26,89 @@ You can also synthesise data for testing with generate_synthetic_data().
 """
 
 from __future__ import annotations
+from abc import ABC, abstractmethod
 from typing import List, Tuple, Optional
 import numpy as np
 import pandas as pd
 
 from ..core.events import TradeEvent, QuoteEvent
+
+
+class DataAdapter(ABC):
+    """
+    Abstract base for asset-specific data sources.
+
+    Implement this to plug in any new asset or exchange:
+      - CoinAPI parquet (crypto) → CoinAPIAdapter
+      - Polymarket CLOB CSV → PolymarketAdapter
+      - Energy market tick files → EnergyAdapter
+      - etc.
+
+    The backtest runner only calls load_day() so everything else
+    (file naming, column mapping, timestamp normalisation) is encapsulated here.
+    """
+
+    @abstractmethod
+    def load_day(
+        self,
+        symbol: str,
+        date: str,
+    ) -> Tuple[List[TradeEvent], List[QuoteEvent]]:
+        """
+        Load one calendar day of tick data.
+
+        Parameters
+        ----------
+        symbol : str
+            Asset identifier (e.g. "BTC", "ETH", "LINK").
+        date : str
+            ISO-8601 date string, e.g. "2025-06-11".
+
+        Returns
+        -------
+        trades : list of TradeEvent
+        quotes : list of QuoteEvent
+            Both sorted by timestamp ascending.
+        """
+
+    @abstractmethod
+    def available_dates(self, symbol: str) -> List[str]:
+        """Return ISO-8601 date strings for which data exists."""
+
+
+class CoinAPIAdapter(DataAdapter):
+    """
+    DataAdapter for CoinAPI parquet files in the standard layout:
+        <data_dir>/trades_<SYMBOL>_<YYYY-MM-DD>.parquet
+        <data_dir>/quotes_<SYMBOL>_<YYYY-MM-DD>.parquet
+    """
+
+    def __init__(self, data_dir: str, timestamp_col: str = "time_exchange"):
+        self._loader = DataLoader()
+        self.data_dir = data_dir
+        self.timestamp_col = timestamp_col
+
+    def load_day(
+        self,
+        symbol: str,
+        date: str,
+    ) -> Tuple[List[TradeEvent], List[QuoteEvent]]:
+        trades_path = f"{self.data_dir}/trades_{symbol}_{date}.parquet"
+        quotes_path = f"{self.data_dir}/quotes_{symbol}_{date}.parquet"
+        return self._loader.load_coinapi(
+            trades_path, quotes_path, timestamp_col=self.timestamp_col
+        )
+
+    def available_dates(self, symbol: str) -> List[str]:
+        import glob
+        import re
+        paths = glob.glob(f"{self.data_dir}/trades_{symbol}_*.parquet")
+        dates = []
+        for p in paths:
+            m = re.search(r"(\d{4}-\d{2}-\d{2})\.parquet$", p)
+            if m:
+                dates.append(m.group(1))
+        return sorted(dates)
 
 
 class DataLoader:

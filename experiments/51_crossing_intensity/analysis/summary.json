@@ -1,0 +1,102 @@
+{
+  "link": {
+    "approach_C_pure_exp": {
+      "kappa": 2.0829,
+      "A": 0.072,
+      "r2": 0.9735
+    },
+    "approach_C_two_comp": {
+      "kappa": 2.0829,
+      "A_liq": 0.072,
+      "A_mom": 0.0,
+      "mom_frac": 0.0,
+      "r2": 0.9735
+    },
+    "rolling_kappa_sh_median": 2.1237,
+    "l2_conditioned": {
+      "delta_0.5_ticks": [
+        {
+          "depth_bin": 1,
+          "depth_mean": 6018.3,
+          "rate": 0.0349
+        },
+        {
+          "depth_bin": 2,
+          "depth_mean": 7372.8,
+          "rate": 0.0235
+        },
+        {
+          "depth_bin": 3,
+          "depth_mean": 8537.4,
+          "rate": 0.0222
+        },
+        {
+          "depth_bin": 4,
+          "depth_mean": 10759.8,
+          "rate": 0.0191
+        }
+      ],
+      "delta_1.0_ticks": [
+        {
+          "depth_bin": 1,
+          "depth_mean": 6018.4,
+          "rate": 0.0166
+        },
+        {
+          "depth_bin": 2,
+          "depth_mean": 7372.8,
+          "rate": 0.011
+        },
+        {
+          "depth_bin": 3,
+          "depth_mean": 8537.4,
+          "rate": 0.0101
+        },
+        {
+          "depth_bin": 4,
+          "depth_mean": 10759.8,
+          "rate": 0.0088
+        }
+      ],
+      "delta_2.0_ticks": [
+        {
+          "depth_bin": 1,
+          "depth_mean": 22695.1,
+          "rate": 0.0001
+        },
+        {
+          "depth_bin": 2,
+          "depth_mean": 26424.6,
+          "rate": 0.0
+        },
+        {
+          "depth_bin": 3,
+          "depth_mean": 29316.1,
+          "rate": 0.0
+        },
+        {
+          "depth_bin": 4,
+          "depth_mean": 34477.0,
+          "rate": 0.0
+        }
+      ]
+    }
+  },
+  "btc": {
+    "approach_C_pure_exp": {
+      "kappa": 0.0022,
+      "A": 0.1566,
+      "r2": 0.5668
+    },
+    "approach_C_two_comp": {
+      "kappa": 1.0405,
+      "A_liq": 0.0085,
+      "A_mom": 0.1542,
+      "mom_frac": 0.9478,
+      "r2": 0.9679
+    },
+    "reference_approach_A": 0.31,
+    "reference_approach_B_hq": 1.85
+  },
+  "horizon_s": 1.0
+}

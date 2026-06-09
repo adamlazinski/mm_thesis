@@ -1,0 +1,29 @@
+{
+  "data_dir":       "data/real",
+  "start":          "2026-04-01",
+  "end":            "2026-04-30",
+  "symbol":         "LINK",
+  "output_dir":     "experiments/53_link_spread_sweep/results_17p8",
+
+  "strategy":       "pure_as",
+  "gamma":          1e-9,
+  "t_scaling":      3600,
+  "order_size":     5.0,
+  "tick_size":      0.001,
+  "min_spread_bps": 17.8,
+  "max_inventory":  50.0,
+  "maker_fee":      0.0,
+  "latency":        0.1,
+  "quote_freq":     0.5,
+  "kappa_as_min":   2.08,
+
+  "vol_window":     120,
+  "arrival_window": 60,
+  "ewma_alpha":     0.9,
+  "guardrail":      false,
+  "short_gap":      2.0,
+  "long_gap":       30.0,
+  "timestamp":      "time_exchange",
+
+  "notes": "Exp 53: spread sweep. 17.8 bps = 8.0 ticks half-spread. 3 ticks outside the natural touch. Captures only sweep-driven fills."
+}

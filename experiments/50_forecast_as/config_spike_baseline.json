@@ -1,0 +1,33 @@
+{
+  "data_dir":       "data/real",
+  "start":          "2025-06-23",
+  "end":            "2025-06-27",
+  "symbol":         "BTC",
+  "output_dir":     "experiments/50_forecast_as/results_spike_baseline",
+
+  "strategy":       "pure_as_spike",
+  "gamma":          0.086,
+  "t_scaling":      3600,
+  "order_size":     0.001,
+  "min_spread_bps": 0.05,
+  "max_inventory":  0.02,
+  "maker_fee":      0.0,
+  "latency":        0.1,
+  "quote_freq":     0.5,
+  "kappa_as_min":   1.5,
+
+  "spike_multiplier":    3.0,
+  "spike_cooldown":      5.0,
+  "spike_min_baseline":  0.5,
+
+  "vol_window":     120,
+  "arrival_window": 60,
+  "ewma_alpha":     0.9,
+
+  "guardrail":      false,
+  "short_gap":      2.0,
+  "long_gap":       30.0,
+  "timestamp":      "time_exchange",
+
+  "notes": "Pure A-S + spike filter only, no forecast. Fair comparison against forecast_as_spike."
+}

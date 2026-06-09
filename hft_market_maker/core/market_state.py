@@ -182,12 +182,31 @@ class MarketState:
         kappa_as_min_fills: int = 50,
         kappa_as_lam_base: float = 0.5,
         kappa_as_update_every: int = 10,
-        vpin_bucket_volume: float = 0.5,
+        vpin_bucket_volume: Optional[float] = None,
         vpin_n_buckets: int = 50,
         spike_window: float = 5.0,
         kyle_alpha: float = 0.01,
         kyle_min_obs: int = 50,
     ):
+        self._init_kwargs = dict(
+            vol_window=vol_window,
+            arrival_window=arrival_window,
+            ewma_alpha=ewma_alpha,
+            momentum_window=momentum_window,
+            momentum_clip=momentum_clip,
+            kappa_as_prior=kappa_as_prior,
+            A_prior=A_prior,
+            kappa_as_window=kappa_as_window,
+            kappa_as_min_fills=kappa_as_min_fills,
+            kappa_as_lam_base=kappa_as_lam_base,
+            kappa_as_update_every=kappa_as_update_every,
+            vpin_bucket_volume=vpin_bucket_volume,
+            vpin_n_buckets=vpin_n_buckets,
+            spike_window=spike_window,
+            kyle_alpha=kyle_alpha,
+            kyle_min_obs=kyle_min_obs,
+        )
+
         self.vol_window     = vol_window
         self.arrival_window = arrival_window
         self.ewma_alpha     = ewma_alpha
@@ -223,10 +242,15 @@ class MarketState:
             update_every=kappa_as_update_every,
         )
 
-        self._vpin = VPINEstimator(
-            bucket_volume=vpin_bucket_volume,
-            n_buckets=vpin_n_buckets,
-        )
+        # vpin_bucket_volume=None disables VPIN (useful for assets where a
+        # sensible bucket size is unknown; stats.vpin stays at 0.5 sentinel).
+        if vpin_bucket_volume is not None:
+            self._vpin: Optional[VPINEstimator] = VPINEstimator(
+                bucket_volume=vpin_bucket_volume,
+                n_buckets=vpin_n_buckets,
+            )
+        else:
+            self._vpin = None
 
         self._kyle = KyleLambdaEstimator(alpha=kyle_alpha, min_obs=kyle_min_obs)
         self._kyle_signed_vol_acc: float = 0.0   # signed vol since last quote event
@@ -291,7 +315,8 @@ class MarketState:
             self._ofi_sells += quantity
 
         self._ofi_window_trades.append((timestamp, side, quantity))
-        self._vpin.on_trade(quantity, side)
+        if self._vpin is not None:
+            self._vpin.on_trade(quantity, side)
         self._kyle_signed_vol_acc += quantity if side == "buy" else -quantity
 
         cutoff = timestamp - self.arrival_window
@@ -317,7 +342,8 @@ class MarketState:
         self.stats.lambda_buy           = self._get_lambda("buy")
         self.stats.lambda_sell          = self._get_lambda("sell")
         self.stats.ofi                  = self._get_ofi()
-        self.stats.vpin                 = self._vpin.vpin
+        if self._vpin is not None:
+            self.stats.vpin = self._vpin.vpin
 
     def on_mm_fill(self, timestamp: float, half_spread: float) -> None:
         """
@@ -438,3 +464,7 @@ class MarketState:
 
     def kappa_as_summary(self) -> dict:
         return self._kappa_estimator.summary()
+
+    def clone_empty(self) -> "MarketState":
+        """Return a fresh MarketState with the same hyperparameters, no history."""
+        return MarketState(**self._init_kwargs)

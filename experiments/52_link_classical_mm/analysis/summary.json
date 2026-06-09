@@ -1,0 +1,38 @@
+{
+  "as_flat": {
+    "label": "A-S flat (\u03b3\u22480)",
+    "n_days": 30,
+    "total_pnl": 1428.325,
+    "mean_daily_pnl": 47.6108,
+    "std_daily_pnl": 49.018,
+    "sharpe": 0.9713,
+    "pct_profitable": 90.0,
+    "total_fills": 94226,
+    "avg_spread_bps": 22.6991,
+    "mm_only_pnl": 1428.325
+  },
+  "as_calibrated_v2": {
+    "label": "A-S calibrated (\u03b3=3.57e-4, 2-tick)",
+    "n_days": 30,
+    "total_pnl": 676.85,
+    "mean_daily_pnl": 22.5617,
+    "std_daily_pnl": 36.9601,
+    "sharpe": 0.6104,
+    "pct_profitable": 66.6667,
+    "total_fills": 95651,
+    "avg_spread_bps": 22.1453,
+    "mm_only_pnl": 676.85
+  },
+  "glft_touch_v2": {
+    "label": "GLFT touch (\u03b3=4.3, max=11bps)",
+    "n_days": 30,
+    "total_pnl": 648.325,
+    "mean_daily_pnl": 21.6108,
+    "std_daily_pnl": 37.279,
+    "sharpe": 0.5797,
+    "pct_profitable": 66.6667,
+    "total_fills": 95672,
+    "avg_spread_bps": 22.1005,
+    "mm_only_pnl": 648.325
+  }
+}
