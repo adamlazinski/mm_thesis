@@ -1,0 +1,40 @@
+{
+    "data_dir":          "data/real",
+    "train_start":       "2025-06-11",
+    "train_end":         "2025-06-27",
+    "eval_start":        "2025-06-28",
+    "eval_end":          "2025-07-10",
+    "symbol":            "BTC",
+    "output_dir":        "experiments/46_btc_rl/results_tabular",
+    "checkpoint_dir":    "experiments/46_btc_rl/checkpoints_tabular",
+    "agent":             "tabular",
+
+    "tick_size":         0.01,
+    "order_size":        0.001,
+    "max_inventory":     0.02,
+    "daily_loss_limit":  2.0,
+    "maker_fee":         0.0,
+    "latency":           0.1,
+    "quote_freq":        0.5,
+    "vol_window":        120,
+    "arrival_window":    60,
+    "ewma_alpha":        0.9,
+    "inventory_penalty": 0.02,
+
+    "learning_rate":     0.1,
+    "discount":          0.99,
+    "epsilon_start":     1.0,
+    "epsilon_end":       0.05,
+    "epsilon_decay":     0.999995,
+
+    "n_epochs":          30,
+    "eval_every":        5,
+    "save_every":        10,
+    "seed":              42,
+
+    "short_gap":         2.0,
+    "long_gap":          30.0,
+    "timestamp":         "time_exchange",
+
+    "notes": "TabularQ on BTC/USDT. Same IS/OOS split as LINK (exp 39) for direct comparison. tick_size=0.01, order_size=0.001 BTC. Natural spread=1 tick — all RL actions (3-9 ticks) are outside the market touch; exponential fill curve applies (kappa~0.31/tick). daily_loss_limit=$2 scaled to 0.001 BTC order notional."
+}

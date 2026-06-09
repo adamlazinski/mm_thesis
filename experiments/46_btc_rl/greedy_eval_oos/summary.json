@@ -1,0 +1,9 @@
+{
+  "mean_pnl": -2.0833,
+  "total_pnl": -27.0835,
+  "std_pnl": 0.0624,
+  "sharpe": -529.84,
+  "win_rate": 0.0,
+  "n_days": 13,
+  "mean_fills": 135.8
+}

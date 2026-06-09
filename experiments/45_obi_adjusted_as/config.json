@@ -1,0 +1,35 @@
+{
+    "data_dir":         "data/real",
+    "start":            "2026-04-01",
+    "end":              "2026-04-30",
+    "symbol":           "LINK",
+    "output_dir":       "experiments/45_obi_adjusted_as/results",
+
+    "strategy":         "as_obi_loss_limit",
+    "gamma":            1e-8,
+    "t_scaling":        86400.0,
+    "tick_size":        0.001,
+    "order_size":       5.0,
+    "min_spread_bps":   6.4381,
+    "max_inventory":    38.0,
+    "maker_fee":        0.0,
+    "latency":          0.1,
+    "quote_freq":       0.5,
+
+    "obi_alpha":        0.00154,
+
+    "daily_loss_limit": 25.011,
+    "liquidate_ticks":  null,
+
+    "vol_window":       120,
+    "arrival_window":   60,
+    "ewma_alpha":       0.9,
+    "kappa_as_min":     1.5,
+
+    "short_gap":        2.0,
+    "long_gap":         30.0,
+    "tolerance_ticks":  0.5,
+    "timestamp":        "time_exchange",
+
+    "notes": "OBI-adjusted reservation price, obi_alpha=0.00154 from regression slope 15.39 bps/unit"
+}
