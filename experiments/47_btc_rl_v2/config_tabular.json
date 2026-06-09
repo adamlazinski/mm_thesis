@@ -1,0 +1,36 @@
+{
+  "data_dir":          "data/real",
+  "train_start":       "2025-06-11",
+  "train_end":         "2025-06-27",
+  "eval_start":        "2025-06-28",
+  "eval_end":          "2025-07-10",
+  "symbol":            "BTC",
+  "output_dir":        "experiments/47_btc_rl_v2/results_tabular",
+  "checkpoint_dir":    "experiments/47_btc_rl_v2/checkpoints_tabular",
+  "agent":             "tabular",
+  "action_space":      "btc",
+
+  "tick_size":         0.01,
+  "order_size":        0.01,
+  "max_inventory":     0.1,
+  "daily_loss_limit":  20.0,
+  "maker_fee":         0.0,
+  "latency":           0.1,
+  "quote_freq":        0.5,
+  "vol_window":        120,
+  "arrival_window":    60,
+  "ewma_alpha":        0.9,
+  "inventory_penalty": 0.02,
+
+  "learning_rate":     0.05,
+  "discount":          0.99,
+  "epsilon_start":     1.0,
+  "epsilon_end":       0.05,
+  "epsilon_decay":     0.999995,
+
+  "n_epochs":          30,
+  "eval_every":        5,
+  "save_every":        10,
+  "seed":              42,
+  "notes": "BTC TabularQ v2: expanded action space 5–80 ticks + lean variants + one-sided quotes (27 actions). order_size=0.01 BTC (10x Exp 46) for stronger learning signal. max_inventory=0.1 BTC. Tests (1) flat-fill hypothesis: if fill curve flat, 50-80 tick actions still fill — and earn more per fill; (2) inventory management via lean/one-sided actions."
+}

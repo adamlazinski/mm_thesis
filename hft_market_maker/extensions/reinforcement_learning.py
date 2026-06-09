@@ -9,23 +9,30 @@ Two approaches:
 
 Both share the same action space and state encoder.
 
-Action space (N_ACTIONS = 19)
--------------------------------
-Each action specifies three things jointly:
-  - bid_ticks  : half-spread on the bid side  (ticks from mid)
-  - ask_ticks  : half-spread on the ask side  (ticks from mid)
-  - hold_sec   : how long to hold this order before recomputing
+Action spaces
+-------------
+Two named action tables are provided:
 
-Expressing spreads in absolute ticks (not multipliers) makes the action
-table directly interpretable against the asset's market structure.
-For LINK the natural spread is 5 ticks each side; for BTC the default
-tick_size is 0.01 and natural spread ~1-2 ticks.
+  ACTION_PARAMS ("link" default, N=19)
+    Designed for LINK/USDT with a 10-tick natural spread.
+    Actions 1–4 post INSIDE the market (3–4 ticks from mid vs 5-tick half-spread).
+    Actions 8–11 sit AT the market.  Actions 12–18 sit outside.
 
-The "inside/at/outside" labels refer to LINK's natural spread at 5 ticks.
-For BTC the same action IDs correspond to different fill-curve regimes.
+  BTC_ACTION_PARAMS ("btc", N=19)
+    Designed for BTC/USDT with a 1-tick natural spread.
+    With mid at X.005 (half-way between ticks):
+      bid_ticks=0 → floor(mid)   = natural bid (AT TOUCH)
+      ask_ticks=0 → ceil(mid)    = natural ask (AT TOUCH)
+      bid_ticks=1 → 1 tick below natural bid (just outside)
+    Actions 1–5 are at-touch or just-outside (the critical missing range in exp 46).
+    Actions 6–18 extend out to 5 ticks for high-vol or directional regimes.
 
-  ID  Name                bid  ask  hold   Fill regime (LINK)
-  --  ----                ---  ---  ----   ------------------
+Each entry: (bid_half_ticks, ask_half_ticks, hold_sec)
+bid_half_ticks = 0 means halt (action 0 only) OR at-touch (actions 1+).
+
+  LINK action table (N_ACTIONS = 19)
+  ID  Name                bid  ask  hold   Fill regime (LINK, 5-tick half-spread)
+  --  ----                ---  ---  ----   ----------------------------------------
    0  halt                 —    —   —      no quotes
    1  inside_sym_fast      3    3   0.25s  inside market, fast repost
    2  inside_sym           3    3   0.5s   inside market, normal
@@ -45,6 +52,29 @@ For BTC the same action IDs correspond to different fill-curve regimes.
   16  wide_sym             8    8   2.0s   very selective, wide
   17  wide_lean_bid        7    9   2.0s   sell, very wide
   18  wide_lean_ask        9    7   2.0s   buy, very wide
+
+  BTC action table (N_BTC_ACTIONS = 19)
+  ID  Name                bid  ask  hold   Fill regime (BTC, 0.5-tick half-spread)
+  --  ----                ---  ---  ----   ----------------------------------------
+   0  halt                 —    —   —      no quotes
+   1  at_touch_fast        0    0   0.25s  at natural bid/ask, quick repost
+   2  at_touch             0    0   0.50s  at natural bid/ask, normal
+   3  at_touch_patient     0    0   1.00s  at touch, patient (fewer cancel events)
+   4  lean_bid_touch       0    1   0.25s  bid at touch, ask 1-tick out (sell long)
+   5  lean_ask_touch       1    0   0.25s  ask at touch, bid 1-tick out (buy short)
+   6  near_sym_fast        1    1   0.25s  1 tick outside each side, aggressive
+   7  near_sym             1    1   0.50s  1 tick outside each side, normal
+   8  near_lean_bid        0    2   0.25s  touch bid, ask 2-out (inventory reduction)
+   9  near_lean_ask        2    0   0.25s  touch ask, bid 2-out (inventory reduction)
+  10  mid_sym              2    2   0.50s  2 ticks outside, balanced
+  11  mid_sym_patient      2    2   1.00s  2 ticks outside, patient
+  12  mid_lean_bid         1    3   0.50s  lean sell (tight bid)
+  13  mid_lean_ask         3    1   0.50s  lean buy (tight ask)
+  14  wide_sym             3    3   1.00s  3 ticks outside each side
+  15  wide_sym_patient     3    3   2.00s  3 ticks outside, patient
+  16  wide_lean_bid        2    4   1.00s  lean sell, wider spread
+  17  wide_lean_ask        4    2   1.00s  lean buy, wider spread
+  18  vwide_sym            5    5   2.00s  5 ticks out, tail-event catch
 
 The hold_sec dimension lets the agent trade off responsiveness vs.
 fill probability. Short hold = more cancels, faster quote updates when
@@ -87,7 +117,10 @@ from ..core.market_state import MicrostructureStats
 # ---------------------------------------------------------------------------
 
 # Each entry: (bid_half_ticks, ask_half_ticks, hold_sec)
-# bid_half_ticks = 0 means halt (no quotes on either side)
+# Action 0 is always halt (bid_ticks=0 in the halt slot means no quotes).
+# For non-halt actions, bid_ticks=0 means "post at natural bid" (floor of mid).
+
+# LINK action table — calibrated for 10-tick natural spread
 ACTION_PARAMS: List[Tuple[int, int, float]] = [
     (0,  0,  0.0 ),   #  0: halt
     (3,  3,  0.25),   #  1: inside_sym_fast
@@ -121,15 +154,85 @@ ACTION_NAMES = [
     "wide_sym", "wide_lean_bid", "wide_lean_ask",
 ]
 
+# BTC action table v2 — wide sweep (5–80 ticks) + lean variants for inventory management.
+#
+# Design rationale:
+#   If BTC fill curve is flat from ~2 ticks (A_mom dominated), fill frequency is constant
+#   across all distances. Wider spreads then earn more per fill. The 50–80 tick bins test
+#   the "overshoot hypothesis": large BTC moves (~$0.50–$0.80 from mid) may mean-revert,
+#   making these fills net-positive.  If exponential holds, those bins simply never fill.
+#   Lean variants let the agent learn directional inventory management at each spread level.
+#
+#   Distance bins and exponential fill estimates (κ=0.31/tick):
+#     5t ≈ 21%,  10t ≈ 5%,  20t ≈ 0.2%,  50t ≈ 5e-7,  80t ≈ 5e-11
+#   Under flat fill curve: all bins fill at rate A_mom — agent discovers actual economics.
+BTC_ACTION_PARAMS: List[Tuple[int, int, float]] = [
+    (0,  0,  0.0 ),   #  0: halt
+    # Close (5 ticks each side): ~21% exp fill, $0.001 RT on 0.01 BTC
+    (5,  5,  0.25),   #  1: close_sym_fast
+    (5,  5,  0.50),   #  2: close_sym
+    (4,  6,  0.25),   #  3: close_lean_bid     (tighter bid → sell longs)
+    (6,  4,  0.25),   #  4: close_lean_ask     (tighter ask → buy shorts)
+    (5,  5,  2.00),   #  5: close_patient
+    # Mid (10 ticks each side): ~5% exp fill, $0.002 RT
+    (10, 10, 0.50),   #  6: mid_sym
+    (9,  11, 0.50),   #  7: mid_lean_bid
+    (11, 9,  0.50),   #  8: mid_lean_ask
+    (10, 10, 2.00),   #  9: mid_patient
+    # Wide (20 ticks each side): ~0.2% exp fill, $0.004 RT
+    (20, 20, 1.00),   # 10: wide_sym
+    (19, 21, 1.00),   # 11: wide_lean_bid
+    (21, 19, 1.00),   # 12: wide_lean_ask
+    (20, 20, 2.00),   # 13: wide_patient
+    # Very-wide (50 ticks each side): ~5e-7 exp fill, $0.010 RT; tests flat-fill hypothesis
+    (50, 50, 1.00),   # 14: vwide_sym
+    (48, 52, 1.00),   # 15: vwide_lean_bid
+    (52, 48, 1.00),   # 16: vwide_lean_ask
+    (50, 50, 2.00),   # 17: vwide_patient
+    # Extreme (70–80 ticks each side): ~$0.70–$0.80 from mid, overshoot / crash catch
+    (70, 70, 2.00),   # 18: xwide_sym         $0.014 RT on 0.01 BTC
+    (80, 80, 2.00),   # 19: xxwide_sym        $0.016 RT on 0.01 BTC
+    # Inventory-off (asymmetric lean at mid and wide distances)
+    (8,  12, 0.50),   # 20: mid_hard_lean_bid   aggressive sell-long
+    (12, 8,  0.50),   # 21: mid_hard_lean_ask   aggressive buy-short
+    (15, 25, 1.00),   # 22: wide_hard_lean_bid  wide sell-long
+    (25, 15, 1.00),   # 23: wide_hard_lean_ask  wide buy-short
+    # One-sided quotes: post only one side to limit inventory accumulation.
+    # -1 means "suppress this side" (handled in build_quote).
+    (5,  -1, 0.50),   # 24: bid_only            bid at 5t, no ask
+    (-1, 5,  0.50),   # 25: ask_only            ask at 5t, no bid
+    (10, -1, 1.00),   # 26: wide_bid_only       bid at 10t, no ask
+]
+N_BTC_ACTIONS = len(BTC_ACTION_PARAMS)
+
+BTC_ACTION_NAMES = [
+    "halt",
+    "close_sym_fast", "close_sym", "close_lean_bid", "close_lean_ask", "close_patient",
+    "mid_sym", "mid_lean_bid", "mid_lean_ask", "mid_patient",
+    "wide_sym", "wide_lean_bid", "wide_lean_ask", "wide_patient",
+    "vwide_sym", "vwide_lean_bid", "vwide_lean_ask", "vwide_patient",
+    "xwide_sym", "xxwide_sym",
+    "mid_hard_lean_bid", "mid_hard_lean_ask",
+    "wide_hard_lean_bid", "wide_hard_lean_ask",
+    "bid_only", "ask_only", "wide_bid_only",
+]
+
+# Mapping from config "action_space" key to (params, names)
+ACTION_SPACES = {
+    "link": (ACTION_PARAMS, ACTION_NAMES),
+    "btc":  (BTC_ACTION_PARAMS, BTC_ACTION_NAMES),
+}
+
 # Default hold time if action is halt (how long to stay quiet)
 HALT_HOLD_SEC = 0.5
 
 
-def action_hold(action: int) -> float:
+def action_hold(action: int, action_params: List[Tuple[int, int, float]] = None) -> float:
     """Return the hold duration in seconds for a given action index."""
+    params = action_params if action_params is not None else ACTION_PARAMS
     if action == 0:
         return HALT_HOLD_SEC
-    return ACTION_PARAMS[action][2]
+    return params[action][2]
 
 
 # ---------------------------------------------------------------------------
@@ -198,14 +301,17 @@ def build_quote(
     order_size: float,
     max_inventory: float,
     inventory: float,
+    action_params: List[Tuple[int, int, float]] = None,
 ) -> QuoteDecision:
     """
     Build a QuoteDecision from the action index.
 
     bid/ask prices are mid ± (N ticks × tick_size), rounded to tick.
     Returns a halt decision (should_quote_bid/ask = False) for action 0.
+    Pass action_params to use a non-default action table (e.g. BTC_ACTION_PARAMS).
     """
-    bid_ticks, ask_ticks, _ = ACTION_PARAMS[action]
+    params = action_params if action_params is not None else ACTION_PARAMS
+    bid_ticks, ask_ticks, _ = params[action]
     mid = stats.mid_price
 
     EPS = 1e-9  # guard against floating-point under-floor
@@ -230,21 +336,28 @@ def build_quote(
         d.should_quote_ask = False
         return d
 
-    bid_price = _floor(mid - bid_ticks * tick_size)
-    ask_price = _ceil(mid  + ask_ticks * tick_size)
+    # bid_ticks < 0 means "suppress bid side" (one-sided quote action).
+    # ask_ticks < 0 means "suppress ask side".
+    # Use absolute value for price calculation; suppress flag overrides later.
+    eff_bid = abs(bid_ticks) if bid_ticks >= 0 else 5  # placeholder price for suppressed side
+    eff_ask = abs(ask_ticks) if ask_ticks >= 0 else 5
+
+    bid_price = _floor(mid - eff_bid * tick_size)
+    ask_price = _ceil(mid  + eff_ask * tick_size)
     if ask_price <= bid_price:
         ask_price = bid_price + tick_size
 
+    spread_ticks = (abs(bid_ticks) if bid_ticks >= 0 else 0) + (abs(ask_ticks) if ask_ticks >= 0 else 0)
     d = QuoteDecision(
         bid_price=bid_price,
         ask_price=ask_price,
         reservation_price=mid,
-        optimal_spread=(bid_ticks + ask_ticks) * tick_size,
+        optimal_spread=spread_ticks * tick_size,
         bid_size=order_size,
         ask_size=order_size,
     )
-    d.should_quote_bid = (inventory < max_inventory)
-    d.should_quote_ask = (inventory > -max_inventory)
+    d.should_quote_bid = (inventory < max_inventory) and (bid_ticks >= 0)
+    d.should_quote_ask = (inventory > -max_inventory) and (ask_ticks >= 0)
     return d
 
 
@@ -285,19 +398,22 @@ class TabularQLearning:
         epsilon_end: float = 0.05,
         epsilon_decay: float = 0.99995,
         inventory_penalty: float = 0.05,
+        action_params: List[Tuple[int, int, float]] = None,
     ):
-        self.tick_size       = tick_size
-        self.order_size      = order_size
-        self.max_inventory   = max_inventory
+        self.tick_size        = tick_size
+        self.order_size       = order_size
+        self.max_inventory    = max_inventory
         self.daily_loss_limit = daily_loss_limit
-        self.lr              = learning_rate
-        self.discount        = discount
-        self.epsilon         = epsilon_start
-        self.epsilon_end     = epsilon_end
-        self.epsilon_decay   = epsilon_decay
-        self.inv_penalty     = inventory_penalty
+        self.lr               = learning_rate
+        self.discount         = discount
+        self.epsilon          = epsilon_start
+        self.epsilon_end      = epsilon_end
+        self.epsilon_decay    = epsilon_decay
+        self.inv_penalty      = inventory_penalty
+        self._action_params   = action_params if action_params is not None else ACTION_PARAMS
+        self._n_actions       = len(self._action_params)
 
-        self.Q = np.zeros((N_STATES, N_ACTIONS), dtype=np.float64)
+        self.Q = np.zeros((N_STATES, self._n_actions), dtype=np.float64)
 
         self._vol_history: deque = deque(maxlen=120)
         self._prev_state_idx: Optional[int] = None
@@ -360,7 +476,7 @@ class TabularQLearning:
         # Epsilon-greedy
         self.epsilon = max(self.epsilon_end, self.epsilon * self.epsilon_decay)
         if np.random.random() < self.epsilon:
-            action = np.random.randint(N_ACTIONS)
+            action = np.random.randint(self._n_actions)
         else:
             action = int(np.argmax(self.Q[state_idx]))
 
@@ -369,14 +485,15 @@ class TabularQLearning:
         self._prev_pnl       = total_pnl
 
         return build_quote(action, stats, self.tick_size,
-                           self.order_size, self.max_inventory, inventory)
+                           self.order_size, self.max_inventory, inventory,
+                           action_params=self._action_params)
 
     def select_action(self, state: np.ndarray) -> int:
         """Epsilon-greedy action selection from encoded state vector."""
         state_idx = self._state_index(state)
         self.epsilon = max(self.epsilon_end, self.epsilon * self.epsilon_decay)
         if np.random.random() < self.epsilon:
-            return np.random.randint(N_ACTIONS)
+            return np.random.randint(self._n_actions)
         return int(np.argmax(self.Q[state_idx]))
 
     def update(self, state: np.ndarray, action: int, reward: float,
@@ -466,29 +583,32 @@ class DQNMarketMaker:
         replay_capacity: int = 50_000,
         inventory_penalty: float = 0.05,
         train_mode: bool = True,
+        action_params: List[Tuple[int, int, float]] = None,
     ):
         if not _TORCH_AVAILABLE:
             raise ImportError("PyTorch required. Install: pip install torch")
 
-        self.tick_size       = tick_size
-        self.order_size      = order_size
-        self.max_inventory   = max_inventory
+        self.tick_size        = tick_size
+        self.order_size       = order_size
+        self.max_inventory    = max_inventory
         self.daily_loss_limit = daily_loss_limit
-        self.discount        = discount
-        self.epsilon         = epsilon_start
-        self.epsilon_end     = epsilon_end
-        self.epsilon_decay   = epsilon_decay
-        self.batch_size      = batch_size
-        self.target_update   = target_update
-        self.inv_penalty     = inventory_penalty
-        self.train_mode      = train_mode
+        self.discount         = discount
+        self.epsilon          = epsilon_start
+        self.epsilon_end      = epsilon_end
+        self.epsilon_decay    = epsilon_decay
+        self.batch_size       = batch_size
+        self.target_update    = target_update
+        self.inv_penalty      = inventory_penalty
+        self.train_mode       = train_mode
+        self._action_params   = action_params if action_params is not None else ACTION_PARAMS
+        self._n_actions       = len(self._action_params)
 
         def _net():
             return nn.Sequential(
                 nn.Linear(STATE_DIM, hidden_dim), nn.ReLU(),
                 nn.Linear(hidden_dim, hidden_dim), nn.ReLU(),
                 nn.Linear(hidden_dim, hidden_dim // 2), nn.ReLU(),
-                nn.Linear(hidden_dim // 2, N_ACTIONS),
+                nn.Linear(hidden_dim // 2, self._n_actions),
             )
 
         self.online_net = _net()
@@ -525,7 +645,7 @@ class DQNMarketMaker:
     def _select_action(self, state: np.ndarray) -> int:
         self.epsilon = max(self.epsilon_end, self.epsilon * self.epsilon_decay)
         if self.train_mode and np.random.random() < self.epsilon:
-            return np.random.randint(N_ACTIONS)
+            return np.random.randint(self._n_actions)
         with torch.no_grad():
             sv = torch.FloatTensor(state).unsqueeze(0)
             return int(self.online_net(sv).argmax(dim=1).item())
@@ -601,7 +721,8 @@ class DQNMarketMaker:
         self._prev_pnl    = total_pnl
 
         return build_quote(action, stats, self.tick_size,
-                           self.order_size, self.max_inventory, inventory)
+                           self.order_size, self.max_inventory, inventory,
+                           action_params=self._action_params)
 
     # ------------------------------------------------------------------
 

@@ -80,7 +80,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from hft_market_maker.data.loader import DataLoader
 from hft_market_maker.environments.market_making_env import MarketMakingEnv
 from hft_market_maker.extensions.reinforcement_learning import (
-    TabularQLearning, DQNMarketMaker, N_ACTIONS, ACTION_NAMES
+    TabularQLearning, DQNMarketMaker, N_ACTIONS, ACTION_NAMES,
+    BTC_ACTION_PARAMS, BTC_ACTION_NAMES, ACTION_SPACES,
 )
 
 
@@ -204,6 +205,15 @@ def main():
     eval_env  = MarketMakingEnv(eval_files,  cfg, shuffle=False, orderbook_files=eval_ob)
 
     agent_type = cfg.get("agent", "dqn")
+
+    # Resolve action space: "link" (default) or "btc" or custom
+    action_space_key = cfg.get("action_space", "link")
+    if action_space_key in ACTION_SPACES:
+        action_params, action_names = ACTION_SPACES[action_space_key]
+    else:
+        action_params, action_names = ACTION_SPACES["link"]
+    print(f"Action space: {action_space_key} ({len(action_params)} actions)")
+
     common_kw  = dict(
         tick_size        = cfg.get("tick_size", 0.001),
         order_size       = cfg["order_size"],
@@ -213,6 +223,7 @@ def main():
         epsilon_start    = cfg.get("epsilon_start", 1.0),
         epsilon_end      = cfg.get("epsilon_end", 0.05),
         epsilon_decay    = cfg.get("epsilon_decay", 0.9999),
+        action_params    = action_params,
     )
 
     if agent_type == "tabular":

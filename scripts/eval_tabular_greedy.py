@@ -50,6 +50,7 @@ from hft_market_maker.environments.market_making_env import MarketMakingEnv
 from hft_market_maker.extensions.reinforcement_learning import (
     TabularQLearning, N_ACTIONS, N_STATES,
     ACTION_NAMES, INV_BINS, VOL_BINS, MOM_BINS, SPIKE_BINS,
+    ACTION_SPACES,
 )
 
 
@@ -272,6 +273,14 @@ def main():
     eval_start = date.fromisoformat(args.start or cfg["eval_start"])
     eval_end   = date.fromisoformat(args.end   or cfg["eval_end"])
 
+    # Resolve action space
+    action_space_key = cfg.get("action_space", "link")
+    if action_space_key in ACTION_SPACES:
+        action_params, action_names = ACTION_SPACES[action_space_key]
+    else:
+        action_params, action_names = ACTION_SPACES["link"]
+    print(f"Action space: {action_space_key} ({len(action_params)} actions)")
+
     print(f"Loading checkpoint: {ckpt_path}")
     agent = TabularQLearning(
         tick_size        = cfg.get("tick_size", 0.001),
@@ -284,6 +293,7 @@ def main():
         epsilon_decay    = 1.0,
         learning_rate    = 0.0,   # no learning during eval
         discount         = cfg.get("discount", 0.99),
+        action_params    = action_params,
     )
     agent.load(ckpt_path)
     agent.epsilon = 0.0
