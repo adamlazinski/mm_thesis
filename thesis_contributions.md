@@ -1092,6 +1092,170 @@ one — motivating the maker→taker pivot rather than rescuing passive MM.
 
 ---
 
+## 31. Taker Pivot: A Real Signal Capped at ~1 bps — Latency-Robust, Fee-Tier-Bound
+
+**Motivation:** Every market-making result is an inside-spread queue-priority artifact
+(Contribution 30). A taker crosses the spread for instant fills and needs no queue priority,
+so it sidesteps that constraint entirely. This tests whether short-horizon directional signals
+can be monetised by a taker, using tick data + a realistic 100ms latency model.
+
+**Method (latency-aware, tick-resolution):** signal computed at time *t* from data ≤ *t*;
+order sent at *t* fills at *t*+latency at the **actual ask** (long) / bid (short); exit crosses
+back at *t*+latency+hold. PnL = exit_fill − entry_fill in ticks — spread cost and latency
+slippage both emerge from real fills, no hardcoded cost. BTC spot, 41 days across May 2025,
+Jun–Jul 2025, Apr 2026. Signals: momentum (trailing return sign), OBI (L1 imbalance),
+overshoot-fade (fade large sweeps in high vol), plus a random-direction control.
+
+**The signal is real and queue-independent.** Top-decile momentum/OBI, per-day mean round-trip:
+
+| Signal | 0.5s | 5s | 10s | days>0 | control (random) |
+|---|---|---|---|---|---|
+| Momentum | +122 t | +471 t | +588 t | 100% | −1.7 t |
+| OBI | +182 t | +692 t | +882 t | 100% | −1.7 t |
+
+The random control sits at the −1.7-tick spread floor everywhere; momentum/OBI are positive on
+100% of days **including the volatile Jun–Jul 2025 regime where every MM strategy failed.** The
+edge genuinely predicts direction net of latency+spread — not a lookahead artifact.
+
+**Sub-finding — BTC sweeps continue, they do not revert.** Overshoot-fade is strongly negative
+(0% of days positive, −481 to −877 ticks): fading large sweeps loses, riding wins. This is the
+*opposite* of the LINK honest-markout overshoot-catch — the reversal effect does not transfer to
+BTC. Internally consistent (overshoot-fade ≈ −momentum).
+
+**But the per-trade edge is capped at ~1 bps and nothing lifts it.** Converting to bps
+(tick = $0.01 at ~$103k mid ≈ 0.001 bps), a 30-day selectivity/conviction/hold sweep shows the
+gross edge plateaus at ~1.1 bps and refuses to grow:
+
+| Lever | Result |
+|---|---|
+| Selectivity (p90 → p99 → p99.9) | OBI flat ~0.8–1.1 bps; **momentum *decreases*** (latency adverse selection bites hardest on the biggest moves — by t+100ms the big move is already done) |
+| Conviction (momentum ∧ OBI agree) | ~1.0–1.1 bps, no better than OBI alone |
+| Hold (10 → 60s) | marginal (+0.2 bps) |
+| **Latency (10 → 500ms)** | **OBI 0.90 → 0.69 bps; even at 10ms only ~1 bps** |
+
+**The latency sweep is the key diagnostic: the edge is NOT latency-gated.** Dropping from 100ms
+to 10ms (near-co-located) recovers only ~0.1 bps, because the OBI/momentum edge plays out over
+*seconds*, not a sub-second pop. So being fast does not help — the signal is simply thin (~1 bps).
+
+**Conclusion — the unified "edges belong to professional infrastructure" verdict, completed:**
+
+| Edge | Real? | Binding constraint | Captured by |
+|---|---|---|---|
+| Market making | yes | **queue priority** | co-located (front of queue) |
+| Taker (momentum/OBI) | yes (~1 bps) | **fee tier** (not latency, not queue) | sub-1-bps-fee players (MM/VIP rebate) |
+
+A ~1 bps gross edge at 66–72% win is a viable HFT strategy *for a player paying <1 bps
+round-trip* (market-maker rebate tier), but it is **negative net of even the lowest retail-ish
+perp taker fee (3.6 bps round-trip), and hopeless against spot taker fees (~15 bps).** Both the
+MM edge and the taker edge are real; both are claimed by professional infrastructure (queue
+priority and fee tier respectively); **retail captures neither.**
+
+**Caveats:** these are per-eval-point predictive means with overlapping positions (a
+predictive-power metric, not a realisable position-constrained PnL), and market impact is not
+modelled. Both make the realisable edge *smaller*, strengthening the negative conclusion.
+
+**Contribution:** Establishes that short-horizon directional predictability on BTC (OBI/momentum)
+is real, robust across regimes, queue-independent, and — unlike intuition — **not latency-gated**;
+its ~1 bps magnitude is a hard ceiling unmoved by selectivity, conviction, hold, or speed. Reframes
+the binding constraint for the taker as the **fee tier** rather than queue position or latency,
+completing a unified account in which every captured edge in crypto market microstructure is gated
+by a piece of professional infrastructure retail lacks. Identifies cross-venue (spot↔perp lead-lag)
+signal fusion as the only remaining lever that could produce a *larger* signal rather than a cheaper
+cost.
+
+**Addendum — supervised ML does not lift the ceiling (strict OOS).** A 3-class XGBoost on all 8
+microstructure features (OFI, momentum, OBI, σ, spike ratio, λ-imbalance, lagged return, spread),
+trained on Jun 2025 and evaluated out-of-sample on Jul 2025 (same regime, later) and May 2025
+(different regime), using the identical latency-aware fill model:
+
+| Regime (OOS) | XGBoost | OBI baseline | AUC(up) |
+|---|---|---|---|
+| Jun–Jul 2025 | +0.66 bps | +0.70 bps | 0.78 |
+| May 2025 | +0.87 bps | +0.88 bps | 0.71 |
+| **All OOS** | **+0.75 bps** | **+0.78 bps** | 0.75 |
+
+XGBoost has genuine directional skill (OOS AUC 0.75) but **does not beat plain OBI on the
+per-trade taker metric — it is marginally worse in both regimes**, and neither clears the 3.6 bps
+perp fee. Two conclusions: (1) OBI already saturates the *tradeable* predictability — the residual
+signal the other features add lives in sub-spread moves that don't clear the crossing cost; (2) the
+model's probability margin is not aligned with move *magnitude* (higher AUC, lower per-trade bps),
+so OBI magnitude is itself a better proxy for expected move size than a classifier's confidence.
+The ~1 bps within-venue ceiling is therefore a genuine predictability wall, not an artifact of using
+a simple signal — confirmed ML-proof under strict OOS. The fee tier remains the binding constraint;
+cross-venue spot↔perp fusion is the sole remaining lever.
+
+---
+
+## 32. Reversion Is Shallow and Queue-Gated: Deep Liquidity Provision Is Concentrated Adverse Selection
+
+**Motivation:** Two follow-ups to the queue-priority verdict. (1) Does *low-frequency* market making
+— commit to a price, sit, and only modify on a genuine risk change — let a maker climb the L2 queue
+through patience rather than buy priority via co-location? (2) Does a *deep-limit* reversion strategy
+(post 50–500 ticks from mid, fill only on a dislocation, bet on mean-reversion) escape both
+infrastructure gates at once — deep means little/no queue, maker means low fees?
+
+**Methodological contribution — risk-based requote gate.** The standard tolerance compares the *new
+optimal* quote (which tracks mid) to the resting price, so it makes the quote chase the mid and, under
+a queue model, resets queue position on every drift — making "sit" impossible. We implemented a
+config-flagged `requote_policy="risk"` that decouples requoting from mid drift: a mid approaching a
+resting quote is allowed to ride into the fill (the option going in-the-money), and requoting fires
+only on (a) σ change > threshold, (b) directional toxicity `|OFI|` against the resting side (which
+*pulls* that side — distinguishing an informed approach from a noise approach), or (c) a change in the
+quotable-side set. Per-side reconciliation leaves persisting sides untouched, preserving queue position.
+
+**Finding 1 — queue-climbing does not rescue at-touch MM (exp 56).** LINK at-touch under the L2 queue
+model, comparing price vs risk policy at queue_fraction ∈ {0.05, 0.5} (≈430 / ≈4,300 LINK ahead):
+all configurations sit at the ~$0.6–0.8/day noise floor, and the risk-gated "sit and climb" policy is
+**worse than the mid-chasing policy at both queue fractions** (30-day totals: risk −$4.1 / +$4.0 vs
+price +$18.4 / +$23.2 at qf = 0.05 / 0.5), with *worse* adverse selection (markout −3.0 / −3.8 bps vs
+−2.7 / −2.9 bps). The mechanism is the opposite of the climbing hypothesis: sitting longer increases
+exposure to informed flow picking off the resting order, and that added adverse selection swamps any
+queue-advancement benefit — the standing queue (thousands of LINK) is in any case too deep to climb
+through ordinary flow within a holding window. Patience does not substitute for queue priority; if
+anything it makes fills more toxic. Queue *depth* barely affects the result, confirming the binding
+constraint is queue *position*, which sitting cannot manufacture.
+
+**Finding 2 — deep-limit reversion is refuted; reversion is a shallow phenomenon (exp 57).** A
+conditional-reversion study (fade a displacement of depth X over a 30s window, measure the 60s
+reversion PnL in ticks), pooled over all LINK (~60 days) and BTC (43 days):
+
+| Depth from mid | LINK mean | LINK P(profit) | LINK p5 tail | BTC mean | BTC p5 tail |
+|---|---|---|---|---|---|
+| 8–20t | +1.0t | 36% | −20t | (shallow +) | huge |
+| 20–50t | +0.6t | 43% | −40t | −134t | −6,669t |
+| 50–100t | 0.0t | 47% | −80t | −213t | −6,921t |
+| 100–200t | −13.9t | 47% | −250t | −150t | −7,123t |
+| 200–500t | −136.7t | 43% | −1,109t | −192t | −6,894t |
+| 500t+ | −682t | 27% | −2,611t | −209t | −8,688t |
+
+The reversion edge is confined to the **shallow near-touch band (8–50 ticks, ~+1 tick/fill)** — which is
+exactly the queue-priority-rent regime already documented (the +$2.5/day outside-spread, Contribution 30).
+Contrary to the deep-liquidity hypothesis, the edge does **not** grow with depth: it vanishes by ~50 ticks
+and turns strongly negative beyond, *monotonically worse with depth*, with an explosively growing left
+tail (LINK p5: −20t at the touch → −2,611t at 500t). BTC is negative at every depth with −$60 to −$87/unit
+tails. No clean ex-ante separating signal exists at depth (the OFI/vol discriminator that appeared in a
+3-day sample collapsed on full data; the few positive deep cells have n≈100 or catastrophic tails).
+
+**Mechanism — adverse selection by selection.** A price move large enough to reach a deep limit is, almost
+by construction, an *informed/regime* move rather than noise, so it continues. Noise reverts, but noise does
+not travel 100+ ticks to reach you. Therefore **the deeper a maker posts, the more adversely selected every
+fill is, monotonically** — deep liquidity provision is not "catching reverting overshoots" but standing in
+front of informed moves with a fat left tail. Risk guardrails cannot rescue this: there is no
+positive-expectation deep zone to gate into, and the only positive zone (the touch) is itself a queue rent.
+
+**Contribution:** Establishes that the mean-reversion premium in crypto market making is a *shallow,
+near-touch* phenomenon co-located with the queue-priority rent, and does **not** extend to deep liquidity
+provision — the reversion-vs-continuation balance flips monotonically against the maker with depth, because
+deep-reaching moves are selectively informed. Closes the "deep mean-reversion MM with risk guardrails"
+branch with a clean negative, and adds the monotonic *adverse-selection-with-depth* result. Also delivers a
+reusable risk-based requote policy (sit unless vol/toxicity/inventory changes) and the negative result that
+low-frequency queue-climbing does not substitute for queue priority. Together with Contributions 30–31 this
+completes the verdict: every positive zone in maker or taker space is gated by professional infrastructure
+(queue position or fee tier), and the structural alternatives that appear to escape it — RL, low-frequency
+sitting, deep reversion — each collapse back onto the same two gates.
+
+---
+
 ## Planned Extensions
 
 - **Stressed regime validation**: download LINK data from high-volatility or crash periods

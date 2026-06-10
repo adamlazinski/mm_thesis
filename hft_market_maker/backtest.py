@@ -165,6 +165,9 @@ class Backtest:
         tick_size: float = 0.01,
         kappa_force_interval: float = 60.0,
         markout_horizon: float = 1.0,
+        requote_policy: str = "price",
+        requote_vol_change: float = 0.5,
+        requote_ofi: float = 0.6,
     ):
         self.strategy = strategy
         self.market_state = market_state or MarketState()
@@ -180,6 +183,18 @@ class Backtest:
         self.tick_size = tick_size
         self.kappa_force_interval = kappa_force_interval
         self.markout_horizon = markout_horizon
+        # Requote policy:
+        #   "price" — legacy mid-relative tolerance (cancel+resubmit when the optimal
+        #             quote drifts > tolerance_ticks from the resting price).
+        #   "risk"  — sit on resting quotes; requote ONLY on a risk change, never on
+        #             mere mid drift. Triggers: (a) sigma change > requote_vol_change,
+        #             (b) directional toxicity |OFI| > requote_ofi against the resting
+        #             side (pull that side), (c) the set of quotable sides changes
+        #             (inventory cap / guardrail). Per-side reconciliation preserves
+        #             queue position on sides that persist (enables queue-climbing).
+        self.requote_policy = requote_policy
+        self.requote_vol_change = requote_vol_change
+        self.requote_ofi = requote_ofi
         self._current_l2_snap = None
 
     def run(
@@ -487,6 +502,12 @@ class Backtest:
         if decision.bid_price >= decision.ask_price:
             return
 
+        # 4b. Risk-based requote policy (decoupled from mid drift) — see __init__.
+        if self.requote_policy == "risk":
+            self._requote_risk(timestamp, decision, quote_bid, quote_ask,
+                               guardrail, quote_records)
+            return
+
         # 5. Hysteresis: skip cancel+resubmit if both quotes are within tolerance.
         #    Only applied when quoting both sides — a forced one-sided cancel always
         #    goes through to avoid leaving a stale order on the suppressed side.
@@ -551,6 +572,118 @@ class Backtest:
                                    getattr(decision, "reservation", None)),
             "spread_bps": spread_bps,
             "inventory": inventory,
+            "sigma": stats.sigma,
+            "kappa": stats.kappa_as,
+            "A_hat": stats.A_hat,
+            "ofi": stats.ofi,
+            "vol_composite": guardrail.vol_percentile if guardrail else None,
+            "vol_percentile": guardrail.vol_percentile if guardrail else None,
+            "bid_size_mult": guardrail.bid_size_multiplier if guardrail else 1.0,
+            "ask_size_mult": guardrail.ask_size_multiplier if guardrail else 1.0,
+            "spread_mult": guardrail.spread_multiplier if guardrail else 1.0,
+            "guardrail_trigger": guardrail.trigger_reason if guardrail else "none",
+        })
+
+    def _requote_risk(self, timestamp: float, decision, quote_bid: bool,
+                      quote_ask: bool, guardrail, quote_records: list) -> None:
+        """
+        Risk-based requote policy. The MM commits to its resting prices and only
+        acts on a genuine risk change — never on mere mid drift. A mid approaching
+        a resting quote is allowed to ride into a fill (it is the option going
+        in-the-money), unless the toxicity signal says the approach is informed.
+
+        Triggers:
+          - directional toxicity: |OFI| > requote_ofi against a resting side ->
+            pull (suppress) that side until flow normalises;
+          - volatility: |sigma_now - sigma_at_post| / sigma_at_post > requote_vol_change
+            on a resting order -> reprice that side;
+          - quotable-side set change (inventory cap / guardrail) -> add/cancel side.
+
+        Per-side reconciliation: sides that should persist are LEFT UNTOUCHED, so
+        their queue position (and any queue-climbing under the L2 model) is
+        preserved. Only sides that must change are cancelled/resubmitted.
+        """
+        om = self.order_manager
+        stats = self.market_state.stats
+        ofi = stats.ofi
+        sig_now = stats.sigma
+
+        # Directional toxicity suppression: pull the side facing informed flow.
+        # OFI > 0 = buy pressure (threatens a resting ask); OFI < 0 = sell pressure
+        # (threatens a resting bid).
+        if ofi < -self.requote_ofi:
+            quote_bid = False
+        if ofi > self.requote_ofi:
+            quote_ask = False
+
+        active = {o.side: o for o in om.get_active_orders()
+                  if o.status in ("open", "partially_filled")}
+
+        want = {}
+        if quote_bid and decision.bid_size > 0:
+            want["bid"] = (decision.bid_price, decision.bid_size)
+        if quote_ask and decision.ask_size > 0:
+            want["ask"] = (decision.ask_price, decision.ask_size)
+
+        def vol_changed(order) -> bool:
+            if order.sigma_at_post <= 0:
+                return False
+            return (abs(sig_now - order.sigma_at_post) / order.sigma_at_post
+                    > self.requote_vol_change)
+
+        def queue_ahead_for(side: str, price: float) -> float:
+            if om.queue_model != "l2" or self._current_l2_snap is None:
+                return 0.0
+            snap = self._current_l2_snap
+            frac = getattr(om, "queue_fraction", 1.0)
+            if side == "bid" and price <= snap.best_bid_price + 1e-9:
+                return snap.best_bid_depth * frac
+            if side == "ask" and price >= snap.best_ask_price - 1e-9:
+                return snap.best_ask_depth * frac
+            return 0.0
+
+        changed = False
+        submitted_any = False
+
+        # Cancel sides we no longer want (toxicity pull / inventory suppression).
+        for side, order in list(active.items()):
+            if side not in want:
+                om.cancel_order(order.order_id, timestamp)
+                changed = True
+
+        # Reconcile wanted sides: keep if resting and no reprice needed, else (re)post.
+        for side, (price, size) in want.items():
+            have = active.get(side)
+            if have is not None and not vol_changed(have):
+                continue  # KEEP — let it sit and climb the queue
+            if have is not None:
+                om.cancel_order(have.order_id, timestamp)  # reprice: cancel stale
+            om.submit_order(side, price, size, timestamp,
+                            queue_ahead=queue_ahead_for(side, price),
+                            sigma_at_post=sig_now)
+            submitted_any = True
+            changed = True
+
+        if not changed:
+            self._n_hysteresis_skips += 1   # sat: no book action
+            return
+        if not submitted_any:
+            return  # only pulled a side; nothing new posted -> no quote event
+
+        # Notify kappa + log (only when something was (re)posted).
+        half_spread_ticks = (decision.ask_price - decision.bid_price) / 2.0 / self.tick_size
+        self.market_state.notify_quote_posted(timestamp, half_spread_ticks)
+        self._current_half_spread = half_spread_ticks
+        spread_bps = (decision.ask_price - decision.bid_price) / max(stats.mid_price, 1e-6) * 10_000
+        quote_records.append({
+            "timestamp": timestamp,
+            "bid": decision.bid_price,
+            "ask": decision.ask_price,
+            "mid": stats.mid_price,
+            "reservation": getattr(decision, "reservation_price",
+                                   getattr(decision, "reservation", None)),
+            "spread_bps": spread_bps,
+            "inventory": om.inventory,
             "sigma": stats.sigma,
             "kappa": stats.kappa_as,
             "A_hat": stats.A_hat,

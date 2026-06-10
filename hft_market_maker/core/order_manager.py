@@ -44,6 +44,7 @@ class Order:
     cancel_from: float = 0.0    # cancel effective only after this timestamp
     queue_ahead: float = 0.0    # L2 depth ahead of us at submission (for 'l2' model)
     vol_since_submit: float = 0.0  # cumulative volume at our price since submission
+    sigma_at_post: float = 0.0  # market sigma when posted (for risk-based requote gate)
 
     @property
     def remaining(self) -> float:
@@ -121,7 +122,8 @@ class OrderManager:
     # ------------------------------------------------------------------
 
     def submit_order(self, side: str, price: float, quantity: float,
-                     timestamp: float, queue_ahead: float = 0.0) -> str:
+                     timestamp: float, queue_ahead: float = 0.0,
+                     sigma_at_post: float = 0.0) -> str:
         order_id = str(uuid.uuid4())[:8]
         self._active[order_id] = Order(
             order_id=order_id,
@@ -131,6 +133,7 @@ class OrderManager:
             timestamp=timestamp,
             active_from=timestamp + self.latency,
             queue_ahead=queue_ahead,
+            sigma_at_post=sigma_at_post,
         )
         return order_id
 
