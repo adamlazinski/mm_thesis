@@ -1,0 +1,3 @@
+# Regenerable synthetic data and caches — not deliverables
+data/
+__pycache__/

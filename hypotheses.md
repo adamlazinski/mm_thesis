@@ -95,6 +95,13 @@ Cross-references point to numbered entries in [thesis_contributions.md](thesis_c
   unconditional market-distance estimate (Approach A). *(C5, C25)*
 - `✓` **Backtest fill-model optimism is quantifiable** via an L2 queue-clearing model. *(C29)*
 - `✓` **Adverse selection is structural at the requote frequency** (post-fill markout analysis). *(C1, C12)*
+- `✓` **The engine + A-S/GLFT are sound (synthetic ground truth).** Constant-value world books closed-form
+  spread capture to floating precision; fed true σ both strategies profit and widen ∝σ through medium vol;
+  they lose only to the σ² short-gamma cost a too-tight spread can't cover. So honest-regime breakeven is
+  not an engine/strategy bug. *(C33, exp 59)*
+- `✓` **Honest MM breakeven is a zero-profit equilibrium, not bad data.** Breakeven half-spread δ_be ∝ σ
+  (Wyart–Bouchaud) ⟹ market-clearing κ ∝ 1/σ; on large-tick LINK the same law is enforced via queue depth
+  (= the C30 rent). Spread-axis (BTC) and queue-axis (LINK) are one law. *(C33, exp 59)*
 - `✓` **Regime determines profitability more than model or parameters** (May vs June 2025). *(C13)*
 
 ---

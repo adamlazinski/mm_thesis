@@ -1,0 +1,52 @@
+[
+  {
+    "regime": "constant",
+    "n_trades_generated": 43282,
+    "n_quotes_generated": 21600,
+    "n_fills": 38520,
+    "total_pnl": 769.44,
+    "final_inventory": 36.0,
+    "cash": -2829.6,
+    "inv_marktomarket": 3600.0,
+    "pnl_per_fill": 0.01998,
+    "half_spread_dollar": 0.02,
+    "expected_pnl_constant": 770.4,
+    "realized_minus_expected": -0.96
+  },
+  {
+    "regime": "ou",
+    "n_trades_generated": 43282,
+    "n_quotes_generated": 114077,
+    "n_fills": 31213,
+    "total_pnl": 557.91,
+    "final_inventory": 9.0,
+    "cash": -341.61,
+    "inv_marktomarket": 899.91,
+    "pnl_per_fill": 0.01787,
+    "half_spread_dollar": 0.02
+  },
+  {
+    "regime": "brownian",
+    "n_trades_generated": 43282,
+    "n_quotes_generated": 70861,
+    "n_fills": 33982,
+    "total_pnl": 689.54,
+    "final_inventory": 32.0,
+    "cash": -2511.85,
+    "inv_marktomarket": 3201.92,
+    "pnl_per_fill": 0.02029,
+    "half_spread_dollar": 0.02
+  },
+  {
+    "regime": "brownian_highvol",
+    "n_trades_generated": 43282,
+    "n_quotes_generated": 203859,
+    "n_fills": 30689,
+    "total_pnl": -126.2,
+    "final_inventory": 43.0,
+    "cash": -4476.75,
+    "inv_marktomarket": 4352.89,
+    "pnl_per_fill": -0.00411,
+    "half_spread_dollar": 0.02
+  }
+]

@@ -127,6 +127,7 @@ class MarketMakingEnv:
         self._t_idx: int = 0
         self._q_idx: int = 0
         self._order_manager: Optional[OrderManager] = None
+        self._current_l2_snap = None
         self._market_state:  Optional[MarketState]  = None
         self._current_date:  str = ""
         self._step_log:      List[StepInfo] = []
@@ -160,11 +161,16 @@ class MarketMakingEnv:
 
         self._t_idx = 0
         self._q_idx = 0
+        # Fill model: "none" (first-touch fill = absolute queue priority; the
+        # historical default, shown in C30 to be the artifact) or "l2"
+        # (L2 queue-clearing — honest). queue_fraction scales raw L2 depth to
+        # the competing share, as in backtest.py.
         self._order_manager = OrderManager(
             maker_fee=self.maker_fee,
             latency=self.latency,
-            queue_model="none",
+            queue_model=self.cfg.get("queue_model", "none"),
         )
+        self._order_manager.queue_fraction = self.cfg.get("queue_fraction", 1.0)
         self._market_state = MarketState(
             vol_window=self.vol_window,
             arrival_window=self.arrival_window,
@@ -177,6 +183,7 @@ class MarketMakingEnv:
 
         # Load L2 snapshots if available for this day
         self._l2_tracker = None
+        self._current_l2_snap = None
         ob_path = self.orderbook_files[day_idx]
         if ob_path is not None:
             try:
@@ -208,10 +215,26 @@ class MarketMakingEnv:
         decision = build_quote(action, stats, self.tick_size,
                                self.order_size, self.max_inventory, inv,
                                action_params=self._action_params)
+        # For the L2 queue model, look up depth ahead of our order at submission
+        # time — identical logic to backtest.py. Only quotes at-or-behind the
+        # touch inherit the standing queue; an inside-spread quote starts a new
+        # price level (queue_ahead=0).
+        bid_queue = 0.0
+        ask_queue = 0.0
+        if om.queue_model == "l2" and self._current_l2_snap is not None:
+            snap = self._current_l2_snap
+            frac = getattr(om, "queue_fraction", 1.0)
+            if decision.bid_price <= snap.best_bid_price + 1e-9:
+                bid_queue = snap.best_bid_depth * frac
+            if decision.ask_price >= snap.best_ask_price - 1e-9:
+                ask_queue = snap.best_ask_depth * frac
+
         if decision.should_quote_bid:
-            om.submit_order("bid", decision.bid_price, decision.bid_size, timestamp)
+            om.submit_order("bid", decision.bid_price, decision.bid_size, timestamp,
+                            queue_ahead=bid_queue)
         if decision.should_quote_ask:
-            om.submit_order("ask", decision.ask_price, decision.ask_size, timestamp)
+            om.submit_order("ask", decision.ask_price, decision.ask_size, timestamp,
+                            queue_ahead=ask_queue)
 
         # Reward: ΔPnL minus inventory penalty (penalises holding large positions
         # in volatile markets, scales reward to the same units as PnL)
@@ -268,7 +291,7 @@ class MarketMakingEnv:
         for p in pnls:
             peak = max(peak, p)
             max_dd = min(max_dd, p - peak)
-        action_counts = [actions.count(a) for a in range(N_ACTIONS)]
+        action_counts = [actions.count(a) for a in range(len(self._action_params))]
         return EpisodeStats(
             date=self._current_date,
             total_pnl=total_pnl,
@@ -328,6 +351,7 @@ class MarketMakingEnv:
                     snap = self._l2_tracker.advance(ev.timestamp)
                     if snap is not None:
                         ms.on_book(snap)
+                        self._current_l2_snap = snap
 
         # Process the boundary quote event
         if self._q_idx < len(q):
@@ -339,6 +363,7 @@ class MarketMakingEnv:
                 snap = self._l2_tracker.advance(ev.timestamp)
                 if snap is not None:
                     ms.on_book(snap)
+                    self._current_l2_snap = snap
             self._q_idx += 1
 
         return next_q_ts, n_fills

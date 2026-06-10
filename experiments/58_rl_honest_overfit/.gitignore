@@ -1,0 +1,4 @@
+# Training artifacts — not deliverables (keep configs + findings only)
+checkpoints_*/
+*.log
+results_*/config.json

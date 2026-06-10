@@ -1383,6 +1383,101 @@ is therefore not an artifact of fill-time censoring.
 
 ---
 
+## 33. Synthetic Ground-Truth Validation and the Zero-Profit Law Behind the Queue Verdict
+
+**Motivation:** Two questions hang over every negative result in this thesis. (1) Is the
+breakeven-to-negative honest regime a *bug* — a flaw in the engine's fill or P&L accounting, or in
+the A-S/GLFT implementations? (2) If the code is sound, *why* is honest market making structurally
+unprofitable, rather than merely unprofitable on this data? Contribution 33 answers both by
+validating the machinery on markets whose profitability is known in closed form, then deriving the
+equilibrium that makes the queue-priority verdict (Contribution 30) inevitable.
+(See `experiments/59_synthetic_engine_validation/`.)
+
+**(a) The engine is exact.** A fixed-spread quoter at the BBO, run through the real engine on a
+market with a *constant* true value and Poisson taker flow, books P&L equal to the closed-form
+spread capture to floating precision:
+
+```
+expected = n_fills × half_spread × size = 38,520 × $0.02 × 1.0 = $770.40
+realized = $769.44   (residual −$0.96 = the 36-unit open inventory marked at mid)
+```
+
+With no adverse selection (constant value) every fill earns exactly the half-spread; the fill
+condition and `cash + inventory × mid` accounting are correct. Mean-reverting (OU, +$558) and
+mild-brownian (+$690) worlds are likewise profitable.
+
+**(b) The negative control — short-gamma, not a rigged engine.** In a high-vol *martingale*
+(σ=0.20 $/√s) the same fixed 2-tick quoter loses robustly across seeds (mean −$920, 12 seeds). This
+is **not** informational adverse selection — the mid is driftless. It is the structural short-gamma
+cost: the MM's ask is lifted as price rises and bid hit as price falls, so inventory and price are
+negatively correlated and the realized inventory-variance cost scales with σ². A passive MM is
+short a straddle; the spread is the premium. The engine books the loss correctly — it is not
+mechanically positive.
+
+**(c) The strategies are sound when fed the truth.** Real `AvellanedaStoikov` and `GLFTMarketMaker`,
+**injected with the true σ** and run on an exponential-fill (A-S/GLFT-faithful) market, are clearly
+profitable across constant, mild, and medium vol (100% of seeds positive), and **widen their
+half-spread monotonically with σ and risk aversion** (A-S 1.0t→24.6t; GLFT 2.0t→16.2t) — the
+`γσ²`/`θ` vol term doing its job. At the deliberately extreme σ=0.20 the profitable width band is
+narrow (~8t) and each formula's own optimum brackets it (A-S overshoots via its κ·T scaling —
+Contribution 27's miscalibration seen again; GLFT bottoms at ~16t because the σ-driven inventory
+term dominates while the `(1+κ/γ)^(1+κ/γ)` factor explodes for γ≪κ), so both land at ≈breakeven
+rather than clearly positive. The verdict is unchanged at realistic vol: the code finds the profit
+whenever it should be there.
+
+**(d) The zero-profit law — why honest MM is breakeven.** Parts (a)–(c) hold σ and the flow
+parameters (A, κ) **independent**, which is the only reason the synthetic MM can be made profitable:
+the vol-to-flow ratio `σ²/(Aκ)` is a free knob. In a real order-driven market they are coupled. Two
+facts (Glosten & Milgrom 1985; Wyart, Bouchaud, Kockelkoren, Potters & Vettorazzo 2008):
+
+1. *Volatility is flow.* Over time `t` there are `N = A·t` trades, so `σ_$²·t = N·σ_trade²`,
+   giving the volatility per trade `σ_trade = σ_$/√A` — the irreducible adverse-selection cost
+   between quoting and filling.
+2. *Market-maker zero-profit.* Free entry competes the half-spread down to `δ* ≈ σ_trade`. The fill
+   curve decays on scale `1/κ`, and in equilibrium the quoted spread sits there, so
+
+   ```
+   κ_equilibrium ≈ √A / σ_$        (κ falls as σ rises — a flatter fill curve)
+   ```
+
+`equilibrium_pinning.py` confirms this with real adverse selection (a fraction φ=0.5 of takers trade
+in the direction of the next 5 s move). Locating the breakeven half-spread δ_be(σ) where mean PnL=0:
+
+| σ_$ | fixed 2t quoter | δ_be (ticks) | δ_be/σ_$ | implied κ = 1/δ_be |
+|---|---|---|---|---|
+| 0.02 | +$118 | 2.0 (floored) | 100 | 0.500 |
+| 0.05 | −$540 | 3.9 | 77.5 | 0.258 |
+| 0.10 | −$1,436 | 7.6 | 76.0 | 0.132 |
+| 0.20 | −$2,843 | 15.2 | 75.9 | 0.066 |
+
+δ_be/σ_$ is constant (~76) — the breakeven half-spread is **linear in σ** (Wyart–Bouchaud), so the
+market-clearing **κ = 1/δ_be ∝ 1/σ** (it halves each time σ doubles). κ is not free; zero-profit
+pins it to σ. A fixed-κ quoter is living in a disequilibrium — profitable while σ is small,
+catastrophic once σ exceeds the level its spread was set for. At the equilibrium κ the premium
+exactly equals the adverse-selection cost: **honest expected profit = 0.** Breakeven is the fixed
+point, not bad data.
+
+**(e) The unification with Contribution 30.** `δ* ≈ σ_$/√A` assumes the spread can move freely. On a
+**large-tick** asset (LINK, 1-tick floor) the spread *cannot* tighten to the zero-profit width, so
+the market enforces breakeven on the **queue-depth** axis instead: the touch queue grows until the
+marginal back-of-queue order breaks even — the ~8,600 LINK observed in Contributions 20/30. The
+Wyart–Bouchaud spread equilibrium (small-tick, e.g. BTC) and the C30 queue-priority rent (large-tick,
+LINK) are the **same zero-profit law**, enforced through whichever variable is free — **spread width
+or queue position**. Queue priority is the scarce, retail-inaccessible resource precisely *because*
+the spread lever is jammed on large-tick assets. This is the constructive complement to C30: when the
+profit should be there (no queue, no informational adverse selection) the engine and both classical
+strategies find it; in the real market the same theory that prices the spread predicts the
+zero-profit honest regime.
+
+**Corroborating literature:** Glosten & Milgrom (1985) — the adverse-selection spread that yields MM
+zero-profit. Wyart, Bouchaud, Kockelkoren, Potters & Vettorazzo (2008) — the empirical "spread ≈
+volatility per trade" law confirmed here as δ_be ∝ σ. Dayri & Rosenbaum (2015) — large-tick implicit
+spread, the regime where the spread is floored and the balance shifts to the queue. Smith, Farmer,
+Gillemot & Krishnamurthy (2003) — zero-intelligence order-book model in which spread and volatility
+emerge jointly from flow, the theoretical basis for treating κ and σ as coupled rather than free.
+
+---
+
 ## Planned Extensions
 
 - **Stressed regime validation**: download LINK data from high-volatility or crash periods
@@ -1436,6 +1531,11 @@ originals before final thesis submission.
   book. Working paper, Columbia Business School.
 - Silantyev, E. (2019). Order flow analysis of cryptocurrency markets. *Digital Finance*,
   1(1), 191–218.
+- Smith, E., Farmer, J. D., Gillemot, L. & Krishnamurthy, S. (2003). Statistical theory of the
+  continuous double auction. *Quantitative Finance*, 3(6), 481–514.
+- Wyart, M., Bouchaud, J.-P., Kockelkoren, J., Potters, M. & Vettorazzo, M. (2008). Relation
+  between bid–ask spread, impact and volatility in order-driven markets. *Quantitative Finance*,
+  8(1), 41–57.
 - Stoikov, S. (2018). The micro-price: a high-frequency estimator of future prices.
   *Quantitative Finance*, 18(12), 1959–1966.
 - Zhang, Z., Zohren, S. & Roberts, S. (2019). DeepLOB: deep convolutional neural networks

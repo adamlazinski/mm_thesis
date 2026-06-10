@@ -1,0 +1,242 @@
+[
+  {
+    "strategy": "Avellaneda-Stoikov",
+    "regime": "constant",
+    "gamma": 0.1,
+    "mean_pnl": 382.36,
+    "std_pnl": 3.13,
+    "days_pos_pct": 100.0,
+    "mean_fills": 38258.0,
+    "half_spread_ticks": 1.0
+  },
+  {
+    "strategy": "Avellaneda-Stoikov",
+    "regime": "constant",
+    "gamma": 1.0,
+    "mean_pnl": 382.36,
+    "std_pnl": 3.13,
+    "days_pos_pct": 100.0,
+    "mean_fills": 38258.0,
+    "half_spread_ticks": 1.0
+  },
+  {
+    "strategy": "Avellaneda-Stoikov",
+    "regime": "constant",
+    "gamma": 10.0,
+    "mean_pnl": 382.36,
+    "std_pnl": 3.13,
+    "days_pos_pct": 100.0,
+    "mean_fills": 38258.0,
+    "half_spread_ticks": 1.0
+  },
+  {
+    "strategy": "Avellaneda-Stoikov",
+    "regime": "brownian",
+    "gamma": 0.1,
+    "mean_pnl": 413.78,
+    "std_pnl": 25.88,
+    "days_pos_pct": 100.0,
+    "mean_fills": 37941.0,
+    "half_spread_ticks": 1.0
+  },
+  {
+    "strategy": "Avellaneda-Stoikov",
+    "regime": "brownian",
+    "gamma": 1.0,
+    "mean_pnl": 289.27,
+    "std_pnl": 21.49,
+    "days_pos_pct": 100.0,
+    "mean_fills": 38473.0,
+    "half_spread_ticks": 0.67
+  },
+  {
+    "strategy": "Avellaneda-Stoikov",
+    "regime": "brownian",
+    "gamma": 10.0,
+    "mean_pnl": 240.68,
+    "std_pnl": 7.89,
+    "days_pos_pct": 100.0,
+    "mean_fills": 38148.0,
+    "half_spread_ticks": 0.64
+  },
+  {
+    "strategy": "Avellaneda-Stoikov",
+    "regime": "brownian_medvol",
+    "gamma": 0.1,
+    "mean_pnl": 151.37,
+    "std_pnl": 73.78,
+    "days_pos_pct": 100.0,
+    "mean_fills": 37511.0,
+    "half_spread_ticks": 0.76
+  },
+  {
+    "strategy": "Avellaneda-Stoikov",
+    "regime": "brownian_medvol",
+    "gamma": 1.0,
+    "mean_pnl": 74.37,
+    "std_pnl": 22.68,
+    "days_pos_pct": 100.0,
+    "mean_fills": 37416.0,
+    "half_spread_ticks": 0.73
+  },
+  {
+    "strategy": "Avellaneda-Stoikov",
+    "regime": "brownian_medvol",
+    "gamma": 10.0,
+    "mean_pnl": 208.84,
+    "std_pnl": 9.19,
+    "days_pos_pct": 100.0,
+    "mean_fills": 26196.0,
+    "half_spread_ticks": 2.19
+  },
+  {
+    "strategy": "Avellaneda-Stoikov",
+    "regime": "brownian_highvol",
+    "gamma": 0.1,
+    "mean_pnl": -1355.42,
+    "std_pnl": 100.58,
+    "days_pos_pct": 0.0,
+    "mean_fills": 36897.0,
+    "half_spread_ticks": 0.87
+  },
+  {
+    "strategy": "Avellaneda-Stoikov",
+    "regime": "brownian_highvol",
+    "gamma": 1.0,
+    "mean_pnl": -938.77,
+    "std_pnl": 44.39,
+    "days_pos_pct": 0.0,
+    "mean_fills": 26566.0,
+    "half_spread_ticks": 3.12
+  },
+  {
+    "strategy": "Avellaneda-Stoikov",
+    "regime": "brownian_highvol",
+    "gamma": 10.0,
+    "mean_pnl": -5.25,
+    "std_pnl": 7.06,
+    "days_pos_pct": 0.0,
+    "mean_fills": 345.0,
+    "half_spread_ticks": 24.61
+  },
+  {
+    "strategy": "GLFT (ergodic)",
+    "regime": "constant",
+    "gamma": 10.0,
+    "mean_pnl": 289.96,
+    "std_pnl": 4.4,
+    "days_pos_pct": 100.0,
+    "mean_fills": 7254.0,
+    "half_spread_ticks": 4.0
+  },
+  {
+    "strategy": "GLFT (ergodic)",
+    "regime": "constant",
+    "gamma": 50.0,
+    "mean_pnl": 764.71,
+    "std_pnl": 6.25,
+    "days_pos_pct": 100.0,
+    "mean_fills": 38258.0,
+    "half_spread_ticks": 2.0
+  },
+  {
+    "strategy": "GLFT (ergodic)",
+    "regime": "constant",
+    "gamma": 100.0,
+    "mean_pnl": 382.36,
+    "std_pnl": 3.13,
+    "days_pos_pct": 100.0,
+    "mean_fills": 38258.0,
+    "half_spread_ticks": 1.0
+  },
+  {
+    "strategy": "GLFT (ergodic)",
+    "regime": "brownian",
+    "gamma": 10.0,
+    "mean_pnl": 0.0,
+    "std_pnl": 0.0,
+    "days_pos_pct": 0.0,
+    "mean_fills": 0.0,
+    "half_spread_ticks": 38.17
+  },
+  {
+    "strategy": "GLFT (ergodic)",
+    "regime": "brownian",
+    "gamma": 50.0,
+    "mean_pnl": 414.41,
+    "std_pnl": 21.05,
+    "days_pos_pct": 100.0,
+    "mean_fills": 14426.0,
+    "half_spread_ticks": 2.98
+  },
+  {
+    "strategy": "GLFT (ergodic)",
+    "regime": "brownian",
+    "gamma": 100.0,
+    "mean_pnl": 591.72,
+    "std_pnl": 37.9,
+    "days_pos_pct": 100.0,
+    "mean_fills": 30069.0,
+    "half_spread_ticks": 1.99
+  },
+  {
+    "strategy": "GLFT (ergodic)",
+    "regime": "brownian_medvol",
+    "gamma": 10.0,
+    "mean_pnl": 0.0,
+    "std_pnl": 0.0,
+    "days_pos_pct": 0.0,
+    "mean_fills": 0.0,
+    "half_spread_ticks": 174.88
+  },
+  {
+    "strategy": "GLFT (ergodic)",
+    "regime": "brownian_medvol",
+    "gamma": 50.0,
+    "mean_pnl": 205.17,
+    "std_pnl": 21.81,
+    "days_pos_pct": 100.0,
+    "mean_fills": 5222.0,
+    "half_spread_ticks": 5.43
+  },
+  {
+    "strategy": "GLFT (ergodic)",
+    "regime": "brownian_medvol",
+    "gamma": 100.0,
+    "mean_pnl": 244.53,
+    "std_pnl": 15.0,
+    "days_pos_pct": 100.0,
+    "mean_fills": 7704.0,
+    "half_spread_ticks": 4.73
+  },
+  {
+    "strategy": "GLFT (ergodic)",
+    "regime": "brownian_highvol",
+    "gamma": 10.0,
+    "mean_pnl": 0.0,
+    "std_pnl": 0.0,
+    "days_pos_pct": 0.0,
+    "mean_fills": 0.0,
+    "half_spread_ticks": 687.41
+  },
+  {
+    "strategy": "GLFT (ergodic)",
+    "regime": "brownian_highvol",
+    "gamma": 50.0,
+    "mean_pnl": -33.07,
+    "std_pnl": 42.08,
+    "days_pos_pct": 33.0,
+    "mean_fills": 1533.0,
+    "half_spread_ticks": 16.17
+  },
+  {
+    "strategy": "GLFT (ergodic)",
+    "regime": "brownian_highvol",
+    "gamma": 100.0,
+    "mean_pnl": -40.65,
+    "std_pnl": 27.97,
+    "days_pos_pct": 0.0,
+    "mean_fills": 2259.0,
+    "half_spread_ticks": 14.96
+  }
+]

@@ -305,10 +305,69 @@ def make_action_space(
     return params, names
 
 
+# ---------------------------------------------------------------------------
+# LINK honest expanded action space ("link_honest_xl")
+# ---------------------------------------------------------------------------
+# For the honest-fill-model RL demonstration (exp 58). Every quoting leg is
+# >= 5 ticks from mid (= at-touch on LINK's 10-tick natural spread) or
+# suppressed (-1). Rationale: under queue_model='l2' the backtest only assigns
+# queue_ahead to quotes at-or-behind the touch — an inside-spread quote gets
+# queue_ahead=0 and keeps the first-touch artifact. Excluding inside legs makes
+# every fill pass through the real L2 queue.
+#
+# The space is deliberately LARGE (~3x the original 19-action table): a dense
+# distance grid, fast/normal/patient/very-patient holds, soft and hard leans,
+# and one-sided quotes — so that a failure to find profit in-sample cannot be
+# attributed to a thin action menu.
+
+def _build_link_honest_xl() -> Tuple[List[Tuple[int, int, float]], List[str]]:
+    params: List[Tuple[int, int, float]] = [(0, 0, 0.0)]
+    names: List[str] = ["halt"]
+
+    # 5 = at-touch (thinnest honestly-priceable level on LINK's 10-tick spread;
+    # anything inside re-opens the C30 first-touch artifact). 80/150 reach the
+    # deep-reversion zone tested in exp 57.
+    levels = [5, 6, 7, 8, 10, 12, 15, 20, 30, 50, 80, 150]
+    for d in levels:
+        for hold, tag in [(0.25, "fast"), (0.50, "sym"), (2.00, "patient")]:
+            params.append((d, d, hold))
+            names.append(f"d{d}_{tag}")
+    # Very patient at-touch / near
+    for d in [5, 10]:
+        params.append((d, d, 5.00))
+        names.append(f"d{d}_vpatient")
+    # Soft leans (+/-2 ticks, min leg stays >= 5)
+    for d in [5, 6, 8, 10, 15, 20]:
+        params.append((d, d + 2, 0.50))
+        names.append(f"d{d}_lean_bid")
+        params.append((d + 2, d, 0.50))
+        names.append(f"d{d}_lean_ask")
+    # Hard leans: tight on the unwind side, far on the accumulating side
+    for near, far in [(5, 10), (5, 15), (5, 30)]:
+        params.append((near, far, 0.50))
+        names.append(f"d{near}_{far}_hard_lean_bid")
+        params.append((far, near, 0.50))
+        names.append(f"d{near}_{far}_hard_lean_ask")
+    # One-sided quotes
+    for d in [5, 8, 15]:
+        params.append((d, -1, 0.50))
+        names.append(f"d{d}_bid_only")
+        params.append((-1, d, 0.50))
+        names.append(f"d{d}_ask_only")
+
+    assert all(p[0] >= 5 or p[0] == -1 for p in params[1:]), "inside-spread bid leg"
+    assert all(p[1] >= 5 or p[1] == -1 for p in params[1:]), "inside-spread ask leg"
+    return params, names
+
+
+LINK_HONEST_XL_PARAMS, LINK_HONEST_XL_NAMES = _build_link_honest_xl()
+N_LINK_HONEST_XL_ACTIONS = len(LINK_HONEST_XL_PARAMS)
+
 # Mapping from config "action_space" key to (params, names)
 ACTION_SPACES = {
     "link": (ACTION_PARAMS, ACTION_NAMES),
     "btc":  (BTC_ACTION_PARAMS, BTC_ACTION_NAMES),
+    "link_honest_xl": (LINK_HONEST_XL_PARAMS, LINK_HONEST_XL_NAMES),
 }
 
 # Default hold time if action is halt (how long to stay quiet)

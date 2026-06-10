@@ -1,0 +1,258 @@
+{
+  "disequilibrium": [
+    {
+      "sigma": 0.02,
+      "mean_pnl": 118.3,
+      "std": 79.1,
+      "fills": 28564
+    },
+    {
+      "sigma": 0.05,
+      "mean_pnl": -539.6,
+      "std": 249.7,
+      "fills": 27311
+    },
+    {
+      "sigma": 0.1,
+      "mean_pnl": -1436.1,
+      "std": 540.2,
+      "fills": 27996
+    },
+    {
+      "sigma": 0.2,
+      "mean_pnl": -2843.1,
+      "std": 1022.8,
+      "fills": 30204
+    }
+  ],
+  "equilibrium": [
+    {
+      "sigma": 0.02,
+      "sigma_trade_ticks": 2.0,
+      "delta_be_ticks": 2.0,
+      "delta_be_over_sigma": 100.0,
+      "implied_kappa_per_tick": 0.5,
+      "curve": [
+        {
+          "delta": 2,
+          "mean_pnl": 178.8
+        },
+        {
+          "delta": 3,
+          "mean_pnl": 454.6
+        },
+        {
+          "delta": 4,
+          "mean_pnl": 698.3
+        },
+        {
+          "delta": 5,
+          "mean_pnl": 892.4
+        },
+        {
+          "delta": 6,
+          "mean_pnl": 1034.9
+        },
+        {
+          "delta": 8,
+          "mean_pnl": 1248.6
+        },
+        {
+          "delta": 10,
+          "mean_pnl": 1379.2
+        },
+        {
+          "delta": 12,
+          "mean_pnl": 1416.4
+        },
+        {
+          "delta": 14,
+          "mean_pnl": 1363.1
+        },
+        {
+          "delta": 16,
+          "mean_pnl": 1287.9
+        },
+        {
+          "delta": 20,
+          "mean_pnl": 1108.7
+        },
+        {
+          "delta": 24,
+          "mean_pnl": 896.9
+        }
+      ]
+    },
+    {
+      "sigma": 0.05,
+      "sigma_trade_ticks": 5.0,
+      "delta_be_ticks": 3.87,
+      "delta_be_over_sigma": 77.5,
+      "implied_kappa_per_tick": 0.2581,
+      "curve": [
+        {
+          "delta": 2,
+          "mean_pnl": -652.6
+        },
+        {
+          "delta": 3,
+          "mean_pnl": -266.5
+        },
+        {
+          "delta": 4,
+          "mean_pnl": 38.1
+        },
+        {
+          "delta": 5,
+          "mean_pnl": 274.7
+        },
+        {
+          "delta": 6,
+          "mean_pnl": 472.1
+        },
+        {
+          "delta": 8,
+          "mean_pnl": 838.2
+        },
+        {
+          "delta": 10,
+          "mean_pnl": 1053.2
+        },
+        {
+          "delta": 12,
+          "mean_pnl": 1117.9
+        },
+        {
+          "delta": 14,
+          "mean_pnl": 1140.9
+        },
+        {
+          "delta": 16,
+          "mean_pnl": 1114.4
+        },
+        {
+          "delta": 20,
+          "mean_pnl": 1010.9
+        },
+        {
+          "delta": 24,
+          "mean_pnl": 804.2
+        }
+      ]
+    },
+    {
+      "sigma": 0.1,
+      "sigma_trade_ticks": 10.0,
+      "delta_be_ticks": 7.6,
+      "delta_be_over_sigma": 76.0,
+      "implied_kappa_per_tick": 0.1315,
+      "curve": [
+        {
+          "delta": 2,
+          "mean_pnl": -1787.4
+        },
+        {
+          "delta": 3,
+          "mean_pnl": -1426.7
+        },
+        {
+          "delta": 4,
+          "mean_pnl": -1175.2
+        },
+        {
+          "delta": 5,
+          "mean_pnl": -810.9
+        },
+        {
+          "delta": 6,
+          "mean_pnl": -485.1
+        },
+        {
+          "delta": 8,
+          "mean_pnl": 119.5
+        },
+        {
+          "delta": 10,
+          "mean_pnl": 522.4
+        },
+        {
+          "delta": 12,
+          "mean_pnl": 779.8
+        },
+        {
+          "delta": 14,
+          "mean_pnl": 830.0
+        },
+        {
+          "delta": 16,
+          "mean_pnl": 757.2
+        },
+        {
+          "delta": 20,
+          "mean_pnl": 710.5
+        },
+        {
+          "delta": 24,
+          "mean_pnl": 628.2
+        }
+      ]
+    },
+    {
+      "sigma": 0.2,
+      "sigma_trade_ticks": 20.0,
+      "delta_be_ticks": 15.17,
+      "delta_be_over_sigma": 75.9,
+      "implied_kappa_per_tick": 0.0659,
+      "curve": [
+        {
+          "delta": 2,
+          "mean_pnl": -3954.0
+        },
+        {
+          "delta": 3,
+          "mean_pnl": -3504.1
+        },
+        {
+          "delta": 4,
+          "mean_pnl": -3253.4
+        },
+        {
+          "delta": 5,
+          "mean_pnl": -2769.5
+        },
+        {
+          "delta": 6,
+          "mean_pnl": -2518.4
+        },
+        {
+          "delta": 8,
+          "mean_pnl": -1580.0
+        },
+        {
+          "delta": 10,
+          "mean_pnl": -841.9
+        },
+        {
+          "delta": 12,
+          "mean_pnl": -368.1
+        },
+        {
+          "delta": 14,
+          "mean_pnl": -158.4
+        },
+        {
+          "delta": 16,
+          "mean_pnl": 111.6
+        },
+        {
+          "delta": 20,
+          "mean_pnl": 339.4
+        },
+        {
+          "delta": 24,
+          "mean_pnl": 256.0
+        }
+      ]
+    }
+  ]
+}
