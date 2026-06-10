@@ -4,6 +4,20 @@ Empirical and methodological contributions from the implementation and analysis 
 Avellaneda-Stoikov and GLFT market making on BTC/USDT and LINK/USDT tick data (CoinAPI,
 Binance Spot, May–Jun 2025, Jun–Jul 2025, and April 2026).
 
+> **Metric note (2026-06-10) — "Sharpe" figures below are deprecated.** Entries written
+> before this date quote "Sharpe" numbers of two kinds, neither of which should survive into
+> the thesis: (a) √365-annualized daily Sharpe over ≤30-day windows (values like 38–58),
+> where annualization manufactures a large number from a few weeks of data; (b) the engine's
+> per-step quantity (values like −530), which is mean/std of per-100-event PnL increments
+> × √N — a *t-statistic*, not a Sharpe ratio (now stored as `pnl_tstat`; the `sharpe` key is
+> a deprecated alias). Risk-adjusted ratios are in any case not meaningful for this project's
+> verdict: the honest-regime PnL is ≈0/negative, and a ratio of a near-zero mean to its noise
+> is noise. Thesis tables should report **mean ± std of daily PnL, win rate (days > 0), and
+> markout (bps)**; where a relative risk-adjusted comparison is genuinely needed (e.g., the
+> Sharpe paradox in Contribution 29), use the *unannualized* daily mean/std ratio and label
+> it as such. Relative comparisons quoted in Sharpe terms (e.g., "RL +24% over A-S") remain
+> directionally valid — both sides used the same metric — but should be restated in PnL terms.
+
 ---
 
 ## 1. Adverse Selection at the Requote Frequency
@@ -26,6 +40,11 @@ immediate adverse selection rather than slow inventory drift.
 on a major crypto venue. Demonstrates that the optimal requote interval lies between the
 momentum decay horizon (~5s) and the inventory accumulation horizon, providing an empirically
 grounded framework for requote frequency selection.
+
+**Corroborating literature:** Adverse selection as the structural cost of passive liquidity
+provision is the foundational result of Glosten & Milgrom (1985); the conditional-on-fill
+losing position of limit orders ("the limit order trader's winner's curse") is Handa &
+Schwartz (1996). This contribution reproduces both at crypto tick frequency.
 
 ---
 
@@ -152,6 +171,13 @@ ergodic solution under this fill intensity, showing that A in all formulas is re
 `A_total = A_liq + A_mom`, tightening the inventory skew while leaving the adverse selection
 spread term unchanged.
 
+**Corroborating literature:** The exponential intensity λ(δ) = A·exp(−κδ) is a *modeling
+assumption* of Avellaneda & Stoikov (2008) and Guéant, Lehalle & Fernandez-Tapia (2013), not
+an empirical claim; the empirical execution literature has long found limit-order fill times
+poorly described by simple parametric forms (Lo, MacKinlay & Zhang 2002, survival analysis of
+limit-order executions). Finding a two-component deviation therefore contradicts no empirical
+result — it refines the assumption with data.
+
 ---
 
 ## 7. Regime-Dependent Model Validity
@@ -262,6 +288,11 @@ Positive = favorable (price moved up after buying). Negative = adverse selection
 that is directly comparable with academic literature. Confirms that the June 2025 regime
 is structurally unfavorable for passive market making under all tested strategies.
 
+**Corroborating literature:** The markout methodology (post-fill mid drift at a fixed
+horizon, signed by fill side) follows Albers et al. (2025); the finding that the majority of
+passive fills are adversely selected echoes Glosten & Milgrom (1985) and the empirical
+limit-order literature (Handa & Schwartz 1996; Hollifield, Miller & Sandås 2004).
+
 ---
 
 ## 13. Regime Contrast: May vs June 2025
@@ -331,6 +362,12 @@ inapplicable.
 Shows that the exponential fill model is not universal and that asset-specific fill curve
 shape determines which model class is appropriate. Provides a methodology for detecting
 step-function structure from tick data.
+
+**Corroborating literature:** LINK (spread pinned at 10 ticks, deep standing queues) is a
+textbook *large-tick asset* in the sense of Dayri & Rosenbaum (2015): price dynamics are
+dominated by queue dynamics rather than continuous price discovery, which is exactly the
+regime where a distance-from-mid fill model loses meaning and queue position becomes the
+relevant state variable.
 
 ---
 
@@ -509,6 +546,12 @@ a structural feature invisible to the exponential fill model. This finding has d
 for any market making model on assets with large standing queues: the relevant variable is not
 the distance from mid but whether the order is inside or outside the existing queue.
 
+**Corroborating literature:** That queue position — not distance from mid — is the economically
+dominant state variable on large-tick instruments is the central result of Moallemi & Yuan
+(2017), who show queue position carries value comparable to a large fraction of the spread;
+the large-tick taxonomy is Dayri & Rosenbaum (2015). This contribution provides the crypto
+analogue with direct L2 measurement.
+
 ---
 
 ## 21. LOB Shape: Hollow Touch and Structural Stability
@@ -600,6 +643,13 @@ unchanged — the net effect is worse adverse selection. The correct use of OBI 
 making is asymmetric: widen the quote on the predicted-adverse side. The IC value of 0.20
 is also calibrated: it is a useful input for regime detection but insufficient to build a
 profitable standalone signal at 0.5s horizon.
+
+**Corroborating literature:** Order-book/order-flow imbalance as the strongest short-horizon
+return predictor is established in Cont, Kukanov & Stoikov (2014) and operationalized as the
+micro-price in Stoikov (2018); Silantyev (2019) confirms it transfers to crypto. The
+consensus in the crypto microstructure literature is precisely this contribution's finding:
+the predictability is real and universal but "not strong enough to be the source of a
+statistical arbitrage" net of spread and fees (e.g., arXiv:2602.00776).
 
 ---
 
@@ -974,6 +1024,12 @@ only the rarest, most adversely selected fills, concentrating P&L variance while
 mean. The adverse selection spike (24% → 45%) is the direct empirical consequence of queue
 position: resting deeper in the queue means filling only when the market has already moved.
 
+**Corroborating literature:** The economic value of queue position quantified here is the
+empirical counterpart of Moallemi & Yuan (2017); the result that orders which *do* fill from
+deep queue positions are more adversely selected is the adverse-selection/latency mechanism
+modeled by Lehalle & Mounjid (2017). The 2.4× optimism of first-touch fill models also
+explains why published crypto-MM backtests using that model report profits.
+
 ---
 
 ## 30. The Queue-Priority Decomposition: All Profitable Results Are Inside-Spread Artifacts
@@ -1090,6 +1146,23 @@ overshoot-catch is the *first positive-markout signal* found in the project, and
 a **taker** trigger (deliberately place to catch the bounce, instantly, no queue), not a passive
 one — motivating the maker→taker pivot rather than rescuing passive MM.
 
+**Corroborating literature:** The decomposition's verdict — MM profitability is gated by queue
+priority, which is bought with speed/infrastructure — is consistent across the empirical HFT
+literature: modern MM profits accrue to the fastest, queue-privileged participants (Menkveld
+2013; Baron, Brogaard, Hagströmer & Kirilenko 2019), the contest for priority is an arms race
+in speed (Budish, Cramton & Shim 2015), and queue position itself carries quantifiable value
+on large-tick instruments (Moallemi & Yuan 2017). The contribution does not contradict
+published *profitable* crypto-MM backtests — it explains them, since they overwhelmingly use
+the same first-touch fill model dissected here.
+
+**Scope and rebates.** All claims are scoped to: Binance **spot** BTC/USDT and LINK/USDT,
+May 2025 – April 2026 data, the ~100ms retail latency class, order sizes ≪ L1 depth, and
+zero fees (which makes every negative result an *upper bound* on retail economics). One
+deliberate exclusion: on venues with **maker rebates** the maker leg carries an additional
+revenue term not modeled here. This does not alter the verdict — rebates accrue only on
+fills, and fills require queue priority, so the rebate is captured by whoever owns the queue;
+it is one more component of the same queue-priority rent, not an escape from it.
+
 ---
 
 ## 31. Taker Pivot: A Real Signal Capped at ~1 bps — Latency-Robust, Fee-Tier-Bound
@@ -1153,6 +1226,11 @@ priority and fee tier respectively); **retail captures neither.**
 **Caveats:** these are per-eval-point predictive means with overlapping positions (a
 predictive-power metric, not a realisable position-constrained PnL), and market impact is not
 modelled. Both make the realisable edge *smaller*, strengthening the negative conclusion.
+Selection thresholds (signal decile, sweep-size percentile, vol median) are **trailing-window,
+strictly ex-ante** (1h rolling, shifted) — verified by rerun to leave all conclusions
+unchanged, as expected since the random-direction control at the same selection points already
+bounded any selection effect at the spread floor. Scope: Binance spot BTC/USDT, 41–43 days
+across three regimes, ~100ms base latency (swept 10–500ms), sizes ≪ L1 depth.
 
 **Contribution:** Establishes that short-horizon directional predictability on BTC (OBI/momentum)
 is real, robust across regimes, queue-independent, and — unlike intuition — **not latency-gated**;
@@ -1183,6 +1261,17 @@ so OBI magnitude is itself a better proxy for expected move size than a classifi
 The ~1 bps within-venue ceiling is therefore a genuine predictability wall, not an artifact of using
 a simple signal — confirmed ML-proof under strict OOS. The fee tier remains the binding constraint;
 cross-venue spot↔perp fusion is the sole remaining lever.
+
+**Corroborating literature:** Each leg of this contribution lands on an established result.
+(1) Signal real but sub-cost: the crypto microstructure consensus is that imbalance/flow
+predictability "does not beat transaction costs" when taken (Cont, Kukanov & Stoikov 2014
+for the signal; arXiv:2602.00776 for the crypto cost verdict). (2) ML adds classification
+skill but little economics: the standard finding for LOB deep learning (Zhang, Zohren &
+Roberts 2019 report strong classification metrics; Kearns & Nevmyvaka 2013 note the gap
+between predictability and profit). (3) Latency *not* binding here is not in tension with
+the latency-race literature (Budish, Cramton & Shim 2015): those races are *maker-side
+queue/cancel races at the touch* — exactly the queue gate of Contribution 30 — whereas this
+taker edge plays out over seconds and is therefore fee-gated, not speed-gated.
 
 ---
 
@@ -1217,7 +1306,11 @@ constraint is queue *position*, which sitting cannot manufacture.
 
 **Finding 2 — deep-limit reversion is refuted; reversion is a shallow phenomenon (exp 57).** A
 conditional-reversion study (fade a displacement of depth X over a 30s window, measure the 60s
-reversion PnL in ticks), pooled over all LINK (~60 days) and BTC (43 days):
+reversion PnL in ticks), pooled over all LINK (~60 days) and BTC (43 days). *Note on n:* events
+are sampled on a 1s grid with 30s windows, so observations overlap and the raw counts are
+inflated ~30×; all conclusions rest on conditional means and the monotonic depth gradient, not
+on n-dependent significance tests. The same applies to the touch-based addendum below
+(overlapping placements at 1s spacing).
 
 | Depth from mid | LINK mean | LINK P(profit) | LINK p5 tail | BTC mean | BTC p5 tail |
 |---|---|---|---|---|---|
@@ -1254,6 +1347,40 @@ completes the verdict: every positive zone in maker or taker space is gated by p
 (queue position or fee tier), and the structural alternatives that appear to escape it — RL, low-frequency
 sitting, deep reversion — each collapse back onto the same two gates.
 
+**Corroborating literature:** "Adverse selection by selection" is the limit-order winner's
+curse of Handa & Schwartz (1996) — a limit order fills exactly when the market most wants to
+trade through it — sharpened here into a monotonic depth gradient. Conditional-on-fill
+adverse selection of standing limit orders is the core empirical finding of Hollifield,
+Miller & Sandås (2004), and the interaction of resting time, queue, and being picked off by
+informed flow is modeled in Lehalle & Mounjid (2017). Finding 1 (sitting longer makes fills
+*more* toxic, not better-queued) is that mechanism observed directly.
+
+**Robustness addendum — touch-based fills (censoring check).** The grid study conditions on
+displacement *sustained* at exactly t, which censors wick fills (price touches the level and
+reverts within the window) — a real resting limit would have filled those *profitably*, so the
+grid design could overstate deep adversity. A touch-based rerun (`touch_reversion.py`: limit
+rests X ticks from mid for 30s; fill = **first** crossing of the level on a 250ms grid, at the
+limit price; reversion measured 60s from the *fill* time) removes the censoring and confirms
+the conclusion — if anything more sharply, because fills anchor at first touch and then absorb
+the remainder of the move:
+
+| Depth | LINK mean (ticks) | LINK p5 | LINK fills/day | BTC mean |
+|---|---|---|---|---|
+| 10t | +2.3 | −30 | 57,660 | −1,713 |
+| 20t | +1.7 | −40 | 13,705 | −1,708 |
+| 50t | −1.9 | −90 | 828 | −1,691 |
+| 100t | −34.7 | −443 | 78 | −1,663 |
+| 200t | −160.9 | −1,543 | 16 | −1,613 |
+| 500t | −536.2 | −2,553 | 3.6 | −1,514 |
+
+Same sign structure, same monotonic depth gradient, same explosive left tail. Mean time-to-fill
+is 9–19s, i.e. deep fills happen *mid-move* and then ride the continuation — the
+adverse-selection-by-selection mechanism observed at the fill itself rather than inferred from
+end-of-window displacement. (Mid-touch is used as the fill trigger, which is *optimistic* for
+the strategy; BTC depths of 10–500 ticks are 0.1–5 bps and thus all inside ordinary 30s noise,
+so BTC is uniformly negative — consistent with the grid study.) The deep-reversion refutation
+is therefore not an artifact of fill-time censoring.
+
 ---
 
 ## Planned Extensions
@@ -1264,3 +1391,54 @@ sitting, deep reversion — each collapse back onto the same two gates.
   structure) to determine whether the step-function mechanism is LINK-specific or generalises
 - **ML-based kappa estimation**: XGBoost fill probability model conditioned on regime features
 - **Multi-level ladder quoting**: extend single-order framework to multi-level
+
+---
+
+## References
+
+Cited in the "Corroborating literature" notes above. Verify exact page numbers against the
+originals before final thesis submission.
+
+- Avellaneda, M. & Stoikov, S. (2008). High-frequency trading in a limit order book.
+  *Quantitative Finance*, 8(3), 217–224.
+- Albers, J. et al. (2025). [Markout / OBI methodology — complete citation from the copy used
+  for the markout horizon choice.]
+- Baron, M., Brogaard, J., Hagströmer, B. & Kirilenko, A. (2019). Risk and return in
+  high-frequency trading. *Journal of Financial and Quantitative Analysis*, 54(3), 993–1024.
+- Budish, E., Cramton, P. & Shim, J. (2015). The high-frequency trading arms race: frequent
+  batch auctions as a market design response. *Quarterly Journal of Economics*, 130(4),
+  1547–1621.
+- Cont, R., Kukanov, A. & Stoikov, S. (2014). The price impact of order book events.
+  *Journal of Financial Econometrics*, 12(1), 47–88.
+- Dayri, K. & Rosenbaum, M. (2015). Large tick assets: implicit spread and optimal tick size.
+  *Market Microstructure and Liquidity*, 1(1).
+- Glosten, L. R. & Milgrom, P. R. (1985). Bid, ask and transaction prices in a specialist
+  market with heterogeneously informed traders. *Journal of Financial Economics*, 14(1),
+  71–100.
+- Guéant, O., Lehalle, C.-A. & Fernandez-Tapia, J. (2013). Dealing with the inventory risk:
+  a solution to the market making problem. *Mathematics and Financial Economics*, 7(4),
+  477–507.
+- Handa, P. & Schwartz, R. A. (1996). Limit order trading. *Journal of Finance*, 51(5),
+  1835–1861.
+- Hollifield, B., Miller, R. A. & Sandås, P. (2004). Empirical analysis of limit order
+  markets. *Review of Economic Studies*, 71(4), 1027–1063.
+- Kearns, M. & Nevmyvaka, Y. (2013). Machine learning for market microstructure and high
+  frequency trading. In *High Frequency Trading: New Realities for Traders, Markets and
+  Regulators*. Risk Books.
+- Lehalle, C.-A. & Mounjid, O. (2017). Limit order strategic placement with adverse selection
+  risk and the role of latency. *Market Microstructure and Liquidity*, 3(1).
+  (arXiv:1610.00261)
+- Lo, A. W., MacKinlay, A. C. & Zhang, J. (2002). Econometric models of limit-order
+  executions. *Journal of Financial Economics*, 65(1), 31–71.
+- Menkveld, A. J. (2013). High frequency trading and the new market makers. *Journal of
+  Financial Markets*, 16(4), 712–740.
+- Moallemi, C. C. & Yuan, K. (2017). A model for queue position valuation in a limit order
+  book. Working paper, Columbia Business School.
+- Silantyev, E. (2019). Order flow analysis of cryptocurrency markets. *Digital Finance*,
+  1(1), 191–218.
+- Stoikov, S. (2018). The micro-price: a high-frequency estimator of future prices.
+  *Quantitative Finance*, 18(12), 1959–1966.
+- Zhang, Z., Zohren, S. & Roberts, S. (2019). DeepLOB: deep convolutional neural networks
+  for limit order books. *IEEE Transactions on Signal Processing*, 67(11), 3001–3012.
+- *Explainable Patterns in Cryptocurrency Microstructure* (2026). arXiv:2602.00776 —
+  crypto-specific confirmation that imbalance predictability does not beat transaction costs.

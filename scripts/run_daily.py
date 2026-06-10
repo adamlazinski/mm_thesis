@@ -635,7 +635,7 @@ def aggregate_results(output_dir: Path):
     print(f"Total PnL:             {df['total_pnl'].sum():.4f}")
     print(f"Mean daily PnL:        {df['total_pnl'].mean():.4f}")
     print(f"Std daily PnL:         {df['total_pnl'].std():.4f}")
-    print(f"Daily Sharpe:          "
+    print(f"Daily Sharpe (unann.): "
           f"{df['total_pnl'].mean() / df['total_pnl'].std():.3f}")
     print(f"Total fills:           {df['total_fills'].sum():,}")
     print(f"Avg fill rate:         {df['fill_rate'].mean():.1%}")

@@ -43,6 +43,11 @@ MOM_WIN  = 1.0                  # trailing momentum window (s)
 HOLDS    = [0.5, 1, 2, 5, 10]   # post-latency hold (s)
 VOL_WIN  = 60.0
 SWEEP_PCTL = 0.95
+# Trailing windows for ex-ante thresholds (no end-of-day information in selection):
+TRAIL_WIN = int(3600 / EVAL_DT)    # 1h trailing window for signal-decile threshold
+TRAIL_MIN = int(600 / EVAL_DT)     # 10min warm-up
+TRADE_TRAIL_WIN = 20_000           # trailing trades for sweep-size threshold
+TRADE_TRAIL_MIN = 2_000
 
 
 def all_dates():
@@ -123,9 +128,12 @@ def main():
     rows = []
 
     def day_topdecile(sig, pnl_by_hold, dirn, label, date):
-        asig = np.abs(sig); fin = np.isfinite(asig)
-        thr = np.nanquantile(asig[fin], 0.9)
-        mask = fin & (asig >= thr)
+        # Ex-ante selection: trailing-1h rolling decile, shifted so the threshold
+        # at t uses strictly past data (defense_audit.md §3.2 flag B).
+        asig = np.abs(sig)
+        thr = (pd.Series(asig).rolling(TRAIL_WIN, min_periods=TRAIL_MIN)
+               .quantile(0.9).shift(1).to_numpy())
+        mask = np.isfinite(asig) & np.isfinite(thr) & (asig >= thr)
         for h in HOLDS:
             p = pnl_by_hold[h][mask]; p = p[np.isfinite(p)]
             if len(p) == 0:
@@ -168,13 +176,17 @@ def main():
             tts = t["time_exchange"].astype("int64").to_numpy() / 1e9
             tsz = t["size"].to_numpy()
             tside = t["taker_side"].astype(str).to_numpy()
-            thr = np.quantile(tsz, SWEEP_PCTL)
+            # Ex-ante thresholds: trailing rolling quantile/median, shifted 1.
+            thr_t = (pd.Series(tsz).rolling(TRADE_TRAIL_WIN, min_periods=TRADE_TRAIL_MIN)
+                     .quantile(SWEEP_PCTL).shift(1).to_numpy())
+            bigm = np.isfinite(thr_t) & (tsz >= thr_t)
             r = np.diff(mid_now, prepend=mid_now[0])
             gvol = pd.Series(r).rolling(int(VOL_WIN / EVAL_DT), min_periods=10).std().to_numpy()
-            volhi = np.nanmedian(gvol)
-            big = tts[tsz >= thr]; big_side = tside[tsz >= thr]
+            volhi = (pd.Series(gvol).rolling(TRAIL_WIN, min_periods=TRAIL_MIN)
+                     .median().shift(1).to_numpy())
+            big = tts[bigm]; big_side = tside[bigm]
             vi = np.clip(np.searchsorted(g, big) - 1, 0, len(gvol) - 1)
-            keep = gvol[vi] >= volhi
+            keep = np.isfinite(volhi[vi]) & (gvol[vi] >= volhi[vi])
             big = big[keep]; big_side = big_side[keep]
             fade = np.where(np.char.lower(big_side.astype(str)) == "buy", -1.0, 1.0)
             for h in HOLDS:

@@ -71,7 +71,7 @@ class BacktestResults:
             "BACKTEST RESULTS SUMMARY",
             "=" * 50,
             f"Total PnL:            {m.get('total_pnl', 0):.4f}",
-            f"Sharpe Ratio:         {m.get('sharpe', 0):.3f}",
+            f"PnL t-stat (per-step):{m.get('pnl_tstat', m.get('sharpe', 0)):.3f}",
             f"Max Drawdown:         {m.get('max_drawdown', 0):.4f}",
             f"Total Fills:          {m.get('total_fills', 0)}",
             f"Fill Rate:            {m.get('fill_rate', 0):.1%}",
@@ -743,14 +743,20 @@ class Backtest:
         # PnL
         metrics["total_pnl"] = float(equity.iloc[-1]) if len(equity) > 0 else 0.0
 
-        # Sharpe (annualised from per-step returns)
+        # Per-step PnL t-statistic: mean/std of per-step PnL increments × sqrt(N).
+        # NOT a Sharpe ratio (no time normalization; per-100-event sampling) — kept
+        # under the legacy "sharpe" key for backward compat with old _metrics.json
+        # readers, but thesis-facing numbers must use per-day PnL stats instead
+        # (mean/std of daily PnL across days, win rate). See defense_audit.md §1.10.
         if len(equity) > 2:
             rets = equity.diff().dropna()
             mean_ret = rets.mean()
             std_ret = rets.std()
-            metrics["sharpe"] = float(mean_ret / std_ret * np.sqrt(len(rets))) if std_ret > 0 else 0.0
+            tstat = float(mean_ret / std_ret * np.sqrt(len(rets))) if std_ret > 0 else 0.0
         else:
-            metrics["sharpe"] = 0.0
+            tstat = 0.0
+        metrics["pnl_tstat"] = tstat
+        metrics["sharpe"] = tstat  # deprecated alias — do not report as "Sharpe"
 
         # Drawdown
         if len(equity) > 0:

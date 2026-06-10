@@ -33,7 +33,9 @@ Cross-references point to numbered entries in [thesis_contributions.md](thesis_c
   a shallow near-touch phenomenon (8–50t, ~+1 tick); it vanishes by ~50t and turns strongly negative beyond,
   monotonically worse with depth, with an explosive left tail (LINK p5: −20t→−2,611t). BTC negative at all
   depths. Mechanism: *adverse selection by selection* — a move large enough to reach a deep limit is
-  selectively informed, so it continues. Risk guardrails cannot rescue it (no positive deep zone exists). *(C32, exp 57)*
+  selectively informed, so it continues. Risk guardrails cannot rescue it (no positive deep zone exists).
+  Robust to fill-time censoring: a touch-based rerun (wicks fill at the level, reversion from fill time)
+  reproduces the same monotonic gradient on both assets. *(C32, exp 57)*
 
 
 - `✗` **Backtested MM profit is retail-accessible.** No — every profitable MM run is an inside-spread
@@ -55,7 +57,7 @@ Cross-references point to numbered entries in [thesis_contributions.md](thesis_c
 
 ## D. Reinforcement learning
 
-- `◐` **RL beats A-S on LINK.** Yes by ~5% (+9 Sharpe), but it's the same inside-spread artifact plus a
+- `◐` **RL beats A-S on LINK.** Yes by ~5% in PnL/day (+$2.16), but it's the same inside-spread artifact plus a
   genuine learned regime-dependent halting behavior. *(C23, C30)*
 - `✓` **RL transfers across regimes.** LINK zero-shot to Apr 2026, no recalibration. *(C23)*
 - `✗` **DQN beats TabularQ.** No — low-data regime (17 IS days); the simpler tabular representation wins. *(C23)*
