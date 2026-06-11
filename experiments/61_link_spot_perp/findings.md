@@ -54,8 +54,26 @@ are contemporaneously integrated with no exploitable lead-lag, and the perp's ti
 reproduces the BTC no-artifact loss. The two-gate meta-verdict stands — there is no third
 door in cross-venue.
 
+## Cross-asset (BTC) check — blocked by BTC perp data integrity
+
+Attempting the same HY check on BTC (Apr 14–15, the only BTC spot days) surfaced a
+**data-integrity problem in the BTC perp files, not a result**: at identical wall-clock
+times the BTC **spot** trades sit at ~$101.7k while the BTC **perp** trades sit at
+~$74.5k — a ~27% gap, impossible as funding basis (real spot↔perp basis is <0.5%). The
+spot level matches the thesis's BTC (~$101k); the perp series (~$68k on Apr 1 drifting to
+~$74k) is internally consistent but ~30% below where BTC actually traded, i.e. the BTC
+perp pull appears mislabeled or from a different period/instrument. The HY cross-correlation
+was ≈0 at all lags precisely because the two series are not the same price. **The BTC
+cross-asset symmetry check cannot be run until the BTC perp data is re-pulled.** The LINK
+result above is unaffected (LINK perp basis ≈ −5.5 bps is sane).
+
+The estimator (`hy_leadlag.py`) was generalised in the process — it now handles all three
+timestamp encodings in the dataset (epoch-ns int64; tz-aware datetime64; float
+seconds-from-midnight reconciled to epoch) and any `--symbol`, so it is ready to run on BTC
+the moment clean perp data exists.
+
 Reproduce:
 ```
-python experiments/61_link_spot_perp/characterize.py --days 30   # spread, basis, BBO lead-lag
-python experiments/61_link_spot_perp/hy_leadlag.py  --days 30     # Hayashi-Yoshida trade lead-lag
+python experiments/61_link_spot_perp/characterize.py --days 30              # spread, basis, BBO lead-lag
+python experiments/61_link_spot_perp/hy_leadlag.py  --symbol LINK --days 30 # Hayashi-Yoshida trade lead-lag
 ```

@@ -31,18 +31,36 @@ DATA = ROOT / "data" / "real"
 OUT = Path("experiments/61_link_spot_perp/results")
 
 
-def dates():
+def dates(sym="LINK"):
     s = {re.search(r"(\d{4}-\d{2}-\d{2})", f).group(1)
-         for f in glob.glob(str(DATA / "trades_LINK_2026-04-*.parquet"))}
+         for f in glob.glob(str(DATA / f"trades_{sym}_2026-04-*.parquet"))}
     p = {re.search(r"(\d{4}-\d{2}-\d{2})", f).group(1)
-         for f in glob.glob(str(DATA / "trades_LINK_PERP_2026-04-*.parquet"))}
+         for f in glob.glob(str(DATA / f"trades_{sym}_PERP_2026-04-*.parquet"))}
     return sorted(s & p)
 
 
-def load_trades(path):
+def load_trades(path, date):
+    """Return (epoch_seconds, price). Handles three timestamp encodings present in
+    the dataset: epoch ns (int64, LINK/perp-numeric), ISO strings (object,
+    BTC perp), and float seconds-from-midnight (BTC spot — reconciled to epoch by
+    adding the day's UTC midnight)."""
     t = pd.read_parquet(path, columns=["time_exchange", "price"])
-    ts = t["time_exchange"].astype("int64").to_numpy()
-    ts = ts / 1e9 if ts[0] > 1e17 else (ts / 1e6 if ts[0] > 1e14 else ts.astype(float))
+    te = t["time_exchange"]
+    if te.dtype == object or pd.api.types.is_datetime64_any_dtype(te):
+        # handles naive, tz-aware (datetime64[ns,UTC]), and ISO-string columns
+        dt = pd.to_datetime(te, utc=True).dt.tz_localize(None)
+        ts = dt.astype("int64").to_numpy() / 1e9
+    else:
+        arr = te.to_numpy().astype(float)
+        if np.nanmax(arr) < 1e7:                       # seconds-from-midnight
+            midnight = pd.Timestamp(date, tz="UTC").value / 1e9
+            ts = arr + midnight
+        elif arr[0] > 1e17:
+            ts = arr / 1e9
+        elif arr[0] > 1e14:
+            ts = arr / 1e6
+        else:
+            ts = arr
     px = t["price"].to_numpy().astype(float)
     # drop bad ticks (zero/negative/NaN price) before anything else
     good = np.isfinite(px) & (px > 0) & np.isfinite(ts)
@@ -80,16 +98,18 @@ def hy_curve(tx, px, ty, py, thetas):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--days", type=int, default=30)
+    ap.add_argument("--symbol", default="LINK")
     args = ap.parse_args(); OUT.mkdir(parents=True, exist_ok=True)
-    ds = dates()[: args.days]
+    sym = args.symbol
+    ds = dates(sym)[: args.days]
     thetas = np.round(np.arange(-2.0, 2.01, 0.1), 2)     # ±2 s, 100 ms steps
-    print(f"HY lead-lag LINK spot<->perp, {len(ds)} days, θ∈[-2,2]s")
+    print(f"HY lead-lag {sym} spot<->perp, {len(ds)} days, θ∈[-2,2]s")
 
     acc = []
     for d in ds:
         try:
-            tx, px = load_trades(DATA / f"trades_LINK_{d}.parquet")
-            ty, py = load_trades(DATA / f"trades_LINK_PERP_{d}.parquet")
+            tx, px = load_trades(DATA / f"trades_{sym}_{d}.parquet", d)
+            ty, py = load_trades(DATA / f"trades_{sym}_PERP_{d}.parquet", d)
             curve, vx, vy = hy_curve(tx, px, ty, py, thetas)
             acc.append(curve)
             pk = thetas[int(np.nanargmax(np.abs(curve)))]
@@ -114,7 +134,7 @@ def main():
 
     json.dump({"days": len(acc), "thetas": thetas.tolist(), "ccf": R.tolist(),
                "peak_theta_s": float(tpk), "sum_pos": pos, "sum_neg": neg},
-              open(OUT / "hy_leadlag.json", "w"), indent=2)
+              open(OUT / f"hy_leadlag_{sym}.json", "w"), indent=2)
     print(f"\nSaved -> {OUT / 'hy_leadlag.json'}")
     print("\n(1) Hayashi & Yoshida (2005); lead-lag contrast: Hoffmann, Rosenbaum & Yoshida (2013).")
 
