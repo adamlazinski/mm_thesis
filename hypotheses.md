@@ -109,6 +109,11 @@ Cross-references point to numbered entries in [thesis_contributions.md](thesis_c
 - `✓` **Kappa estimation:** execution-aware (Approach B) and crossing-intensity (Approach C) beat the
   unconditional market-distance estimate (Approach A). *(C5, C25)*
 - `✓` **Backtest fill-model optimism is quantifiable** via an L2 queue-clearing model. *(C29)*
+- `✓` **The engine under-modeled latency adverse selection (fixed).** Marketable-on-arrival orders are
+  takers that cross & bypass the same-side queue, not patient makers at a stale limit. Correcting this
+  (commit 24a687f) + a 4.5bps taker fee turns the honest at-touch LINK MM from ≈breakeven to −$7.93/day,
+  0/30 days positive; the inside-spread artifact (never crosses the ask) is unaffected. Strengthens the
+  verdict. *(C30 corrected-engine addendum, exp 62)*
 - `✓` **Adverse selection is structural at the requote frequency** (post-fill markout analysis). *(C1, C12)*
 - `✓` **The engine + A-S/GLFT are sound (synthetic ground truth).** Constant-value world books closed-form
   spread capture to floating precision; fed true σ both strategies profit and widen ∝σ through medium vol;

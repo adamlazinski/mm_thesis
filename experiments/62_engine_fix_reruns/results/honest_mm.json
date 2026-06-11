@@ -1,0 +1,251 @@
+{
+  "queue_fraction": 0.5,
+  "taker_fee": 0.00045,
+  "latency": 0.1,
+  "per_day": [
+    {
+      "date": "2026-04-01",
+      "fills": 6822,
+      "takers": 1007,
+      "pnl_fee0": 8.44,
+      "pnl_fee45bps": -11.9,
+      "fee_cost": 20.34
+    },
+    {
+      "date": "2026-04-02",
+      "fills": 7781,
+      "takers": 676,
+      "pnl_fee0": -3.58,
+      "pnl_fee45bps": -16.73,
+      "fee_cost": 13.14
+    },
+    {
+      "date": "2026-04-03",
+      "fills": 2700,
+      "takers": 266,
+      "pnl_fee0": -3.14,
+      "pnl_fee45bps": -8.34,
+      "fee_cost": 5.2
+    },
+    {
+      "date": "2026-04-04",
+      "fills": 1018,
+      "takers": 106,
+      "pnl_fee0": -0.43,
+      "pnl_fee45bps": -2.5,
+      "fee_cost": 2.07
+    },
+    {
+      "date": "2026-04-05",
+      "fills": 2677,
+      "takers": 283,
+      "pnl_fee0": -1.77,
+      "pnl_fee45bps": -7.28,
+      "fee_cost": 5.51
+    },
+    {
+      "date": "2026-04-06",
+      "fills": 5955,
+      "takers": 555,
+      "pnl_fee0": 6.92,
+      "pnl_fee45bps": -4.29,
+      "fee_cost": 11.21
+    },
+    {
+      "date": "2026-04-07",
+      "fills": 8396,
+      "takers": 847,
+      "pnl_fee0": -6.29,
+      "pnl_fee45bps": -23.2,
+      "fee_cost": 16.9
+    },
+    {
+      "date": "2026-04-08",
+      "fills": 6708,
+      "takers": 596,
+      "pnl_fee0": 9.09,
+      "pnl_fee45bps": -3.14,
+      "fee_cost": 12.24
+    },
+    {
+      "date": "2026-04-09",
+      "fills": 6435,
+      "takers": 632,
+      "pnl_fee0": 11.0,
+      "pnl_fee45bps": -1.64,
+      "fee_cost": 12.64
+    },
+    {
+      "date": "2026-04-10",
+      "fills": 5439,
+      "takers": 559,
+      "pnl_fee0": -4.61,
+      "pnl_fee45bps": -15.96,
+      "fee_cost": 11.35
+    },
+    {
+      "date": "2026-04-11",
+      "fills": 2601,
+      "takers": 294,
+      "pnl_fee0": 5.23,
+      "pnl_fee45bps": -0.79,
+      "fee_cost": 6.02
+    },
+    {
+      "date": "2026-04-12",
+      "fills": 3472,
+      "takers": 365,
+      "pnl_fee0": 4.14,
+      "pnl_fee45bps": -3.09,
+      "fee_cost": 7.23
+    },
+    {
+      "date": "2026-04-13",
+      "fills": 5951,
+      "takers": 567,
+      "pnl_fee0": -2.55,
+      "pnl_fee45bps": -14.02,
+      "fee_cost": 11.47
+    },
+    {
+      "date": "2026-04-14",
+      "fills": 4457,
+      "takers": 368,
+      "pnl_fee0": -6.68,
+      "pnl_fee45bps": -14.26,
+      "fee_cost": 7.58
+    },
+    {
+      "date": "2026-04-15",
+      "fills": 4445,
+      "takers": 379,
+      "pnl_fee0": 6.5,
+      "pnl_fee45bps": -1.32,
+      "fee_cost": 7.82
+    },
+    {
+      "date": "2026-04-16",
+      "fills": 6595,
+      "takers": 646,
+      "pnl_fee0": -4.37,
+      "pnl_fee45bps": -18.01,
+      "fee_cost": 13.65
+    },
+    {
+      "date": "2026-04-17",
+      "fills": 7501,
+      "takers": 715,
+      "pnl_fee0": 5.75,
+      "pnl_fee45bps": -9.77,
+      "fee_cost": 15.52
+    },
+    {
+      "date": "2026-04-18",
+      "fills": 3037,
+      "takers": 290,
+      "pnl_fee0": -3.58,
+      "pnl_fee45bps": -9.72,
+      "fee_cost": 6.15
+    },
+    {
+      "date": "2026-04-19",
+      "fills": 5373,
+      "takers": 473,
+      "pnl_fee0": 4.79,
+      "pnl_fee45bps": -4.98,
+      "fee_cost": 9.77
+    },
+    {
+      "date": "2026-04-20",
+      "fills": 6478,
+      "takers": 494,
+      "pnl_fee0": -3.14,
+      "pnl_fee45bps": -13.41,
+      "fee_cost": 10.27
+    },
+    {
+      "date": "2026-04-21",
+      "fills": 4997,
+      "takers": 447,
+      "pnl_fee0": 4.78,
+      "pnl_fee45bps": -4.64,
+      "fee_cost": 9.42
+    },
+    {
+      "date": "2026-04-22",
+      "fills": 3482,
+      "takers": 334,
+      "pnl_fee0": 0.05,
+      "pnl_fee45bps": -7.08,
+      "fee_cost": 7.13
+    },
+    {
+      "date": "2026-04-23",
+      "fills": 3780,
+      "takers": 372,
+      "pnl_fee0": 1.36,
+      "pnl_fee45bps": -6.39,
+      "fee_cost": 7.74
+    },
+    {
+      "date": "2026-04-24",
+      "fills": 2146,
+      "takers": 216,
+      "pnl_fee0": -1.89,
+      "pnl_fee45bps": -6.43,
+      "fee_cost": 4.54
+    },
+    {
+      "date": "2026-04-25",
+      "fills": 629,
+      "takers": 120,
+      "pnl_fee0": 0.32,
+      "pnl_fee45bps": -2.21,
+      "fee_cost": 2.53
+    },
+    {
+      "date": "2026-04-26",
+      "fills": 1682,
+      "takers": 153,
+      "pnl_fee0": 1.73,
+      "pnl_fee45bps": -1.52,
+      "fee_cost": 3.25
+    },
+    {
+      "date": "2026-04-27",
+      "fills": 3249,
+      "takers": 277,
+      "pnl_fee0": -0.01,
+      "pnl_fee45bps": -5.82,
+      "fee_cost": 5.81
+    },
+    {
+      "date": "2026-04-28",
+      "fills": 1610,
+      "takers": 213,
+      "pnl_fee0": -5.99,
+      "pnl_fee45bps": -10.42,
+      "fee_cost": 4.43
+    },
+    {
+      "date": "2026-04-29",
+      "fills": 3818,
+      "takers": 370,
+      "pnl_fee0": 0.88,
+      "pnl_fee45bps": -6.76,
+      "fee_cost": 7.64
+    },
+    {
+      "date": "2026-04-30",
+      "fills": 2001,
+      "takers": 270,
+      "pnl_fee0": 3.22,
+      "pnl_fee45bps": -2.32,
+      "fee_cost": 5.54
+    }
+  ],
+  "mean_pnl_fee0": 0.8723333333333331,
+  "mean_pnl_fee45bps": -7.931333333333332,
+  "days_pos_fee0": 0.5333333333333333,
+  "days_pos_fee45bps": 0.0
+}

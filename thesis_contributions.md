@@ -1177,6 +1177,26 @@ revenue term not modeled here. This does not alter the verdict — rebates accru
 fills, and fills require queue priority, so the rebate is captured by whoever owns the queue;
 it is one more component of the same queue-priority rent, not an escape from it.
 
+**Corrected-engine addendum (latency adverse selection — exp 62).** A later audit found
+the fill engine treated a *marketable-on-arrival* order (one that becomes active into a
+market already through its limit, because the mid moved during the 100ms latency) as a
+passive maker: it filled at the stale limit and, under the L2 model, made it wait in the
+same-side queue (so it usually never filled). In reality such an order is a **taker** — it
+crosses the spread, takes the opposing liquidity immediately, and bypasses the same-side
+queue. The engine was corrected (commit `24a687f`; marketable-on-arrival → taker at the
+touch, priced off references at-or-before arrival, no look-ahead; verified by 6 unit + 5
+integration invariants; latency-0 results byte-identical). Re-running the honest at-touch
+LINK MM on the corrected engine over all 30 April days, with a realistic 4.5bps taker fee
+on those crossing fills, moves the honest cell from "≈breakeven noise floor" to
+**−$7.93/day, negative on 30/30 days** (~10–15% of fills are toxic latency-adverse takers,
+1s markout ≈ −4 ticks). The old engine was systematically *too kind* to the honest MM by
+burying these crossings in the queue. This **strengthens** the verdict: honest market
+making is not merely unprofitable-at-the-margin but *reliably money-losing* once latency
+adverse selection and fees are modeled; the inside-spread artifact (which never crosses the
+ask, hence never converts to a taker) is unaffected. RL re-eval is unchanged (the honest
+policies avoid the bleed by halting/quoting wide and still cannot profit; the control
+artifact prints ~+$26/day as before). See `experiments/62_engine_fix_reruns/`.
+
 ---
 
 ## 31. Taker Pivot: A Real Signal Capped at ~1 bps — Latency-Robust, Fee-Tier-Bound
@@ -1513,6 +1533,12 @@ skips every adverse fill).
 | 5 s | $2.18 | **$22.41** | 45.6% | −0.47 |
 | 10 s | $2.03 | **$24.07** | 46.3% | −0.48 |
 | 30 s | $4.06 | **$30.03** | 48.9% | −0.13 |
+
+*(Corrected-engine update — exp 62. On the corrected fill engine that converts marketable-on-arrival
+orders to takers, fills/day rise 3,595 → 5,768 and the honest causal markout flips negative even at
+zero fee: −$9.78 / −$2.87 / +$1.35 per day at H = 1 / 10 / 30 s, with the oracle ceiling rising to
+$28.62 / $37.24 / $47.24. The causal-vs-foresight gap widens and the honest side is now negative
+pre-fee — the conclusion below is unchanged and sharpened.)*
 
 **Findings:**
 - **In-sample honest profit exists — with foresight.** Keeping only the ~40–49% of fills with

@@ -167,6 +167,7 @@ class MarketMakingEnv:
         # the competing share, as in backtest.py.
         self._order_manager = OrderManager(
             maker_fee=self.maker_fee,
+            taker_fee=self.cfg.get("taker_fee", 0.0),
             latency=self.latency,
             queue_model=self.cfg.get("queue_model", "none"),
         )

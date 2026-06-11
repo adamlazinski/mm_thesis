@@ -1,0 +1,46 @@
+[
+  {
+    "arm": "control_tabular",
+    "taker_fee": 0.0,
+    "orig_ep200": 28.93,
+    "corrected_mean": 25.9,
+    "corrected_perday": [
+      29.57,
+      36.76,
+      11.35
+    ]
+  },
+  {
+    "arm": "honest_tabular",
+    "taker_fee": 0.00045,
+    "orig_ep200": 1.24,
+    "corrected_mean": -0.12,
+    "corrected_perday": [
+      5.16,
+      -4.24,
+      -1.27
+    ]
+  },
+  {
+    "arm": "honest_tabular_qf05",
+    "taker_fee": 0.00045,
+    "orig_ep200": 0.41,
+    "corrected_mean": 0.31,
+    "corrected_perday": [
+      0.05,
+      0.26,
+      0.62
+    ]
+  },
+  {
+    "arm": "honest_dqn",
+    "taker_fee": 0.00045,
+    "orig_ep200": 0.15,
+    "corrected_mean": 0.15,
+    "corrected_perday": [
+      0.45,
+      0.0,
+      0.0
+    ]
+  }
+]
