@@ -89,14 +89,20 @@ Cross-references point to numbered entries in [thesis_contributions.md](thesis_c
   despite genuine directional skill (AUC 0.75); OBI saturates the tradeable predictability. *(C31 addendum)*
 - `✓` **The fee tier is the binding constraint for the taker.** *(C31)*
 
-## F. Spot vs perpetual (pending perp trade re-download)
+## F. Spot vs perpetual
 
-- `✓` **Perp spread is tighter than spot.** Confirmed LINK: 1-tick perp vs 10-tick spot. *(exp 54)*
-- `⧖` **Perp passive MM behaves like BTC (tight → loses).** Predicted, untested.
+- `✓` **Perp spread is tighter than spot.** Confirmed LINK April (30d): perp $0.001 (1-tick) vs spot $0.01
+  (10-tick) — perp is 10× tighter in dollars. *(exp 54, exp 61)*
+- `◐` **Perp passive MM behaves like BTC (tight → loses).** Supported by structure — the perp's 1-tick spread
+  forces any maker outside the spread (the honest/losing regime, no inside-spread artifact), exactly the BTC
+  mechanism. Direct backtest pending but mechanistically determined. *(exp 61, C24, C30)*
 - `⧖` **Lower perp fees make the taker viable.** Likely no (3.6 bps round-trip still > ~1 bps edge), untested.
-- `⧖` **Cross-venue spot↔perp lead-lag yields a *larger* signal.** The one genuinely open question — the only
-  lever that could produce a bigger signal rather than just a cheaper cost.
-- `⧖` **Funding rate is a queue-independent carry return.** Untested.
+- `✗` **Cross-venue spot↔perp lead-lag yields a *larger* signal.** No — Hayashi–Yoshida trade-vs-trade (30d)
+  puts the peak at θ=0 (contemporaneous, ρ=0.24); the strong "spot leads 1s" from BBO was a 1 Hz perp-staleness
+  artifact. Only a weak diffuse spot-leads tilt, not exploitable. The lever that could have produced a *bigger*
+  signal is empirically absent at the 100ms–2s scale (sub-100ms HFT-race lead unresolved but infra-gated).
+  The last open escape closes negative. *(C36, exp 61)*
+- `⧖` **Funding rate is a queue-independent carry return.** Untested (a carry, not market making).
 
 ## G. Methodology / cross-cutting
 
@@ -121,13 +127,16 @@ Cross-references point to numbered entries in [thesis_contributions.md](thesis_c
 > retail lacks** — *queue priority* for the maker, *sub-1-bps fees* for the taker. The signals are real; the
 > access is not.
 
-`✓` for everything tested so far. The cross-venue lever (F) is the last chance to find an edge that escapes
-both gates.
+`✓` for everything tested so far. The cross-venue lever (F) — the last chance to find an edge that escapes
+both gates — **also closes**: spot↔perp are contemporaneously integrated (no exploitable lead-lag, exp 61),
+so there is no third door. Every tested route is gated by queue priority, fees, information (foresight), or
+risk-bearing capital — none retail-accessible.
 
 ## Narrative arc
 
 Classical models fail on their own terms (A) → but a "degenerate" flat MM looks profitable (C) → which turns
 out to be a queue-priority artifact (B) → RL confirms the artifact rather than escaping it (D) → so pivot to
 the taker, which needs no queue (E) → but the taker edge, though real, is sub-fee even with ML and even when
-fast (E) → leaving cross-venue spot↔perp fusion as the only untested escape (F). Two infrastructure gates,
-one unifying verdict (meta).
+fast (E) → cross-venue spot↔perp fusion was the only untested escape (F), but spot and perp are
+contemporaneously integrated with no exploitable lead-lag, so that door closes too (F, exp 61). Two
+infrastructure gates, one unifying verdict (meta).

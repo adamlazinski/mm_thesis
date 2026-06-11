@@ -1660,6 +1660,50 @@ volatility per trade (the fair-implied-vol line empirically).
 
 ---
 
+## 36. The Cross-Venue Escape Closes: LINK Spot↔Perp Are Contemporaneously Integrated
+
+**Motivation:** the register's one unrefuted hypothesis was that a *cross-venue spot↔perp lead-lag*
+could yield a **larger** signal — the single lever that might produce a bigger edge rather than just
+a cheaper cost, escaping both the queue gate (maker) and the fee gate (taker). LINK April 2026,
+30 days, spot + perp. (See `experiments/61_link_spot_perp/`.)
+
+**Spread structure.** Median dollar spreads: spot $0.0100 (10 ticks), perp $0.0010 (1 tick) — the
+perp is 10× tighter, confirming exp 54. The perp is the tight, liquid, BTC-like venue; a passive
+maker on it is forced outside the spread into the honest/losing regime (the C24/C30 mechanism), so
+**the perp offers no inside-spread artifact and cannot rescue passive making.** Basis is a stable
+≈ −5.5 bps (perp below spot).
+
+**Lead-lag — the make-or-break number.** A naive BBO cross-correlation (1 s grid) reported "spot
+leads perp by ~1 s" (ρ=0.31), but the perp top-of-book is sampled at **1 Hz** (orderbook-snapshot
+rate), so the perp mid is a stale snapshot that *always* appears to lag — a pure sampling artifact.
+The **Hayashi–Yoshida estimator** (Hayashi & Yoshida 2005; lead-lag contrast Hoffmann, Rosenbaum &
+Yoshida 2013) on **trade-vs-trade** prices — event-time, asynchronous, no gridding, no staleness —
+overturns it:
+
+| θ (perp shift) | −1.0s | −0.5s | **0.0s** | +0.5s | +1.0s |
+|---|---|---|---|---|---|
+| ρ(θ) | 0.196 | 0.214 | **0.236 (peak)** | 0.151 | 0.132 |
+
+The peak is at **θ = 0 (contemporaneous)**; the 1 s "spot leads" was the BBO staleness. A weak,
+diffuse spot-leads tilt remains (Σρ spot-side 3.93 vs perp-side 2.71) but it is smeared across lags,
+not a sharp exploitable peak.
+
+**Verdict.** The cross-venue lead-lag *signal* route is **closed**: at the 100 ms–2 s scale the
+venues are contemporaneously integrated, so "trade spot on perp's lead" has no foundation. The only
+surviving cross-venue construction is the capital/hedge play (warehouse on one venue, hedge the
+directional continuation on the other) — which is the variance-risk-premium for risk-bearing
+(Contribution 35), not retail alpha, and requires two-venue infrastructure. *Caveat:* resolution is
+~100 ms (trade frequency ~4/s); a sub-100 ms HFT-race lead is unresolved but lies below the 100 ms
+latency assumption and inside the infrastructure-gated regime, irrelevant to a retail strategy.
+
+**Implication for the meta-verdict.** This was the last untested escape. It closes negative: every
+real edge in crypto microstructure tested in this thesis is gated by queue priority (maker), fees
+(taker), information/foresight (C34), or risk-bearing capital (C35) — none retail-accessible. There
+is no third door in cross-venue. The two-gate meta-hypothesis stands across the full hypothesis
+register.
+
+---
+
 ## Planned Extensions
 
 - **Stressed regime validation**: download LINK data from high-volatility or crash periods
