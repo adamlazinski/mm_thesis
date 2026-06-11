@@ -1541,6 +1541,125 @@ exactly where the theory says the adverse-selection cost is being avoided.
 
 ---
 
+## 35. Framing: Market Making Is a Short-Gamma (Short-Straddle) Position
+
+This contribution is a *framing* result: it shows that the entire empirical arc above —
+the zero-profit equilibrium (C33), the synthetic vol experiments (exp 59), the deep-reversion
+refutation (C32), and the foresight oracle (C34) — is the textbook P&L of a **short-gamma
+options position**, expressed in microstructure variables. The correspondence is exact at the
+level of the P&L decomposition and breaks in exactly one place, which is itself the thesis.
+
+**The identification.** Track inventory `q(t)` as the *delta* of the book. A passive maker
+accumulates the wrong delta: price up → ask lifted → `q` falls; price down → bid hit → `q`
+rises, so `dq/dS < 0` (negative gamma). Locally, `q(S) ≈ −(φ/Δ)(S − S_ref)`, where `φ` is the
+fill intensity and `Δ` the tick — the linear-decreasing delta of a **short straddle struck at
+the mid**. This is not an analogy; the resting two-sided quote *is* a written straddle
+(Copeland & Galai 1983: the bid is a written put, the ask a written call).
+
+**P&L decomposition.** Total P&L (`cash + inventory × mid`) splits into two flows:
+
+```
+dPnL = δ · dN      (spread capture: half-spread δ per fill, dN fills)   ← THETA
+     + q · dS      (inventory mark-to-market)                            ← DELTA·dS
+```
+
+Over a price excursion, with `q ≈ −(φ/Δ)(S − S_ref)`:
+
+```
+∫ q dS ≈ −½ (φ/Δ) (ΔS)²        (negative convexity ∝ (ΔS)²)             ← GAMMA BLEED
+```
+
+Compare a delta-hedged short straddle, from the Black–Scholes identity `Θ = −½ σ² S² Γ`:
+
+```
+dΠ_short = ½|Γ| σ_impl² S² dt   (theta, premium decaying in your favour)
+         − ½|Γ| (dS)²            (gamma bleed, cost of realised moves)
+```
+
+The map is term-for-term:
+
+| Market making | Short straddle | Role |
+|---|---|---|
+| half-spread `δ` per fill | option premium / implied vol | what you **charge** |
+| spread-capture rate `δ·dN/dt` | theta `½\|Γ\|σ_impl²S²` | positive carry for writing |
+| inventory `q` | delta | unwanted directional exposure |
+| fill intensity / tick `φ/Δ` | gamma `\|Γ\|` | speed of accumulating wrong delta |
+| `∫q dS ≈ −½(φ/Δ)(ΔS)²` | gamma bleed `−½\|Γ\|(dS)²` | cost of **realised** vol |
+| inventory skew (reservation shift) | delta hedging | pushing `q` → 0 |
+| spread widens with σ (`δ*∝σ`, C33) | short vega | lose when vol rises |
+
+The post-fill **markout** (C1, C12, exp 60) is the direct measurement of the gamma bleed
+`−½|Γ|(dS)²`; the captured spread is the theta. Honest net ≈ 0 (exp 60: +$2/day, mean markout
+−0.5 ticks) is theta ≈ gamma cost.
+
+**Zero expected profit = a fairly-priced straddle.** A short straddle written at fair implied
+vol (`σ_impl = E[σ_real]`) has `E[P&L] = 0`: the premium exactly funds the expected gamma bleed.
+The Black–Scholes hedging identity `Θ = −½σ²S²Γ` says theta offsets expected gamma cost
+*by construction*. The competitive market-making spread does the same: free entry sets
+`δ* ≈ σ_trade = σ_$/√A` (C33), at which spread-capture rate = expected inventory/adverse cost →
+`E[PnL] = 0`. **C33's zero-profit law is the Black–Scholes fair-pricing identity transplanted
+into spread/queue variables**; the competitive spread is the market's fair *implied vol* for
+liquidity provision.
+
+**When the edge is non-zero — implied vs realised.** A short straddle profits iff realised
+vol < implied; the maker profits iff realised vol < the vol its spread was priced for. The
+synthetic experiments (exp 59) are exactly a short-vol book with implied (the spread) held while
+realised σ varies: constant world = selling vol into dead calm (pure premium, large profit);
+high-vol martingale = gamma blowup (−$920); the breakeven half-spread `δ_be ∝ σ` (exp 59c) is the
+fair-implied-vol line, and `κ ∝ 1/σ` is the market continuously re-marking implied to realised,
+pinning the book to breakeven. Regime dependence (C13, May vs June) is the textbook short-vol
+signature: earn in quiet regimes, give it back in violent ones. A persistent edge therefore
+requires forecasting realised vol/flow better than the spread reflects — the **variance-risk-
+premium** of the options world, i.e. an *information* edge.
+
+**The one place the analogy breaks — and it is the thesis.** A pure short-gamma book assumes the
+underlying is *exogenous*: symmetric moves, `E[dS] = 0`, only `(dS)²` bleed. A maker's fills are
+*selected*: the counterparty lifting the ask may be informed, so `E[dS | filled] ≠ 0` — an
+adverse **drift** on top of the symmetric bleed (Bagehot/Treynor 1971; Glosten–Milgrom 1985).
+This is short gamma to a counterparty with a superior forecast who trades only when right —
+strictly worse than fair short gamma, and with no vanilla-option analog. The book has two layers:
+
+- **Layer 1 — symmetric short gamma:** present even with uninformed flow (the synthetic −$920).
+  Curable by charging enough spread (theta).
+- **Layer 2 — adverse-selection drift:** the informed-counterparty selection; what makes the
+  competitive spread adverse-selection-driven (Glosten–Milgrom) and honest markout negative even
+  after spread.
+
+**Queue priority is the Layer-2 defence with no options analog.** Being early in the queue means
+being filled by *uninformed* flow before the informed arrive — writing the straddle only to noise
+traders. The foresight oracle (C34) attacks Layer 2 from the other side: knowing future `dS` lets
+you decline the adverse fills. Both convert the breakeven book to profit; both are retail-
+inaccessible. This is why deep/wide quoting does **not** rescue high-vol making (C32): a price
+move large enough to reach a deep quote is selectively informed and *continues* (adverse selection
+by selection), so wide quotes in real markets carry *more* Layer-2 drift, not less — exactly the
+monotonic deep-reversion loss. The synthetic wide-quote profit (exp 59, +$113 at 8 ticks) exists
+only because the synthetic flow is Layer-1-only (uninformed) and non-competitive.
+
+**Practical corollary (high-vol conservatism).** Quoting wider in high vol raises your implied vol
+(premium per fill) and, if `κ` flattens so fills still arrive, *can* be profitable — but only
+against Layer 1, and only out of equilibrium. In a competitive market `κ ∝ 1/σ` means the
+conservative width that still gets filled *is* the fair-vol width → breakeven; quoting wider than
+that gets you crowded to the back of the queue and unfilled. The legitimate "make money in stress"
+edge — quoting wide when competitors flee so the spread overshoots realised vol — is the variance-
+risk-premium earned for **bearing risk with capital**, and on a large-tick asset (LINK) it is
+unavailable anyway because the spread lever is jammed at one tick and competition runs on the
+queue, not the spread (C30/C33). So conservative quoting helps against symmetric vol but cannot
+manufacture a retail edge: it neither removes Layer-2 adverse selection nor escapes the zero-
+profit pin.
+
+**Literature.** Copeland & Galai (1983) — dealer quotes as a written put + call; the spread is the
+option premium (the foundational "limit order = short option"). Bagehot/Treynor (1971);
+Glosten & Milgrom (1985) — adverse selection (Layer 2). Stoll (1978); Ho & Stoll (1981) — dealer
+inventory risk (Layer 1). Grossman & Miller (1988) — liquidity suppliers compensated for risk-
+bearing. Bouchaud, Bonart, Donier & Gould (2018), *Trades, Quotes and Prices* — the modern
+microstructure treatment of maker P&L, the short-vol framing, and the spread–vol relation.
+Sinclair (2013), *Volatility Trading*; Taleb (1997), *Dynamic Hedging* — the short-gamma P&L
+decomposition (theta vs gamma, realised vs implied). Foucault, Pagano & Röell (2013),
+*Market Liquidity* — the limit order as a free option. Wyart, Bouchaud et al. (2008) — spread ≈
+volatility per trade (the fair-implied-vol line empirically).
+
+---
+
 ## Planned Extensions
 
 - **Stressed regime validation**: download LINK data from high-volatility or crash periods
@@ -1566,8 +1685,27 @@ originals before final thesis submission.
 - Budish, E., Cramton, P. & Shim, J. (2015). The high-frequency trading arms race: frequent
   batch auctions as a market design response. *Quarterly Journal of Economics*, 130(4),
   1547–1621.
+- Bouchaud, J.-P., Bonart, J., Donier, J. & Gould, M. (2018). *Trades, Quotes and Prices:
+  Financial Markets Under the Microscope*. Cambridge University Press. (Maker P&L, short-vol
+  framing, spread–volatility relation.)
 - Cont, R., Kukanov, A. & Stoikov, S. (2014). The price impact of order book events.
   *Journal of Financial Econometrics*, 12(1), 47–88.
+- Copeland, T. E. & Galai, D. (1983). Information effects on the bid–ask spread.
+  *Journal of Finance*, 38(5), 1457–1469. (Dealer quotes as a written put + call; spread as
+  option premium — the foundational "limit order = short option.")
+- Foucault, T., Pagano, M. & Röell, A. (2013). *Market Liquidity: Theory, Evidence, and Policy*.
+  Oxford University Press. (The limit order as a free option.)
+- Grossman, S. J. & Miller, M. H. (1988). Liquidity and market structure. *Journal of Finance*,
+  43(3), 617–633.
+- Ho, T. & Stoll, H. R. (1981). Optimal dealer pricing under transactions and return uncertainty.
+  *Journal of Financial Economics*, 9(1), 47–73. (Dealer inventory-risk model.)
+- Sinclair, E. (2013). *Volatility Trading* (2nd ed.). Wiley. (Short-gamma P&L: theta vs gamma,
+  realised vs implied.)
+- Stoll, H. R. (1978). The supply of dealer services in securities markets. *Journal of Finance*,
+  33(4), 1133–1151.
+- Taleb, N. N. (1997). *Dynamic Hedging: Managing Vanilla and Exotic Options*. Wiley.
+- Treynor, J. L. (as W. Bagehot) (1971). The only game in town. *Financial Analysts Journal*,
+  27(2), 12–14. (Dealer vs informed trader — adverse selection.)
 - Dayri, K. & Rosenbaum, M. (2015). Large tick assets: implicit spread and optimal tick size.
   *Market Microstructure and Liquidity*, 1(1).
 - Glosten, L. R. & Milgrom, P. R. (1985). Bid, ask and transaction prices in a specialist
