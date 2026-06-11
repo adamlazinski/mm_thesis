@@ -235,6 +235,10 @@ class MarketMakingEnv:
         if decision.should_quote_ask:
             om.submit_order("ask", decision.ask_price, decision.ask_size, timestamp,
                             queue_ahead=ask_queue)
+        # Post-submit activation check (mirrors backtest post-requote): marks the
+        # just-placed orders at their activation instant against the current touch.
+        # A no-op under non-zero latency; a genuinely crossing quote taker-fills here.
+        n_fills += len(om.check_activation(timestamp))
 
         # Reward: ΔPnL minus inventory penalty (penalises holding large positions
         # in volatile markets, scales reward to the same units as PnL)
@@ -338,15 +342,20 @@ class MarketMakingEnv:
             if t_ts <= q_ts:
                 ev = t[self._t_idx]
                 self._t_idx += 1
+                # Marketable-on-arrival taker check BEFORE this trade updates state
+                # (pre-update refs => no look-ahead), mirroring backtest.py.
+                n_fills += len(om.check_activation(ev.timestamp))
                 fills = om.process_trade(ev.timestamp, ev.price, ev.quantity, ev.side)
                 n_fills += len(fills)
                 ms.on_trade(ev.timestamp, ev.price, ev.quantity, ev.side)
             else:
                 ev = q[self._q_idx]
                 self._q_idx += 1
+                n_fills += len(om.check_activation(ev.timestamp))   # pre-update taker check
                 ms.on_quote(ev.timestamp, ev.best_bid, ev.best_ask,
                             ev.bid_size, ev.ask_size)
                 om.update_mid((ev.best_bid + ev.best_ask) / 2.0)
+                om.update_book(ev.best_bid, ev.best_ask, ev.timestamp)
                 if self._l2_tracker is not None:
                     snap = self._l2_tracker.advance(ev.timestamp)
                     if snap is not None:
@@ -356,9 +365,11 @@ class MarketMakingEnv:
         # Process the boundary quote event
         if self._q_idx < len(q):
             ev = q[self._q_idx]
+            n_fills += len(om.check_activation(ev.timestamp))
             ms.on_quote(ev.timestamp, ev.best_bid, ev.best_ask,
                         ev.bid_size, ev.ask_size)
             om.update_mid((ev.best_bid + ev.best_ask) / 2.0)
+            om.update_book(ev.best_bid, ev.best_ask, ev.timestamp)
             if self._l2_tracker is not None:
                 snap = self._l2_tracker.advance(ev.timestamp)
                 if snap is not None:

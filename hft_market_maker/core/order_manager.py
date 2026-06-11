@@ -23,6 +23,17 @@ Fill model
   - Resting bid fills when a sell trade arrives at price <= bid
   - Resting ask fills when a buy trade arrives at price >= ask
   - Partial fills supported via queue_model='partial'
+
+Marketable-on-arrival (taker conversion)
+----------------------------------------
+With latency, an order can become active into a market that has already moved
+THROUGH its limit (e.g. bid 99 arrives when the market is 98). Such an order is
+marketable: in reality it crosses and executes as a TAKER at the opposing touch
+(the ask for a bid), not as a maker at its stale limit. check_activation() detects
+this once, at the instant the order first becomes active, and fills it at the
+opposing touch with taker_fee. An order that was genuinely resting (not marketable
+on arrival) and is only crossed LATER by the market remains a maker at its limit —
+it is the resting liquidity that incoming takers hit at its price.
 """
 
 from __future__ import annotations
@@ -45,6 +56,7 @@ class Order:
     queue_ahead: float = 0.0    # L2 depth ahead of us at submission (for 'l2' model)
     vol_since_submit: float = 0.0  # cumulative volume at our price since submission
     sigma_at_post: float = 0.0  # market sigma when posted (for risk-based requote gate)
+    activation_checked: bool = False  # marketable-on-arrival check done once at activation
 
     @property
     def remaining(self) -> float:
@@ -69,6 +81,7 @@ class Fill:
     quantity: float
     timestamp: float
     fee: float = 0.0
+    is_taker: bool = False   # True if filled by crossing on arrival (marketable order)
 
 
 class OrderManager:
@@ -93,12 +106,21 @@ class OrderManager:
         queue_model: str = "partial",
         queue_depth_estimate: float = 0.3,
         latency: float = 0.0,
+        taker_fee: float = 0.0,
     ):
         self.maker_fee = maker_fee
+        self.taker_fee = taker_fee
         self.queue_model = queue_model
         self.queue_depth_estimate = queue_depth_estimate
         self.queue_fraction = 1.0  # set externally by backtest for 'l2' mode
         self.latency = latency
+        # Prevailing touch (quote events) and last trade price; used to price
+        # marketable-on-arrival fills at the closest available reference.
+        self._best_bid: float = 0.0
+        self._best_ask: float = 0.0
+        self._last_quote_ts: float = -1.0
+        self._last_trade: float = 0.0
+        self._last_trade_ts: float = -1.0
 
         # _active: only live/pending-cancel orders — ≤2 for a basic MM
         # This is the ONLY dict iterated in the hot path
@@ -161,11 +183,98 @@ class OrderManager:
         return list(self._active.values())
 
     # ------------------------------------------------------------------
+    # Marketable-on-arrival (taker) — checked once when an order activates
+    # ------------------------------------------------------------------
+
+    def update_book(self, best_bid: float, best_ask: float,
+                    timestamp: float) -> None:
+        """Record the prevailing touch and its timestamp (on quote events). The
+        activation check is run separately by the event loop, BEFORE each event's
+        own update, so a marketable-on-arrival order is priced off the market state
+        as of its arrival (no look-ahead onto post-arrival prints)."""
+        self._best_bid = best_bid
+        self._best_ask = best_ask
+        self._last_quote_ts = timestamp
+
+    def check_activation(self, timestamp: float) -> List[Fill]:
+        """Taker-fill orders that are marketable at the instant they first become
+        active. The reference is the FRESHEST side-appropriate market signal with
+        timestamp <= the order's arrival (active_from): for a buy the ask or the last
+        trade; for a sell the bid or the last trade. If that reference crosses the
+        limit the order is a taker filled there; else it rests as a maker. One-shot
+        per order via the activation_checked flag."""
+        if not self._active:
+            return []
+        new_fills: List[Fill] = []
+        to_archive: List[str] = []
+        for order_id, order in self._active.items():
+            if order.activation_checked:
+                continue
+            if timestamp < order.active_from:
+                continue                      # not active yet — check later
+            if order.status not in ("open", "partially_filled"):
+                order.activation_checked = True
+                continue
+            ta = order.active_from
+            # MARKETABILITY is defined by crossing the OPPOSING QUOTE as of arrival
+            # (bid >= ask, or ask <= bid). A trade at/through our limit alone does NOT
+            # make us a taker — that is a normal maker fill (handled in process_trade).
+            quote_fresh = self._last_quote_ts >= 0 and self._last_quote_ts <= ta
+            if order.side == "bid":
+                marketable = quote_fresh and self._best_ask > 0 and \
+                    order.price >= self._best_ask - 1e-12
+            else:
+                marketable = quote_fresh and self._best_bid > 0 and \
+                    order.price <= self._best_bid + 1e-12
+            if not marketable:
+                order.activation_checked = True       # rests as a maker from here on
+                continue
+            # FILL PRICE: freshest of {opposing touch, last trade} known at-or-before
+            # arrival (the user's "closest trade or ask"), capped at our limit so we
+            # never fill worse than the price we were willing to pay.
+            touch = self._best_ask if order.side == "bid" else self._best_bid
+            cands = [(self._last_quote_ts, touch)]
+            if self._last_trade > 0 and self._last_trade_ts <= ta:
+                cands.append((self._last_trade_ts, self._last_trade))
+            ref = max(cands, key=lambda c: c[0])[1]   # freshest signal as of arrival
+            fill_price = min(ref, order.price) if order.side == "bid" \
+                else max(ref, order.price)
+            fill_qty = order.remaining
+            fee = fill_qty * fill_price * self.taker_fee
+            if order.side == "bid":
+                self.inventory += fill_qty
+                self.cash -= fill_qty * fill_price + fee
+            else:
+                self.inventory -= fill_qty
+                self.cash += fill_qty * fill_price - fee
+            if abs(self.inventory) < 1e-10:
+                self.inventory = 0.0
+            self.total_fees += fee
+
+            fill = Fill(order_id=order_id, side=order.side, price=fill_price,
+                        quantity=fill_qty, timestamp=timestamp, fee=fee, is_taker=True)
+            self.fills.append(fill)
+            new_fills.append(fill)
+            order.filled += fill_qty
+            order.status = "filled"
+            to_archive.append(order_id)
+
+        for oid in to_archive:
+            if oid in self._active:
+                self._archive[oid] = self._active.pop(oid)
+        return new_fills
+
+    # ------------------------------------------------------------------
     # Fill simulation — hot path, called on every trade event
     # ------------------------------------------------------------------
 
     def process_trade(self, timestamp: float, trade_price: float,
                       trade_qty: float, trade_side: str) -> List[Fill]:
+        # Record this trade as a reference for future marketable-on-arrival pricing.
+        # (The activation check itself runs in the event loop BEFORE this update, so
+        # it sees only at-or-before-arrival references — no look-ahead.)
+        self._last_trade = trade_price
+        self._last_trade_ts = timestamp
         if not self._active:
             return []
 

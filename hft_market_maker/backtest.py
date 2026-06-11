@@ -243,6 +243,25 @@ class Backtest:
         _markout_queue: _deque = _deque()
         _markout_results: list = []
 
+        def _handle_fills(fills_list):
+            """Log fills (maker or taker) and fire downstream notifications."""
+            for fill in fills_list:
+                fill_records.append({
+                    "timestamp": fill.timestamp,
+                    "side": fill.side,
+                    "price": fill.price,
+                    "quantity": fill.quantity,
+                    "fee": fill.fee,
+                    "is_taker": getattr(fill, "is_taker", False),
+                })
+                _markout_queue.append(
+                    (fill.timestamp + self.markout_horizon, fill.side, fill.price)
+                )
+                if hasattr(self.strategy, "on_fill"):
+                    self.strategy.on_fill(fill.timestamp)
+                if self._current_half_spread > 0:
+                    self.market_state.on_mm_fill(fill.timestamp, self._current_half_spread)
+
         for i, (timestamp, _, etype, event_data) in enumerate(events):
             if self.verbose and i % self.verbose_interval == 0:
                 print(f"  Processing event {i:,} / {n_events:,}  "
@@ -260,8 +279,8 @@ class Backtest:
                     n_long_gaps += 1
                     om = self.order_manager
 
-                    # Cancel all open orders immediately
-                    om.cancel_all()
+                    # Cancel all open orders (pass timestamp so cancel respects latency)
+                    om.cancel_all(timestamp)
 
                     # Close position at last known mid (Option A: realise P&L)
                     inv = om.inventory
@@ -327,11 +346,16 @@ class Backtest:
 
                 elif gap >= self.short_gap_threshold:
                     n_short_gaps += 1
-                    # Cancel orders — state is slightly stale
-                    self.order_manager.cancel_all()
+                    # Cancel orders — state is slightly stale (pass timestamp for latency)
+                    self.order_manager.cancel_all(timestamp)
                     last_requote_time = timestamp  # small cooldown before requoting
 
             last_event_timestamp = timestamp
+
+            # Marketable-on-arrival check, BEFORE this event updates the market
+            # state — so a just-activated order is priced off the references known
+            # at-or-before its arrival (no look-ahead onto this event's print).
+            _handle_fills(self.order_manager.check_activation(timestamp))
 
             if etype == "trade":
                 t: TradeEvent = event_data
@@ -343,31 +367,18 @@ class Backtest:
                 fills = self.order_manager.process_trade(t.timestamp, t.price, t.quantity, t.side)
 
                 # 3. Log fills and notify kappa estimator
-                for fill in fills:
-                    fill_records.append({
-                        "timestamp": fill.timestamp,
-                        "side": fill.side,
-                        "price": fill.price,
-                        "quantity": fill.quantity,
-                        "fee": fill.fee,
-                    })
-                    _markout_queue.append(
-                        (fill.timestamp + self.markout_horizon, fill.side, fill.price)
-                    )
-
-                    # Notify RL agent of fill if applicable
-                    if hasattr(self.strategy, "on_fill"):
-                        self.strategy.on_fill(timestamp)
-
-                    # Notify kappa estimator: fill at current quoted half-spread
-                    if self._current_half_spread > 0:
-                        self.market_state.on_mm_fill(fill.timestamp, self._current_half_spread)
+                _handle_fills(fills)
 
                 # 4. Requote after fill
                 if fills and self.requote_on_fill and last_quote_event is not None:
                     if timestamp - last_requote_time >= self.requote_interval:
                         self._requote(timestamp, last_quote_event, quote_records)
                         last_requote_time = timestamp
+                        # Mark just-placed orders at their activation instant against
+                        # the current touch (so a resting order is not later mistaken
+                        # for marketable-on-arrival). Only a genuinely crossing quote
+                        # taker-fills here.
+                        _handle_fills(self.order_manager.check_activation(timestamp))
 
             else:  # quote event
                 q: QuoteEvent = event_data
@@ -386,6 +397,9 @@ class Backtest:
                 self.market_state.on_quote(q.timestamp, q.best_bid, q.best_ask,
                                            q.bid_size, q.ask_size)
                 self.order_manager.update_mid(q.mid)
+                # Record the touch + timestamp; the activation check ran above on the
+                # PRE-update state (post-requote check below covers latency-0 orders).
+                self.order_manager.update_book(q.best_bid, q.best_ask, q.timestamp)
                 if l2_tracker is not None:
                     snap = l2_tracker.advance(q.timestamp)
                     if snap is not None:
@@ -402,6 +416,9 @@ class Backtest:
                         timestamp - last_requote_time >= self.requote_interval):
                     self._requote(timestamp, q, quote_records)
                     last_requote_time = timestamp
+                    # Evaluate just-placed orders at their activation instant against
+                    # the current touch (latency-0 orders are marked resting here).
+                    _handle_fills(self.order_manager.check_activation(timestamp))
 
             # Log state every 100 events (or adjust as needed)
             if i % 100 == 0:
