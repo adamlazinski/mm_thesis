@@ -1092,6 +1092,18 @@ part of its behaviour is regime-dependent halting, not the spread capture). Cont
 "TabularQ outperforms A-S" is therefore true only *relative to* A-S within the same fictitious
 fill regime — both are inside-spread artifacts.
 
+*Overfit demonstration (exp 58).* To close the "you never gave RL a fair chance under the honest
+model" objection, a paired test runs the **same TabularQ** on the same 3 LINK days under two fill
+models, with train = eval and 200 epochs (licensed to memorise). The control (19-action space,
+`queue_model='none'`) overfits to **+$58/day** (best +$88) — reproducing the artifact. The honest
+arms (a 63-action at-touch/outside-only space so no inside quote can inherit the first-touch
+artifact under `queue_model='l2'`) **cannot overfit to profit at all**: best stable PnL +$0.7/day,
+single-epoch bests $4.7–8.5 of pure noise, the control's *worst* eval far above every honest *best*.
+A generous queue assumption (qf=0.05) and a continuous-state DQN both fail too — the DQN converges
+to **~0 fills/day** (given no edge, not quoting dominates). RL given the artifact finds +$45–88/day;
+under the honest L2 model it cannot find in-sample profit even by memorisation. (See
+`experiments/58_rl_honest_overfit/findings.md`.)
+
 **BTC is the control that confirms the mechanism.** BTC RL (Contribution 24, −$2.09/day, 0% win)
 is not an independent failure. BTC's natural spread is 1 tick; the BTC action space
 (`reinforcement_learning.py:169`) starts at 5 ticks and ranges to 80 — **every action posts

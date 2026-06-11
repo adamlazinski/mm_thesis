@@ -1,0 +1,34 @@
+[
+  {
+    "arm": "A control (artifact: no-queue, 19 actions)",
+    "final_eval_pnl": 28.93,
+    "best_eval_pnl": 88.09,
+    "mean_eval_last10": 58.05,
+    "final_fills": 2634,
+    "best_train_pnl": 72.64
+  },
+  {
+    "arm": "B honest (L2 qf=0.5, 63 actions)",
+    "final_eval_pnl": 1.24,
+    "best_eval_pnl": 8.47,
+    "mean_eval_last10": 0.14,
+    "final_fills": 707,
+    "best_train_pnl": 6.22
+  },
+  {
+    "arm": "C honest (L2 qf=0.05, 63 actions)",
+    "final_eval_pnl": 0.41,
+    "best_eval_pnl": 4.81,
+    "mean_eval_last10": -0.57,
+    "final_fills": 453,
+    "best_train_pnl": 7.41
+  },
+  {
+    "arm": "D honest DQN (L2 qf=0.5, 63 actions)",
+    "final_eval_pnl": 0.15,
+    "best_eval_pnl": 4.65,
+    "mean_eval_last10": 0.72,
+    "final_fills": 0,
+    "best_train_pnl": 5.49
+  }
+]
