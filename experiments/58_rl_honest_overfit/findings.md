@@ -52,11 +52,20 @@ the edge is not in the data accessible to retail.
   DQN both stay pinned at zero. The DQN's tell is sharp: it converges to **~0 fills/day**
   — given no honest edge, the value function learns that *not quoting* dominates.
 - **Verdict:** RL given the artifact fill model finds +$45–88/day; under the honest
-  L2 model it cannot even overfit to in-sample profit. The "edge" RL found in
-  Contribution 23 was the queue-priority rent, not a learnable strategy. This is the
-  search-capacity complement to C30 and the constructive C33 result: when profit
-  exists in the data the learner finds it (control); when it doesn't (honest), even
-  memorization yields zero.
+  L2 model **no policy expressible over the observable microstructure state profits** —
+  even with 200 epochs of memorising 3 days. The "edge" RL found in Contribution 23 was
+  the queue-priority rent, not a learnable strategy.
+
+- **Scope (important — see exp 60).** This is a statement about *causal* policies over
+  observable state, **not** "no in-sample profit exists." The RL state (120 buckets /
+  9 features) has no future-conditioning, so within any state bucket the favourable and
+  adverse fills are aggregated and the learnable optimum is the bucket average — ≈0 under
+  the honest model. A strategy that could *see the future* would profit honestly by
+  selecting the favourable fills: the perfect-foresight oracle (exp 60) earns ~$24/day
+  in-sample vs the honest causal ~$2/day. The honest edge is therefore **zero causally,
+  positive with foresight** — and the foresight (or the queue priority that substitutes
+  for it) is exactly the retail-inaccessible ingredient. Exp 58 shows the causal null;
+  exp 60 supplies the foresight ceiling.
 
 Reproduce:
 ```

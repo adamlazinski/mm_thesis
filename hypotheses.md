@@ -65,11 +65,15 @@ Cross-references point to numbered entries in [thesis_contributions.md](thesis_c
   every fill is pure adverse selection and the value function gets no positive signal. *(C24)*
 - `✗` **RL discovers a genuine (non-artifact) edge.** No — it leans into the queue artifact harder than the
   hand-tuned configs. *(C30)*
-- `✗` **RL can at least overfit to in-sample profit under the honest fill model.** No — paired demonstration:
-  same TabularQ overfits to +$58/day under the no-queue artifact model, but under L2-queue with an
-  at-touch/outside-only 63-action space it cannot beat the ±$1/day noise floor even memorizing 3 days ×
-  200 epochs; generous qf=0.05 and a continuous-state DQN (→0 fills, learns to halt) both fail too. The
-  C23 "edge" was the queue rent, not a learnable strategy. *(C30, C33, exp 58)*
+- `✗` **A causal RL policy over observable state profits under the honest fill model.** No — paired
+  demonstration: same TabularQ overfits to +$58/day under the no-queue artifact model, but under L2-queue
+  with an at-touch/outside-only 63-action space it cannot beat the ±$1/day noise floor even memorizing
+  3 days × 200 epochs; generous qf=0.05 and a continuous-state DQN (→0 fills, learns to halt) both fail.
+  The C23 "edge" was the queue rent, not a learnable strategy. *(C30, C33, exp 58)*
+- `◐` **In-sample honest profit exists at all.** Yes, but only with FORESIGHT — a perfect-foresight oracle
+  that keeps only positive-markout fills earns ~$24/day (10s) vs ~$2/day causal honest; ~10×. RL's null is
+  representational (no future-conditioning in its state), not proof the edge is absent. The edge is gated
+  behind foresight or the queue priority that substitutes for it — neither retail-accessible. *(C34, exp 60)*
 
 ## E. Trend-following / taker
 

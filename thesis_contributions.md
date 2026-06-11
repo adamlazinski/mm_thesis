@@ -1101,7 +1101,9 @@ artifact under `queue_model='l2'`) **cannot overfit to profit at all**: best sta
 single-epoch bests $4.7–8.5 of pure noise, the control's *worst* eval far above every honest *best*.
 A generous queue assumption (qf=0.05) and a continuous-state DQN both fail too — the DQN converges
 to **~0 fills/day** (given no edge, not quoting dominates). RL given the artifact finds +$45–88/day;
-under the honest L2 model it cannot find in-sample profit even by memorisation. (See
+under the honest L2 model **no policy over the observable state** profits, even by memorisation.
+This is a statement about *causal* policies, not about whether in-sample profit exists at all — a
+foresight strategy would profit (see Contribution 34). (See
 `experiments/58_rl_honest_overfit/findings.md`.)
 
 **BTC is the control that confirms the mechanism.** BTC RL (Contribution 24, −$2.09/day, 0% win)
@@ -1487,6 +1489,55 @@ volatility per trade" law confirmed here as δ_be ∝ σ. Dayri & Rosenbaum (201
 spread, the regime where the spread is floored and the balance shifts to the queue. Smith, Farmer,
 Gillemot & Krishnamurthy (2003) — zero-intelligence order-book model in which spread and volatility
 emerge jointly from flow, the theoretical basis for treating κ and σ as coupled rather than free.
+
+---
+
+## 34. The Perfect-Foresight Oracle: the In-Sample Edge Is Real but Information-Gated
+
+**Motivation:** Contribution 30/exp 58 establish that no *causal* policy — over observable
+microstructure state — profits under the honest L2-queue fill model. A natural objection: an
+overfit strategy that *knew the future* (which fills will be followed by favourable vs adverse
+moves) should profit even honestly. It should — and quantifying by how much sharpens the verdict
+into its final form. (See `experiments/60_foresight_oracle/`.)
+
+**Method:** an honest touch-quoter (post at best_bid/ask) is run through the real engine on LINK
+April 1–3 2026 under `queue_model='l2'`, `queue_fraction=0.5` — the fills a realistic honest MM
+actually receives (3,595/day). Each fill's forward markout is computed at horizons H ∈ {1,5,10,30}s
+(`bid → mid(t+H)−price`, `ask → price−mid(t+H)`). Two sums are compared: over **all** fills (the
+honest MM, no foresight) and over **positive-markout** fills only (a perfect-foresight oracle that
+skips every adverse fill).
+
+| Horizon | honest PnL/day (Σ all) | oracle ceiling/day (Σ positive) | % fills positive | mean markout (ticks) |
+|---|---|---|---|---|
+| 1 s | $0.60 | **$19.76** | 39.7% | −1.04 |
+| 5 s | $2.18 | **$22.41** | 45.6% | −0.47 |
+| 10 s | $2.03 | **$24.07** | 46.3% | −0.48 |
+| 30 s | $4.06 | **$30.03** | 48.9% | −0.13 |
+
+**Findings:**
+- **In-sample honest profit exists — with foresight.** Keeping only the ~40–49% of fills with
+  positive markout earns ~$20–30/day, roughly **10× the honest causal ~$2/day**. The honest causal
+  figure reproduces the C30 at-touch cell (≈breakeven; mean markout negative ~−0.5 ticks = the
+  at-touch adverse selection).
+- **Exp 58's null is representational, not absolute.** A TabularQ over 120 microstructure buckets
+  (or a 9-feature DQN) cannot condition on the future, so within any state bucket favourable and
+  adverse fills aggregate and the learnable optimum is the bucket average — ≈0 honestly. The RL
+  found ≈0 because its state cannot *separate* the good fills from the bad, not because no in-sample
+  edge exists.
+- **Foresight is worth less than the queue artifact.** The ~$24/day foresight ceiling sits *below*
+  the queue-priority artifact (+$45–58/day, exp 58 control): the artifact wins on volume (2,600–7,000
+  inside-spread fills with free priority), foresight on selection within the thinner honest stream.
+  The ceiling is conservative — it only keeps/drops the touch-quoter's existing fills, not where or
+  when to quote.
+
+**Conclusion:** the honest edge is **zero causally, ≈$24/day with perfect 10 s foresight.** Both
+halves are the thesis. The profit lives entirely in *information retail does not have* — knowing
+which fills are adverse — or equivalently in the *queue priority* that substitutes for that
+information by letting uninformed flow fill you first. This refines Contribution 30's verdict to its
+sharpest form: it is not that honest market making is mechanically unprofitable, but that all of its
+profit is gated behind foresight or priority, neither of which is retail-accessible. Constructive
+counterpart to Contribution 33: when an omniscient selector is allowed, the in-sample profit appears
+exactly where the theory says the adverse-selection cost is being avoided.
 
 ---
 
