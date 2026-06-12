@@ -158,6 +158,91 @@ resource.
 
 ---
 
+## Part E — Path to profit in the high-vol world (and the latency gate)
+
+The high-vol loss is not symmetric inventory variance — it is **staleness adverse
+selection**: between requotes the fast mid drifts and a taker lifts the stale quote
+after the price has moved (at σ=0.20 the mid moves ~6 ticks in 0.1 s, swamping a
+2-tick spread). This diagnosis dictates the levers (exponential-fill high-vol, 10
+seeds; `high_vol_profit.py`, run on the corrected taker-on-arrival engine, cafc7ae):
+
+- **Lever 1 — widen the spread:** 2t→6t lifts −$514 → +$67. Cushions the drift, but
+  marginal and noisy (50% days positive); too wide starves fills. Necessary, not
+  sufficient.
+- **Lever 2 — inventory skew:** *hurts the mean* (+$67 → −$369) while crushing
+  variance ($590 → $41). The cost is a drift, not variance, so flattening forfeits
+  spread for nothing — a pure mean-for-variance trade, useless for the mean.
+- **Lever 3 — speed:** requote 0.5 s→0.05 s turns −$898 → **+$169, 80% of
+  days positive** — track the mid and the pick-off vanishes. (Levers 1-3 use
+  latency=0 and are confirmed unchanged by the engine fix — byte-identical to the
+  pre-fix run.)
+- **The latency gate (now charged honestly):** at fixed 0.02 s requoting, **only
+  exact zero latency is positive** — 0 ms +$153 (70% days>0); 20 ms −$95 (50%),
+  50 ms −$389 (40%), 100 ms −$786 (10%), 200 ms −$1,580 (0%). The marketable-on-
+  arrival fix makes every nonzero-latency cell *worse* than the pre-fix estimate
+  (old engine: 20 ms was a marginal −$12; now a clear −$95) — the toxic
+  latency-adverse crossings the old engine suppressed are now charged here too.
+
+**Implication.** At the Lever-3 configuration tested here — 4t, requote 0.02s —
+only **zero latency** is positive; any realistic co-location delay (even 20 ms)
+reintroduces a losing marketable-on-arrival tail and flips the result negative. The
+pre-fix framing ("needs sub-20 ms HFT co-location") was too optimistic: the corrected
+engine shows 20 ms is *already* solidly negative at this width. But 4t/0.02s is only
+one point in a 2D (spread, requote) space — Part F sweeps spread jointly with
+latency at the fast requote and finds the picture is less bleak at a wider spread.
+
+---
+
+## Part F — Joint sweep: does widen + speed cross back to breakeven at realistic latency?
+
+Part E tested its levers mostly one-at-a-time: Lever 1 (widen) at requote 0.1s /
+latency 0; Levers 3-4 (speed / latency) at half=4t. A single combined probe — half=8t,
+requote=0.05s, latency=0.05s — gave **+$389.8 (70% days>0)**, sharply better than the
+4t/0.02s/50ms cell (−$388.9). `breakeven_sweep.py` generalizes this into a full 2D
+sweep: half-spread ∈ {6, 8, 12, 16}t × latency ∈ {0, 20, 50, 100, 200} ms, fixed
+requote=0.05s, β=0, 10 seeds/cell.
+
+Mean P&L (days>0 in parentheses):
+
+| half-spread | 0 ms | 20 ms | 50 ms | 100 ms | 200 ms |
+|---|---|---|---|---|---|
+| 6t | +$255 (60%) | +$165 (70%) | +$14 (60%) | −$309 (30%) | −$1060 (0%) |
+| **8t** | +$262 (60%) | **+$463 (90%)** | **+$390 (70%)** | **+$188 (70%)** | −$581 (10%) |
+| 12t | +$32 (50%) | +$196 (60%) | −$169 (40%) | +$175 (70%) | +$19 (50%) |
+| 16t | +$106 (60%) | +$157 (80%) | −$50 (50%) | +$56 (70%) | +$127 (60%) |
+
+**Reading it.**
+1. **8t + 0.05s requote is the standout combination**: robustly positive (+$188 to
+   +$463, 60-90% days>0) across the *entire* 0-100 ms latency range, only collapsing
+   at 200 ms (−$581, 10%). This widens Part E's latency-tolerant band from "zero
+   only" (at 4t/0.02s) to roughly **100 ms** — a realistic non-co-located venue
+   latency.
+2. 6t shows the monotone decay the 4t/0.02s cell already hinted at: positive at
+   0-20 ms, breakeven near 50 ms, clearly negative beyond. Narrower spreads stay
+   latency-fragile even at the faster requote.
+3. 12t and 16t are too noisy to read (std $500-850 against means of $20-200,
+   10 seeds) — neither confirms nor rules out a similar band; more seeds would be
+   needed.
+4. So **yes — there is a combination** (widen to the vol-appropriate ~8t *and*
+   requote fast at 0.05s) that is robustly positive at realistic latencies, not just
+   at zero. This refines Part E's "speed alone fails at 20 ms" verdict: speed
+   *combined with* the right width is a materially better lever than either alone.
+
+**Caveat (unchanged from Levers 1-3).** This remains the Layer-1-only synthetic
+world: martingale mid, uninformed Poisson fills, zero fees. An 8t quote here only
+ever meets uninformed flow. On a real venue with informed counterparties (Layer 2),
+an 8-tick-wide resting quote is exactly the kind of stale, easy-to-pick-off level that
+gets adversely selected (exp 57 deep-reversion) — so this band does not transfer to a
+retail edge. It does, however, sharpen the picture of *when* a vol-aware MM is
+profitable in its own world: Part C already showed medium-vol (σ=0.05) is robustly
+positive with the true σ fed to A-S/GLFT, and Part F shows that even the high-vol
+(σ=0.20) regime has a profitable, latency-tolerant corner once spread width and
+requote speed are jointly tuned — it just requires both, and a real venue's
+informational Layer 2 (not modeled here) is why this corner is not a tradeable
+strategy.
+
+---
+
 ## Conclusion
 
 The engine captures spread exactly when there is none to lose to (constant),

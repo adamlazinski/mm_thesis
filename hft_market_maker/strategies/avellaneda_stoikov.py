@@ -178,20 +178,10 @@ class AvellanedaStoikov:
         )
 
     def _compute_sizes(self, inventory: float) -> tuple[float, float]:
-        """
-        Reduce size on the side that would increase a large inventory.
-        """
-        inv_ratio = abs(inventory) / self.max_inventory
-        scale = max(0.1, 1.0 - inv_ratio)
-        scale = 1 #switch it off for fuck sake
-        if inventory > 0:
-            # Long — reduce bid size, keep ask size
-            return self.order_size * scale, self.order_size
-        elif inventory < 0:
-            # Short — keep bid size, reduce ask size
-            return self.order_size, self.order_size * scale
-        else:
-            return self.order_size, self.order_size
+        # Both sides always quote at order_size. Inventory management is handled
+        # by the reservation-price skew and the hard should_quote() cutoff at
+        # max_inventory, not by tapering size with inventory.
+        return self.order_size, self.order_size
 
     def _round_price(self, price: float, side: str) -> float:
         if self.tick_size <= 0:
