@@ -1730,6 +1730,81 @@ register.
 
 ---
 
+## 37. Mapping the Curable Boundary: Widen + Speed Restores Latency Tolerance in the Layer-1-Only World
+
+**Motivation:** Contribution 33 showed that the synthetic high-volatility world (σ=0.20) is
+*Layer-1-only* — no informational adverse selection — so its short-gamma loss should in
+principle be fully curable by pricing (widen the spread) and/or speed (track the mid). This
+contribution maps that curable region precisely, including under the latency that the
+corrected-engine addendum to Contribution 30 (exp 62) showed to be decisive. It does **not**
+reopen the two-gate meta-verdict (C30/C36): the result is confined to the Layer-1-only synthetic
+world by construction, and its purpose is to sharpen the Layer-1/Layer-2 boundary in C35's
+framing, not to claim a retail edge. (See `experiments/59_synthetic_engine_validation/findings.md`,
+Parts E–F; `high_vol_profit.py`, `breakeven_sweep.py`.)
+
+**Part E — levers in isolation, on the corrected engine.** The exp 62 taker-on-arrival fix
+changes how latency-adverse fills are priced, so Part E reruns the high-vol lever sweep
+(exponential fills, 10 seeds) to confirm the levers behave as C33 predicts and to characterise
+the latency gate honestly:
+
+- **Widen** (Lever 1): 2t → 6t lifts −$514 → +$67 (50% days positive) — cushions the
+  short-gamma bleed, but marginal and noisy; too wide starves fills.
+- **Inventory skew** (Lever 2): *hurts the mean* (+$67 → −$369) while crushing variance
+  ($590 → $41) — the high-vol cost here is a drift, not a variance, so flattening trades away
+  return for nothing.
+- **Speed** (Lever 3): requote 0.5s → 0.05s turns −$898 → **+$169 (80% days positive)** —
+  tracking the mid removes the staleness pick-off. Levers 1–3 use latency=0 and are
+  byte-identical to the pre-fix engine (the exp 62 fix is scoped to latency>0).
+- **The latency gate** (Lever 4, now charged honestly): at the Lever-3 configuration (4t,
+  requote 0.02s), **only exact zero latency is positive** — 0 ms +$153 (70%), 20 ms −$95
+  (50%), 50 ms −$389 (40%), 100 ms −$786 (10%), 200 ms −$1,580 (0%). The pre-fix engine had
+  estimated 20 ms as a marginal −$12; the corrected engine shows it is already solidly
+  negative.
+
+Read in isolation, Lever 4 suggests speed "fails" the moment any realistic latency is added — an
+overly pessimistic reading of how curable Layer 1 actually is, because 4t/0.02s is only one
+point in a 2-D (spread, requote) space.
+
+**Part F — the joint sweep.** A single combined probe (8t, requote=0.05s, latency=0.05s) gave
+**+$389.8 (70% days positive)** — sharply better than the 4t/0.02s/50ms cell (−$388.9).
+`breakeven_sweep.py` generalises this to a full sweep: half-spread ∈ {6, 8, 12, 16} ticks ×
+latency ∈ {0, 20, 50, 100, 200} ms, fixed requote=0.05s, β=0, 10 seeds/cell. Mean P&L
+(days>0 in parentheses):
+
+| half-spread | 0 ms | 20 ms | 50 ms | 100 ms | 200 ms |
+|---|---|---|---|---|---|
+| 6t | +$255 (60%) | +$165 (70%) | +$14 (60%) | −$309 (30%) | −$1060 (0%) |
+| **8t** | +$262 (60%) | **+$463 (90%)** | **+$390 (70%)** | **+$188 (70%)** | −$581 (10%) |
+| 12t | +$32 (50%) | +$196 (60%) | −$169 (40%) | +$175 (70%) | +$19 (50%) |
+| 16t | +$106 (60%) | +$157 (80%) | −$50 (50%) | +$56 (70%) | +$127 (60%) |
+
+**8t + 0.05s requote is robustly profitable across the entire 0–100 ms latency range**
+(+$188 to +$463, 60–90% days positive), only collapsing at 200 ms (−$581, 10%). This extends
+the latency-tolerant band from "zero only" (4t/0.02s) to roughly 100 ms — a realistic
+non-co-located venue latency. 6t shows the monotone decay the 4t cell already hinted at
+(positive at 0–20 ms, breakeven ~50 ms, negative beyond); 12t/16t are too noisy ($500–850 std
+vs. $20–200 means) to read either way.
+
+**Verdict — the boundary, and why it stays a boundary.** Yes: in the Layer-1-only synthetic
+world, there is a combination — widen to the vol-appropriate ~8t *and* requote fast (0.05s) —
+that is robustly profitable at realistic, non-zero latency. This refines C33's "the code finds
+profit whenever it should be there" to a precise statement of *how much* spread and speed Layer
+1 alone requires. But per C35's Layer-1/Layer-2 decomposition, an 8-tick resting quote that is
+profitable against *uninformed* flow is, on a real venue, exactly the kind of stale level that
+Layer-2 informed flow targets (the deep-reversion mechanism of C32) — so the boundary mapped
+here does not relocate the C30/C36 meta-verdict. Its value is diagnostic: it shows the curable
+Layer-1 problem has a real, latency-tolerant solution, which sharpens the claim that the
+*remaining* honest-MM loss on real data (C30 exp 62: −$7.93/day) is a Layer-2, not a Layer-1,
+phenomenon.
+
+Reproduce:
+```
+python experiments/59_synthetic_engine_validation/high_vol_profit.py
+python experiments/59_synthetic_engine_validation/breakeven_sweep.py
+```
+
+---
+
 ## Planned Extensions
 
 - **Stressed regime validation**: download LINK data from high-volatility or crash periods

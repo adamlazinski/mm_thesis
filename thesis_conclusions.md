@@ -237,11 +237,11 @@ being filled by *uninformed* flow before the informed arrive. The foresight orac
 C34) attacks Layer 2 from the other side — knowing the future `dS` lets you decline adverse
 fills. **Both convert the breakeven book to profit; both are retail-inaccessible.**
 
-#### Addendum — the boundary of "curable Layer 1" (exp 59, Parts E–F, June 2026)
+#### C37 — Mapping the curable boundary of Layer 1 (exp 59, Parts E–F, June 2026)
 
 Because the synthetic high-volatility world (§2.1, σ = 0.20) is Layer-1-only, its short-gamma
-loss should be fully curable by pricing. A systematic lever sweep
-(`experiments/59_synthetic_engine_validation/`) confirms this, with a sharp boundary:
+loss should be fully curable by pricing. Contribution 37 confirms this with a systematic lever
+sweep (`experiments/59_synthetic_engine_validation/`), with a sharp boundary:
 
 - **Widening alone** (2t → 6t) lifts −$514 → +$67, but is marginal and noisy (50% days
   positive).
