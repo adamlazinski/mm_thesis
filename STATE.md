@@ -1,5 +1,6 @@
 # Codebase State — HFT Market Making Thesis
-_Last updated: 2026-05-16_
+_Last updated: 2026-06-12 — see "Current Status" for what supersedes the 2026-05-16
+diagnostics below_
 
 ---
 
@@ -38,6 +39,10 @@ DataLoader  →  [TradeEvent | QuoteEvent]  →  Backtest.run()
 prices (default 0.5 ticks). Reduces churn — typically 1-4% of recomputes trigger a real requote.
 **Gap handling:** `>30s` gaps close inventory at last mid and reset `MarketState`; `2-30s` gaps
 cancel orders and pause requoting.
+
+The diagram above shows the core data-flow, not an exhaustive strategy inventory — the
+strategy and regime-filter set has grown substantially since (e.g. `forecast_as.py`,
+`avallenda2.py`, and ~10 filter variants in `extensions/regime_detection.py`).
 
 ---
 
@@ -87,111 +92,58 @@ without it the formula gives 40+ ticks.
 spreads that are always adversely selected on BTC. This is a thesis-worthy finding: the model's
 implicit assumptions about order arrival rates are calibrated to equity markets, not crypto.
 
----
-
-## Three-pronged response (implemented 2026-05-16)
-
-### Option 1 — Properly calibrated GLFT (academic, demonstrates the mismatch)
-
-Experiments 10 and 11. kappa=31.0 (correct dollar units, from offline calibration 0.31/tick ÷
-$0.01/tick), γ=31 (so κ/γ=1), A_liq=22 (realistic per-side rate), min_spread_bps=0 (formula
-dominates). Expected half_spread ~$0.48 = 48 ticks at median vol — theoretically grounded but
-still in the momentum plateau. Exp 11 adds RegimeFilter to test whether stopping in bad regimes
-is sufficient to rescue GLFT. The regime filter is the thesis claim: "GLFT + filter is the
-solution to the structural mismatch."
-
-### Option 2 — Kappa/gamma/A as hyperparameters (data-driven search)
-
-Search config at `experiments/08_shifted_glft/search_config.json`. Searches kappa ∈ [1, 400],
-gamma ∈ [0.5, 500], A_liq ∈ [1, 100], A_mom ∈ [0, 10], min_spread_bps ∈ [0.05, 5] using
-random search on one day. Scores by `mm_only_pnl` (excludes gap closures). Will reveal whether
-any parameter combination works empirically, even if it lacks clean economic justification.
-
-Run: `python scripts/random_search.py --config experiments/08_shifted_glft/search_config.json`
-
-### Option 3 — Vol-Inventory spread (no exponential fill model)
-
-New strategy `VolInventoryMarketMaker` (`hft_market_maker/strategies/vol_inventory.py`).
-Formula:
-```
-half_spread  = alpha * sigma_dollar * sqrt(quote_freq)
-reservation  = mid - q_norm * gamma_inv * half_spread
-```
-where `q_norm = inventory / max_inventory`. Parameters: alpha (spread size in sigma multiples),
-gamma_inv (inventory skew strength). No kappa, no T-scaling, no exponential fill model.
-
-Economic interpretation: alpha=0.14 at median vol gives ~30-tick half-spread (the break-even
-adverse selection compensation derived from the momentum autocorrelation of 0.18 at 300ms).
-
-Experiments 12 (plain) and 13 (with RegimeFilter). Search config at
-`experiments/12_vol_inventory/search_config.json` covers alpha ∈ [0.01, 2.0] and
-gamma_inv ∈ [0.1, 10.0].
-
-Run: `python scripts/random_search.py --config experiments/12_vol_inventory/search_config.json`
+> This is the special case of a general law: Contribution 33 (`thesis_contributions.md`) shows
+> κ is pinned to σ by zero-profit (`κ_eq ≈ √A/σ_$`), so any fixed-κ model — not just GLFT — is
+> calibrated to the wrong equilibrium once σ moves. The "momentum plateau" above is what that
+> mismatch looks like on BTC specifically.
 
 ---
 
-## Experiment summary
+## Current Status (2026-06-12)
 
-| # | Strategy | Key params | Status | Notes |
-|---|---|---|---|---|
-| 01 | pure_as | γ=0.086, T=100 | 11 days done | Best so far, -$112 total |
-| 07 | glft | κ=1.5, γ=1, A=live | 1 day only | Not extended |
-| 08 | shifted_glft | κ=4.455, γ=100, A_liq=5 | 11 days done | -$2313 total, ~15k fills/day |
-| 09 | shifted_glft_regime | same + RegimeFilter | 11 days done | -$737 total, ~5k fills/day |
-| 10 | shifted_glft (calibrated) | κ=31, γ=31, A=22 | not run | Option 1, proper units |
-| 11 | shifted_glft_regime (calibrated) | same + RegimeFilter | not run | Option 1 + filter |
-| 12 | vol_inventory | α=0.14, γ_inv=1.5 | not run | Option 3, tight spread |
-| 13 | vol_inventory_regime | same + RegimeFilter | not run | Option 3 + filter |
-| 14 | vol_inventory_wide | α=0.3, γ_inv=1.0, tol=10 | not run | Patient orders, ~64 ticks at median vol |
-| 15 | vol_inventory_wide_regime | same + RegimeFilter | not run | Patient + regime gate |
+The "three-pronged response" of 2026-05-16 (Options 1-3 below, exps 10-15) was the plan at
+the time for fixing the calibration mismatch above. **None of exps 10-15 were ever run** —
+the investigation took a different path and superseded this plan entirely. Kept here only as
+a historical record of the abandoned plan; do not run these configs expecting them to be
+current.
 
-Ablation table covers experiments 01, 08, 09 and can be extended to 10–15:
-```bash
-source .venv/bin/activate && python scripts/ablation_table.py
-```
+<details>
+<summary>Abandoned plan (exps 10-15, never run)</summary>
 
----
+- **Option 1 — properly calibrated GLFT** (exps 10/11): kappa=31.0 (correct dollar units),
+  γ=31 (κ/γ=1), A_liq=22, min_spread_bps=0. Exp 11 adds RegimeFilter.
+- **Option 2 — kappa/gamma/A as hyperparameters**: random search over
+  `experiments/08_shifted_glft/search_config.json`.
+- **Option 3 — Vol-Inventory spread** (exps 12-15): `VolInventoryMarketMaker`
+  (`hft_market_maker/strategies/vol_inventory.py`), `half_spread = alpha * sigma_dollar *
+  sqrt(quote_freq)`, no kappa / no exponential fill model. Exps 12-13 plain/regime, 14-15 a
+  wider variant (α=0.3, tolerance=10).
 
-## Running new experiments
+</details>
 
-```bash
-source .venv/bin/activate
+### What actually happened instead
 
-# Option 1 — properly calibrated GLFT
-python scripts/run_daily.py --config experiments/10_glft_calibrated/config.json
-python scripts/run_daily.py --config experiments/11_glft_calibrated_regime/config.json
+Rather than search for a calibration that escapes the momentum plateau, the project asked
+*why* every calibration lands there — and generalized the answer (C33): κ is pinned to σ by
+zero-profit, so it isn't a free knob to search over. From there the investigation moved to
+testing whether *any* strategy (classical or RL) profits honestly, which led to the
+queue-priority verdict (C30) as the central thesis result.
 
-# Option 2 — hyperparameter search (ShiftedGLFT)
-python scripts/random_search.py --config experiments/08_shifted_glft/search_config.json
+The authoritative sources for where the project stands now:
 
-# Option 3 — vol-inventory strategy
-python scripts/run_daily.py --config experiments/12_vol_inventory/config.json
-python scripts/run_daily.py --config experiments/13_vol_inventory_regime/config.json
+- **`thesis_contributions.md`** — the full numbered contribution log (C1–C37). C30 is the
+  central result; C33 generalizes it into a zero-profit equilibrium law; C35 frames MM as a
+  written straddle; C36 closes the cross-venue (spot↔perp) escape route; C37 maps the
+  latency-tolerant corner of the *curable* (Layer-1) part of the problem.
+- **`thesis_conclusions.md`** — the synthesis chapter: headline result, evidentiary chain,
+  and limitations/further work, written for direct use in the thesis.
+- **`hypotheses.md`** — the hypothesis register (sections A–G + meta-hypothesis), tracking
+  confirmed/refuted/nuanced/pending status for every claim tested.
 
-# Option 3 search
-python scripts/random_search.py --config experiments/12_vol_inventory/search_config.json
+### Genuinely open items
 
-# Option 4 — wide-spread patient orders (40-200 ticks, tolerance=10)
-python scripts/run_daily.py --config experiments/14_vol_inventory_wide/config.json
-python scripts/run_daily.py --config experiments/15_vol_inventory_wide_regime/config.json
-
-# Option 4 search (sweeps alpha + tolerance_ticks jointly)
-python scripts/random_search.py --config experiments/14_vol_inventory_wide/search_config.json
-```
-
----
-
-## Open issues
-
-1. **KappaEstimator never fires** — `min_fills=50` threshold too high given hysteresis.
-   Consider lowering to 20 or removing the fill-count gate for GLFT experiments where
-   `kappa_from_stats=False` anyway (the estimator runs but the strategy ignores it).
-
-2. **A-S t_scaling=100** — changed from 9702 in the last session. Verify this is intended;
-   T=100 gives a much tighter spread than T=9702.
-
-3. **ablation_table.py hardcoded to exps 01/08/09** — update to include 10–13 after runs.
-
-4. **RegimeFilter activity rate not logged** — useful metric for thesis. Can be estimated
-   from fill-count ratio (base vs regime) but should be tracked explicitly.
+- BTC perp data re-pull (CoinAPI trades endpoint mislabeled) — needed for the C36 BTC
+  cross-asset symmetry check. User-side action, not yet done.
+- Two small untested threads in `hypotheses.md` §F: whether a lower perp fee tier makes the
+  taker viable (reasoned "likely no" but untested), and funding rate as a queue-independent
+  carry return (a different strategy class, not market making).

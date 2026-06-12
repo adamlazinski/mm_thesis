@@ -1805,14 +1805,36 @@ python experiments/59_synthetic_engine_validation/breakeven_sweep.py
 
 ---
 
-## Planned Extensions
+## Future Work
 
-- **Stressed regime validation**: download LINK data from high-volatility or crash periods
-  to test whether the $25 daily loss limit is sufficient to prevent catastrophic losses
-- **Cross-asset validation**: test on comparable mid-cap crypto assets (similar tick spread
-  structure) to determine whether the step-function mechanism is LINK-specific or generalises
-- **ML-based kappa estimation**: XGBoost fill probability model conditioned on regime features
-- **Multi-level ladder quoting**: extend single-order framework to multi-level
+The items below were drafted before the queue-priority verdict (C30) and the zero-profit
+equilibrium (C33) became the thesis's central results. They are reframed here against that
+finding rather than dropped — some still test it directly, others are superseded by it.
+
+- **Cross-asset generalization of the queue-rent mechanism** (extends C30/C33): test the same
+  step-function fill-curve / queue-depth equilibrium on other large-tick assets (similar
+  tick-to-price ratio to LINK) to determine whether the queue-priority rent is LINK-specific
+  or a general property of large-tick markets, as C33's "same zero-profit law, enforced
+  through whichever variable is free" framing predicts.
+- **BTC cross-asset symmetry for C36**: re-pull BTC perp trade data (the current CoinAPI file
+  is mislabeled — byte-identical to the orderbook snapshot) to complete the spot↔perp
+  Hayashi-Yoshida check on BTC and confirm C36's "contemporaneous, no third door" result
+  generalises beyond LINK.
+- **Stressed-regime check on the corrected-engine result** (extends C30/exp 62): re-run the
+  honest at-touch backtest (currently −$7.93/day, 0/30 days) on high-volatility or crash-period
+  data. Open question, not assumed: does the queue-priority loss widen, narrow, or hold flat
+  under stress?
+- **Largely superseded by C33**: (a) ML-based kappa estimation — C33 shows κ is not a free
+  parameter but pinned to σ by zero-profit (`κ_eq ≈ √A/σ_$`), so a better *estimate* of κ
+  doesn't relax the binding constraint; (b) multi-level ladder quoting — every level is still
+  an inside-spread resting order subject to the same queue-priority rent as the touch, so
+  laddering doesn't escape C30's mechanism (whether it changes the *per-level* rent is
+  untested and could be a short follow-up, but is not expected to overturn C30).
+- **Two small untested threads from `hypotheses.md` §F**: whether a lower perp fee tier makes
+  the within-venue taker (exp 55) viable (reasoned "likely no" — 3.6 bps round-trip vs ~1 bps
+  edge — but untested), and funding rate as a queue-independent carry return (a different
+  strategy class — carry, not market making — so out of scope for this thesis but worth
+  flagging).
 
 ---
 
