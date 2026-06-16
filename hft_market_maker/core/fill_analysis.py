@@ -320,18 +320,99 @@ def fit_shifted_exponential(
         return None, None, None, None, None, None, None
 
 
+def linear_decay_shifted(
+    delta: np.ndarray,
+    A_liq: float,
+    kappa: float,
+    a: float,
+    b: float,
+) -> np.ndarray:
+    """
+    Two-component fill intensity with a *finite-range* toxic-flow term:
+        A_liq * exp(-kappa * delta) + max(a - b * delta, 0)
+
+    Unlike `shifted_exponential`'s constant floor, the toxic/momentum
+    component decays linearly to zero at delta = a/b, so fills cannot
+    continue "forever" at a fixed background rate.
+    """
+    return A_liq * np.exp(-kappa * delta) + np.clip(a - b * np.asarray(delta, dtype=float), 0, None)
+
+
+def fit_linear_decay_shifted(
+    fp_df: pd.DataFrame,
+    min_delta: float = 0.5,
+) -> tuple:
+    """
+    Fit A_liq * exp(-kappa * delta) + max(a - b * delta, 0) to fill curve.
+
+    Returns
+    -------
+    (A_liq, kappa, a, b, se_A_liq, se_kappa, se_a, se_b, r2)
+    or all None on failure.
+    """
+    df = fp_df[fp_df['delta'] >= min_delta].copy()
+    if len(df) < 5:
+        return (None,) * 9
+
+    y = df['fill_prob'].values
+    x = df['delta'].values
+
+    # Estimate the tail slope (-b) via a linear fit on the back half of the curve,
+    # then extrapolate the intercept `a` back to delta=0.
+    n_tail = max(2, len(df) // 2)
+    tail_x = x[-n_tail:]
+    tail_y = y[-n_tail:]
+    if tail_x.max() > tail_x.min():
+        slope, intercept = np.polyfit(tail_x, tail_y, 1)
+        b_guess = float(max(-slope, 1e-6))
+        a_guess = float(max(intercept, tail_y.min()))
+    else:
+        b_guess = 1e-4
+        a_guess = float(tail_y.mean())
+
+    A_liq_guess = float(max(y[0] - max(a_guess - b_guess * x[0], 0.0), 0.01))
+    kappa_guess = 2.0
+
+    y_span = float(max(y.max() - y.min(), 1e-6))
+    x_span = float(max(x.max() - x.min(), 1e-6))
+
+    try:
+        popt, pcov = curve_fit(
+            linear_decay_shifted, x, y,
+            p0=[A_liq_guess, kappa_guess, a_guess, b_guess],
+            bounds=(
+                [0, 1e-3, 0, 0],
+                [3 * y.max() + 0.1, 200, 3 * y.max() + 0.1, 5 * y_span / x_span + 1.0],
+            ),
+            maxfev=20000,
+        )
+        A_liq, kappa, a, b = popt
+        se = np.sqrt(np.diag(pcov))
+        y_hat  = linear_decay_shifted(x, A_liq, kappa, a, b)
+        ss_res = np.sum((y - y_hat) ** 2)
+        ss_tot = np.sum((y - y.mean()) ** 2)
+        r2 = 1 - ss_res / ss_tot if ss_tot > 1e-12 else 0.0
+        return A_liq, kappa, a, b, se[0], se[1], se[2], se[3], r2
+    except Exception:
+        return (None,) * 9
+
+
 def compare_fits(
     fp_df: pd.DataFrame,
     min_delta: float = 0.5,
+    include_linear_decay: bool = False,
 ) -> dict:
     """
-    Fit both pure and shifted exponential. Use AIC for model selection.
+    Fit pure exponential, constant-floor shifted exponential, and (optionally)
+    linear-decay shifted exponential. Use AIC for model selection.
 
     Returns dict with keys:
-        exponential: {A, kappa, A_floor=0, r2, aic, n_params}
-        shifted:     {A_liq, kappa, A_floor, A_total, mom_fraction, r2, aic, n_params}
-        preferred:   'exponential' or 'shifted'
-        delta_aic:   AIC(exponential) - AIC(shifted), positive = shifted better
+        exponential:  {A, kappa, A_floor=0, r2, aic, n_params}
+        shifted:      {A_liq, kappa, A_floor, A_total, mom_fraction, r2, aic, n_params}
+        linear_decay: {A_liq, kappa, a, b, cutoff, r2, aic, n_params} or None
+                      (only populated if include_linear_decay=True)
+        preferred:    'exponential', 'shifted', or 'linear_decay'
+        delta_aic:    AIC(exponential) - AIC(preferred), positive = preferred better
     """
     df = fp_df[fp_df['delta'] >= min_delta].copy()
     x  = df['delta'].values
@@ -352,7 +433,7 @@ def compare_fits(
     else:
         results['exponential'] = None
 
-    # Shifted exponential
+    # Shifted exponential (constant floor)
     A_liq, kappa, A_floor, *_, r2_sh = fit_shifted_exponential(fp_df, min_delta)
     if A_liq is not None:
         y_hat = shifted_exponential(x, A_liq, kappa, A_floor)
@@ -367,13 +448,41 @@ def compare_fits(
     else:
         results['shifted'] = None
 
-    # Model selection
-    if results['exponential'] and results['shifted']:
-        delta_aic = results['exponential']['aic'] - results['shifted']['aic']
-        results['preferred']  = 'shifted' if delta_aic > 2 else 'exponential'
-        results['delta_aic']  = delta_aic
+    # Linear-decay shifted exponential (toxic flow decays to zero at delta=a/b)
+    results['linear_decay'] = None
+    if include_linear_decay:
+        A_liq_ld, kappa_ld, a_ld, b_ld, *_, r2_ld = fit_linear_decay_shifted(fp_df, min_delta)
+        if A_liq_ld is not None:
+            y_hat = linear_decay_shifted(x, A_liq_ld, kappa_ld, a_ld, b_ld)
+            ss_res = np.sum((y - y_hat) ** 2)
+            aic = n * np.log(ss_res / n + 1e-12) + 2 * 4
+            results['linear_decay'] = {
+                'A_liq': A_liq_ld, 'kappa': kappa_ld, 'a': a_ld, 'b': b_ld,
+                'cutoff': a_ld / b_ld if b_ld > 1e-12 else np.inf,
+                'r2': r2_ld, 'aic': aic, 'n_params': 4,
+            }
+
+    # Model selection: pick lowest-AIC model, but require >2 AIC improvement
+    # over pure exponential before preferring a more complex model (Occam's razor)
+    candidates = [
+        (name, results[name]) for name in ('shifted', 'linear_decay')
+        if results.get(name) is not None
+    ]
+    if results['exponential'] and candidates:
+        best_name, best = min(candidates, key=lambda kv: kv[1]['aic'])
+        delta_aic = results['exponential']['aic'] - best['aic']
+        if delta_aic > 2:
+            results['preferred'] = best_name
+            results['delta_aic'] = delta_aic
+        else:
+            results['preferred'] = 'exponential'
+            results['delta_aic'] = delta_aic
+    elif candidates:
+        best_name, _ = min(candidates, key=lambda kv: kv[1]['aic'])
+        results['preferred'] = best_name
+        results['delta_aic'] = 0.0
     else:
-        results['preferred'] = 'exponential' if results['exponential'] else 'shifted'
+        results['preferred'] = 'exponential'
         results['delta_aic'] = 0.0
 
     return results
@@ -823,3 +932,132 @@ def simulate_survival_data_fast(
             })
 
     return pd.DataFrame(results)
+
+
+# ============================================================
+# Survival-based hazard rate estimation
+# ============================================================
+
+def fit_exponential_hazard(times, events) -> tuple:
+    """
+    MLE for an exponential survival model: S(t) = exp(-lambda * t).
+    Correctly handles right-censoring (cancelled/timed-out orders
+    contribute their full observed time without an event).
+
+    lambda_hat = n_events / sum(observed_times)
+
+    Returns (lambda_hat, se) or (None, None) if there is no information.
+    """
+    times  = np.asarray(times, dtype=float)
+    events = np.asarray(events, dtype=float)
+    n_events   = events.sum()
+    total_time = times.sum()
+    if total_time < 1e-10 or n_events == 0:
+        return None, None
+    lam = n_events / total_time
+    se  = lam / np.sqrt(n_events)
+    return lam, se
+
+
+def hazard_curve(
+    trades: pd.DataFrame,
+    quotes: pd.DataFrame,
+    deltas: np.ndarray,
+    latency: float = LATENCY,
+    max_lifetime: float = 10.0,
+    recompute_freq: float = 0.10,
+    tolerance_ticks: float = 1.0,
+    tick: float = TICK,
+) -> pd.DataFrame:
+    """
+    Survival-based fill hazard rate lambda(delta) across a grid of spread
+    distances, correctly handling right-censoring via `fit_exponential_hazard`.
+
+    Returns DataFrame with columns: delta, fill_prob (= hazard rate, fills/sec),
+    se, n, n_fills. (Named `fill_prob` for drop-in compatibility with
+    `fit_exponential`, `fit_shifted_exponential`, `fit_linear_decay_shifted`,
+    and `compare_fits`.)
+    """
+    rows = []
+    for d in deltas:
+        df = simulate_survival_data_fast(
+            trades, quotes,
+            half_spread_ticks=d,
+            max_lifetime=max_lifetime,
+            recompute_freq=recompute_freq,
+            tolerance_ticks=tolerance_ticks,
+            latency=latency,
+            tick=tick,
+        )
+        lam, se = fit_exponential_hazard(df['observed_time'].values, df['filled'].values)
+        rows.append({
+            'delta': d,
+            'fill_prob': lam,
+            'se': se,
+            'n': len(df),
+            'n_fills': int(df['filled'].sum()),
+        })
+    return pd.DataFrame(rows).dropna(subset=['fill_prob']).reset_index(drop=True)
+
+
+# ============================================================
+# Markout analysis (post-fill price drift / adverse selection)
+# ============================================================
+
+def compute_markouts(fills, quote_events, horizons=(0.5, 1.0, 2.0, 5.0, 10.0)) -> pd.DataFrame:
+    """
+    Signed markout per fill: sign * (mid(t + h) - fill.price), where
+    sign = +1 for bid fills (we bought) and -1 for ask fills (we sold).
+
+    Positive markout = mid moved in our favor after the fill (bought before
+    a rise / sold before a fall). Negative = adverse selection (picked off).
+
+    quote_events must be sorted by timestamp ascending (as returned by
+    DataLoader.load_coinapi). mid(t+h) is an as-of lookup (last quote at or
+    before t+h); fills where t+h exceeds the last available quote timestamp
+    get NaN for that horizon.
+
+    Returns one row per fill: side, price, timestamp, markout_<h> per h.
+    """
+    cols = ["side", "price", "timestamp", *[f"markout_{h}" for h in horizons]]
+    if not fills:
+        return pd.DataFrame(columns=cols)
+
+    qts = np.array([q.timestamp for q in quote_events])
+    qmids = np.array([q.mid for q in quote_events])
+    last_t = qts[-1]
+
+    fill_ts = np.array([f.timestamp for f in fills])
+    fill_px = np.array([f.price for f in fills])
+    sign = np.array([1.0 if f.side == "bid" else -1.0 for f in fills])
+
+    data = {"side": [f.side for f in fills], "price": fill_px, "timestamp": fill_ts}
+    for h in horizons:
+        target = fill_ts + h
+        idx = np.searchsorted(qts, target, side="right") - 1
+        mid_at_h = np.where(idx >= 0, qmids[np.clip(idx, 0, None)], np.nan)
+        mid_at_h = np.where(target <= last_t, mid_at_h, np.nan)
+        data[f"markout_{h}"] = sign * (mid_at_h - fill_px)
+
+    return pd.DataFrame(data)
+
+
+def markout_summary(df: pd.DataFrame, horizons=(0.5, 1.0, 2.0, 5.0, 10.0)) -> pd.DataFrame:
+    """
+    Aggregate compute_markouts() output: mean signed markout (price units)
+    and % of fills with negative (adverse) markout, per horizon, overall and
+    split by fill side.
+    """
+    rows = []
+    for h in horizons:
+        col = f"markout_{h}"
+        vals = df[col].dropna()
+        rows.append({"horizon": h, "side": "all",
+                      "mean_markout": vals.mean(), "pct_adverse": 100 * (vals < 0).mean(),
+                      "n": len(vals)})
+        for side in ("bid", "ask"):
+            sub = df.loc[df["side"] == side, col].dropna()
+            rows.append({"horizon": h, "side": side,
+                          "mean_markout": sub.mean(), "pct_adverse": 100 * (sub < 0).mean(),
+                          "n": len(sub)})
+    return pd.DataFrame(rows)

@@ -37,6 +37,10 @@ from .core.order_manager import OrderManager
 from .core.vol_guardrail import VolRiskManager, GuardrailState
 
 
+class DataGapError(RuntimeError):
+    """Raised when the event stream contains an interval that cannot be simulated."""
+
+
 @dataclass
 class GapClosure:
     """
@@ -168,6 +172,9 @@ class Backtest:
         requote_policy: str = "price",
         requote_vol_change: float = 0.5,
         requote_ofi: float = 0.6,
+        max_l2_snapshot_age: float = 2.0,
+        enable_online_kappa: bool = False,
+        data_gap_policy: str = "legacy",
     ):
         self.strategy = strategy
         self.market_state = market_state or MarketState()
@@ -195,6 +202,11 @@ class Backtest:
         self.requote_policy = requote_policy
         self.requote_vol_change = requote_vol_change
         self.requote_ofi = requote_ofi
+        self.max_l2_snapshot_age = max_l2_snapshot_age
+        self.enable_online_kappa = enable_online_kappa
+        if data_gap_policy not in ("error", "legacy"):
+            raise ValueError("data_gap_policy must be 'error' or 'legacy'")
+        self.data_gap_policy = data_gap_policy
         self._current_l2_snap = None
 
     def run(
@@ -259,8 +271,29 @@ class Backtest:
                 )
                 if hasattr(self.strategy, "on_fill"):
                     self.strategy.on_fill(fill.timestamp)
-                if self._current_half_spread > 0:
+                if (
+                    self.enable_online_kappa
+                    and not getattr(fill, "is_taker", False)
+                    and self._current_half_spread > 0
+                ):
                     self.market_state.on_mm_fill(fill.timestamp, self._current_half_spread)
+
+        def _activation_queue(order, active_from):
+            if self.order_manager.queue_model != "l2":
+                return 0.0
+            if l2_tracker is None:
+                return float("inf")
+            snap = l2_tracker.at(active_from)
+            if snap is None or active_from - snap.timestamp > self.max_l2_snapshot_age:
+                return float("inf")
+            fraction = getattr(self.order_manager, "queue_fraction", 1.0)
+            return snap.queue_ahead(order.price, order.side) * fraction
+
+        def _check_activations(event_timestamp):
+            return self.order_manager.check_activation(
+                event_timestamp,
+                queue_lookup=_activation_queue,
+            )
 
         for i, (timestamp, _, etype, event_data) in enumerate(events):
             if self.verbose and i % self.verbose_interval == 0:
@@ -274,6 +307,12 @@ class Backtest:
             # ----------------------------------------------------------------
             if last_event_timestamp is not None:
                 gap = timestamp - last_event_timestamp
+                if gap >= self.short_gap_threshold and self.data_gap_policy == "error":
+                    raise DataGapError(
+                        f"Unsimulatable data gap of {gap:.6f}s before timestamp "
+                        f"{timestamp:.6f}. Use data_gap_policy='legacy' only to "
+                        "reproduce historical results."
+                    )
 
                 if gap >= self.long_gap_threshold:
                     n_long_gaps += 1
@@ -355,7 +394,7 @@ class Backtest:
             # Marketable-on-arrival check, BEFORE this event updates the market
             # state — so a just-activated order is priced off the references known
             # at-or-before its arrival (no look-ahead onto this event's print).
-            _handle_fills(self.order_manager.check_activation(timestamp))
+            _handle_fills(_check_activations(timestamp))
 
             if etype == "trade":
                 t: TradeEvent = event_data
@@ -378,7 +417,7 @@ class Backtest:
                         # the current touch (so a resting order is not later mistaken
                         # for marketable-on-arrival). Only a genuinely crossing quote
                         # taker-fills here.
-                        _handle_fills(self.order_manager.check_activation(timestamp))
+                        _handle_fills(_check_activations(timestamp))
 
             else:  # quote event
                 q: QuoteEvent = event_data
@@ -418,13 +457,22 @@ class Backtest:
                     last_requote_time = timestamp
                     # Evaluate just-placed orders at their activation instant against
                     # the current touch (latency-0 orders are marked resting here).
-                    _handle_fills(self.order_manager.check_activation(timestamp))
+                    _handle_fills(_check_activations(timestamp))
 
             # Log state every 100 events (or adjust as needed)
             if i % 100 == 0:
                 equity_log.append((timestamp, self.order_manager.total_pnl))
                 inventory_log.append((timestamp, self.order_manager.inventory))
                 pnl_log.append((timestamp, self.order_manager.total_pnl))
+
+        # Always include the exact terminal state. Metrics must not depend on the
+        # every-100-events diagnostic sampling interval.
+        if events:
+            terminal_timestamp = events[-1][0]
+            if not equity_log or equity_log[-1][0] != terminal_timestamp:
+                equity_log.append((terminal_timestamp, self.order_manager.total_pnl))
+                inventory_log.append((terminal_timestamp, self.order_manager.inventory))
+                pnl_log.append((terminal_timestamp, self.order_manager.total_pnl))
 
         # Build results
         return self._compile_results(
@@ -545,26 +593,12 @@ class Backtest:
         submitted_bid = quote_bid and decision.bid_size > 0
         submitted_ask = quote_ask and decision.ask_size > 0
 
-        # For L2 queue model, look up depth ahead of our order at submission time.
-        # queue_fraction scales raw L2 depth to approximate the HFT-competing
-        # portion of the queue (raw Binance depth includes large passive resting
-        # orders; typical competing HFT share is 1-10% of visible depth).
-        bid_queue = 0.0
-        ask_queue = 0.0
-        if om.queue_model == "l2" and self._current_l2_snap is not None:
-            snap = self._current_l2_snap
-            frac = getattr(om, "queue_fraction", 1.0)
-            if decision.bid_price <= snap.best_bid_price + 1e-9:
-                bid_queue = snap.best_bid_depth * frac
-            if decision.ask_price >= snap.best_ask_price - 1e-9:
-                ask_queue = snap.best_ask_depth * frac
-
         if submitted_bid:
             om.submit_order("bid", decision.bid_price, decision.bid_size, timestamp,
-                            queue_ahead=bid_queue)
+                            queue_ahead=None)
         if submitted_ask:
             om.submit_order("ask", decision.ask_price, decision.ask_size, timestamp,
-                            queue_ahead=ask_queue)
+                            queue_ahead=None)
 
         # Only notify the kappa estimator and log when at least one side is live.
         # In regime-paused cycles (should_quote_bid/ask both False) we cancel but
@@ -572,11 +606,10 @@ class Backtest:
         if not submitted_bid and not submitted_ask:
             return
 
-        # Notify kappa estimator; convert to ticks so kappa_as is in 1/tick units,
-        # consistent with offline calibration (thesis: kappa ≈ 0.311/tick full-day).
-        half_spread_ticks = (decision.ask_price - decision.bid_price) / 2.0 / self.tick_size
-        self.market_state.notify_quote_posted(timestamp, half_spread_ticks)
-        self._current_half_spread = half_spread_ticks
+        half_spread = (decision.ask_price - decision.bid_price) / 2.0
+        if self.enable_online_kappa:
+            self.market_state.notify_quote_posted(timestamp, half_spread)
+        self._current_half_spread = half_spread
 
         # 7. Log
         spread_bps = (decision.ask_price - decision.bid_price) / max(stats.mid_price, 1e-6) * 10_000
@@ -649,15 +682,8 @@ class Backtest:
                     > self.requote_vol_change)
 
         def queue_ahead_for(side: str, price: float) -> float:
-            if om.queue_model != "l2" or self._current_l2_snap is None:
-                return 0.0
-            snap = self._current_l2_snap
-            frac = getattr(om, "queue_fraction", 1.0)
-            if side == "bid" and price <= snap.best_bid_price + 1e-9:
-                return snap.best_bid_depth * frac
-            if side == "ask" and price >= snap.best_ask_price - 1e-9:
-                return snap.best_ask_depth * frac
-            return 0.0
+            # Queue position is intentionally deferred until active_from.
+            return None
 
         changed = False
         submitted_any = False
@@ -688,9 +714,10 @@ class Backtest:
             return  # only pulled a side; nothing new posted -> no quote event
 
         # Notify kappa + log (only when something was (re)posted).
-        half_spread_ticks = (decision.ask_price - decision.bid_price) / 2.0 / self.tick_size
-        self.market_state.notify_quote_posted(timestamp, half_spread_ticks)
-        self._current_half_spread = half_spread_ticks
+        half_spread = (decision.ask_price - decision.bid_price) / 2.0
+        if self.enable_online_kappa:
+            self.market_state.notify_quote_posted(timestamp, half_spread)
+        self._current_half_spread = half_spread
         spread_bps = (decision.ask_price - decision.bid_price) / max(stats.mid_price, 1e-6) * 10_000
         quote_records.append({
             "timestamp": timestamp,
@@ -758,7 +785,8 @@ class Backtest:
         metrics = {"n_events": n_events}
 
         # PnL
-        metrics["total_pnl"] = float(equity.iloc[-1]) if len(equity) > 0 else 0.0
+        metrics["total_pnl"] = float(self.order_manager.total_pnl)
+        metrics["terminal_inventory"] = float(self.order_manager.inventory)
 
         # Per-step PnL t-statistic: mean/std of per-step PnL increments × sqrt(N).
         # NOT a Sharpe ratio (no time normalization; per-100-event sampling) — kept
@@ -785,6 +813,44 @@ class Backtest:
 
         # Fills
         metrics["total_fills"] = len(fills_df)
+        if len(fills_df) > 0:
+            metrics["filled_quantity"] = float(fills_df["quantity"].sum())
+            if "is_taker" in fills_df:
+                taker = fills_df["is_taker"].fillna(False).astype(bool)
+            else:
+                taker = pd.Series(False, index=fills_df.index)
+            metrics["maker_fills"] = int((~taker).sum())
+            metrics["maker_quantity"] = float(
+                fills_df.loc[~taker, "quantity"].sum()
+            )
+            metrics["maker_notional"] = float(
+                (
+                    fills_df.loc[~taker, "quantity"]
+                    * fills_df.loc[~taker, "price"]
+                ).sum()
+            )
+            metrics["taker_fills"] = int(taker.sum())
+            metrics["taker_quantity"] = float(
+                fills_df.loc[taker, "quantity"].sum()
+            )
+            metrics["taker_notional"] = float(
+                (
+                    fills_df.loc[taker, "quantity"]
+                    * fills_df.loc[taker, "price"]
+                ).sum()
+            )
+        else:
+            metrics["filled_quantity"] = 0.0
+            metrics["maker_fills"] = 0
+            metrics["maker_quantity"] = 0.0
+            metrics["maker_notional"] = 0.0
+            metrics["taker_fills"] = 0
+            metrics["taker_quantity"] = 0.0
+            metrics["taker_notional"] = 0.0
+        metrics["rejected_orders"] = sum(
+            order.status == "rejected"
+            for order in self.order_manager.orders.values()
+        )
         if len(quotes_df) > 0:
             metrics["fill_rate"] = len(fills_df) / max(len(quotes_df) * 2, 1)
             metrics["avg_spread_bps"] = float(quotes_df["spread_bps"].mean())

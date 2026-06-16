@@ -38,7 +38,8 @@ it is the resting liquidity that incoming takers hit at its price.
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, List
+from collections import deque
+from typing import Callable, Dict, List, Optional
 import uuid
 
 
@@ -50,10 +51,10 @@ class Order:
     quantity: float
     timestamp: float     # when submitted
     filled: float = 0.0
-    status: str = "open"        # open | partially_filled | filled | cancelled
+    status: str = "open"        # open | partially_filled | filled | cancelled | rejected
     active_from: float = 0.0    # matchable only after this timestamp
     cancel_from: float = 0.0    # cancel effective only after this timestamp
-    queue_ahead: float = 0.0    # L2 depth ahead of us at submission (for 'l2' model)
+    queue_ahead: Optional[float] = None  # assigned when the order activates
     vol_since_submit: float = 0.0  # cumulative volume at our price since submission
     sigma_at_post: float = 0.0  # market sigma when posted (for risk-based requote gate)
     activation_checked: bool = False  # marketable-on-arrival check done once at activation
@@ -64,11 +65,13 @@ class Order:
 
     def is_live(self, timestamp: float) -> bool:
         """True if this order can be matched at the given timestamp."""
-        if self.status == "filled":
+        if self.status in ("filled", "rejected"):
             return False
         if self.status == "cancelled" and timestamp >= self.cancel_from:
             return False
         if timestamp < self.active_from:
+            return False
+        if not self.activation_checked:
             return False
         return True
 
@@ -107,6 +110,7 @@ class OrderManager:
         queue_depth_estimate: float = 0.3,
         latency: float = 0.0,
         taker_fee: float = 0.0,
+        order_type: str = "post_only",
     ):
         self.maker_fee = maker_fee
         self.taker_fee = taker_fee
@@ -114,6 +118,9 @@ class OrderManager:
         self.queue_depth_estimate = queue_depth_estimate
         self.queue_fraction = 1.0  # set externally by backtest for 'l2' mode
         self.latency = latency
+        if order_type not in ("post_only", "limit"):
+            raise ValueError("order_type must be 'post_only' or 'limit'")
+        self.order_type = order_type
         # Prevailing touch (quote events) and last trade price; used to price
         # marketable-on-arrival fills at the closest available reference.
         self._best_bid: float = 0.0
@@ -121,6 +128,7 @@ class OrderManager:
         self._last_quote_ts: float = -1.0
         self._last_trade: float = 0.0
         self._last_trade_ts: float = -1.0
+        self._book_history = deque(maxlen=100_000)
 
         # _active: only live/pending-cancel orders — ≤2 for a basic MM
         # This is the ONLY dict iterated in the hot path
@@ -144,7 +152,7 @@ class OrderManager:
     # ------------------------------------------------------------------
 
     def submit_order(self, side: str, price: float, quantity: float,
-                     timestamp: float, queue_ahead: float = 0.0,
+                     timestamp: float, queue_ahead: Optional[float] = None,
                      sigma_at_post: float = 0.0) -> str:
         order_id = str(uuid.uuid4())[:8]
         self._active[order_id] = Order(
@@ -195,14 +203,25 @@ class OrderManager:
         self._best_bid = best_bid
         self._best_ask = best_ask
         self._last_quote_ts = timestamp
+        self._book_history.append((timestamp, best_bid, best_ask))
 
-    def check_activation(self, timestamp: float) -> List[Fill]:
+    def _book_at(self, timestamp: float) -> Optional[tuple[float, float]]:
+        for book_ts, best_bid, best_ask in reversed(self._book_history):
+            if book_ts <= timestamp:
+                return best_bid, best_ask
+        return None
+
+    def check_activation(
+        self,
+        timestamp: float,
+        queue_lookup: Optional[Callable[[Order, float], Optional[float]]] = None,
+    ) -> List[Fill]:
         """Taker-fill orders that are marketable at the instant they first become
-        active. The reference is the FRESHEST side-appropriate market signal with
-        timestamp <= the order's arrival (active_from): for a buy the ask or the last
-        trade; for a sell the bid or the last trade. If that reference crosses the
-        limit the order is a taker filled there; else it rests as a maker. One-shot
-        per order via the activation_checked flag."""
+        active. The reference is the book state at the order's arrival (active_from).
+        If that book crosses the limit, the order is either rejected (post_only) or
+        filled as a taker against the opposing touch (ordinary limit). Otherwise it
+        rests as a maker, with queue_ahead assigned via queue_lookup. One-shot per
+        order via the activation_checked flag."""
         if not self._active:
             return []
         new_fills: List[Fill] = []
@@ -212,33 +231,37 @@ class OrderManager:
                 continue
             if timestamp < order.active_from:
                 continue                      # not active yet — check later
-            if order.status not in ("open", "partially_filled"):
+            if order.status == "cancelled" and order.active_from >= order.cancel_from:
                 order.activation_checked = True
                 continue
             ta = order.active_from
+            book = self._book_at(ta)
+            if book is None:
+                continue
+            best_bid, best_ask = book
             # MARKETABILITY is defined by crossing the OPPOSING QUOTE as of arrival
             # (bid >= ask, or ask <= bid). A trade at/through our limit alone does NOT
             # make us a taker — that is a normal maker fill (handled in process_trade).
-            quote_fresh = self._last_quote_ts >= 0 and self._last_quote_ts <= ta
             if order.side == "bid":
-                marketable = quote_fresh and self._best_ask > 0 and \
-                    order.price >= self._best_ask - 1e-12
+                marketable = best_ask > 0 and order.price >= best_ask - 1e-12
             else:
-                marketable = quote_fresh and self._best_bid > 0 and \
-                    order.price <= self._best_bid + 1e-12
+                marketable = best_bid > 0 and order.price <= best_bid + 1e-12
             if not marketable:
-                order.activation_checked = True       # rests as a maker from here on
+                if queue_lookup is not None:
+                    order.queue_ahead = queue_lookup(order, ta)
+                elif order.queue_ahead is None:
+                    order.queue_ahead = 0.0
+                order.activation_checked = True
                 continue
-            # FILL PRICE: freshest of {opposing touch, last trade} known at-or-before
-            # arrival (the user's "closest trade or ask"), capped at our limit so we
-            # never fill worse than the price we were willing to pay.
-            touch = self._best_ask if order.side == "bid" else self._best_bid
-            cands = [(self._last_quote_ts, touch)]
-            if self._last_trade > 0 and self._last_trade_ts <= ta:
-                cands.append((self._last_trade_ts, self._last_trade))
-            ref = max(cands, key=lambda c: c[0])[1]   # freshest signal as of arrival
-            fill_price = min(ref, order.price) if order.side == "bid" \
-                else max(ref, order.price)
+
+            if self.order_type == "post_only":
+                order.status = "rejected"
+                order.activation_checked = True
+                to_archive.append(order_id)
+                continue
+
+            # An ordinary marketable limit executes against opposing liquidity.
+            fill_price = best_ask if order.side == "bid" else best_bid
             fill_qty = order.remaining
             fee = fill_qty * fill_price * self.taker_fee
             if order.side == "bid":
@@ -252,7 +275,7 @@ class OrderManager:
             self.total_fees += fee
 
             fill = Fill(order_id=order_id, side=order.side, price=fill_price,
-                        quantity=fill_qty, timestamp=timestamp, fee=fee, is_taker=True)
+                        quantity=fill_qty, timestamp=ta, fee=fee, is_taker=True)
             self.fills.append(fill)
             new_fills.append(fill)
             order.filled += fill_qty
@@ -280,8 +303,23 @@ class OrderManager:
 
         new_fills: List[Fill] = []
         to_archive: List[str] = []
+        available_qty = trade_qty
+        if trade_side == "sell":
+            candidates = [
+                (order_id, order) for order_id, order in self._active.items()
+                if order.side == "bid" and trade_price <= order.price
+            ]
+            candidates.sort(key=lambda item: (-item[1].price, item[1].active_from))
+        elif trade_side == "buy":
+            candidates = [
+                (order_id, order) for order_id, order in self._active.items()
+                if order.side == "ask" and trade_price >= order.price
+            ]
+            candidates.sort(key=lambda item: (item[1].price, item[1].active_from))
+        else:
+            return []
 
-        for order_id, order in self._active.items():
+        for order_id, order in candidates:
 
             if not order.is_live(timestamp):
                 # Prune expired cancels lazily
@@ -289,32 +327,34 @@ class OrderManager:
                     to_archive.append(order_id)
                 continue
 
-            # Price match
-            if order.side == "bid":
-                hit = trade_price <= order.price #drop trade_side==sell
-            else:
-                hit = trade_price >= order.price
-
-            if not hit:
-                continue
-
             # Fill quantity
             if self.queue_model == "none":
-                fill_qty = order.remaining
+                fill_qty = min(order.remaining, available_qty)
+                available_qty -= fill_qty
             elif self.queue_model == "l2":
-                # Queue-clearing model: accumulate volume at our price level.
-                # We only fill after cumulative volume exceeds queue_ahead.
-                vol_before = order.vol_since_submit
-                order.vol_since_submit += trade_qty
-                vol_after = order.vol_since_submit
-                if vol_after <= order.queue_ahead:
-                    continue  # queue not yet cleared
-                # Volume of this trade that reaches us after clearing the queue
-                vol_to_us = vol_after - max(order.queue_ahead, vol_before)
-                fill_qty = min(order.remaining, vol_to_us)
+                traded_through = (
+                    trade_price < order.price - 1e-12
+                    if order.side == "bid"
+                    else trade_price > order.price + 1e-12
+                )
+                if traded_through:
+                    # A worse-price print is proof that all liquidity at our
+                    # better price was exhausted.
+                    fill_qty = order.remaining
+                else:
+                    if order.queue_ahead is None:
+                        continue
+                    queue_consumed = min(available_qty, order.queue_ahead)
+                    order.queue_ahead -= queue_consumed
+                    available_qty -= queue_consumed
+                    if order.queue_ahead > 1e-12 or available_qty <= 1e-12:
+                        continue
+                    fill_qty = min(order.remaining, available_qty)
+                    available_qty -= fill_qty
             else:  # 'partial'
                 fill_qty = min(order.remaining,
-                               trade_qty * (1.0 - self.queue_depth_estimate))
+                               available_qty * (1.0 - self.queue_depth_estimate))
+                available_qty -= fill_qty
 
             if fill_qty <= 1e-12:
                 continue
@@ -348,6 +388,9 @@ class OrderManager:
                 to_archive.append(order_id)
             else:
                 order.status = "partially_filled"
+
+            if available_qty <= 1e-12 and self.queue_model != "l2":
+                break
 
         # Prune dead orders from _active — keeps the dict at ≤2 entries
         for oid in to_archive:

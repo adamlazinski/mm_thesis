@@ -34,6 +34,31 @@ class BookSnapshot:
     obi_l10: float
     total_bid_depth: float  # sum of top-10 bid levels
     total_ask_depth: float
+    bid_levels: tuple[tuple[float, float], ...] = ()
+    ask_levels: tuple[tuple[float, float], ...] = ()
+
+    def queue_ahead(self, order_price: float, side: str) -> float:
+        """
+        Visible quantity at better prices plus the full displayed quantity at
+        the order's price. This is the conservative queue position for a newly
+        activated order under price-time priority.
+        """
+        eps = 1e-9
+        if side == "bid":
+            if self.bid_levels and order_price < self.bid_levels[-1][0] - eps:
+                return float("inf")
+            return sum(
+                size for price, size in self.bid_levels
+                if price >= order_price - eps
+            )
+        if side == "ask":
+            if self.ask_levels and order_price > self.ask_levels[-1][0] + eps:
+                return float("inf")
+            return sum(
+                size for price, size in self.ask_levels
+                if price <= order_price + eps
+            )
+        raise ValueError(f"Unsupported order side: {side}")
 
 
 def _depth_n(levels: list, n: int) -> float:
@@ -66,6 +91,8 @@ def parse_snapshot(row) -> BookSnapshot:
         obi_l10=_obi(bids, asks, 10),
         total_bid_depth=_depth_n(bids, 10),
         total_ask_depth=_depth_n(asks, 10),
+        bid_levels=tuple((float(level["price"]), float(level["size"])) for level in bids),
+        ask_levels=tuple((float(level["price"]), float(level["size"])) for level in asks),
     )
 
 
@@ -103,9 +130,11 @@ class L2BookTracker:
     def advance(self, timestamp: float) -> Optional[BookSnapshot]:
         """Sequentially advance — faster than binary search in event loop."""
         snaps = self._snaps
+        if not snaps or timestamp < snaps[0].timestamp:
+            return None
         while self._idx + 1 < len(snaps) and snaps[self._idx + 1].timestamp <= timestamp:
             self._idx += 1
-        return snaps[self._idx] if self._idx < len(snaps) else None
+        return snaps[self._idx]
 
 
 class QueueModel:

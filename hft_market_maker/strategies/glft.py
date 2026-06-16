@@ -169,6 +169,30 @@ class GLFTMarketMaker:
     # Core formula
     # ------------------------------------------------------------------
 
+    def _inventory_step(
+        self,
+        sigma: float,
+        mid: float,
+        A: float,
+    ) -> float:
+        """
+        Price displacement per unit of inventory in the asymptotic GLFT quotes.
+        """
+        gamma = self.gamma
+        kappa = self.kappa
+        if gamma <= 1e-12 or kappa <= 1e-12 or A <= 1e-12:
+            return 0.0
+
+        sigma_price = sigma * mid
+        log_power = (1.0 + kappa / gamma) * np.log1p(gamma / kappa)
+        log_inner = (
+            2.0 * np.log(max(sigma_price, 1e-300))
+            + np.log(gamma)
+            - np.log(2.0 * A * kappa)
+            + log_power
+        )
+        return float(np.exp(np.clip(0.5 * log_inner, -700.0, 700.0)))
+
     def reservation_price(
         self,
         mid: float,
@@ -177,13 +201,9 @@ class GLFTMarketMaker:
         A: float,
     ) -> float:
         """
-        Equation (1): indifference price.
+        Midpoint of the asymptotic optimal bid and ask:
 
-            r = S - q × γ × σ_$² / (2 × A × κ)
-
-        where σ_$ = σ × S is volatility in dollar/sqrt(sec) units,
-        consistent with the paper's arithmetic Brownian motion assumption
-        dS = σ_$ dW (price in dollars, not log-price).
+            r = S - q * inventory_step
 
         Parameters
         ----------
@@ -197,12 +217,7 @@ class GLFTMarketMaker:
         A : float
             Baseline arrival rate (trades/sec).
         """
-        sigma_dollar = sigma * mid   # convert to dollar vol units
-        denom = 2.0 * A * self.kappa
-        if denom < 1e-10:
-            return mid
-        skew = inventory * self.gamma * (sigma_dollar ** 2) / denom
-        return mid - skew
+        return mid - inventory * self._inventory_step(sigma, mid, A)
 
     def optimal_half_spread(
         self,
@@ -213,8 +228,10 @@ class GLFTMarketMaker:
         """
         Equation (2): optimal symmetric half-spread δ* in dollars.
 
-            adverse_term   = (1/κ) × ln(1 + κ/γ)
-            inventory_term = (1/2) × sqrt(σ_$²γ / (2Aκ) × (1 + κ/γ)^(1+κ/γ))
+            adverse_term   = (1/γ) × ln(1 + γ/κ)
+            inventory_term = (1/2) × sqrt(
+                σ_$²γ / (2Aκ) × (1 + γ/κ)^(1+κ/γ)
+            )
             δ* = adverse_term + inventory_term
 
         σ_$ = σ × mid converts log-return vol to dollar vol per the paper.
@@ -230,29 +247,15 @@ class GLFTMarketMaker:
         """
         gamma = self.gamma
         kappa = self.kappa
-        sigma_dollar = sigma * mid   # dollar vol
-
-        # Adverse selection term: (1/κ) × ln(1 + κ/γ)
-        # Units: 1/κ is in dollars (κ in 1/dollar), result in dollars
-        if gamma < 1e-10:
-            adverse = 1.0 / kappa if kappa > 1e-10 else 0.0
+        # Both gamma and kappa are inverse-price quantities.
+        if kappa <= 1e-12:
+            adverse = 0.0
+        elif gamma <= 1e-12:
+            adverse = 1.0 / kappa
         else:
-            adverse = (1.0 / kappa) * np.log(1.0 + kappa / gamma)
+            adverse = np.log1p(gamma / kappa) / gamma
 
-        # Inventory risk term: (1/2) × sqrt(σ_$²γ / (2Aκ) × (1 + κ/γ)^(1+κ/γ))
-        if A < 1e-10 or kappa < 1e-10:
-            inv_term = 0.0
-        else:
-            ratio = kappa / gamma if gamma > 1e-10 else 1e6
-            exponent = 1.0 + ratio
-            base = 1.0 + ratio
-            try:
-                power = base ** min(exponent, 500.0)
-            except (OverflowError, ValueError):
-                power = np.exp(min(exponent * np.log(max(base, 1e-10)), 500.0))
-
-            inner = (sigma_dollar ** 2) * gamma / (2.0 * A * kappa) * power
-            inv_term = 0.5 * np.sqrt(max(inner, 0.0))
+        inv_term = 0.5 * self._inventory_step(sigma, mid, A)
 
         half_spread = adverse + inv_term
         return half_spread, adverse, inv_term

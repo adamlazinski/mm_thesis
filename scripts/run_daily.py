@@ -54,6 +54,7 @@ import json
 import traceback
 import sys
 import os
+from dataclasses import asdict
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -78,6 +79,7 @@ from hft_market_maker import (
     OFIAsymmetricAS,
     GLFTMarketMaker,
     ShiftedGLFTMarketMaker,
+    ShiftedGLFTNumerical,
     VolInventoryMarketMaker,
     RegimeFilter,
     OFIDirectedFilter,
@@ -103,6 +105,7 @@ DEFAULTS = {
     "order_size":     0.001,
     "min_spread_bps": 0.05,
     "max_inventory":  0.02,
+    "tick_size":      0.01,
     "maker_fee":      0.0,
     "latency":        0.1,
     "quote_freq":     0.5,
@@ -155,6 +158,7 @@ DEFAULTS = {
     "quiet":          False,
     "skip_existing":  False,
     "save_full":      False,
+    "save_view":      True,
     "notes":          "",
 }
 
@@ -222,7 +226,16 @@ def build_snapshot(results) -> "pd.DataFrame | None":
 # ============================================================
 
 def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
+    cfg = dict(cfg)
     tick_size = cfg.get("tick_size", 0.01)
+    if "kappa_as_min" in cfg:
+        kappa_unit = cfg.get("kappa_as_unit", "per_tick")
+        if kappa_unit == "per_tick":
+            cfg["kappa_as_min"] = cfg["kappa_as_min"] / tick_size
+        elif kappa_unit != "per_price":
+            raise ValueError(
+                "kappa_as_unit must be 'per_tick' or 'per_price'"
+            )
     common = dict(
         T=cfg["t_scaling"],
         order_size=cfg["order_size"],
@@ -403,6 +416,30 @@ def make_strategy(cfg: dict, mid_price_estimate: float = 102000.0):
                 mom_threshold=cfg["regime_mom_threshold"],
                 ofi_threshold=cfg.get("regime_ofi_threshold", float("inf")))
         return base
+    elif name in ("shifted_glft_numerical", "shifted_glft_numerical_regime"):
+        base = ShiftedGLFTNumerical(
+            gamma=gamma,
+            A_liq=cfg.get("glft_A_liq", 4.87),
+            kappa=cfg.get("glft_kappa", 2.39),
+            a=cfg.get("glft_a", 0.0871),
+            b=cfg.get("glft_b", 0.0871 / 1000.0),
+            order_size=cfg["order_size"],
+            min_spread_bps=cfg["min_spread_bps"],
+            max_inventory=cfg["max_inventory"],
+            tick_size=tick_size,
+            q_buffer=cfg.get("glft_q_buffer", 5),
+            horizon=cfg.get("glft_horizon", 60.0),
+            n_steps=cfg.get("glft_n_steps", 600),
+            newton_iters=cfg.get("glft_newton_iters", 12),
+            sigma_bucket_rel=cfg.get("glft_sigma_bucket_rel", 0.05),
+            kappa_from_stats=cfg.get("kappa_from_stats", False),
+        )
+        if name == "shifted_glft_numerical_regime":
+            return RegimeFilter(base,
+                vol_threshold=cfg["regime_vol_threshold"],
+                mom_threshold=cfg["regime_mom_threshold"],
+                ofi_threshold=cfg.get("regime_ofi_threshold", float("inf")))
+        return base
     elif name in ("vol_inventory", "vol_inventory_regime", "vol_inventory_ofi_directed", "vol_inventory_obi_directed"):
         base = VolInventoryMarketMaker(
             alpha=cfg["vi_alpha"],
@@ -483,6 +520,8 @@ def _make_order_manager(cfg: dict) -> "OrderManager":
         queue_model=cfg.get("queue_model", "none"),
         queue_depth_estimate=cfg.get("queue_depth_estimate", 0.3),
         latency=cfg["latency"],
+        taker_fee=cfg.get("taker_fee", 0.0),
+        order_type=cfg.get("order_type", "post_only"),
     )
     # queue_fraction scales raw L2 depth for the 'l2' queue model.
     # Raw Binance depth at best bid/ask includes large passive resting orders;
@@ -550,7 +589,10 @@ def run_day(dt: date, trades_path: Path, quotes_path: Path,
         short_gap_threshold=cfg["short_gap"],
         long_gap_threshold=cfg["long_gap"],
         tolerance_ticks=cfg["tolerance_ticks"],
+        tick_size=cfg["tick_size"],
         kappa_force_interval=cfg["kappa_force_interval"],
+        enable_online_kappa=cfg.get("enable_online_kappa", False),
+        data_gap_policy=cfg.get("data_gap_policy", "legacy"),
         requote_policy=cfg.get("requote_policy", "price"),
         requote_vol_change=cfg.get("requote_vol_change", 0.5),
         requote_ofi=cfg.get("requote_ofi", 0.6),
@@ -559,14 +601,23 @@ def run_day(dt: date, trades_path: Path, quotes_path: Path,
     )
 
     l2_tracker = None
-    if orderbook_path is not None and orderbook_path.exists():
+    if cfg.get("queue_model") == "l2":
+        if orderbook_path is None or not orderbook_path.exists():
+            error = "L2 queue model requires a matching order-book file"
+            print(f"  ERROR loading data: {error}")
+            return {"date": date_str, "status": "load_error", "error": error}
         try:
             from hft_market_maker.core.l2_features import L2BookTracker
-            snaps = loader.load_orderbook(str(orderbook_path))
+            snaps = loader.load_orderbook(
+                str(orderbook_path),
+                expected_symbol=cfg.get("symbol"),
+                expected_market_type=cfg.get("market_type", "SPOT"),
+            )
             l2_tracker = L2BookTracker(snaps)
             print(f"  L2: loaded {len(snaps):,} book snapshots")
         except Exception as e:
-            print(f"  L2: skipped ({e})")
+            print(f"  ERROR loading L2 data: {e}")
+            return {"date": date_str, "status": "load_error", "error": str(e)}
 
     try:
         results = bt.run(trades, quotes, l2_tracker=l2_tracker)
@@ -584,12 +635,13 @@ def run_day(dt: date, trades_path: Path, quotes_path: Path,
     with open(f"{prefix}_metrics.json", "w") as f:
         json.dump(metrics, f, indent=2)
 
-    view_df = build_snapshot(results)
-    if view_df is not None:
-        view_df.to_parquet(f"{prefix}_view.parquet")
+    if cfg["save_view"]:
+        view_df = build_snapshot(results)
+        if view_df is not None:
+            view_df.to_parquet(f"{prefix}_view.parquet")
 
     with open(f"{prefix}_gaps.json", "w") as f:
-        json.dump([], f)
+        json.dump([asdict(gap) for gap in results.gap_log], f, indent=2)
 
     if cfg["save_full"]:
         if not results.trade_log.empty:
@@ -716,7 +768,9 @@ def main():
         if cfg["skip_existing"] and (output_dir / f"{date_str}_metrics.json").exists():
             print(f"  {date_str}  SKIP (exists)")
             continue
-        ob_path = find_orderbook_file(data_dir, dt, cfg.get("symbol", "BTC"))
+        ob_path = None
+        if cfg.get("queue_model") == "l2":
+            ob_path = find_orderbook_file(data_dir, dt, cfg.get("symbol", "BTC"))
         metrics = run_day(dt, t_path, q_path, output_dir, cfg, orderbook_path=ob_path)
         all_metrics.append(metrics)
         if metrics.get("status") != "ok":

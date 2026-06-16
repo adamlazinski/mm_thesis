@@ -1,0 +1,44 @@
+{
+    "data_dir":         "data/real",
+    "start":            "2025-05-13",
+    "end":              "2025-05-24",
+    "output_dir":       "experiments/63_shifted_glft_numerical/results",
+
+    "strategy":         "shifted_glft_numerical",
+    "gamma":            30.0,
+    "glft_kappa":       2.39,
+    "glft_A_liq":       4.87,
+    "glft_a":           0.0871,
+    "glft_b":           0.0000871,
+    "kappa_from_stats": false,
+
+    "order_size":       0.001,
+    "min_spread_bps":   0.0,
+    "max_inventory":    0.02,
+    "maker_fee":        0.0,
+    "latency":          0.1,
+    "quote_freq":       0.5,
+
+    "vol_window":       120,
+    "arrival_window":   60,
+    "ewma_alpha":       0.9,
+    "kappa_as_window":  3600.0,
+    "kappa_as_min_fills": 10,
+
+    "guardrail":        false,
+    "vol_soft":         0.70,
+    "vol_hard":         0.90,
+    "min_size":         0.40,
+
+    "short_gap":        2.0,
+    "long_gap":         30.0,
+    "tolerance_ticks":  0.5,
+    "kappa_force_interval": 60.0,
+    "timestamp":        "time_exchange",
+    "max_rows":         null,
+    "quiet":            true,
+    "skip_existing":    true,
+    "save_full":        false,
+
+    "notes":            "ShiftedGLFTNumerical (HJB PDE, Contribution 38 Part D fix) at the Part A fill-intensity calibration: A_liq=4.87/sec, kappa=2.39/tick, a=0.0871/sec floor, b=a/1000 cutoff (1000 ticks), gamma=30. min_spread_bps=0 -- the PDE's own ~0.4-0.6 tick economic optimum is the spread, not a config floor (a 0.5bps floor would be ~259 ticks at BTC's price level and dominate entirely)."
+}

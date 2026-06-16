@@ -1,0 +1,126 @@
+BTC latency-aware taker on 43 days (2025-05-13 -> 2026-04-15) | latency=100ms
+  2025-05-13: 345,540 grid pts, 109,506 hi-vol sweeps
+  2025-05-14: 345,540 grid pts, 80,471 hi-vol sweeps
+  2025-05-15: 345,540 grid pts, 118,661 hi-vol sweeps
+  2025-05-16: 345,540 grid pts, 89,954 hi-vol sweeps
+  2025-05-17: 345,540 grid pts, 74,057 hi-vol sweeps
+  2025-05-18: 344,160 grid pts, 103,197 hi-vol sweeps
+  2025-05-19: 345,540 grid pts, 131,944 hi-vol sweeps
+  2025-05-20: 345,540 grid pts, 112,969 hi-vol sweeps
+  2025-05-21: 345,408 grid pts, 23,097 hi-vol sweeps
+  2025-05-22: 345,540 grid pts, 156,686 hi-vol sweeps
+  2025-05-24: 345,540 grid pts, 78,276 hi-vol sweeps
+  2025-06-11: 345,540 grid pts, 78,270 hi-vol sweeps
+  2025-06-12: 345,540 grid pts, 107,155 hi-vol sweeps
+  2025-06-13: 345,540 grid pts, 127,128 hi-vol sweeps
+  2025-06-14: 345,540 grid pts, 42,931 hi-vol sweeps
+  2025-06-15: 345,540 grid pts, 46,134 hi-vol sweeps
+  2025-06-16: 345,220 grid pts, 89,972 hi-vol sweeps
+  2025-06-17: 345,540 grid pts, 99,702 hi-vol sweeps
+  2025-06-18: 345,540 grid pts, 99,541 hi-vol sweeps
+  2025-06-19: 345,540 grid pts, 47,586 hi-vol sweeps
+  2025-06-20: 345,540 grid pts, 91,858 hi-vol sweeps
+  2025-06-21: 345,540 grid pts, 71,857 hi-vol sweeps
+  2025-06-22: 345,540 grid pts, 134,425 hi-vol sweeps
+  2025-06-23: 345,540 grid pts, 144,108 hi-vol sweeps
+  2025-06-24: 345,540 grid pts, 80,606 hi-vol sweeps
+  2025-06-25: 345,540 grid pts, 84,426 hi-vol sweeps
+  2025-06-26: 345,540 grid pts, 73,958 hi-vol sweeps
+  2025-06-27: 345,540 grid pts, 66,506 hi-vol sweeps
+  2025-06-28: 345,540 grid pts, 23,589 hi-vol sweeps
+  2025-06-29: 345,540 grid pts, 40,801 hi-vol sweeps
+  2025-06-30: 345,540 grid pts, 50,640 hi-vol sweeps
+  2025-07-01: 345,540 grid pts, 58,711 hi-vol sweeps
+  2025-07-02: 345,540 grid pts, 69,925 hi-vol sweeps
+  2025-07-03: 345,540 grid pts, 77,723 hi-vol sweeps
+  2025-07-04: 345,540 grid pts, 56,775 hi-vol sweeps
+  2025-07-05: 345,540 grid pts, 22,199 hi-vol sweeps
+  2025-07-06: 345,540 grid pts, 44,822 hi-vol sweeps
+  2025-07-07: 345,540 grid pts, 55,240 hi-vol sweeps
+  2025-07-08: 345,540 grid pts, 48,233 hi-vol sweeps
+  2025-07-09: 345,540 grid pts, 72,175 hi-vol sweeps
+  2025-07-10: 345,540 grid pts, 100,036 hi-vol sweeps
+  2026-04-14: too few grid pts, skip
+  2026-04-15: too few grid pts, skip
+
+### Per-day top-decile mean round-trip PnL (ticks), averaged across days
+
+==============================================================================
+OVERALL (all regimes)
+==============================================================================
+          signal |  hold | mean/day(ticks) |  std/day |  days>0 |   win%
+        momentum |  0.5s |          112.97 |    19.20 |    100% |  19.6%
+        momentum |    1s |          185.30 |    28.99 |    100% |  28.2%
+        momentum |    2s |          283.82 |    38.21 |    100% |  37.7%
+        momentum |    5s |          453.94 |    52.97 |    100% |  49.5%
+        momentum |   10s |          583.86 |    80.81 |    100% |  55.6%
+             obi |  0.5s |          167.71 |    63.69 |    100% |  25.3%
+             obi |    1s |          272.26 |    93.94 |    100% |  35.6%
+             obi |    2s |          414.06 |   126.31 |    100% |  46.5%
+             obi |    5s |          650.12 |   159.02 |    100% |  58.6%
+             obi |   10s |          839.17 |   158.46 |    100% |  63.8%
+     random_ctrl |  0.5s |           -0.89 |     1.50 |     12% |   5.2%
+     random_ctrl |    1s |           -0.91 |     1.51 |     17% |   7.9%
+     random_ctrl |    2s |           -0.95 |     3.32 |     24% |  11.7%
+     random_ctrl |    5s |           -1.13 |     5.56 |     37% |  18.5%
+     random_ctrl |   10s |           -1.55 |     7.36 |     37% |  25.0%
+  overshoot_fade |  0.5s |         -455.87 |   119.51 |      0% |   5.2%
+  overshoot_fade |    1s |         -546.92 |   141.41 |      0% |   8.5%
+  overshoot_fade |    2s |         -635.69 |   167.28 |      0% |  13.1%
+  overshoot_fade |    5s |         -760.14 |   205.13 |      0% |  21.4%
+  overshoot_fade |   10s |         -817.51 |   233.29 |      0% |  28.5%
+
+==============================================================================
+REGIME: May2025  (11 days)
+==============================================================================
+          signal |  hold | mean/day(ticks) |  std/day |  days>0 |   win%
+        momentum |  0.5s |          121.30 |    15.79 |    100% |  21.8%
+        momentum |    1s |          194.98 |    21.75 |    100% |  31.1%
+        momentum |    2s |          288.44 |    25.07 |    100% |  40.7%
+        momentum |    5s |          440.60 |    38.83 |    100% |  51.2%
+        momentum |   10s |          528.63 |    64.46 |    100% |  55.6%
+             obi |  0.5s |          208.84 |    63.03 |    100% |  29.8%
+             obi |    1s |          329.44 |    87.72 |    100% |  40.8%
+             obi |    2s |          485.17 |   110.00 |    100% |  51.4%
+             obi |    5s |          723.98 |   118.79 |    100% |  61.7%
+             obi |   10s |          883.82 |   100.11 |    100% |  64.8%
+     random_ctrl |  0.5s |           -0.72 |     2.48 |     27% |   8.5%
+     random_ctrl |    1s |           -0.50 |     1.50 |     36% |  12.7%
+     random_ctrl |    2s |           -0.63 |     3.93 |     27% |  17.9%
+     random_ctrl |    5s |           -1.71 |     5.98 |     45% |  26.0%
+     random_ctrl |   10s |           -3.85 |     9.99 |     36% |  32.6%
+  overshoot_fade |  0.5s |         -491.38 |    89.14 |      0% |   5.7%
+  overshoot_fade |    1s |         -584.19 |    91.65 |      0% |   9.8%
+  overshoot_fade |    2s |         -656.99 |    96.73 |      0% |  15.6%
+  overshoot_fade |    5s |         -781.48 |   111.08 |      0% |  25.0%
+  overshoot_fade |   10s |         -817.27 |    94.51 |      0% |  32.5%
+
+==============================================================================
+REGIME: JunJul2025  (30 days)
+==============================================================================
+          signal |  hold | mean/day(ticks) |  std/day |  days>0 |   win%
+        momentum |  0.5s |          109.92 |    19.67 |    100% |  18.8%
+        momentum |    1s |          181.74 |    30.78 |    100% |  27.1%
+        momentum |    2s |          282.13 |    42.26 |    100% |  36.6%
+        momentum |    5s |          458.83 |    57.08 |    100% |  48.9%
+        momentum |   10s |          604.11 |    77.42 |    100% |  55.6%
+             obi |  0.5s |          152.62 |    57.87 |    100% |  23.6%
+             obi |    1s |          251.30 |    88.45 |    100% |  33.7%
+             obi |    2s |          387.99 |   123.33 |    100% |  44.6%
+             obi |    5s |          623.04 |   164.88 |    100% |  57.5%
+             obi |   10s |          822.80 |   173.63 |    100% |  63.5%
+     random_ctrl |  0.5s |           -0.95 |     0.99 |      7% |   3.9%
+     random_ctrl |    1s |           -1.06 |     1.51 |     10% |   6.2%
+     random_ctrl |    2s |           -1.07 |     3.14 |     23% |   9.4%
+     random_ctrl |    5s |           -0.92 |     5.49 |     33% |  15.7%
+     random_ctrl |   10s |           -0.71 |     6.13 |     37% |  22.2%
+  overshoot_fade |  0.5s |         -442.85 |   127.69 |      0% |   5.0%
+  overshoot_fade |    1s |         -533.26 |   154.80 |      0% |   8.1%
+  overshoot_fade |    2s |         -627.88 |   187.45 |      0% |  12.2%
+  overshoot_fade |    5s |         -752.31 |   231.40 |      0% |  20.1%
+  overshoot_fade |   10s |         -817.60 |   268.31 |      0% |  27.1%
+
+NOTE: 'random_ctrl' = random direction at the SAME top-|momentum| points.
+If a real-signal mean >> random_ctrl, the edge is direction prediction,
+not selection/timing. Per-day means blunt the overlapping-position inflation.
+Saved -> experiments/55_taker_feasibility/analysis/btc_taker_perday.parquet (+ .csv)

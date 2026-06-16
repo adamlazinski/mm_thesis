@@ -90,30 +90,36 @@ class AvellanedaStoikov:
     def reservation_price(self, mid: float, inventory: float,
                           sigma: float, t_remaining: float) -> float:
         """
-        r = s - q * gamma * sigma_rel^2 * (T - t) * s
+        r = s - q * gamma * sigma_price^2 * (T - t)
 
-        sigma is normalised (relative), so the skew term is in relative units.
-        Multiply by mid to convert back to dollar terms.
+        MarketState supplies relative log-return volatility. The A-S arithmetic
+        Brownian-motion formula requires price volatility, so convert with
+        sigma_price = sigma * mid before applying the equation.
         """
-        skew_rel = inventory * self.gamma * (sigma ** 2) * t_remaining
-        return mid - skew_rel * mid
+        sigma_price = sigma * mid
+        skew = inventory * self.gamma * (sigma_price ** 2) * t_remaining
+        return mid - skew
 
-    def optimal_spread(self, sigma: float, kappa: float,
+    def optimal_spread(self, sigma_price: float, kappa: float,
                        t_remaining: float) -> float:
         """
-        delta* = gamma * sigma^2 * (T-t) + (2/gamma) * ln(1 + gamma/kappa_scaled)
+        Full optimal spread:
 
-        kappa in the original A-S paper is dimensionless (expected arrivals over
-        the horizon). We receive kappa in trades/sec so scale by t_remaining
-        to make it dimensionless before applying the formula.
+            spread* = gamma * sigma_price^2 * (T-t)
+                    + (2/gamma) * ln(1 + gamma/kappa)
 
-        First term:  inventory risk — grows with vol and horizon
-        Second term: adverse selection — shrinks with arrival rate
+        gamma and kappa both have inverse-price units. kappa is the distance
+        sensitivity in lambda(delta) = A * exp(-kappa * delta); it is not an
+        arrival rate and must not be multiplied by the horizon.
         """
-        inventory_term = self.gamma * (sigma ** 2) * t_remaining
-        # Scale kappa to dimensionless expected arrivals over remaining horizon
-        kappa_scaled = max(kappa * t_remaining, 1e-6)
-        adverse_selection_term = (2.0 / self.gamma) * np.log(1.0 + self.gamma / kappa_scaled)
+        kappa = max(kappa, 1e-12)
+        inventory_term = self.gamma * (sigma_price ** 2) * t_remaining
+        if self.gamma <= 1e-12:
+            adverse_selection_term = 2.0 / kappa
+        else:
+            adverse_selection_term = (
+                2.0 / self.gamma
+            ) * np.log1p(self.gamma / kappa)
         spread = inventory_term + adverse_selection_term
         return max(spread, 0.0)
 
@@ -138,24 +144,24 @@ class AvellanedaStoikov:
         if t_remaining is None:
             t_remaining = self.T
         mid = stats.mid_price
-        # sigma is already in log-return/sqrt(sec) units (dimensionless fraction)
-        # kappa is in trades/sec — scaled to dimensionless inside optimal_spread
+        # sigma is relative log-return volatility per sqrt(second).
+        # kappa_as is inverse price in lambda(delta)=A*exp(-kappa_as*delta).
         sigma = stats.sigma
         kappa = max(stats.kappa_as, self.kappa_as_min)
         # 1. Reservation price (inventory-adjusted mid)
         r = self.reservation_price(mid, inventory, sigma, t_remaining)
 
-        # 2. Optimal half-spread (dimensionless fraction of mid)
-        delta = self.optimal_spread(sigma, kappa, t_remaining)
-        delta = delta * mid  # convert fraction -> dollar spread
+        # 2. Compute the full spread in price units, then split it around r.
+        full_spread = self.optimal_spread(sigma * mid, kappa, t_remaining)
+        half_spread = full_spread / 2.0
 
-        # Apply minimum spread floor
-        min_spread_abs = mid * self.min_spread
-        delta = max(delta, min_spread_abs / 2.0)  # delta is half-spread here
+        # min_spread is a full quote-to-quote spread floor.
+        min_full_spread = mid * self.min_spread
+        half_spread = max(half_spread, min_full_spread / 2.0)
 
         # 3. Quote prices: symmetric around reservation price
-        raw_bid = r - delta
-        raw_ask = r + delta
+        raw_bid = r - half_spread
+        raw_ask = r + half_spread
 
         # 4. Round to tick size
         bid_price = self._round_price(raw_bid, "bid")
@@ -168,7 +174,7 @@ class AvellanedaStoikov:
             bid_price=bid_price,
             ask_price=ask_price,
             reservation_price=r,
-            optimal_spread=delta * 2,  # full spread
+            optimal_spread=half_spread * 2,
             bid_size=bid_size,
             ask_size=ask_size,
             gamma=self.gamma,

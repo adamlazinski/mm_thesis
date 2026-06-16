@@ -415,6 +415,8 @@ def run_single_day(
                 queue_model=fixed.get("queue_model", "partial"),
                 queue_depth_estimate=fixed.get("queue_depth_estimate", 0.3),
                 latency=fixed["latency"],
+                taker_fee=fixed.get("taker_fee", 0.0),
+                order_type=fixed.get("order_type", "post_only"),
             ),
             vol_risk_manager=vol_rm,
             requote_on_fill=True,
@@ -422,7 +424,10 @@ def run_single_day(
             short_gap_threshold=fixed.get("short_gap", 2.0),
             long_gap_threshold=fixed.get("long_gap", 30.0),
             tolerance_ticks=fixed.get("tolerance_ticks", 0.5),
+            tick_size=fixed["tick_size"],
             kappa_force_interval=fixed.get("kappa_force_interval", 60.0),
+            enable_online_kappa=fixed.get("enable_online_kappa", False),
+            data_gap_policy=fixed.get("data_gap_policy", "legacy"),
             verbose=False,
         )
 

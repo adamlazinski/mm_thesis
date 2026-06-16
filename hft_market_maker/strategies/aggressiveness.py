@@ -262,7 +262,8 @@ class InventoryUrgencyAS(AvellanedaStoikov):
         urgency_multiplier = np.exp(self.urgency_factor * inv_ratio ** 2)
         effective_gamma = self.gamma * urgency_multiplier
 
-        return mid - inventory * effective_gamma * (sigma ** 2) * t_remaining
+        sigma_price = sigma * mid
+        return mid - inventory * effective_gamma * (sigma_price ** 2) * t_remaining
 
 
 # ===========================================================================

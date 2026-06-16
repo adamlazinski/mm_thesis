@@ -12,6 +12,7 @@ from .strategies.aggressiveness import (
 )
 from .strategies.glft import GLFTMarketMaker
 from .strategies.shifted_glft import ShiftedGLFTMarketMaker
+from .strategies.shifted_glft_numerical import ShiftedGLFTNumerical
 from .strategies.vol_inventory import VolInventoryMarketMaker
 from .extensions.regime_detection import (
     RegimeDetector, RegimeAwareAS, Regime, RegimeFilter,
@@ -38,7 +39,7 @@ __all__ = [
     "AvellanedaStoikov", "QuoteDecision",
     "RuleBasedAggressiveness", "VolatilityScaledAS",
     "OFIAsymmetricAS", "InventoryUrgencyAS", "FullAggressivenessAS",
-    "GLFTMarketMaker", "ShiftedGLFTMarketMaker", "VolInventoryMarketMaker",
+    "GLFTMarketMaker", "ShiftedGLFTMarketMaker", "ShiftedGLFTNumerical", "VolInventoryMarketMaker",
     "RegimeDetector", "RegimeAwareAS", "Regime", "RegimeFilter",
     "OFIDirectedFilter", "OBIDirectedFilter",
     "VPINFilter", "HourFilter", "TradeSpikeFilter", "DailyLossLimit",

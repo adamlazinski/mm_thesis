@@ -28,7 +28,7 @@ from .kappa_estimator import KappaEstimator
 class MicrostructureStats:
     mid_price:     float = 0.0
     sigma:         float = 0.0
-    kappa_as:      float = 1.5    # AS fill-sensitivity (1/$)  ← primary kappa
+    kappa_as:      float = 1.5    # fill-distance sensitivity (inverse price)
     A_hat:         float = 2.0    # AS baseline fill intensity
     kappa_as_se:   float = float('inf')
     trades_per_sec:       float = 1.0   # background arrival rate (60s window)

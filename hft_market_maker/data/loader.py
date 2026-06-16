@@ -183,6 +183,13 @@ class DataLoader:
         if max_rows:
             quotes_df = quotes_df.head(max_rows)
 
+        trade_symbol = self._validate_symbol_column(trades_df, "trades")
+        quote_symbol = self._validate_symbol_column(quotes_df, "quotes")
+        if trade_symbol and quote_symbol and trade_symbol != quote_symbol:
+            raise ValueError(
+                f"CoinAPI symbol mismatch: trades={trade_symbol}, quotes={quote_symbol}"
+            )
+
         trades = self._parse_coinapi_trades(trades_df, timestamp_col)
         quotes = self._parse_coinapi_quotes(quotes_df, timestamp_col)
 
@@ -213,8 +220,14 @@ class DataLoader:
             df = df.head(max_rows)
         return self._parse_coinapi_quotes(df, timestamp_col)
 
-    def load_orderbook(self, path: str, timestamp_col: str = "time_exchange",
-                       max_rows=None):
+    def load_orderbook(
+        self,
+        path: str,
+        timestamp_col: str = "time_exchange",
+        max_rows=None,
+        expected_symbol: Optional[str] = None,
+        expected_market_type: Optional[str] = None,
+    ):
         """
         Load a CoinAPI orderbook snapshot parquet into a list of BookSnapshot objects.
         File naming convention: orderbooks_LINK_YYYY-MM-DD.parquet
@@ -223,6 +236,21 @@ class DataLoader:
         df = pd.read_parquet(path)
         if max_rows:
             df = df.head(max_rows)
+        symbol_id = self._validate_symbol_column(df, "order book")
+        if expected_symbol and symbol_id and f"_{expected_symbol.upper()}_" not in symbol_id:
+            raise ValueError(
+                f"Order-book symbol mismatch: expected {expected_symbol}, got {symbol_id}"
+            )
+        if expected_market_type and symbol_id:
+            expected_market_type = expected_market_type.upper()
+            if expected_market_type == "SPOT" and "_SPOT_" not in symbol_id:
+                raise ValueError(
+                    f"Order-book market mismatch: expected SPOT, got {symbol_id}"
+                )
+            if expected_market_type == "PERP" and "_PERP_" not in symbol_id:
+                raise ValueError(
+                    f"Order-book market mismatch: expected PERP, got {symbol_id}"
+                )
         ts = self._parse_coinapi_timestamps(df[timestamp_col])
         snapshots = []
         for i, (_, row) in enumerate(df.iterrows()):
@@ -230,6 +258,15 @@ class DataLoader:
             snap.timestamp = float(ts[i])
             snapshots.append(snap)
         return snapshots
+
+    @staticmethod
+    def _validate_symbol_column(df, label: str) -> Optional[str]:
+        if "symbol_id" not in df.columns or df.empty:
+            return None
+        symbols = df["symbol_id"].dropna().astype(str).unique()
+        if len(symbols) > 1:
+            raise ValueError(f"{label} contains multiple symbol_id values: {symbols[:5]}")
+        return str(symbols[0]) if len(symbols) == 1 else None
 
     def _parse_coinapi_trades(self, df, timestamp_col):
         ts = self._parse_coinapi_timestamps(df[timestamp_col])
