@@ -1,0 +1,52 @@
+LINK Apr-2026 spot_alpha TRIAGE sweep (queue_model=l2, queue_fraction=0.5, latency=10ms, requote=50ms), 5/30 days (stratified every 6th), spot_alpha in [0.0, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0]
+
+Days: ['2026-04-01', '2026-04-07', '2026-04-13', '2026-04-19', '2026-04-25']
+
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-01.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-01.parquet
+Loaded 74,399 trades and 1,843,201 quotes.
+  Trades: 1775001600.005 to 1775087996.381
+  Quotes: 1775001600.015 to 1775087999.773
+  Price range: 8.74 to 9.20
+  [1/5] 2026-04-01  a=0.0:+3.82  a=0.25:+3.82  a=0.5:+3.82  a=0.75:+9.23  a=1.0:+17.21  a=1.5:+39.30  a=2.0:+61.86  a=3.0:+78.06  a=5.0:+86.87
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-07.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-07.parquet
+Loaded 95,515 trades and 1,570,754 quotes.
+  Trades: 1775520000.147 to 1775606399.835
+  Quotes: 1775520000.022 to 1775606399.903
+  Price range: 8.57 to 9.42
+  [2/5] 2026-04-07  a=0.0:-8.55  a=0.25:-8.55  a=0.5:-8.55  a=0.75:+12.95  a=1.0:+31.81  a=1.5:+61.98  a=2.0:+70.55  a=3.0:+86.40  a=5.0:+92.98
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-13.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-13.parquet
+Loaded 73,244 trades and 1,240,848 quotes.
+  Trades: 1776038402.375 to 1776124799.460
+  Quotes: 1776038400.030 to 1776124799.582
+  Price range: 8.69 to 9.44
+  [3/5] 2026-04-13  a=0.0:-8.02  a=0.25:-8.02  a=0.5:-8.02  a=0.75:+3.58  a=1.0:+24.01  a=1.5:+53.36  a=2.0:+58.99  a=3.0:+65.42  a=5.0:+62.63
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-19.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-19.parquet
+Loaded 60,064 trades and 1,198,146 quotes.
+  Trades: 1776556807.089 to 1776643198.277
+  Quotes: 1776556800.210 to 1776643199.993
+  Price range: 9.00 to 9.38
+  [4/5] 2026-04-19  a=0.0:+0.90  a=0.25:+0.90  a=0.5:+0.90  a=0.75:+16.25  a=1.0:+33.08  a=1.5:+43.25  a=2.0:+53.48  a=3.0:+66.75  a=5.0:+65.69
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-25.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-25.parquet
+Loaded 19,367 trades and 749,013 quotes.
+  Trades: 1777075202.196 to 1777161552.599
+  Quotes: 1777075200.197 to 1777161599.762
+  Price range: 9.28 to 9.45
+  [5/5] 2026-04-25  a=0.0:+2.07  a=0.25:+2.07  a=0.5:+2.07  a=0.75:+10.13  a=1.0:+21.08  a=1.5:+27.03  a=2.0:+29.07  a=3.0:+29.17  a=5.0:+29.83
+
+ alpha      fee0   fee45bp       std  days_pos     fills  taker%
+  0.00   -1.9582   -1.9582    5.2549     60.0%    3449.4    0.0%
+  0.25   -1.9582   -1.9582    5.2549     60.0%    3449.4    0.0%
+  0.50   -1.9582   -1.9582    5.2549     60.0%    3449.4    0.0%
+  0.75   10.4267   10.4267    4.2085    100.0%    2238.4    0.0%
+  1.00   25.4395   25.4395    6.1256    100.0%    2061.4    0.0%
+  1.50   44.9824   44.9824   11.9720    100.0%    2102.6    0.0%
+  2.00   54.7909   54.7909   13.9920    100.0%    2323.2    0.0%
+  3.00   65.1611   65.1611   19.5732    100.0%    2627.2    0.0%
+  5.00   67.5985   67.5985   22.2276    100.0%    2887.6    0.0%
+
+Saved results to /Users/adamlazinski/Desktop/master2/experiments/73_spot_alpha_sweep_triage/results/spot_alpha_sweep_triage.json

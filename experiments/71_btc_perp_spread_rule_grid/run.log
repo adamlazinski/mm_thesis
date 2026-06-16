@@ -1,0 +1,47 @@
+BTC-PERP Apr-2026 spread-rule x skew grid (queue_model=l2, queue_fraction=0.5, latency=10ms, requote=50ms), 5 days, rules=['touch', 'as', 'constant'], skew=['baseline', 'spot1']
+
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_BTC_PERP_2026-04-01.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_BTC_PERP_2026-04-01.parquet
+Loaded 4,069,689 trades and 728,238 quotes.
+  Trades: 1775001600.049 to 1775087998.769
+  Quotes: 1775001600.071 to 1775087999.802
+  Price range: 67534.90 to 69288.00
+  [1/5] 2026-04-01  touch/baseline=-308.34  touch/spot1=-412.27  as/baseline=-309.02  as/spot1=-414.95  constant/baseline=-308.46  constant/spot1=-412.49
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_BTC_PERP_2026-04-02.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_BTC_PERP_2026-04-02.parquet
+Loaded 4,558,253 trades and 731,564 quotes.
+  Trades: 1775088000.308 to 1775174399.551
+  Quotes: 1775088000.006 to 1775174399.923
+  Price range: 65676.10 to 68639.10
+  [2/5] 2026-04-02  touch/baseline=-350.34  touch/spot1=-407.62  as/baseline=-350.37  as/spot1=-407.61  constant/baseline=-350.71  constant/spot1=-408.08
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_BTC_PERP_2026-04-03.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_BTC_PERP_2026-04-03.parquet
+Loaded 1,979,875 trades and 612,516 quotes.
+  Trades: 1775174400.121 to 1775260799.828
+  Quotes: 1775174400.025 to 1775260799.944
+  Price range: 66240.00 to 67350.00
+  [3/5] 2026-04-03  touch/baseline=-133.88  touch/spot1=-157.51  as/baseline=-134.13  as/spot1=-157.55  constant/baseline=-133.79  constant/spot1=-157.48
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_BTC_PERP_2026-04-04.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_BTC_PERP_2026-04-04.parquet
+Loaded 963,796 trades and 521,900 quotes.
+  Trades: 1775260801.255 to 1775347199.129
+  Quotes: 1775260800.046 to 1775347199.918
+  Price range: 66745.50 to 67523.80
+  [4/5] 2026-04-04  touch/baseline=-36.92  touch/spot1=-50.12  as/baseline=-36.98  as/spot1=-50.37  constant/baseline=-37.01  constant/spot1=-50.33
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_BTC_PERP_2026-04-05.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_BTC_PERP_2026-04-05.parquet
+Loaded 2,025,165 trades and 579,504 quotes.
+  Trades: 1775347202.730 to 1775433599.911
+  Quotes: 1775347200.226 to 1775433599.950
+  Price range: 66575.50 to 69108.00
+  [5/5] 2026-04-05  touch/baseline=-79.72  touch/spot1=-139.09  as/baseline=-79.91  as/spot1=-137.16  constant/baseline=-79.86  constant/spot1=-139.31
+
+      rule    variant      fee0   fee45bp       std  days_pos     fills  taker%
+     touch   baseline -181.8387 -181.8387  125.0003      0.0%   69938.6    0.0%
+     touch      spot1 -233.3216 -233.3216  148.7214      0.0%   60829.2    0.0%
+        as   baseline -182.0802 -182.0802  125.0835      0.0%   69890.6    0.0%
+        as      spot1 -233.5277 -233.5277  149.5488      0.0%   60983.8    0.0%
+  constant   baseline -181.9652 -181.9652  125.0849      0.0%   69990.4    0.0%
+  constant      spot1 -233.5381 -233.5381  148.8044      0.0%   60873.2    0.0%
+
+Saved results to /Users/adamlazinski/Desktop/master2/experiments/71_btc_perp_spread_rule_grid/results/btc_perp_spread_rule_grid.json

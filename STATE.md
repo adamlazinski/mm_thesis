@@ -1,6 +1,101 @@
 # Codebase State — HFT Market Making Thesis
-_Last updated: 2026-06-12 — see "Current Status" for what supersedes the 2026-05-16
-diagnostics below_
+_Last updated: 2026-06-16 (checkpoint after 10ms/LINK perp-signal arc, weekend engine work)_
+
+---
+
+## CHECKPOINT — 2026-06-16
+
+### Last clean commit
+`a8d18ae` — "Add thesis Chapters 1-3 drafts (Introduction, Theory, Data/Methodology)"
+- thesis_contributions.md: C1–C38 committed
+- thesis_theory.md, thesis_intro.md, thesis_data.md: initial chapter drafts
+- Engine: taker-on-arrival fix already committed in `cafc7ae` (L2 queue model baseline)
+
+### Weekend work (uncommitted — done, needs commit)
+
+**Engine additions** (new strategy classes, not the bug fixes in `cafc7ae`):
+- `hft_market_maker/strategies/forecast_as.py` (new): `ForecastAS` — A-S with XGBoost
+  1-second mid-price direction overlay (`forecast_alpha × tick × signal` reservation shift)
+- `TradeSpikeFilter` wrapper (halts quoting during 3× trade-rate spikes, cooldown period)
+- `DailyLossLimit` wrapper
+- `run_daily.py`: `forecast_as`, `pure_as_spike`, `forecast_as_spike` strategy names registered
+- `order_manager.py`: per-fill markout tracking added (needed for exp75 / C44 section E)
+- `fill_analysis.py`: calibration utilities, `fill_intensity_calibration.json` output
+- `l2_features.py`: minor L2 queue feature improvements
+
+**BTC experiments (all complete)**:
+- `exp49_zero_latency` — BTC pure_as, Jun 11–15 2025, latency=0 vs 0.1s (price-only fills)
+  Result: +$1.07/day (0ms) and +$0.24/day (0.1s) over 5 days — ARTIFACT REGIME (no queue_model)
+- `exp50_forecast_as` — BTC ForecastAS OOS test, Jun 23–27 2025, 5 variants
+  Result: XGBoost overlay adds nothing (vs baseline: -$0.22/day); spike filter alone halves
+  loss (-$46.67 → -$22.56 over 5 days); all 5 variants net negative OOS
+
+**Analytical/feasibility studies (all complete, written up as C31–C38 in thesis_contributions.md)**:
+- `exp51_crossing_intensity` — LINK + BTC fill-curve analysis with L2 conditioning (C25-area)
+- `exp52_link_classical_mm` — LINK Apr 2026, calibrated A-S 30-day run (feeds C28)
+- `exp53_link_spread_sweep` — LINK spread-rule grid
+- `exp54_link_perp_micro` — LINK spot↔perp microstructure
+- `exp55_taker_feasibility` — BTC OBI taker, latency sweep 10ms–500ms (C31):
+  OBI signal ~1 bps net (after 3.6bps fees) at 10ms, 100% days+ on JunJul2025 (30 days).
+  XGBoost model trained: `ml/models/xgb_taker_h10.pkl`
+- `exp56_lowfreq_mm` — LINK lowfreq MM, risk vs price requote policy (queue_model=l2)
+- `exp57_deep_reversion` — BTC/LINK conditional reversion analysis (C32)
+- `exp60_foresight_oracle` — LINK honest touch-quoter + perfect-foresight ceiling (C34):
+  Causal ~$2/day; 10s foresight ~$24/day; queue artifact $45–58/day
+- `exp63_shifted_glft_numerical` — BTC, HJB PDE two-component fill model (C38)
+- `exp64_glft_calibrated` — BTC, GLFT with calibrated A/kappa baseline (C38 ablation)
+
+### Today (this session, 2026-06-15/16 — uncommitted thesis text changes)
+
+**LINK perp-signal / 10ms latency arc (C39–C44):**
+- C39 (exp65): perp OBI/OFI cross-venue signal characterization — real but incremental
+- C40 (exp66): perp_obi as skew signal under artifact engine — null in artifact regime
+- C41 (exp67): perp toxicity spread-widening — null in artifact regime
+- C42 (exp68): **MAJOR FINDING** — L2-honest 10ms/50ms rerun on LINK Apr 2026:
+  - baseline: -$0.24/day (zero-profit equilibrium confirmed at 10ms)
+  - **spot_obi skew alpha=1: +$22.32/day, 30/30 days+ (100%), taker_pct=0%**
+  - obi/ret perp widening: null or worse
+- C43 (exp71): BTC-PERP same grid — uniformly -$182/day, spot1 makes it WORSE (-$233/day).
+  BTC fully arbitraged (relative tick ~70× smaller than LINK)
+- C44 (exp69/70/72/74/75): C42 robustness pass — all 3 caveats resolved:
+  - (A/B) queue_fraction flat on [0.1, 0.7], cliff at 0 (artifact regime boundary)
+  - (C) spread-rule axis inert (A-S formula collapses to constant at these params)
+  - (D) true optimum is **alpha≈4 at +$56.00/day, 100% days+**, not alpha=1
+  - (E) per-fill markouts confirm fill-QUALITY mechanism:
+    alpha=0: 54–63% adverse; alpha=1: 31–34%; **alpha=4: ~10% adverse**
+  - Only caveat (d) open: OOS validation (all from same 30-day LINK Apr 2026 window)
+
+**Theory addition:**
+- `thesis_theory.md` §5: Guilbaud & Pham (2013) model added (3 paragraphs) — spread as
+  finite Markov chain on tick multiples, `{B,B+}` priority control with `λ(B+,s)>λ(B,s)`,
+  QVI/IDE system with no closed form; forward-links to C42/C44
+
+**All changes written up in `thesis_contributions.md` (C39–C44) and `thesis_conclusions.md`**
+
+### What is uncommitted (to commit next)
+1. Engine additions: `forecast_as.py` (new), edits to `backtest.py`, `order_manager.py`,
+   `fill_analysis.py`, `l2_features.py`, `market_state.py`, `loader.py`, `aggressiveness.py`,
+   `avellaneda_stoikov.py`, `glft.py`, `scripts/run_daily.py`, `random_search.py`
+2. New experiments: exp49, exp50, exp52–57, exp60, exp63, exp64 (results + configs)
+3. Thesis text: C39–C44 additions to `thesis_contributions.md`, `thesis_conclusions.md`,
+   `thesis_theory.md` §5 (Guilbaud-Pham)
+4. Analysis artifacts: `analysis/fill_intensity_calibration.json`,
+   `experiments/55_taker_feasibility/analysis/`, `experiments/57_deep_reversion/analysis/`,
+   etc.
+
+### Open threads
+1. **C44 caveat (d) — OOS validation**: +$22.32/day (alpha=1) and +$56.00/day (alpha=4)
+   both from same 30-day LINK Apr 2026 window. Need a held-out window (different month
+   or different large-relative-tick asset). Natural next: rerun C42/44 on LINK Jun 2025.
+2. **BTC taker exploration** (exp55 followup): XGBoost 1s direction model trained, ~1 bps
+   net edge at 10ms OBI signal confirmed. Next: proper taker backtest or signal sweep.
+3. **Uncommitted commit**: the entire body above needs a single commit.
+
+---
+
+_Historical STATE.md content below (kept for reference) — superseded by checkpoint above_
+
+---
 
 ---
 

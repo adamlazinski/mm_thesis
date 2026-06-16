@@ -1,0 +1,222 @@
+LINK Apr-2026 LOW queue_fraction sweep for exp68/69's baseline/spot1 (queue_model=l2, latency=10ms, requote=50ms), 30 days, queue_fraction in [0.0, 0.1, 0.2]
+
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-01.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-01.parquet
+Loaded 74,399 trades and 1,843,201 quotes.
+  Trades: 1775001600.005 to 1775087996.381
+  Quotes: 1775001600.015 to 1775087999.773
+  Price range: 8.74 to 9.20
+  [1/30] 2026-04-01  baseline@0.0=+97.49  baseline@0.1=+4.09  baseline@0.2=+5.43  spot1@0.0=+107.81  spot1@0.1=+17.25  spot1@0.2=+17.94
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-02.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-02.parquet
+Loaded 87,668 trades and 2,047,147 quotes.
+  Trades: 1775088005.360 to 1775174378.165
+  Quotes: 1775088000.008 to 1775174399.849
+  Price range: 8.42 to 9.01
+  [2/30] 2026-04-02  baseline@0.0=+116.68  baseline@0.1=-8.75  baseline@0.2=-7.15  spot1@0.0=+141.82  spot1@0.1=+23.14  spot1@0.2=+27.41
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-03.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-03.parquet
+Loaded 31,715 trades and 981,966 quotes.
+  Trades: 1775174402.387 to 1775260768.518
+  Quotes: 1775174400.640 to 1775260799.796
+  Price range: 8.59 to 8.81
+  [3/30] 2026-04-03  baseline@0.0=+49.41  baseline@0.1=+1.76  baseline@0.2=-1.60  spot1@0.0=+57.11  spot1@0.1=+12.30  spot1@0.2=+10.99
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-04.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-04.parquet
+Loaded 17,736 trades and 650,508 quotes.
+  Trades: 1775260802.355 to 1775347165.173
+  Quotes: 1775260800.207 to 1775347199.479
+  Price range: 8.61 to 8.78
+  [4/30] 2026-04-04  baseline@0.0=+39.29  baseline@0.1=+0.12  baseline@0.2=-1.02  spot1@0.0=+43.33  spot1@0.1=+15.09  spot1@0.2=+14.58
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-05.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-05.parquet
+Loaded 31,065 trades and 829,227 quotes.
+  Trades: 1775347201.048 to 1775433591.554
+  Quotes: 1775347200.384 to 1775433599.339
+  Price range: 8.47 to 8.87
+  [5/30] 2026-04-05  baseline@0.0=+46.26  baseline@0.1=+7.45  baseline@0.2=+9.04  spot1@0.0=+50.68  spot1@0.1=+24.79  spot1@0.2=+27.13
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-06.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-06.parquet
+Loaded 72,303 trades and 1,507,964 quotes.
+  Trades: 1775433600.002 to 1775519989.165
+  Quotes: 1775433600.022 to 1775519999.884
+  Price range: 8.72 to 9.15
+  [6/30] 2026-04-06  baseline@0.0=+71.53  baseline@0.1=+0.66  baseline@0.2=+4.50  spot1@0.0=+89.34  spot1@0.1=+28.78  spot1@0.2=+31.93
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-07.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-07.parquet
+Loaded 95,515 trades and 1,570,754 quotes.
+  Trades: 1775520000.147 to 1775606399.835
+  Quotes: 1775520000.022 to 1775606399.903
+  Price range: 8.57 to 9.42
+  [7/30] 2026-04-07  baseline@0.0=+105.57  baseline@0.1=-14.95  baseline@0.2=-13.45  spot1@0.0=+127.39  spot1@0.1=+29.98  spot1@0.2=+29.63
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-08.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-08.parquet
+Loaded 70,274 trades and 1,536,502 quotes.
+  Trades: 1775606403.502 to 1775692799.053
+  Quotes: 1775606400.028 to 1775692799.649
+  Price range: 8.84 to 9.34
+  [8/30] 2026-04-08  baseline@0.0=+93.57  baseline@0.1=+8.95  baseline@0.2=+11.03  spot1@0.0=+106.12  spot1@0.1=+14.75  spot1@0.2=+14.96
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-09.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-09.parquet
+Loaded 73,630 trades and 1,430,911 quotes.
+  Trades: 1775692800.001 to 1775779198.568
+  Quotes: 1775692800.006 to 1775779198.697
+  Price range: 8.68 to 9.19
+  [9/30] 2026-04-09  baseline@0.0=+87.29  baseline@0.1=-6.40  baseline@0.2=-7.96  spot1@0.0=+106.57  spot1@0.1=+33.52  spot1@0.2=+33.18
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-10.parquet
+Loaded 50,812 trades and 1,149,103 quotes.
+  Trades: 1775779203.415 to 1775865592.604
+  Quotes: 1775779200.130 to 1775865599.949
+  Price range: 8.88 to 9.18
+  [10/30] 2026-04-10  baseline@0.0=+58.10  baseline@0.1=-3.73  baseline@0.2=-3.08  spot1@0.0=+68.95  spot1@0.1=+16.96  spot1@0.2=+17.11
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-11.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-11.parquet
+Loaded 40,284 trades and 765,763 quotes.
+  Trades: 1775865615.803 to 1775951884.428
+  Quotes: 1775865600.046 to 1775951999.187
+  Price range: 8.95 to 9.28
+  [11/30] 2026-04-11  baseline@0.0=+55.22  baseline@0.1=-6.60  baseline@0.2=-5.91  spot1@0.0=+65.82  spot1@0.1=+23.30  spot1@0.2=+24.57
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-12.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-12.parquet
+Loaded 49,038 trades and 948,036 quotes.
+  Trades: 1775952002.823 to 1776038394.979
+  Quotes: 1775952000.060 to 1776038399.695
+  Price range: 8.68 to 9.09
+  [12/30] 2026-04-12  baseline@0.0=+64.29  baseline@0.1=+0.32  baseline@0.2=+4.66  spot1@0.0=+77.02  spot1@0.1=+17.57  spot1@0.2=+18.79
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-13.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-13.parquet
+Loaded 73,244 trades and 1,240,848 quotes.
+  Trades: 1776038402.375 to 1776124799.460
+  Quotes: 1776038400.030 to 1776124799.582
+  Price range: 8.69 to 9.44
+  [13/30] 2026-04-13  baseline@0.0=+85.59  baseline@0.1=-8.33  baseline@0.2=-7.31  spot1@0.0=+94.47  spot1@0.1=+29.56  spot1@0.2=+26.21
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-14.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-14.parquet
+Loaded 71,295 trades and 1,268,251 quotes.
+  Trades: 1776124800.370 to 1776211197.528
+  Quotes: 1776124800.072 to 1776211199.343
+  Price range: 8.93 to 9.39
+  [14/30] 2026-04-14  baseline@0.0=+101.11  baseline@0.1=-1.15  baseline@0.2=-1.01  spot1@0.0=+100.27  spot1@0.1=+12.91  spot1@0.2=+10.22
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-15.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-15.parquet
+Loaded 50,089 trades and 1,181,594 quotes.
+  Trades: 1776211201.706 to 1776297593.867
+  Quotes: 1776211200.019 to 1776297599.349
+  Price range: 8.99 to 9.37
+  [15/30] 2026-04-15  baseline@0.0=+80.42  baseline@0.1=+10.03  baseline@0.2=+11.20  spot1@0.0=+79.89  spot1@0.1=+16.89  spot1@0.2=+15.60
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-16.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-16.parquet
+Loaded 86,994 trades and 1,640,830 quotes.
+  Trades: 1776297601.786 to 1776383994.877
+  Quotes: 1776297600.325 to 1776383999.928
+  Price range: 9.11 to 9.68
+  [16/30] 2026-04-16  baseline@0.0=+105.55  baseline@0.1=-18.19  baseline@0.2=-14.63  spot1@0.0=+109.61  spot1@0.1=+18.15  spot1@0.2=+18.03
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-17.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-17.parquet
+Loaded 83,080 trades and 1,646,276 quotes.
+  Trades: 1776384002.585 to 1776470395.194
+  Quotes: 1776384000.009 to 1776470399.917
+  Price range: 9.34 to 9.87
+  [17/30] 2026-04-17  baseline@0.0=+117.52  baseline@0.1=+7.40  baseline@0.2=+13.05  spot1@0.0=+142.33  spot1@0.1=+48.10  spot1@0.2=+50.90
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-18.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-18.parquet
+Loaded 48,072 trades and 1,169,590 quotes.
+  Trades: 1776470404.976 to 1776556785.200
+  Quotes: 1776470400.016 to 1776556799.977
+  Price range: 9.26 to 9.65
+  [18/30] 2026-04-18  baseline@0.0=+62.35  baseline@0.1=-3.86  baseline@0.2=-5.58  spot1@0.0=+71.82  spot1@0.1=+12.90  spot1@0.2=+13.54
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-19.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-19.parquet
+Loaded 60,064 trades and 1,198,146 quotes.
+  Trades: 1776556807.089 to 1776643198.277
+  Quotes: 1776556800.210 to 1776643199.993
+  Price range: 9.00 to 9.38
+  [19/30] 2026-04-19  baseline@0.0=+80.46  baseline@0.1=+2.51  baseline@0.2=+4.78  spot1@0.0=+90.22  spot1@0.1=+31.32  spot1@0.2=+32.14
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-20.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-20.parquet
+Loaded 64,745 trades and 1,413,573 quotes.
+  Trades: 1776643200.001 to 1776729598.772
+  Quotes: 1776643200.003 to 1776729599.830
+  Price range: 9.05 to 9.41
+  [20/30] 2026-04-20  baseline@0.0=+65.45  baseline@0.1=-3.33  baseline@0.2=+1.19  spot1@0.0=+82.91  spot1@0.1=+44.11  spot1@0.2=+42.13
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-21.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-21.parquet
+Loaded 59,708 trades and 1,285,669 quotes.
+  Trades: 1776729610.452 to 1776815959.198
+  Quotes: 1776729600.009 to 1776815996.676
+  Price range: 9.24 to 9.49
+  [21/30] 2026-04-21  baseline@0.0=+56.26  baseline@0.1=+8.26  baseline@0.2=+1.33  spot1@0.0=+81.58  spot1@0.1=+39.22  spot1@0.2=+38.69
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-22.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-22.parquet
+Loaded 48,879 trades and 1,411,588 quotes.
+  Trades: 1776816000.244 to 1776902398.877
+  Quotes: 1776816000.005 to 1776902399.970
+  Price range: 9.28 to 9.56
+  [22/30] 2026-04-22  baseline@0.0=+77.24  baseline@0.1=+0.61  baseline@0.2=-2.30  spot1@0.0=+80.29  spot1@0.1=+14.10  spot1@0.2=+13.90
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-23.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-23.parquet
+Loaded 52,849 trades and 1,267,478 quotes.
+  Trades: 1776902400.005 to 1776988698.485
+  Quotes: 1776902400.007 to 1776988799.603
+  Price range: 9.14 to 9.39
+  [23/30] 2026-04-23  baseline@0.0=+68.92  baseline@0.1=-5.52  baseline@0.2=+2.30  spot1@0.0=+77.60  spot1@0.1=+25.88  spot1@0.2=+29.75
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-24.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-24.parquet
+Loaded 32,670 trades and 1,077,479 quotes.
+  Trades: 1776988800.202 to 1777075199.241
+  Quotes: 1776988800.001 to 1777075199.850
+  Price range: 9.24 to 9.45
+  [24/30] 2026-04-24  baseline@0.0=+50.33  baseline@0.1=-2.57  baseline@0.2=-0.25  spot1@0.0=+63.43  spot1@0.1=+18.67  spot1@0.2=+18.36
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-25.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-25.parquet
+Loaded 19,367 trades and 749,013 quotes.
+  Trades: 1777075202.196 to 1777161552.599
+  Quotes: 1777075200.197 to 1777161599.762
+  Price range: 9.28 to 9.45
+  [25/30] 2026-04-25  baseline@0.0=+38.71  baseline@0.1=+1.76  baseline@0.2=+3.20  spot1@0.0=+42.86  spot1@0.1=+22.24  spot1@0.2=+20.84
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-26.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-26.parquet
+Loaded 30,812 trades and 1,026,204 quotes.
+  Trades: 1777161601.599 to 1777247990.584
+  Quotes: 1777161600.005 to 1777247999.850
+  Price range: 9.30 to 9.54
+  [26/30] 2026-04-26  baseline@0.0=+46.64  baseline@0.1=-4.42  baseline@0.2=-4.12  spot1@0.0=+48.06  spot1@0.1=+12.74  spot1@0.2=+12.20
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-27.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-27.parquet
+Loaded 44,673 trades and 1,071,588 quotes.
+  Trades: 1777248000.003 to 1777334388.467
+  Quotes: 1777248000.009 to 1777334399.999
+  Price range: 9.15 to 9.60
+  [27/30] 2026-04-27  baseline@0.0=+56.80  baseline@0.1=+2.29  baseline@0.2=+4.53  spot1@0.0=+67.04  spot1@0.1=+16.12  spot1@0.2=+15.69
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-28.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-28.parquet
+Loaded 29,044 trades and 981,951 quotes.
+  Trades: 1777334402.658 to 1777420785.129
+  Quotes: 1777334400.005 to 1777420797.110
+  Price range: 9.15 to 9.34
+  [28/30] 2026-04-28  baseline@0.0=+34.32  baseline@0.1=-4.68  baseline@0.2=-5.66  spot1@0.0=+37.40  spot1@0.1=+10.11  spot1@0.2=+8.15
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-29.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-29.parquet
+Loaded 52,294 trades and 1,217,584 quotes.
+  Trades: 1777420800.321 to 1777507195.213
+  Quotes: 1777420800.358 to 1777507199.607
+  Price range: 8.91 to 9.42
+  [29/30] 2026-04-29  baseline@0.0=+73.45  baseline@0.1=-16.14  baseline@0.2=-14.62  spot1@0.0=+78.30  spot1@0.1=+30.21  spot1@0.2=+31.07
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/real/trades_LINK_2026-04-30.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/real/quotes_LINK_2026-04-30.parquet
+Loaded 34,130 trades and 966,342 quotes.
+  Trades: 1777507202.698 to 1777593598.773
+  Quotes: 1777507200.012 to 1777593599.837
+  Price range: 9.02 to 9.19
+  [30/30] 2026-04-30  baseline@0.0=+57.64  baseline@0.1=+2.38  baseline@0.2=+1.29  spot1@0.0=+58.61  spot1@0.1=+14.20  spot1@0.2=+14.53
+
+   variant    qf      fee0   fee45bp       std  days_pos     fills  taker%
+  baseline  0.00   71.4487   71.4487   23.1755    100.0%   13785.9    0.0%
+  baseline  0.10   -1.6676   -1.6676    7.0287     50.0%    4136.7    0.0%
+  baseline  0.20   -0.6041   -0.6041    7.1520     46.7%    3722.6    0.0%
+     spot1  0.00   81.6224   81.6224   27.0710    100.0%    7216.3    0.0%
+     spot1  0.10   22.4951   22.4951    9.6660    100.0%    1904.5    0.0%
+     spot1  0.20   22.6725   22.6725   10.1979    100.0%    1753.8    0.0%
+
+Saved results to /Users/adamlazinski/Desktop/master2/experiments/72_queue_fraction_sweep_low/results/queue_fraction_sweep_low.json

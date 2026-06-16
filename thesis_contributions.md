@@ -1028,7 +1028,13 @@ position: resting deeper in the queue means filling only when the market has alr
 empirical counterpart of Moallemi & Yuan (2017); the result that orders which *do* fill from
 deep queue positions are more adversely selected is the adverse-selection/latency mechanism
 modeled by Lehalle & Mounjid (2017). The 2.4× optimism of first-touch fill models also
-explains why published crypto-MM backtests using that model report profits.
+explains why published crypto-MM backtests using that model report profits. Lalor &
+Swishchuk (2024, arXiv:2409.12721) document the same general failure mode on CME futures
+(ES/NQ/CL/ZN): simulating the price process and the order-fill process independently — i.e.
+"price touched my level" ⇒ "I was filled" — systematically overstates short-horizon MM
+performance, and folding adverse selection into the fill simulation brings results back down
+to realistic levels. The L2 queue model here, and the exp 62 marketable-on-arrival fix (C30),
+are this project's own instances of exactly that correction.
 
 ---
 
@@ -1805,25 +1811,854 @@ python experiments/59_synthetic_engine_validation/breakeven_sweep.py
 
 ---
 
+## 38. A Numerically-Solved HJB Model for the Two-Component Fill Intensity, and the Limits of the Linear-Decay Calibration
+
+**Motivation:** `shifted_glft.py` (deferred C03) patches the two-component fill intensity
+`λ(δ) = A_liq·e^{-κδ} + A_mom` into GLFT's closed-form formulas via `A_total = A_liq + A_mom`.
+That substitution is exact only when λ itself is a pure exponential — for the two-component
+form it silently changes `λ'(δ)`, which is exactly what the FOC for the optimal quote distance
+depends on. This contribution (a) extends the empirical fill-intensity calibration to test
+whether the "floor" should instead decay linearly to zero at some finite cutoff (the informal
+proposal was: "the floor can't be constant, or fills would continue until eternity — propose a
+slow linear decay"), and (b) replaces the closed-form hack with a numerically-solved HJB model,
+`ShiftedGLFTNumerical` (`hft_market_maker/strategies/shifted_glft_numerical.py`), valid for
+*any* λ(δ), not just exponential. `shifted_glft.py` itself is left untouched.
+
+**Part A — does the data support a finite linear-decay cutoff?**
+`scripts/calibrate_fill_intensity.py` refits
+
+    λ(δ) = A_liq·e^{-κδ} + max(a - b·δ, 0)
+
+against the constant-floor model `λ(δ) = A_liq·e^{-κδ} + A_floor`, using survival-based hazard
+MLE (`fit_exponential_hazard` — correctly handles right-censored orders via `λ̂ =
+n_events/Σ observed_time`) over δ ∈ {0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 7.5, 10, 15, 20, 30, 50, 75,
+100} ticks, across four days (2025-05-13, 2025-05-20, 2025-06-15, 2025-07-05).
+
+Result: **b ≈ 0 on all four days** (aggregate mean and median both round to 0.00000, range
+[0.00000, 0.00000] to 5 d.p.), i.e. an implied cutoff `a/b → ∞`. The linear-decay model is
+AIC-preferred over the constant floor on two of the four days (Δaic ≈ 31), but only because the
+extra degree of freedom lets `(A_liq, κ, a)` fit the near-touch exponential decay slightly
+better — not because a finite cutoff is detected. **Within 0.5–100 ticks, the toxic/momentum
+floor is statistically indistinguishable from a true constant.** Aggregate linear-decay fit:
+`A_liq=4.866/sec, κ=2.388/tick, a=0.0871/sec, r²=0.992`
+(`analysis/fill_intensity_calibration.json`).
+
+**Part B — `ShiftedGLFTNumerical`: solving the HJB for general λ(δ).** With the standard CARA
+ansatz `u(t,x,s,q) = -e^{-γ(x+qs)}·e^{-γh_q(t)}`, the HJB reduces — for *any* λ(δ) — to a
+coupled ODE system in `(t,q)`:
+
+    h_q'(t) = ½σ_$²γq² − (1/γ)[g*(h_{q+1}-h_q) + g*(h_{q-1}-h_q)]
+    g*(Δh) = sup_{δ≥0} λ(δ)·(1 - e^{-γ(δ+Δh)})
+
+with terminal condition `h_q(T)=0` for all q — no liquidation penalty, matching the
+`total_pnl = cash + inventory·last_mid` mark-to-market convention. The sup is found via Newton's
+method on the FOC `F(δ) = λ'(δ)(1-z) + γλ(δ)z = 0`, warm-started from the pure-exponential
+closed form `δ* = (1/γ)ln(1+γ/κ) - Δh`. At `Δh=0` this is exactly
+`GLFTMarketMaker.optimal_half_spread`'s adverse-selection term `(1/γ)ln(1+γ/κ)`, and Newton
+reproduces it to floating-point precision when `a=b=0` — the FOC is satisfied identically at
+the warm start in that limit (see `tests/test_shifted_glft_numerical.py::FOCSolverTests`). The
+PDE is integrated by stepping `τ=T-t` forward via explicit Euler over a reflecting-boundary
+inventory grid (`q_max = ⌈max_inventory/order_size⌉ + q_buffer`); `h_q(τ)` grows at a
+q-independent linear rate, so `Δh_q=h_{q+1}-h_q` converges to a stationary value — the
+`τ=horizon` slice is the ergodic policy, exactly as GLFT's closed form is the ergodic
+(infinite-horizon) solution for the exponential case. PDE solutions are cached on log-spaced
+`σ_$` buckets (and `A_liq` buckets, if `kappa_from_stats=True`).
+
+**Part C — why the default `b` is not 0, despite Part A.** With `b=0`, `g(δ;Δh)→a` as `δ→∞`
+(approached, never attained). For the calibrated `(A_liq=4.87, κ=239/$, a=0.0871, γ=30)` this is
+harmless — the near-touch local max of `g` (≈0.22) exceeds `a` (≈0.087), so the global sup is
+attained at a finite `δ*≈0.5` ticks regardless. But this is parameter-dependent: if `a` were
+ever larger relative to `A_liq/κ/γ` — a different instrument, a different regime, or a
+`kappa_from_stats`-shrunk `A_liq` — `g` could become *monotonically increasing* toward `a` with
+no finite maximizer, and Newton would run off toward an arbitrary numerical bound rather than a
+true optimum. This is the formal version of "if the floor never decays, the optimal quote is
+infinitely wide" — consistent with neither the math (no argmax exists) nor reality (BTC doesn't
+move $billions in the time an order is live). A finite cutoff fixes this unconditionally:
+`λ(δ)→0 ⟹ g(δ)→0` as `δ→∞`, so a finite global maximizer is guaranteed for *any*
+`(A_liq,κ,a,γ)`. The default `b = a/1000` (cutoff = 1000 ticks = $10 ≈ 1bps on $100k BTC, 10×
+past the calibrated range) is a pure tail regularizer: `e^{-κ·1000ticks}=e^{-2390}≈0`, so it
+cannot move the near-touch optimum (verified by
+`test_thousand_tick_cutoff_is_noop_near_the_touch`).
+
+**Part D — an overflow bug, its fix, and the PDE-vs-closed-form gap on real data.**
+The first solve against real σ_$ revealed that `_solve` overflows to `H(τ)=-1.06e301`
+(uniform across all `q`) for σ_$ above the 10th percentile of real BTC volatility, silently
+freezing the solver at the σ=0 answer (0.412 ticks) for every higher-vol input. Root cause:
+`_delta_max` (the Newton search-domain bound in `_solve_foc`) defaulted to
+`max(50/κ, 100·tick) = $1 = 100` ticks — *below* the cutoff `a/b = $10 = 1000` ticks. For `Δh`
+whose true `g*`-maximizer lies beyond `_delta_max`, Newton clips `δ` to `_delta_max`, where
+`λ($1)>0` still, so `g($1;Δh)=λ($1)(1-e^{-γ($1+Δh)})` blows up exponentially as `|Δh|→∞`
+instead of `→0`. This fed into `H(τ)`'s RHS and drove the uniform `-1.06e301` within ~2 Euler
+steps. **Fix:** `_delta_max = max(50/κ, 100·tick, a/b)`. At `δ=cutoff`, `λ=λ'=λ''=0` ⟹ `F=F'=0`
+⟹ Newton is stuck (by construction) at `g*(cutoff;Δh)=0` for *any* `Δh` — the Part B
+boundedness theorem (`g*(Δh)∈[0,A_liq+a]` ∀Δh, since `λ(cutoff)=0`) is now reachable. All 29
+unit tests pass; `scripts/debug_pde.py` confirms `H(τ)` now grows smoothly/linearly in `τ` at
+every tested σ_$.
+
+Re-running against the realised σ_$ distribution of BTC/USDT 2025-05-13
+(`scripts/check_shifted_glft_numerical.py`), same `(γ,κ,A_liq,a)=(30,239,4.87,0.0871)` for
+all three models:
+
+| σ_$ percentile | σ_$ | PDE half-spread (ticks) | GLFT (ticks) | ShiftedGLFT (ticks) |
+|---|---|---|---|---|
+| 10th | 0.0022  | 0.412 | 0.42   | 236.8     |
+| 25th | 0.1205  | 0.413 | 1.56   | 12,651.6  |
+| 50th | 1.2352  | 0.424 | 12.31  | 129,688.5 |
+| 75th | 4.0352  | 0.455 | 39.31  | 423,674.0 |
+| 90th | 7.3737  | 0.492 | 71.51  | 774,201.3 |
+| 99th | 15.389  | 0.596 | 148.82 | 1,615,754.0 |
+
+Across the full empirical range — the 99th-percentile σ_$ is 7,000× the 10th — the PDE
+half-spread moves only **0.41→0.60 ticks**, independently reproducing the empirically observed
+~1-tick BTC/USDT market spread (CLAUDE.md), while GLFT's closed form widens 350× and
+ShiftedGLFT's `A_total` patch diverges to 1.6M ticks — the ill-conditioning already flagged for
+`shifted_glft.py` (deferred C03) is visible at *every* σ_$ above the 10th percentile, not just
+in extreme cases. Inventory skew at `q=±20` lots (max inventory) at median σ_$: PDE ±0.46 ticks
+≈ GLFT's ±0.48 ticks (ShiftedGLFT's ±0.04 ticks reflects the same ill-conditioning). The PDE's
+well-posedness (Part C) and its agreement with the observed market spread are independent lines
+of evidence for the same conclusion: the regularized numerical model, not the closed-form
+`A_total` patch, is the economically sound member of this family.
+
+**Aside — why `g*(Δh)`, not `λ(δ)·δ`, is the right myopic objective.** Dropping risk-aversion
+(γ→0) suggests a simpler objective: maximize expected profit per unit time,
+`δ* = argmax_{δ≥0} λ(δ)·δ`. For the calibrated parameters this has a closed form
+(`scripts/myopic_objective.py`, confirmed to 6 d.p.): the exponential piece peaks at
+`δ=1/κ≈0.42` ticks (`f=A_liq/(κe)≈0.0075`), but the **floor piece dominates globally** at
+`δ=a/(2b)=cutoff/2=500` ticks (`f=a²/(4b)≈0.2177`) — **29×** larger. Taken at face value this
+objective recommends quoting 500 ticks ($5) from mid, absurd for a 1-tick-spread asset. The
+flaw: `λ(δ)·δ` prices every fill at distance `δ` as a clean `+δ` profit, but the floor term
+`a-bδ` *is* the momentum/toxic-flow component (Contribution 6) — a fill there means the
+reference price already moved `~δ` toward the quote, so its true expected mark-to-market is
+≈0, not `+δ`. `g*(Δh)=λ(δ)(1-e^{-γ(δ+Δh)})` has no such flaw: it rewards `λ(δ)` directly
+(weighted by `1-e^{-γ(δ+Δh)}∈[0,1]`, never by `δ`), so `g*(cutoff)=0` because `λ(cutoff)=0`,
+not via any `δ`-penalty. A "simpler" risk-neutral objective is therefore not simpler to get
+*right* for a fill curve with a momentum floor — it would need its own adverse-selection
+correction, which CARA's `(1-e^{-γ·})` weighting already provides.
+
+**Closing synthesis.** Stepping back from the mechanics: Part A found `b≈0` on all four
+calibration days — the linear-decay floor is statistically indistinguishable from a constant —
+so the cutoff `a/b`, and anything computed from it, is *empirically unidentified*, not a
+calibrated number. The myopic objective's `δ*=a/(2b)=cutoff/2≈500` ticks is exactly such a
+quantity: even taken at face value, it lands deep inside the region Contribution 32 already
+showed is a monotonic adverse-selection sink (reversion vanishes by ~50 ticks and the left tail
+explodes beyond it), so the "simpler" objective's recommendation would be a guaranteed loser
+even if the parameter were real. The two-component model is mathematically well-posed (Parts
+B–C — consistent with the general existence/characterization results for this class of HJB
+market-making problem in Guéant (2017)) and empirically reproduces the observed ~1-tick
+spread (Part D's table) — a genuine, if modest, contribution — but it opens no new edge: the part of the model that looks "interesting"
+(the floor/cutoff) is exactly the part the data cannot pin down, and the one place a literal
+reading of it points (deep, wide quotes) is a region this thesis already closed.
+
+**Part E — backtest ablation: PDE vs closed-form GLFT at the Part A calibration.** Two 11-day
+backtests (2025-05-13→2025-05-24, 2025-05-23 skipped — no quote file) at the identical Part A
+calibration `(γ,κ,A_liq,a)=(30,239,4.87,0.0871)`, `min_spread_bps=0` (Part D's BTC-appropriate
+setting), differing only in the quoting model: `experiments/63_shifted_glft_numerical/` =
+`ShiftedGLFTNumerical` (the PDE), `experiments/64_glft_calibrated/` = `GLFTMarketMaker` closed
+form (the σ-sensitive widening curve from Part D's table).
+
+| | exp 63 (PDE) | exp 64 (GLFT closed form) |
+|---|---|---|
+| Total PnL | -$2,693.51 | -$2,646.47 |
+| Mean daily PnL | -$244.86 | -$240.59 |
+| Std daily PnL | $70.25 | $79.92 |
+| Daily Sharpe (unann.) | -3.486 | -3.010 |
+| Days profitable | 0/11 (0%) | 0/11 (0%) |
+| Total fills | 2,787,780 | 1,345,243 |
+| Avg fill rate | 141.3% | 52.9% |
+| Avg spread quoted | 0.01 bps | 0.05 bps |
+
+The PDE quotes roughly 5× tighter on average (consistent with Part D's 0.41–0.60 vs 0.42–150
+tick range across the σ_$ distribution) and fills ~2.1× more often (>100% fill rate implies
+rapid requote-and-refill cycling right at the touch). None of that converts into PnL: total PnL
+is **$47 more negative** for the PDE (-1.8%), and both runs land at essentially the same
+≈-$240/day, 0/11 days profitable. The lower daily-PnL std for the PDE (\$70 vs \$80) makes its
+Sharpe *more* negative (-3.486 vs -3.010) — it is more *reliably* unprofitable, not less.
+
+This is exactly the queue-priority/adverse-selection mechanism from C29/C30/C32: quoting closer
+to the touch (PDE) buys more fills, but each one is more exposed to adverse selection and none
+of them carry the inside-spread queue priority the corrected engine no longer grants — so more
+fills at a tighter spread nets to the same (or a slightly worse) loss. **Results don't change,
+conclusions don't change**: the PDE's realism gain (Part D) and the closed form's widening
+defect both wash out at the PnL level, exactly as the Closing synthesis above anticipated.
+
+**Part F — markout-path evidence: fills sit exactly where the market is about to move
+against the new position.** Using the same exp 64 `_view.parquet` files as Part E (11
+days, ~0.6s quote-log resolution), detect fills via Δinventory (±0.001 BTC = a bid or ask
+fill) — 255,897 fills total (129,478 buy-side / bid hit, 126,419 sell-side / ask hit). For
+each fill, track the forward mid-price path E[mid(t+k)−mid(t)] for k=1..60 steps (0.6s–36s)
+and the trailing-60s order-flow imbalance (OFI) at the fill instant, against the
+unconditional (all-steps) baseline (`scripts/adverse_selection_at_fills.py`):
+
+| seconds after fill | after buy fill (now +0.001 BTC) | after sell fill (now −0.001 BTC) | unconditional baseline |
+|---|---|---|---|
+| 0.6  | −$1.29 | +$1.44 | +$0.01 |
+| 1.2  | −$1.91 | +$2.19 | +$0.01 |
+| 3.0  | −$2.88 | +$3.39 | +$0.04 |
+| 6.0  | −$3.63 | +$4.27 | +$0.07 |
+| 12.0 | −$4.01 | +$5.01 | +$0.15 |
+| 24.0 | −$4.17 | +$5.44 | +$0.29 |
+| 36.0 | −$4.08 | +$5.55 | +$0.44 |
+
+In both directions the mid moves against the position the fill just created — 100–300× the
+unconditional drift at the shortest horizon — and the effect persists (does not mean-revert)
+out to 36s. On the 0.001 BTC clip just traded this is −$0.0013/−$0.0014 at 0.6s, growing to
+−$0.0041/−$0.0055 by 36s (buy/sell). The strategy's average captured half-spread at this
+calibration is ≈0.025bps of ≈$103k ≈ $0.00026 per clip, so the adverse-selection cost per
+fill is **≈5× the spread revenue at 0.6s and ≈16–20× by 36s**.
+
+This reproduces C12's `avg_markout_bps`/`pct_adverse_fills` metrics on exp 64 itself (−0.56
+to −0.81bps, 63–80% adverse fills across the 11 days) — same sign, same order of magnitude —
+but traces it out as a path rather than a single 1s snapshot, and converts it into a direct
+ratio against the spread revenue per fill.
+
+OFI at fill time: sell fills cluster on positive OFI (mean +0.046 vs −0.033 unconditional,
+P(OFI>0)=54% vs 47.7%) — taker buying pressure is elevated exactly when our ask gets hit.
+Buy fills show no analogous shift in the 60s-trailing OFI (−0.025 vs −0.033) — the 60s
+window is too slow to resolve the sub-second dynamics the markout path captures directly.
+
+**Synthesis.** This is the tick-level mechanism behind C30's queue-priority verdict and
+C33's zero-profit equilibrium: expected PnL isn't "zero on average over the dataset" in some
+abstract sense — every individual fill carries a visible, growing adverse drift that dwarfs
+the spread it earns. The corrected engine (C29) removed the free queue priority that let the
+broken fill model harvest these same fills without paying for them; Part F shows what each
+of those fills actually costs once the queue model is honest.
+
+**Note on flow-composition inference.** Barucci, Mathieu & Sánchez-Betancourt (2025,
+arXiv:2501.03658) argue a market maker can stay profitable despite informed flow *if* it can
+infer the prevailing mix of informed/uninformed/"fad" flow from observables. The OFI
+asymmetry above (a detectable shift for sell fills, none for buy fills) is a small-scale
+instance of exactly such an inferable signal — a follow-up check (conditioning the markout
+path on OFI quintile at fill time, both sides) found the adverse markout shrinks somewhat in
+the most favorable quintile but never changes sign. Part G's magnitude result (ζ(δ*₀) exceeds
+δ*₀ by 1–3 orders of magnitude) sets the bar for what "inferring the mix" would need to buy:
+not a shift in the markout distribution, but cancelling nearly all of it.
+
+**Part G — the paper's own first-order correction, calibrated to exp 64: the correction term
+dwarfs δ*₀ by 1–3 orders of magnitude.** Barzykin, Bergault, Guéant & Lemmel (2025,
+arXiv:2508.20225) model adverse selection as a deterministic reference-price jump ζ(δ)≥0
+triggered by the market maker's own fill at distance δ from mid, and derive a first-order
+(small-ε) correction to GLFT's optimal half-spread. For ζ(δ)=α·e^(βδ), re-deriving from the
+GLFT FOC `F(δ)=λ'(δ)[1−e^{−γ(δ+Δθ)}]+γλ(δ)e^{−γ(δ+Δθ)}=0` by perturbing the fill-exponent
+`δ→δ−(q+1)ζ(δ)` and applying the implicit function theorem at ε=0 gives:
+
+  `δ*₁(q) = δ*₀ + (q+1)·(1−β/(κ+γ))·ζ(δ*₀)`
+
+with `δ*₀=(1/γ)ln(1+γ/κ)` — exactly GLFT's own AS term, recovered at q=0, ζ=0 (a passing sanity
+check on the derivation).
+
+`scripts/calibrate_zeta_glft_correction.py` re-detects the same 255,856 fills as Part F in
+exp 64's 11-day `_view.parquet` set, now also recording `δ=(ask−bid)/2` (the quoted half-spread
+— resting distance from mid — at fill time) alongside the forward markout `ζ_obs=E[markout|fill]`
+at 0.6s and 12s. At exp 64's calibration (`γ=30, κ=239/$`), `δ*₀=$0.003942` (0.394 ticks),
+matching Part D's σ→0 limit (0.412 ticks). Evaluating the q=0 correction
+`(1−β/(κ+γ))·ζ(δ*₀)` four ways:
+
+| ζ(δ*₀) estimate | horizon | correction `(1−β/(κ+γ))·ζ(δ*₀)` | ÷ δ*₀ |
+|---|---|---|---|
+| **Direct** — lowest-δ quantile bin, δ≈0.39t≈δ*₀, n=74,284, no extrapolation | 0.6s | $0.1259 | **32.0×** |
+| **Direct** — same bin | 12s | $0.8584 | **217.8×** |
+| Fitted `α·e^(βδ)` (β=1.238/$, R²=0.42), evaluated at δ*₀ | 0.6s | $0.5966 | 151.4× |
+| Pooled mean over all fills (β=0 / "slow signal" bound) | 0.6s | $1.3612 | 345.4× |
+| Pooled mean over all fills (β=0 / "slow signal" bound) | 12s | $4.5030 | 1,142.4× |
+
+The "direct" row is the most defensible: these 74,284 fills (29% of the sample) were quoted at
+δ almost exactly equal to δ*₀, so ζ(δ*₀) is read off directly rather than extrapolated from a
+fitted exponential whose β is partly confounded with the volatility regime (in exp 64,
+`kappa_from_stats=false` makes δ a deterministic function of σ_$ — Part D's table — so δ and σ
+are collinear across the bins). Even this most conservative number is **32×** the baseline at
+0.6s and **218×** at 12s. Since `δ*₁=δ*₀+correction` and the correction already exceeds δ*₀ by
+1–3 orders of magnitude in every row, `δ*₁≈correction` and `δ*₁/δ*₀≈(÷δ*₀ above)+1` — the `+1`
+is immaterial.
+
+**Synthesis.** The paper's correction is a first-order Taylor expansion, valid when `ε`
+(loosely, `ζ/δ*₀`) is small. Here it is not small by any measure — the correction term computed
+from this market's own fills is **larger than the entire baseline GLFT AS half-spread by 1–3
+orders of magnitude**, even using the most direct, least-extrapolated estimate. This is a
+third, independent confirmation of C30/C33's zero-profit verdict, now from inside the cited
+paper's own diagnostic: not merely "GLFT's spread doesn't cover the adverse-selection cost we
+measure" (Part F), but "the correction GLFT's own extension proposes for that cost is itself
+1–3 orders of magnitude larger than GLFT's existing AS term" — i.e. by this framework's own
+small-ε criterion, this market is far outside the regime in which GLFT (corrected or not) is a
+sensible local approximation. A market maker who actually priced in the measured ζ(δ*₀) would
+have to quote at a half-spread 30–200× wider than δ*₀ — i.e. roughly 12–86 ticks, where the
+calibrated fill intensity `λ(δ)=A_liq·e^{−κδ}` (κ=2.39/tick) is essentially zero
+(`e^{−2.39×12.6}≈9e-14`): the liquidity-driven fill channel vanishes entirely, leaving only the
+momentum floor. The paper's framework, taken at its own word on this data, points to the same
+corner as C29/C30/C33: honest pricing of adverse selection collapses toward zero
+(liquidity-driven) activity, not toward a wider-but-still-profitable quote.
+
+**Status:** `ShiftedGLFTNumerical` is implemented, unit-tested (29 tests total, 14 on this
+module), numerically validated against the realised BTC σ_$ distribution (Part D), registered
+in `make_strategy()` as `"shifted_glft_numerical"`, and run as an 11-day backtest ablation
+against the closed-form GLFT at the identical calibration (Part E). The PDE-vs-closed-form
+spread gap (Part D, 0.41–0.60 vs 0.42–150 ticks) does not translate into a PnL gap: both are
+uniformly unprofitable, 0/11 days, at essentially the same ≈-$240/day, with the PDE marginally
+worse despite ~2.1× the fill volume. This is the experimental confirmation of the Closing
+synthesis above — the two-component model is mathematically sound and empirically realistic
+(Part D) but opens no new edge (Part E). `min_spread_bps≈0` (relying on the existing 1-tick
+post-rounding floor in `compute_quotes`) is the BTC-appropriate setting and was used throughout
+Parts D–E; `08_shifted_glft`'s `min_spread_bps=0.5` (≈259-tick half-spread floor at BTC's price
+level) would have dominated the PDE's ~0.5-tick economic optimum entirely. Part F traces the
+per-fill mechanism behind both runs' losses directly on exp 64: a markout path showing the mid
+moves against every fill by ≈5–20× the spread it earns, persisting (not reverting) out to 36s.
+Part G applies Barzykin/Bergault/Guéant/Lemmel (2025)'s first-order adverse-selection
+correction to this same calibration: the correction term itself is 32–1,142× larger than
+GLFT's baseline AS half-spread δ*₀, depending on estimator — a third, independent confirmation
+of the zero-profit verdict from inside that paper's own small-ε framework.
+
+Reproduce:
+```
+python scripts/calibrate_fill_intensity.py
+python -m unittest tests.test_shifted_glft_numerical
+python scripts/check_shifted_glft_numerical.py [DATE]
+python scripts/debug_pde.py
+python scripts/myopic_objective.py
+python scripts/run_daily.py --config experiments/63_shifted_glft_numerical/config.json
+python scripts/run_daily.py --config experiments/63_shifted_glft_numerical/config.json --aggregate
+python scripts/run_daily.py --config experiments/64_glft_calibrated/config.json
+python scripts/run_daily.py --config experiments/64_glft_calibrated/config.json --aggregate
+python scripts/adverse_selection_at_fills.py
+python scripts/calibrate_zeta_glft_correction.py
+```
+
+---
+
+## 39. Perp Order Flow as a Cross-Venue Signal for Spot: Real, Mostly-Incremental, but Weak and Slow-Building
+
+**Motivation:** C36 closed the cross-venue *lead-lag* door — spot↔perp returns are contemporaneous
+(θ=0), so "trade spot on perp's lead" has no foundation. The remaining open question is whether
+perp order-flow signals (OBI, OFI) carry information about SPOT's near-term forward returns that
+is INCREMENTAL over spot's own order flow — a same-timestamp cross-venue read that could feed spot
+quoting/skew without requiring any timing edge. LINK April 2026, 30 overlapping spot+perp days.
+(See `experiments/65_spot_perp_signal/`.)
+
+**1s-grid characterization** (`characterize_perp_signal.py`, 2.59M pooled rows).
+
+(a) Own-venue IC — corr(signal, own-venue fwd log-return):
+
+| horizon | spot_obi | spot_ofi | perp_obi | perp_ofi |
+|---|---|---|---|---|
+| 1s | 0.207 | 0.044 | 0.204 | 0.062 |
+| 5s | 0.323 | 0.007 | 0.192 | 0.055 |
+| 10s | 0.361 | -0.005 | 0.161 | 0.041 |
+| 30s | 0.361 | -0.013 | 0.102 | 0.025 |
+| 60s | 0.310 | -0.012 | 0.073 | 0.014 |
+
+spot_obi's IC builds to a broad 10-30s peak (~0.36, consistent with C22's 0.20-0.36 range);
+perp_obi's own-venue IC peaks immediately at 1s (~0.20) and decays monotonically — the perp,
+being the tight/liquid/BTC-like venue (C36), digests its own OBI signal faster.
+
+(b) Cross-venue IC — corr(PERP signal, SPOT fwd log-return), the core question:
+
+| horizon | perp_obi | perp_ofi |
+|---|---|---|
+| 1s | 0.044 | 0.032 |
+| 5s | 0.061 | 0.031 |
+| 10s | 0.063 | 0.030 |
+| 30s | 0.055 | 0.031 |
+| 60s | 0.047 | 0.027 |
+
+perp_obi vs spot_fwd peaks around 5-10s at ~0.06 — about a fifth to a third of spot_obi's own IC
+at the same horizon (5s: 0.061 vs 0.323).
+
+(c) Redundancy — corr(spot_signal, perp_signal): **obi = 0.036, ofi = 0.258**. perp_obi is nearly
+orthogonal to spot_obi; perp_ofi and spot_ofi share a substantial common component (both reflect
+aggregate signed trade flow, plausibly a shared market-wide factor).
+
+(d) Incremental info — corr(resid[perp_signal ~ spot_signal], spot_fwd_ret):
+
+| horizon | resid_obi | resid_ofi |
+|---|---|---|
+| 1s | 0.037 | 0.022 |
+| 5s | 0.050 | 0.030 |
+| 10s | 0.050 | 0.033 |
+| 30s | 0.042 | 0.036 |
+| 60s | 0.036 | 0.031 |
+
+Because redundancy(obi) ≈ 0.036 is so low, resid_obi ≈ raw perp_obi_vs_spot_fwd — almost ALL of
+perp_obi's cross-venue correlation with spot forward returns is incremental over spot_obi.
+perp_ofi's incremental info is slightly below its raw IC, reflecting the higher obi/ofi redundancy.
+
+**Sub-second decomposition** (`characterize_perp_signal_10ms.py`, 10ms grid, 259.2M obs via exact
+single-pass accumulators — perp quotes remain ~1Hz step functions, but spot's reaction is now
+resolved at ~10-50ms instead of averaged into the next full second):
+
+| horizon | spot_obi_vs_spot_fwd | perp_obi_vs_spot_fwd (cross-venue) |
+|---|---|---|
+| 10ms | 0.032 | 0.007 |
+| 50ms | 0.066 | 0.016 |
+| 100ms | 0.088 | 0.023 |
+| 250ms | 0.126 | 0.033 |
+| 500ms | 0.163 | 0.044 |
+| 1s | 0.207 | 0.054 |
+
+Both ICs grow monotonically and smoothly from 10ms to 1s — there is NO sub-second spike or
+"first-mover" jump in the cross-venue edge; it builds gradually over multiple seconds, exactly as
+the 1s grid suggested. redundancy(obi) at the 10ms grid = 0.0387, essentially identical to the 1s
+grid's 0.0359 — a stable property, not a sampling artifact.
+
+**Verdict.** perp_obi carries a real, almost-fully-incremental, but small (IC ~0.04-0.06, peaking
+5-10s) same-timestamp cross-venue signal for spot forward returns — about a fifth of spot's own
+OBI signal at the same horizon, and slow to build (no exploitable sub-second component). This sets
+up C40/C41's tests of whether this small incremental edge can be operationalized as a skew input
+or a defensive-widening trigger.
+
+Reproduce:
+```
+python experiments/65_spot_perp_signal/characterize_perp_signal.py
+python experiments/65_spot_perp_signal/characterize_perp_signal_10ms.py
+```
+
+---
+
+## 40. perp_obi as a Secondary Skew Term Dilutes an Already Near-Optimal Spot-OBI Skew
+
+**Motivation:** C39 found perp_obi carries a real, mostly-incremental (redundancy ~0.04 with
+spot_obi) cross-venue IC (~0.04-0.06) for spot forward returns. C22 found spot_obi itself has
+IC~0.20-0.36, but exp45 (pre-engine-fix) found a SYMMETRIC OBI-based reservation-price shift HURTS
+— it doubles fills but lowers per-fill quality, leaving the "fade vs lean" sign question open.
+exp66 reproduces the spot_obi-only cell from scratch on the corrected engine and tests whether
+adding perp_obi as a second skew term changes the picture, and resolves the fade-vs-lean question
+for perp_obi. `queue_model="none"` (the fast, fill-count-driven "inside-spread artifact" regime —
+see caveat below), LINK April 2026, 30 days, TouchMM control. (See `experiments/66_perp_obi_skew/`.)
+
+**Mechanism:** symmetric reservation-price shift
+`shift = (spot_alpha*spot_obi + perp_alpha*perp_obi) * tick_size`; bid/ask/reservation all shift by
+`shift`, spread unchanged.
+
+| variant | mean_pnl | std_pnl | days_pos | mean_fills |
+|---|---|---|---|---|
+| baseline | 69.94 | 23.10 | 100% | 12,571 |
+| spot1 (α=1) | 71.48 | 24.57 | 100% | 7,525 |
+| spot2 (α=2) | 63.60 | 21.30 | 100% | 4,739 |
+| spot1_perp1 | 60.98 | 20.97 | 100% | 6,701 |
+| spot1_perpneg1 | 54.89 | 17.61 | 100% | 8,467 |
+| spot1_perp2 | 44.89 | 16.83 | 100% | 6,299 |
+| spot1_perpneg2 | 34.35 | 11.54 | 100% | 8,304 |
+
+A small spot-only skew (spot1, α=1) gives a modest +2.2% over baseline despite cutting fill count
+by 40% — a small directional lean on spot_obi mildly improves per-fill quality, consistent with
+C22's spot_obi IC. Doubling it (spot2, α=2) already overshoots: -9.1% vs baseline. Layering
+perp_obi on top of spot1 (the best spot-only cell) monotonically DEGRADES PnL with `|perp_alpha|`,
+**regardless of sign**: spot1_perp1 is -14.7% vs spot1, spot1_perpneg1 -23.2%, spot1_perp2 -37.2%,
+spot1_perpneg2 -51.9%. The "fade" sign (perpneg, leaning against perp_obi) hurts MORE than the
+"lean" sign (perp, leaning with it) at equal magnitude — exp45's open fade-vs-lean question is
+answered here: neither direction helps, and fading is the worse of the two.
+
+**Verdict.** perp_obi's incremental cross-venue IC (~0.04-0.06, C39) is too weak relative to the
+execution noise a symmetric skew shift introduces (it moves BOTH quotes, changing fill rates and
+inventory dynamics non-trivially) — it dilutes an already-near-its-optimum spot-only skew rather
+than adding value. Combined with C39, this closes the "perp_obi as skew input" direction: a real,
+incremental, but small signal does not survive being folded into this mechanism.
+
+**Caveat (carries to C41):** all PnL here is under `queue_model="none"` — the C30 "inside-spread
+artifact" regime where measured PnL is roughly monotonic in fill COUNT, not the honest engine (C30
+corrected: -$7.93/day, 0/30 days). These numbers are a fast, relative comparison of skew variants
+against each other and against the unskewed control, not an absolute profitability claim.
+
+Reproduce:
+```
+python experiments/66_perp_obi_skew/perp_obi_skew_mm.py
+```
+
+---
+
+## 41. Perp-Derived Defensive Spread Widening: Same Negative Result, Different Mechanism — and the Open Question for the Honest Engine
+
+**Motivation:** Both C40's directional skew and the underlying "ride the perp's lead" premise
+failed. A DEFENSIVE mechanism — widen spot quotes when a perp-derived "something
+informed/large/toxic is happening right now" signal fires, the same multiplicative-widening
+pattern as `SpreadMultiplierFilter` (`mult = min(1+alpha*toxicity, max_mult)`, `max_mult=5`) — is
+the natural next test: rather than betting on perp_obi's direction, treat an extreme perp signal
+as a toxicity flag and step back from the spot book. Three signals tested independently:
+`obi`=|perp L1 OBI|, `ret`=z-scored |5-sample (~5s) perp mid log-return| (a "jump" detector,
+clipped ≥0), `vol`=z-scored 10-sample (~10s) rolling std of perp log-returns (a "vol spike"
+detector, clipped ≥0). Same engine/regime as exp66 (`queue_model="none"`, LINK April 2026, 30
+days, TouchMM control + widening only). (See `experiments/67_perp_toxicity_filter/`.)
+
+| variant | mean_pnl | days_pos | mean_fills | Δ pnl vs baseline | Δ fills vs baseline |
+|---|---|---|---|---|---|
+| baseline | 69.94 | 100% | 12,571 | — | — |
+| obi_a1 | 9.31 | 93.3% | 1,621 | -86.7% | -87.1% |
+| obi_a2 | 6.99 | 86.7% | 960 | -90.0% | -92.4% |
+| ret_a1 | 46.97 | 100% | 6,861 | -32.8% | -45.4% |
+| ret_a2 | 44.95 | 100% | 6,517 | -35.7% | -48.2% |
+| vol_a1 | 38.92 | 100% | 5,386 | -44.3% | -57.2% |
+| vol_a2 | 36.90 | 100% | 5,073 | -47.2% | -59.6% |
+
+(baseline reproduces C40's baseline exactly — 69.9355 — a consistency check: identical TouchMM
+control under `queue_model="none"`.)
+
+Every widening variant underperforms the unwidened baseline, monotonically with `alpha`.
+`obi_a1/a2` are the most extreme by far (-87% to -92% fills, -87% to -90% PnL): `|perp_obi|` has a
+persistently HIGH mean (~0.53 on a representative day), so at `alpha=1` the implied multiplier
+`1+alpha*|perp_obi|` averages ~1.5× and is rarely near 1 — this is closer to "always quote ~50%
+wider" than a rare-event toxicity flag. `ret`/`vol` (genuine jump/vol-spike detectors, mean near 0
+with occasional large z-scores) are comparatively spike-like, cutting fills by 45-60% while losing
+"only" 33-47% of PnL.
+
+**Verdict.** Same shape as C40, different mechanism: in `queue_model="none"`, measured PnL is
+roughly monotonic in fill count, so ANY mechanism that suppresses fills — whether by directional
+skew (C40) or defensive widening (here) — looks like a pure loss, irrespective of whether the
+suppressed fills were good or bad for the trader. **This is the open question the honest L2
+engine is built to answer**: if the fills that `ret_a1`/`obi_a1` suppress are disproportionately
+the adverse-selected ones that C30's corrected engine showed are responsible for the -$7.93/day
+honest loss, a defensive filter could be a net win in the honest regime even while looking like a
+loss here.
+
+Reproduce:
+```
+python experiments/67_perp_toxicity_filter/perp_toxicity_filter_mm.py
+```
+
+---
+
+## 42. L2-Honest Rerun at Realistic Latency: the Unconditional Baseline Reaches the Zero-Profit Equilibrium, and Spot-OBI Skew Breaks It
+
+**Motivation:** C40/C41 left an explicit open question: both perp_obi skew (C40) and perp-toxicity
+widening (C41) looked uniformly negative under `queue_model="none"`, a regime where measured PnL
+is roughly monotonic in fill COUNT — any mechanism that reduces fills looks like a loss regardless
+of fill QUALITY. This rerun moves the four most informative cells (baseline TouchMM, exp66's best
+skew `spot1`, and exp67's most-aggressive `obi_a1` / best-"smart" `ret_a1` widening filters) onto
+the corrected engine's honest regime: `queue_model="l2"`, `queue_fraction=0.5`, `L2BookTracker`
+from `orderbooks_LINK_{date}.parquet` (exp62's pattern), `taker_fee=0.00045` post-hoc. Per explicit
+request, latency was dropped to 10ms (from exp62's 100ms) and — since 10ms latency is wasted if
+the strategy only recomputes every 500ms — `requote_interval` was correspondingly dropped to 50ms
+(from exp66/67's 500ms and exp62's 100ms). LINK April 2026, 30 days. (See
+`experiments/68_l2_perp_filter_rerun/`.)
+
+| variant | mean_pnl (4.5bps) | std | days_pos | mean_fills | taker% |
+|---|---|---|---|---|---|
+| baseline | -0.24 | 6.76 | 46.7% (14/30) | 3,232 | 0.0% |
+| spot1 | **+22.32** | 10.33 | **100.0% (30/30)** | 1,583 | 0.0% |
+| obi_a1 | +0.46 | 6.98 | 56.7% | 285 | 0.0% |
+| ret_a1 | -1.71 | 7.49 | 46.7% | 727 | 0.0% |
+
+**(1) Speed restores latency tolerance — on real data, confirming C37.** The unconditional
+baseline at 10ms/50ms (-$0.24/day, 14/30 days positive) is dramatically better than exp62's
+identical strategy at 100ms/100ms (-$7.93/day, 0/30 days) — it has moved from "solidly negative"
+to sitting almost exactly ON the C33 zero-profit equilibrium (mean≈$0, roughly half the days on
+each side). This is the first REAL-DATA confirmation of C37's synthetic finding that requoting
+faster (tracking the mid) substantially restores the latency-adverse-selection cost a
+slow-requoting honest MM pays.
+
+**(2) spot_obi skew breaks the equilibrium — a robust +$22.32/day, 30/30 days positive.** `spot1`
+(spot_alpha=1, the same cell that was a marginal +2.2% over baseline in C40's artifact regime —
+71.48 vs 69.94) produces the dominant effect here: every one of the 30 days is positive (range
++$6.68 to +$49.72), at roughly HALF the baseline's fill count (1,583 vs 3,232, -51%). `taker_pct
+=0.0%` for all four variants confirms none of these are "marketable-on-arrival" fills under the
+corrected engine — this is a genuine at-touch, L2-queue-gated maker result, not a reopening of
+C30's inside-spread-artifact mechanism via a different door.
+
+**(3) Defensive widening does NOT show the same flip — C41's open question is answered.**
+`obi_a1` (+$0.46/day, 56.7% days positive) is within one std of baseline — essentially noise.
+`ret_a1` (-$1.71/day, 46.7% days positive) is actually WORSE than baseline despite cutting fills
+by 77.5%. Neither toxicity filter converts C41's artifact-regime loss into an honest-regime gain.
+
+**Synthesis — why skew works and widening doesn't.** The contrast is mechanism, not magnitude:
+`spot_obi` (IC~0.20-0.36, C22) is DIRECTIONALLY informative about near-term price drift, so
+shifting both quotes by `spot_alpha*spot_obi*tick` changes WHICH fills occur and how
+adverse-selected they are — it edits fill QUALITY. Defensive widening (`obi_a1`/`ret_a1`) is
+directionally agnostic — it scales fill QUANTITY without touching quality, and at an equilibrium
+sitting near zero, scaling quantity by a constant factor scales both the (small) wins and the
+(small) losses by roughly the same factor, landing near zero either way. This refines rather than
+overturns C30/C33: queue priority still caps the fill RATE available to an unconditional maker
+(pinning the baseline near zero, C33's law), but a directionally-informed skew using the SAME
+signal that barely moved the needle in the artifact regime (C40) extracts a large, robust edge
+from the (fewer) fills that survive queue priority once adverse selection is honestly priced.
+
+**Caveats — this needs a robustness pass before being load-bearing.** (a) Single
+`queue_fraction=0.5` point — `queue_fraction` is itself a heuristic for queue position (a planned
+L2-diff-depth validation against real order-flow data would directly test it); spot1's magnitude
+should be checked across a `queue_fraction` sweep. (b) `spot_alpha=1` was C40's best
+*artifact-regime* cell, not optimized for the honest regime — given the size and uniformity of the
+effect here (30/30 days), a small alpha sweep under L2/10ms/50ms is a natural and cheap follow-up.
+(c) Per-fill markout analysis (as in C32/C38) would clarify the mechanism directly — does the skew
+reduce the adverse move after fill on both legs, or mostly on one side?
+
+Reproduce:
+```
+python experiments/68_l2_perp_filter_rerun/l2_perp_filter_rerun.py
+```
+
+---
+
+## 43. BTC-PERP Spread-Rule × Skew Grid at L2-Honest 10ms/50ms: the Overcrowded Equilibrium Confirms, and Spot-OBI Skew Makes It Worse
+
+**Motivation:** C42 found that LINK's spot_obi skew (`spot1`) turns the C33 zero-profit-equilibrium
+baseline into a robust +$22.32/day, 30/30 days positive. Does this generalize to BTC — the most
+heavily-traded, smallest-relative-tick instrument in the dataset? BTC spot has no L2 orderbook data
+at all, so this rerun runs C42's same spread-rule × skew grid (touch / A-S γ→0 / constant
+half-spread, × baseline/spot1) on BTC-PERP itself — its own quotes/trades/L2 book — at the
+identical L2-honest settings (`queue_model="l2"`, `queue_fraction=0.5`, `latency=0.01`,
+`requote_interval=0.05`), recalibrated for BTC-PERP's $0.1 tick / ~$68k price (`AS_KAPPA_MIN=20`,
+`AS_MIN_SPREAD_BPS=0.01`, `CONST_HALF_TICKS=0.5`). 5 days (2026-04-01..05, the only days with
+BTC-PERP L2 snapshots). (See `experiments/71_btc_perp_spread_rule_grid/`.)
+
+| rule | variant | mean_pnl (4.5bps) | std | days_pos | mean_fills | taker% |
+|---|---|---|---|---|---|---|
+| touch | baseline | -181.84 | 125.00 | 0/5 | 69,939 | 0.0% |
+| touch | spot1 | -233.32 | 148.72 | 0/5 | 60,829 | 0.0% |
+| as | baseline | -182.08 | 125.08 | 0/5 | 69,891 | 0.0% |
+| as | spot1 | -233.53 | 149.55 | 0/5 | 60,984 | 0.0% |
+| constant | baseline | -181.97 | 125.08 | 0/5 | 69,990 | 0.0% |
+| constant | spot1 | -233.54 | 148.80 | 0/5 | 60,873 | 0.0% |
+
+**(1) The three spread rules are indistinguishable — confirms BTC-PERP sits at a 1-tick spread
+essentially always.** touch/as/constant agree to within ~$0.3/day for both baseline and spot1
+(noise is std≈125). Unlike LINK, where touch≈10 ticks and constant=5 ticks gave the rule axis room
+to matter (C40/C42's groundwork), BTC-PERP's market spread is pinned at 1 tick (TICK=$0.1) almost
+continuously, so all three rules collapse to the same ~1-tick half-spread. The spread-RULE choice
+is simply not a free variable on this instrument.
+
+**(2) Uniformly, deeply negative — 0/5 days positive for every cell, an order of magnitude beyond
+LINK's baseline.** -$182/day vs LINK's -$0.24/day (C42) — not "near the C33 zero-profit
+equilibrium" but solidly on the losing side. With ~70,000 fills/day at 0.001 BTC each (≈$68
+notional/fill), the maker is being adversely selected at a scale LINK's queue-axis economics never
+reach.
+
+**(3) spot_obi skew makes it WORSE, not better — the opposite sign from C42, and the opposite
+mechanism.** `spot1` loses an additional ~$51/day vs baseline (-233 vs -182, all three rules),
+consistent in direction across all 5 days (range -$13 to -$104 worse per day). Fill count drops by
+only ~13% (69,939→60,829) — far less than LINK's -51% (C42) — so the shift filters out
+comparatively few fills, and the ones that remain are, if anything, MORE adversely selected.
+`taker_pct=0.0%` throughout — a genuine L2-queue-gated maker result, not a reopening of C30's
+artifact mechanism via a different door.
+
+**Synthesis — the spread-axis/queue-axis contrast completes.** BTC-PERP's relative tick size is
+~0.15bps (TICK=$0.1 on a ~$68,000 mid) vs LINK's ~11bps (TICK=$0.001 on a ~$9 mid) — roughly 70×
+smaller. In the Wyart-Bouchaud framing underlying C33/C34, the zero-profit rent on a
+small-relative-tick instrument is extracted almost entirely on the SPREAD axis: sub-millisecond
+participants compress the spread to the point where a 10ms maker is structurally too slow to
+capture queue priority at any meaningful rate, and a directional skew (`spot1`) can only ever
+re-pick among an already-adversely-selected fill set — making things WORSE by tilting toward the
+side about to move against the resting order, rather than better. LINK's much larger relative tick
+leaves room on the QUEUE axis: queue priority caps the unconditional baseline near zero (C33), but
+a directionally-informed skew can still select higher-quality fills FROM WITHIN that queue-gated
+set (C42). BTC-PERP is the "fully arbitraged, nothing left" case that the tick-size/HFT-crowding-out
+literature (Yao & Ye; the US Tick Size Pilot) predicts for the most liquid, smallest-relative-tick
+instruments; LINK is the "less crowded, queue-axis rent still available" case. This rerun is
+**confirmatory** of the existing BTC narrative (overcrowded, at-or-below zero-profit) at the new
+10ms/50ms L2-honest settings — it does not change prior BTC conclusions, only restates them under
+the latency/requote calibration now used for C39-42.
+
+**Caveat.** Single instrument/window (BTC-PERP, 5 days) and a single `queue_fraction=0.5` point —
+same caveat class as C42(a). Given the magnitude (-$182/day, far beyond the std≈125 noise band) and
+uniform sign across all 5 days and all 3 spread rules, a `queue_fraction` sweep is very unlikely to
+flip the sign — unlike C42, where the effect sat close to the equilibrium and robustness mattered
+more.
+
+Reproduce:
+```
+python experiments/71_btc_perp_spread_rule_grid/btc_perp_spread_rule_grid.py
+```
+
+---
+
+## 44. C42 Robustness Pass: Queue-Fraction Sweep, Spread-Rule Grid, and Spot-Alpha Optimization — alpha=1 Was Leaving More Than Half the Edge on the Table
+
+**Motivation:** C42's caveats (a)-(c) flagged `spot1` (+$22.32/day, 30/30 days+) as not yet
+load-bearing: a single `queue_fraction=0.5` point, an `spot_alpha=1` inherited from C40's
+*artifact-regime* triage and never re-optimized for the honest regime, and no per-fill markout.
+This entry resolves (a) and (b) via four follow-up runs, all LINK April 2026, 30 days, at C42's
+L2-honest settings (`queue_model="l2"`, `latency=0.01`, `requote_interval=0.05`) unless noted.
+
+**(A) queue_fraction sweep, 0.3-0.7 (exp69) — spot1's edge is flat.**
+
+| variant | qf | mean_pnl (4.5bps) | std | days_pos | mean_fills |
+|---|---|---|---|---|---|
+| baseline | 0.3 | -0.45 | 6.76 | 46.7% | 3,480 |
+| baseline | 0.4 | -0.05 | 6.38 | 50.0% | 3,354 |
+| baseline | 0.5 | -0.24 | 6.76 | 46.7% | 3,232 |
+| baseline | 0.6 | +0.06 | 6.79 | 46.7% | 3,184 |
+| baseline | 0.7 | -0.08 | 6.50 | 43.3% | 3,161 |
+| spot1 | 0.3 | 22.30 | 10.41 | 100% | 1,670 |
+| spot1 | 0.4 | 22.28 | 10.21 | 100% | 1,614 |
+| spot1 | 0.5 | 22.32 | 10.33 | 100% | 1,583 |
+| spot1 | 0.6 | 22.14 | 10.27 | 100% | 1,558 |
+| spot1 | 0.7 | 21.93 | 10.41 | 100% | 1,538 |
+
+Across the entire 0.3-0.7 range, `spot1` varies by less than 2% (21.93-22.32) and is **100% days
+positive at every point**; `baseline` is noise-level and non-monotonic (-0.45 to +0.06). Both
+results are consistent with a flat dependence on `queue_fraction` over this band.
+
+**(B) queue_fraction sweep, 0.0/0.1/0.2 (exp72) — a cliff at qf=0, not a gradient.**
+
+| variant | qf | mean_pnl (4.5bps) | std | days_pos | mean_fills |
+|---|---|---|---|---|---|
+| baseline | 0.0 | **+71.45** | 23.18 | 100% | 13,786 |
+| baseline | 0.1 | -1.67 | 7.03 | 50.0% | 4,137 |
+| baseline | 0.2 | -0.60 | 7.15 | 46.7% | 3,723 |
+| spot1 | 0.0 | **+81.62** | 27.07 | 100% | 7,216 |
+| spot1 | 0.1 | +22.50 | 9.67 | 100% | 1,905 |
+| spot1 | 0.2 | +22.67 | 10.20 | 100% | 1,754 |
+
+`qf=0.1` and `qf=0.2` sit on the same plateau as (A) — `baseline` near zero, `spot1`≈22.5-22.7,
+fill counts in the same range. `qf=0.0` (`queue_ahead=0` always) is a **discontinuous jump**:
+fills roughly quadruple and `baseline` alone goes to +$71/day. `queue_fraction=0` is precisely the
+L2-honest engine degenerating into the pre-correction "no queue" artifact regime (C29/30) — this
+pins down *why* the old artifact numbers were so large, and confirms that (A)+(B) together describe
+a genuine plateau, `qf∈[0.1, 0.7]`, with C42's `qf=0.5` safely in the middle, bounded by a sharp,
+identifiable edge rather than an unknown gradient.
+
+**(C) spread-rule grid at qf=0.5 (exp70) — touch≈as≈constant on LINK too.**
+
+| rule | variant | mean_pnl (4.5bps) | std | days_pos | mean_fills |
+|---|---|---|---|---|---|
+| touch | baseline | -0.236 | 6.763 | 46.7% | 3,232 |
+| touch | spot1 | 22.321 | 10.335 | 100% | 1,583 |
+| as | baseline | -0.218 | 6.780 | 46.7% | 3,239 |
+| as | spot1 | 22.269 | 10.318 | 100% | 1,583 |
+| constant | baseline | -0.218 | 6.780 | 46.7% | 3,239 |
+| constant | spot1 | 22.268 | 10.318 | 100% | 1,583 |
+
+All three rules agree to within ~$0.05/day for both `baseline` and `spot1` (`touch` is exactly
+C42's headline cell). `as` and `constant` are *bit-identical* — at this calibration
+(`AS_GAMMA=1e-8`, `AS_KAPPA_MIN=200`), A-S's `gamma->0` adverse-selection term collapses to
+`2/kappa = 10 ticks` total spread, i.e. a 5-tick half-spread, numerically equal to
+`CONST_HALF_TICKS=5.0`. `touch`'s market half-spread averages close enough to 5 ticks that it lands
+in the same place. The spread-rule axis is not a free variable for C42 either, for a different
+reason than C43's BTC-PERP result (there the market spread is pinned at 1 tick; here all three
+formulas independently land near the same value).
+
+**(D) spot_alpha sweep, 0-5 at qf=0.5 (exp74) — alpha=1 was leaving more than half the edge on the
+table.**
+
+| alpha | mean_pnl (4.5bps) | std | days_pos | mean_fills | taker% | inside% |
+|---|---|---|---|---|---|---|
+| 0.0 | -0.24 | 6.76 | 46.7% | 3,232 | 0.0% | 0.00% |
+| 1.0 | 22.32 | 10.33 | 100% | 1,583 | 0.0% | 0.00% |
+| 1.5 | 40.46 | 13.25 | 100% | 1,661 | 0.0% | 0.00% |
+| 2.0 | 48.52 | 14.73 | 100% | 1,844 | 0.0% | 0.00% |
+| 2.5 | 53.16 | 16.37 | 100% | 1,995 | 0.0% | 0.00% |
+| 3.0 | 55.47 | 17.66 | 100% | 2,105 | 0.0% | 0.00% |
+| **4.0** | **56.00** | 18.21 | 100% | 2,245 | 0.0% | 0.00% |
+| 5.0 | 55.36 | 18.70 | 100% | 2,342 | 0.0% | 0.00% |
+
+`alpha=0` and `alpha=1` reproduce C42 exactly (consistency check). PnL climbs monotonically from
+alpha=1 to a broad plateau at alpha=3-5 (55.47 / **56.00** / 55.36 — flat well within
+std≈18), peaking near **alpha=4 at +$56.00/day, 100% days positive** — roughly **2.5x C42's
+original +$22.32**. Unlike the 0->1 transition (which roughly halved fill count, 3,232->1,583),
+1->4 *increases* fills (1,583->2,245) while also increasing PnL per fill (~$0.0141 -> ~$0.0249) —
+both the quantity and the quality of the queue-gated fill set improve together as the skew is
+sharpened. `taker_pct=0.0%` and, critically, `inside_frac=0.00%` (fraction of quotes with
+`|shift| >= half_spread`, i.e. landing at/inside the mid where the L2 model gives `queue_ahead=0`)
+at **every** alpha including 5.0 — so this entire climb is genuinely queue-gated, not a
+reappearance of C40's inside-spread artifact through the skew.
+
+**(E) per-fill markout analysis at qf=0.5, alpha in {0, 1, 4} (exp75) — alpha=4's extra PnL is
+measurably less adverse selection, not an artifact.**
+
+Signed markout = `sign * (mid(t+h) - fill.price)`, `sign=+1` for bid fills (we bought), `-1` for
+ask fills (we sold); positive = price moved in our favor after the fill. `%adverse` = share of
+fills with negative markout. Horizons span the ~5-10s momentum-decay window from CLAUDE.md;
+"all" pools both sides (n given for "all").
+
+| horizon | alpha=0 mean (ticks) | alpha=0 %adv | alpha=1 mean (ticks) | alpha=1 %adv | alpha=4 mean (ticks) | alpha=4 %adv |
+|---|---|---|---|---|---|---|
+| 0.5s | -1.26 | 62.6% | +1.54 | 32.8% | +2.88 | 9.8% |
+| 1.0s | -1.17 | 61.5% | +1.65 | 32.8% | +3.01 | 10.0% |
+| 2.0s | -0.96 | 59.3% | +1.87 | 32.1% | +3.24 | 10.0% |
+| 5.0s | -0.59 | 55.6% | +2.25 | 31.1% | +3.65 | 10.3% |
+| 10.0s | -0.41 | 53.7% | +2.48 | 31.4% | +4.06 | 11.1% |
+
+(n_all = 96,953 / 47,485 / 67,338 fills for alpha=0/1/4 respectively, pooled across 30 days;
+bid/ask markouts are symmetric to within ~0.1-0.2 ticks at every alpha/horizon, as expected for a
+symmetric OBI-driven skew.)
+
+The three regimes are cleanly separated at *every* horizon, with no sign changes or crossovers:
+
+- `alpha=0` is adverse-selected outright — negative mean markout at all five horizons (-1.26 to
+  -0.41 ticks) and 54-63% of fills land on the wrong side of subsequent price movement. This is
+  the per-fill signature behind the near-zero/slightly-negative baseline PnL: the signal-blind
+  quote gets run over by informed flow more often than not.
+- `alpha=1` flips the sign at every horizon (+1.54 to +2.48 ticks) and roughly halves the
+  adverse-fill rate to 31-34%. This is the per-fill mechanism behind C42's +$22.32/day.
+- `alpha=4` does not merely continue this trend — it roughly **doubles alpha=1's markout
+  magnitude at every horizon** (+2.88 to +4.06 ticks) and **cuts the adverse-fill rate to ~10%**,
+  a further 3x reduction from alpha=1's ~32%. Sharpening the skew doesn't just shift more volume
+  into already-good fills; it makes the *marginal* fills measurably better too.
+
+This reconciles with (D)'s PnL numbers: the ~1.6-1.9x markout improvement (alpha=1->4) combined
+with (D)'s ~1.42x fill-count increase (1,583->2,245) multiplies out to roughly the observed
+2.5x PnL ratio (22.32->56.00). Both legs of (D)'s "quantity and quality improve together" finding
+are now independently confirmed at the per-fill level: alpha=4's edge over alpha=1 is a genuine,
+measurable reduction in adverse selection, not an artifact of sample size, inventory mix, or the
+inside-spread mechanism ((D)'s `inside_frac=0.00%` already ruled out the latter).
+
+**Synthesis.** (A)+(B) show `queue_fraction` robustness is excellent: a wide, flat "honest" plateau
+(`qf∈[0.1,0.7]`) bounded by a sharp, mechanistically-understood cliff at `qf=0` (the old artifact
+regime) — C42's `qf=0.5` sits centered in that plateau, not near an edge. (C) shows the
+spread-RULE axis is inert on LINK (as it was on BTC-PERP, C43, for a different reason) — consistent
+with the broader observation that A-S/GLFT's spread-width formula contributes little once the
+engine is L2-honest; what the formula mostly does here is set up *where* the quote sits for the
+skew to act on. (D) is the one axis that mattered all along but was never tuned: `spot_alpha=1`
+was C40's *artifact-regime* optimum, carried into C42 unchanged. In the honest regime the true
+optimum is `alpha≈4`, **+$56.00/day, 100% days+**, with the same `taker%=0`/`inside%=0` robustness
+profile as C42's +$22.32. (E) confirms this at the per-fill level: alpha=0/1/4 form a cleanly
+ordered sequence of decreasing adverse selection (54-63% -> 31-34% -> ~10% adverse fills), so the
+PnL ordering is a direct, mechanistic consequence of fill quality, not a higher-level artifact.
+C42's number stands as the first demonstration that the mechanism exists; this entry shows its
+magnitude, once the skew coefficient is tuned for the regime it's actually deployed in, is roughly
+2.5x larger, and (E) shows *why*.
+
+**Caveats.** (a)-(c) of C42's robustness pass are now resolved: `queue_fraction` is flat over
+`[0.1,0.7]` with a sharp, understood cliff at 0 (A/B), the spread-rule axis is inert (C), and
+`alpha≈4` is the honest-regime optimum with a confirmed per-fill adverse-selection mechanism (D/E).
+(d) Out-of-sample validation (same caveat as C42) remains open — both +$22.32 and +$56.00 (and the
+(E) markout numbers) come from the same 30-day LINK April 2026 window used throughout C39-44. The
+alpha=3-5 plateau is flat enough (range $0.64, well inside std≈18) that a finer grid around the
+optimum is likely not worth the compute; alpha≈4 is reported as the practical optimum rather than a
+precisely-located one.
+
+Reproduce:
+```
+python experiments/69_queue_fraction_sweep/queue_fraction_sweep.py
+python experiments/70_spread_rule_grid/spread_rule_grid.py
+python experiments/72_queue_fraction_sweep_low/queue_fraction_sweep_low.py
+python experiments/74_spot_alpha_sweep_confirm/spot_alpha_sweep_confirm.py
+python experiments/75_markout_analysis/markout_analysis.py
+```
+
+---
+
 ## Future Work
 
 The items below were drafted before the queue-priority verdict (C30) and the zero-profit
 equilibrium (C33) became the thesis's central results. They are reframed here against that
 finding rather than dropped — some still test it directly, others are superseded by it.
 
-- **Cross-asset generalization of the queue-rent mechanism** (extends C30/C33): test the same
-  step-function fill-curve / queue-depth equilibrium on other large-tick assets (similar
-  tick-to-price ratio to LINK) to determine whether the queue-priority rent is LINK-specific
-  or a general property of large-tick markets, as C33's "same zero-profit law, enforced
-  through whichever variable is free" framing predicts.
+- **Cross-asset generalization of the queue-rent mechanism** (extends C30/C33): C43 covers the
+  small-relative-tick end (BTC-PERP, ~0.15bps) and finds it fully arbitraged on the spread axis,
+  consistent with C33's "same zero-profit law, enforced through whichever variable is free"
+  framing. The open end is the large-relative-tick side: testing another LINK-like asset (similar
+  tick-to-price ratio) to see whether queue-axis rent — and the `spot1` skew mechanism (C42) — is
+  LINK-specific or general. `data/real` currently has only LINK/BTC (+perps), so this requires a
+  new CoinAPI data pull, a separate scoping decision from the LINK-depth robustness items below.
 - **BTC cross-asset symmetry for C36**: re-pull BTC perp trade data (the current CoinAPI file
   is mislabeled — byte-identical to the orderbook snapshot) to complete the spot↔perp
   Hayashi-Yoshida check on BTC and confirm C36's "contemporaneous, no third door" result
   generalises beyond LINK.
-- **Stressed-regime check on the corrected-engine result** (extends C30/exp 62): re-run the
-  honest at-touch backtest (currently −$7.93/day, 0/30 days) on high-volatility or crash-period
-  data. Open question, not assumed: does the queue-priority loss widen, narrow, or hold flat
-  under stress?
+- **Stressed-regime check on the corrected-engine result** (extends C30/exp 62/C42): the
+  honest at-touch baseline is now known to be highly latency/speed-sensitive — −$7.93/day at
+  100ms latency/100ms requote (exp 62) vs ≈$0/day, 46.7% days positive at 10ms/50ms (C42).
+  Re-run the honest at-touch backtest on high-volatility or crash-period data, at a stated
+  latency/requote point. Open question, not assumed: does the queue-priority loss widen,
+  narrow, or hold flat under stress, and does that depend on the latency regime?
+- **OOS validation for the alpha≈4 optimum (+$56.00/day, 100% days at 10ms/50ms/queue_fraction=0.5)**:
+  (a)-(c) of C42's robustness pass are now resolved by C44 — `queue_fraction` is flat over
+  `[0.1,0.7]` with a sharp cliff at 0, the spread-rule axis is inert, `spot_alpha≈4` (not 1) is the
+  honest-regime optimum, and exp75's per-fill markouts confirm the mechanism is a genuine,
+  monotonically-increasing reduction in adverse selection (54-63% -> 31-34% -> ~10% adverse fills
+  for alpha=0/1/4). Remaining: (d) out-of-sample validation — a different window (different month,
+  or a held-out asset with similar tick-to-price ratio) to check both the +$56.00/day level and the
+  alpha≈4 optimum location are not specific to LINK April 2026.
+- **L2 diff-depth validation of `queue_fraction`** (motivated by C42(a) above, now de-prioritized
+  by C44's flat-plateau result, but still useful for the absolute fill-rate calibration): buy or capture
+  full Binance L2 order-book-update streams (current CoinAPI orderbook files are ~1Hz
+  snapshots) for a few days, reconstruct true queue position, and compare against the
+  `queue_fraction=0.5` heuristic's implied fill rate — calibrate a correction factor and apply
+  it to C42's headline numbers.
 - **Largely superseded by C33**: (a) ML-based kappa estimation — C33 shows κ is not a free
   parameter but pinned to σ by zero-profit (`κ_eq ≈ √A/σ_$`), so a better *estimate* of κ
   doesn't relax the binding constraint; (b) multi-level ladder quoting — every level is still
@@ -1847,6 +2682,10 @@ originals before final thesis submission.
   *Quantitative Finance*, 8(3), 217–224.
 - Albers, J. et al. (2025). [Markout / OBI methodology — complete citation from the copy used
   for the markout horizon choice.]
+- Barucci, E., Mathieu, A. & Sánchez-Betancourt, L. (2025). Market making with fads, informed,
+  and uninformed traders. arXiv:2501.03658.
+- Barzykin, A., Bergault, P., Guéant, O. & Lemmel, F. (2025). Optimal quoting under adverse
+  selection and price reading. arXiv:2508.20225.
 - Baron, M., Brogaard, J., Hagströmer, B. & Kirilenko, A. (2019). Risk and return in
   high-frequency trading. *Journal of Financial and Quantitative Analysis*, 54(3), 993–1024.
 - Budish, E., Cramton, P. & Shim, J. (2015). The high-frequency trading arms race: frequent
@@ -1878,6 +2717,8 @@ originals before final thesis submission.
 - Glosten, L. R. & Milgrom, P. R. (1985). Bid, ask and transaction prices in a specialist
   market with heterogeneously informed traders. *Journal of Financial Economics*, 14(1),
   71–100.
+- Guéant, O. (2017). Optimal market making. *Applied Mathematical Finance*, 24(2), 112–154.
+  (arXiv:1605.01862)
 - Guéant, O., Lehalle, C.-A. & Fernandez-Tapia, J. (2013). Dealing with the inventory risk:
   a solution to the market making problem. *Mathematics and Financial Economics*, 7(4),
   477–507.
@@ -1888,6 +2729,7 @@ originals before final thesis submission.
 - Kearns, M. & Nevmyvaka, Y. (2013). Machine learning for market microstructure and high
   frequency trading. In *High Frequency Trading: New Realities for Traders, Markets and
   Regulators*. Risk Books.
+- Lalor, J. & Swishchuk, A. (2024). Market simulation under adverse selection. arXiv:2409.12721.
 - Lehalle, C.-A. & Mounjid, O. (2017). Limit order strategic placement with adverse selection
   risk and the role of latency. *Market Microstructure and Liquidity*, 3(1).
   (arXiv:1610.00261)

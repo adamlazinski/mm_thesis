@@ -165,6 +165,47 @@ discontinuous trade series where a literal queue cannot be reconstructed without
 data). Chapter 3 describes how an L2-depth-aware queue model is constructed once that data
 becomes available; Chapter 5 (Contribution 30) is the result of comparing the two.
 
+**A formal counterpart: Guilbaud & Pham (2013).** The discussion above is qualitative;
+Guilbaud & Pham give it a precise optimal-control formulation for exactly the order-driven
+setting that A-S/GLFT set aside. The spread is modelled as a finite-state Markov chain on
+tick multiples, `S_t ∈ {δ, 2δ, ..., mδ}`, time-changed by a Poisson "tick clock". Rather than
+choosing a continuous distance `δ^b`/`δ^a` as in §2–3, the MM at each side chooses between
+quoting *at* the best price or *one tick better* (price improvement), `Q ∈ {B, B+}`, with
+fill intensities satisfying
+
+```
+λ(B+, s) > λ(B, s)    for every spread state s
+```
+
+— quoting one tick closer to (or inside) the touch buys queue priority and a strictly higher
+fill rate. This single inequality is the formal counterpart of this section's "front-of-queue
+orders fill far more often" observation, expressed as a *control variable* rather than an
+empirical regularity.
+
+The resulting dynamic-programming equation is a quasi-variational inequality: a regular
+Hamilton–Jacobi–Bellman term, with a supremum over the `{B,B+}` choice on each side, combined
+with a free-boundary ("impulse control") condition for an additional market-order control
+used to manage inventory actively. Even after applying the same kind of
+dimensionality-reducing ansatz that produces the closed forms in §2–3, the problem collapses
+only to a *finite system* of coupled one-dimensional integro-differential equations — one per
+spread state, linked through the spread's own transition rates — which Guilbaud & Pham solve
+numerically by finite differences. **Unlike §2–3, there is no closed form**: the two
+features that A-S/GLFT's third assumption (§2) sets aside — discreteness of price, and an
+intensity that depends on queue priority rather than distance alone — are exactly the two
+features that block the closed-form reduction, even though the underlying CARA/mean-variance
+objective is otherwise unchanged.
+
+Two aspects of this model anticipate results developed later in this thesis. First, the
+binary `{B, B+}` priority choice is the discrete ancestor of the continuous,
+signal-conditioned price improvement studied empirically as the directional-skew mechanism
+(Contributions 42, 44): the gain comes not from unconditionally claiming the
+`λ(B+,s)>λ(B,s)` premium, but from claiming it *selectively*, conditional on a directional
+signal. Second, Guilbaud & Pham's exponential-utility reduction retains an explicit drift
+term for the underlying price process — a term that §2–3's driftless-martingale assumption
+sets to zero, but which is exactly where a directional signal enters the control problem. The
+empirical skew mechanism can therefore be read as a tractable, myopic approximation to this
+drift term, rather than as an ad hoc addition bolted onto A-S/GLFT.
+
 ---
 
 ## 6. Zero-Profit Equilibrium: Glosten–Milgrom and Wyart–Bouchaud
