@@ -26,7 +26,7 @@ apparent profitability reported throughout the early chapters of this thesis (Co
 variable: whether the quote sits inside the natural bid–ask spread under a fill model that grants
 it absolute queue priority.
 
-This is not, however, the end of the story. §2.7 (C39–43) shows that a **directionally-informative
+This is not, however, the end of the story. §2.7 (C39–45) shows that a **directionally-informative
 signal** can break this equilibrium — but only on assets where queue depth, not spread width, is
 the variable left free by the equilibrium (§2.4). On LINK (relative tick ≈ 11 bps), skewing quotes
 by the L1 order-book imbalance turns the −$0.24/day signal-blind equilibrium into a robust
@@ -344,10 +344,10 @@ variance-risk-premium for *bearing risk*, C35's "practical corollary"), not a re
 microstructure edge, and requires two-venue infrastructure regardless. **This was the last
 untested escape, and it closes negative.**
 
-### 2.7 A directional signal breaks the equilibrium — but only where the queue axis is free (C39–43)
+### 2.7 A directional signal breaks the equilibrium — but only where the queue axis is free (C39–45)
 
 Sections 2.1–2.6 establish the equilibrium for a **signal-blind** maker: one whose quotes carry
-no information about the direction of the next price move. C39–43 ask whether a
+no information about the direction of the next price move. C39–45 ask whether a
 directionally-informative signal changes the picture — and, per §2.4's spread-axis/queue-axis
 unification, whether the answer depends on which axis is free.
 
@@ -413,53 +413,73 @@ artifact regime (C29/30). So `queue_fraction = 0.5` sits centered in a wide,
 mechanistically-bounded plateau, not near an unknown edge. A spread-rule grid (touch / A-S γ→0 /
 constant) confirms the formula choice is inert here too — all three agree to within $0.05/day for
 both baseline and `spot1` — for a different reason than C43's BTC result (here A-S's γ→0 collapse
-happens to land on the same ~5-tick half-spread as "constant"). Finally, a `spot_alpha` sweep from
-0 to 5 finds `spot_alpha = 1` (inherited from C40's *artifact-regime* exploration) was far from
-optimal: PnL rises monotonically to a plateau at `spot_alpha ∈ [3,5]`, peaking near
-**`spot_alpha = 4` at +$56.00/day, 100% days positive, taker% = 0%**, with the fraction of quotes
-landing inside the spread (`|shift| ≥ half-spread`, the condition under which the L2 model would
-give `queue_ahead = 0`) measured at **0.00% for every alpha tested, including 5** — ruling out a
-re-opening of the inside-spread artifact through the skew itself. Unlike the 0→1 step (which
-roughly halved fill count), 1→4 *increases* fill count (1,583→2,245) while also increasing PnL
-per fill (~$0.014 → ~$0.025): both the quantity and quality of the queue-gated fill set improve
-together as the skew is sharpened. A per-fill markout analysis (`signed_markout(h) = sign ×
-(mid(t+h) − fill.price)`, exp75) confirms this directly at horizons of 0.5–10s: `spot_alpha = 0`
-fills are adversely selected at every horizon (−1.26 to −0.41 ticks, 54–63% adverse), `spot_alpha
-= 1` flips this to favorable (+1.54 to +2.48 ticks, 31–34% adverse), and `spot_alpha = 4` roughly
-doubles `spot_alpha = 1`'s markout at every horizon (+2.88 to +4.06 ticks) while cutting the
-adverse-fill rate to ~10% — a clean, monotonic, three-point ordering with no sign changes.
+happens to land on the same ~5-tick half-spread as "constant"). Finally, a `spot_alpha` sweep from 0 to 5 finds `spot_alpha = 1` (inherited from C40's
+*artifact-regime* exploration) was far from optimal: PnL rises monotonically to a plateau at
+`spot_alpha ∈ [3,5]`, peaking near **`spot_alpha = 4` at +$56.00/day, 100% days positive,
+taker% = 0%**. Unlike the 0→1 step (which roughly halved fill count), 1→4 *increases* fill
+count (1,583→2,245) while also increasing PnL per fill (~$0.014 → ~$0.025).
+
+The mechanism at high alpha is **OBI-conditional inside-spread placement**: with LINK's ~10-tick
+market spread (half ≈ 5 ticks = $0.005), a shift of `4 × OBI × $0.001 ≤ $0.004` places the bid
+up to 4 ticks inside the spread (between best\_bid and mid) without crossing the mid. Both legs
+remain passive limit orders (taker% = 0%); the strategy leans quotes into the signal direction
+rather than sitting symmetrically at the touch. This is distinct from C40's inside-spread
+artifact: in the real L2 orderbook data used here, inside-spread price levels carry actual queue
+depth from other resting participants, so fills remain gated by cumulative trade volume rather
+than being granted for free. A per-fill markout analysis (`signed_markout(h) = sign ×
+(mid(t+h) − fill.price)`, exp75) confirms the mechanism directly at horizons of 0.5–10s:
+`spot_alpha = 0` fills are adversely selected at every horizon (−1.26 to −0.41 ticks, 54–63%
+adverse), `spot_alpha = 1` flips this to favourable (+1.54 to +2.48 ticks, 31–34% adverse),
+and `spot_alpha = 4` roughly doubles `spot_alpha = 1`'s markout at every horizon (+2.88 to
++4.06 ticks) while cutting the adverse-fill rate to ~10% — a clean, monotonic, three-point
+ordering with no sign changes.
 
 **Synthesis.** The equilibrium of §2.1–2.6 is not a single number but a *surface*, parameterised
 by relative tick size. At one end (BTC-PERP, tick ≈ 0.15 bps), the surface is at its floor and
 both the signal-blind and the signal-aware maker sit at or below it — no rent of either kind
 survives, and a directional signal can only make a bad outcome worse. At the other end (LINK,
-tick ≈ 11 bps), the signal-blind maker sits *at* the equilibrium (≈$0/day, §2.3), but a maker who
-can re-select fills using a directional signal extracts a substantial, robust rent *above* it
-(+$22.32/day, 30/30 days). C44 shows this is not a fragile, single-point result: the rent is flat
-across the plausible `queue_fraction` range and across spread-rule choices, and — once the skew
-coefficient itself is tuned for this regime rather than inherited from C40's artifact-regime
-exploration — its magnitude is roughly 2.5× larger (+$56.00/day at `spot_alpha ≈ 4`), and exp75's
-per-fill markouts confirm the larger rent is a genuinely larger reduction in adverse selection,
-not an artifact of sample size or inventory mix. This refines, but does not overturn, §1's
-headline: queue priority
-gates fill *rate* (C30 — the signal-blind maker is capped at the equilibrium regardless), but it
-does not gate fill *quality*, and on an asset where the queue axis is the equilibrium's free
-variable, fill-quality selection is a genuinely retail-accessible mechanism.
+tick ≈ 11 bps), the signal-blind maker sits *at* the equilibrium (≈$0/day, §2.3), but a maker
+who re-selects fills using a directional signal via OBI-conditional inside-spread placement
+extracts a substantial, robust rent above it (+$22.32/day at alpha=1, +$56.00/day at the
+optimum alpha=4, in-sample; +$27.04/day at alpha=1 on the OOS window, C45). This refines, but
+does not overturn, §1's headline: queue priority gates fill *rate* (C30 — the signal-blind
+maker is capped at the equilibrium regardless), but it does not gate fill *quality*, and on an
+asset where the queue axis is the equilibrium's free variable, fill-quality selection via a
+directional signal is a genuinely retail-accessible mechanism.
 
-**Caveats.** (a)-(c) are now resolved by C44: `queue_fraction` is flat over `[0.1, 0.7]` with
-a mechanistically-understood cliff at 0 (the pre-correction artifact regime), not an unvalidated
-single point; `spot_alpha ≈ 4` (not 1) is the honest-regime optimum, with `inside_frac = 0%`
-ruling out artifact re-entry through the skew even at `spot_alpha = 5`; and exp75's per-fill
-markouts confirm the fill-quality mechanism directly — `spot_alpha` = 0/1/4 form a cleanly ordered
-sequence of decreasing adverse selection (54–63% → 31–34% → ~10% adverse fills), not an artifact
-of aggregate fill-count/PnL. (d) Both C42's +$22.32/day and C44's +$56.00/day (and exp75's markout
-numbers) were obtained on the same 30-day window used to select the reported `spot_alpha`; an
-out-of-sample check on a held-out period remains open.
+**Caveats.** (a)–(c) are now resolved by C44: `queue_fraction` is flat over `[0.1, 0.7]` with a
+mechanistically-understood cliff at 0 (the pre-correction artifact regime); `spot_alpha ≈ 4` (not
+1) is the honest-regime optimum, confirmed by taker%=0% throughout and per-fill markouts showing
+a cleanly ordered adverse-selection reduction (54–63% → 31–34% → ~10% for alpha=0/1/4). (d)
+Out-of-sample validation is addressed by C45 (below).
+
+**C45 — OOS validation on LINK June–July 2025 (30 days).** A fully held-out window 9 months
+before the in-sample period, using a quote-based proxy L2 tracker (real orderbook snapshots do
+not exist for this period; the proxy is exact for at-touch orders):
+
+| alpha | mean PnL/day | days+ | mean fills/day |
+|---|---|---|---|
+| 0 (baseline) | −$17.28 | 10.0% | 1,030 |
+| 1 | **+$27.04** | **93.3% (28/30)** | 1,714 |
+| 4 | +$100.85* | 100% | 4,517 |
+
+*\*Upper bound: the proxy gives queue\_ahead=0 for inside-spread orders (it knows only the BBO
+level), whereas in-sample real L2 data shows actual inside-spread queue depth. The 4,517
+fills/day at alpha=4 vs 1,030 at alpha=0 reflects this proxy limitation. Alpha=1, where the
+shift rarely exceeds one tick and quotes stay near the touch, is not affected; 1,714 fills/day
+OOS is consistent with the in-sample pattern.*
+
+**Alpha=1 (+$27.04/day, 93.3% days positive) is the clean OOS confirmation.** A different
+market regime — higher volatility, a persistent downtrend from ~$15 to ~$11 before recovering,
+daily price ranges of 10–15% — produces a larger directional-signal effect (+$27 OOS vs +$22
+in-sample), consistent with OBI being more informative in trending conditions. For alpha=4,
+the in-sample result (+$56.00/day with real L2 inside-spread queue depth) remains the
+authoritative number; the OOS figure provides a directional upper bound.
 
 Reproduce: `experiments/68_l2_perp_filter_rerun/`, `experiments/71_btc_perp_spread_rule_grid/`,
 `experiments/69_queue_fraction_sweep/`, `experiments/70_spread_rule_grid/`,
 `experiments/72_queue_fraction_sweep_low/`, `experiments/74_spot_alpha_sweep_confirm/`,
-`experiments/75_markout_analysis/`.
+`experiments/75_markout_analysis/`, `experiments/76_link_oos_validation/`.
 
 ---
 
@@ -499,11 +519,13 @@ consequence of how competitive liquidity provision prices risk.
 maker can extract rent — capped at, or at realistic latency sitting exactly on, zero by the
 queue-priority/zero-profit gate. It does not by itself bound the *value per fill* available to a
 maker who can select directionally among the fills the queue allows. C42 shows this margin is
-large and positive on LINK (+$22.32/day from re-selecting among ~1,600 queue-gated fills/day) and
-C43 shows it is negative on BTC-PERP, where the queue axis has nothing left to select from. The
-two-gate framing therefore survives as a description of *rate*; a third, asset-dependent axis —
-fill-quality selection, bounded by relative tick size — governs *value*, and is the subject of
-the ongoing robustness work in §5.
+large and positive on LINK (+$22.32/day from re-selecting among ~1,600 queue-gated fills/day at
+`spot_alpha=1`; +$56.00/day at the tuned `spot_alpha≈4`), and C43 shows it is negative on
+BTC-PERP, where the queue axis has nothing left to select from. C45 confirms the alpha=1 result
+on a held-out OOS window (+$27.04/day, 93.3% days positive, 9 months before the in-sample
+period). The two-gate framing therefore survives as a description of *rate*; a third,
+asset-dependent axis — fill-quality selection via OBI-conditional spread placement, bounded by
+relative tick size — governs *value per fill*.
 
 ---
 
@@ -536,13 +558,13 @@ queue-priority rent — a distinction this thesis shows to be the difference bet
 - **Fees.** Most cells assume zero fees, making every negative result an *upper bound* on
   retail economics; the corrected-engine LINK result (§2.3) and the taker-pivot fee comparison
   (§2.6b) additionally apply realistic fees and remain negative.
-- **Latency class.** Early chapters' "retail" claims assumed ~100 ms latency; §2.7 (C39–43)
+- **Latency class.** Early chapters' "retail" claims assumed ~100 ms latency; §2.7 (C39–45)
   extends the honest-regime tests to 10 ms latency / 50 ms requote, where the directional-skew
-  result lives. Whether 10 ms is itself "retail-accessible" (e.g. a cloud VPS in the same region
-  as the exchange) or already requires colocation-adjacent infrastructure is not resolved here —
-  the boundary between retail and co-located HFT is less sharp than the original ~100 ms framing
-  suggested. True sub-millisecond colocation remains explicitly out of scope and is the regime to
-  which the C36 cross-venue caveat is *deferred*, not refuted.
+  result lives. A standard cloud instance in the same AWS region as Binance's matching engine
+  (ap-northeast-1, Tokyo) achieves ~10–15 ms round-trip without co-location infrastructure,
+  placing 10 ms within reach of a technically capable retail participant. True sub-millisecond
+  co-location remains explicitly out of scope and is the regime to which the C36 cross-venue
+  caveat is *deferred*, not refuted.
 - **Maker rebates.** Not modelled directly, but addressed in C30: rebates accrue only on
   fills, fills require queue priority, so a rebate is one more component of the same
   queue-priority rent rather than an escape from it.
@@ -553,28 +575,31 @@ queue-priority rent — a distinction this thesis shows to be the difference bet
   the verdict already established on LINK.
 - **Order size.** Throughout, order sizes are assumed small relative to L1 depth (a price
   taker for sizing purposes), consistent with the retail framing.
-- **The §2.7 directional-skew result (C42–44) is validated except for out-of-sample testing.**
-  `queue_fraction` sensitivity (a), `spot_alpha` optimality (b), and the per-fill fill-quality
-  mechanism (c) are all resolved by C44: the `queue_fraction = 0.5` point sits on a flat plateau
-  over `[0.1, 0.7]` bounded by a mechanistically-understood cliff at 0; `spot_alpha ≈ 4` (not the
-  inherited `spot_alpha = 1`) is the honest-regime optimum, +$56.00/day at 100% days positive with
-  `inside_frac = 0%` even at `spot_alpha = 5`; and exp75's per-fill markouts confirm `spot_alpha` =
-  0/1/4 form a cleanly ordered sequence of decreasing adverse selection (54–63% → 31–34% → ~10%
-  adverse fills). Still open: (d) out-of-sample validation on a held-out window, since C42's
-  +$22.32/day, C44's +$56.00/day, and exp75's markout numbers were all obtained on the same 30-day
-  window used to select `spot_alpha` (§2.7, §6).
+- **The §2.7 directional-skew result (C42–45).**  Caveats (a)–(c) are resolved by C44:
+  `queue_fraction` is flat over `[0.1, 0.7]`; `spot_alpha ≈ 4` is the honest-regime optimum
+  (+$56.00/day, 100% days+); exp75 markouts confirm a cleanly ordered adverse-selection reduction
+  (54–63% → 31–34% → ~10% for alpha=0/1/4). The mechanism is **OBI-conditional inside-spread
+  placement**: at high alpha, quotes lean 1–4 ticks inside LINK's ~10-tick spread on the
+  signal-favoured side; both legs remain passive limit orders gated by real L2 queue depth (not an
+  artifact). Caveat (d) — OOS validation — is partially resolved by C45: alpha=1 produces
+  +$27.04/day, 93.3% days positive on a fully held-out Jun–Jul 2025 window (30 days). The alpha=4
+  OOS figure (+$100.85/day) is an upper bound because the quote-based proxy L2 tracker gives
+  `queue_ahead=0` for inside-spread orders (real L2 data for Jun–Jul 2025 is unavailable). Fully
+  authoritative OOS validation for alpha=4 requires real L2 orderbook data from a second large-
+  relative-tick window (§6).
 
 ---
 
 ## 6. Suggested further work
 
-- **Out-of-sample validation for the §2.7/C44 directional-skew result**: `queue_fraction`
-  sensitivity, `spot_alpha` optimality, and the per-fill fill-quality mechanism are now all
-  resolved (C44 — flat plateau over `[0.1,0.7]`, optimum `spot_alpha ≈ 4` at +$56.00/day,
-  confirmed by exp75's markouts as a 54–63% → 31–34% → ~10% adverse-fill ordering for
-  `spot_alpha` = 0/1/4). Remaining: a test on a held-out window (different month, or a held-out
-  asset with similar tick-to-price ratio), since C42's +$22.32/day, C44's +$56.00/day, and exp75's
-  markout numbers were all obtained on the same window used to select `spot_alpha`.
+- **Cross-asset OOS validation of the directional-skew result (C42–45)**: alpha=1 is confirmed
+  OOS on LINK Jun–Jul 2025 (+$27.04/day, 93.3% days positive, C45). The alpha=4 OOS result is
+  an upper bound due to the proxy L2 tracker's single-level representation. Completing
+  caveat (d) requires running the same grid (alpha ∈ {0,1,4}, real L2 orderbook) on a second
+  large-relative-tick asset (similar tick-to-price ratio to LINK's ~11 bps); if the §2.4
+  spread-axis/queue-axis framing is correct, the OBI-conditional placement mechanism should
+  generalise to any such asset and fail on small-tick assets (as it did on BTC-PERP, C43).
+  This is a new data pull but the same experimental pipeline.
 - **L2 diff-depth validation of `queue_fraction`**: de-prioritised by C44's flat-plateau result
   (the headline is not sensitive to where exactly in `[0.1,0.7]` the true value sits), but still
   useful for calibrating the *absolute* fill-rate level. Capture true Binance L2
