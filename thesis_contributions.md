@@ -2709,6 +2709,433 @@ python experiments/76_link_oos_validation/oos_validation.py
 
 ---
 
+## C46 — Fill realism: inside-spread vs at-touch vs outside-spread (exp 77)
+
+**Exp 77.** `experiments/77_fill_realism/fill_realism.py`  
+LINK Apr-2026, 5 days (Apr 1–5), alpha ∈ {0, 4}, L2-honest (qf=0.5, 10ms/50ms).
+
+**Motivation.** C44 confirmed alpha=4 is profitable (+$56/day, 100% days) and showed per-fill
+markouts improve monotonically with alpha. C45 raised the concern that the alpha=4 mechanism
+requires real L2 inside-spread queue depth to gate fills correctly. This contribution directly
+categorises every maker fill by its price position relative to the natural NBBO at fill time
+and reports markout quality per category — answering concretely where the edge lives.
+
+**Categorisation** (per fill, against nearest L2 snapshot):
+- **inside_spread**: `fill.price > natural_best_bid + ε` (bid) — our order is new NBBO
+- **at_touch**: `fill.price ≈ natural_best_bid` — we're at queue position `≥1`
+- **outside_spread**: `fill.price < natural_best_bid − ε` — behind touch, fills on dips
+
+| alpha | category | n | % | markout_1s (ticks) | adverse% |
+|---|---|---|---|---|---|
+| 0 | inside_spread | 2,446 | 19.8% | −0.90 | 60.1% |
+| 0 | at_touch | 9,440 | 76.5% | −1.40 | 64.1% |
+| 0 | outside_spread | 447 | 3.6% | −3.24 | 74.3% |
+| **4** | **inside_spread** | **6,504** | **63.5%** | **+3.40** | **4.3%** |
+| 4 | at_touch | 332 | 3.2% | +1.59 | 35.8% |
+| 4 | outside_spread | 3,411 | 33.3% | +2.36 | 24.0% |
+
+**Inside-spread fills at alpha=4: the edge is here.** OBI-conditional inside-spread placement
+shifts 63.5% of fills to the new-NBBO category (vs only 19.8% at alpha=0). Those fills have
+markout_1s = +3.40 ticks, with only 4.3% adverse selection — because a bid placed inside the
+spread at OBI > 0 fills only when a sell taker arrives, and OBI > 0 predicted an upward mid,
+so we bought before the rise. The quality gap vs alpha=0's inside-spread (+3.40 vs −0.90 ticks,
+4.3% vs 60.1% adverse) confirms the OBI signal is doing the directional work: at alpha=0 inside-
+spread fills happen randomly; at alpha=4 they happen only when OBI is positive.
+
+**At-touch fills almost disappear at alpha=4** (3.2% of fills vs 76.5% at alpha=0). The OBI
+shift displaces nearly all orders away from the touch. The few at-touch fills remaining (+1.59t,
+35.8% adverse) occur when OBI is near zero, so no shift is applied.
+
+**Outside-spread fills at alpha=4 are also favorable** (+2.36t, 24% adverse). These arise when
+OBI < 0 shifts the bid below the natural best_bid; the market falls to fill us, then partially
+reverts (mean reversion). This is not the core mechanism but is self-consistent: the very sell
+flow that triggers the outside-spread fill is the mean-reverting order that is absorbed by our
+resting liquidity below the touch.
+
+**Markouts grow with horizon** for all alpha=4 categories: inside-spread +3.29t (0.5s) →
++3.40t (1s) → +3.98t (5s) → +4.26t (10s). The OBI-predicted directional move unfolds over at
+least 10 seconds after the fill, consistent with the ~5–10s momentum decay observed in
+microstructure studies of LINK-class assets. At alpha=0, all categories decay toward zero
+over 10s — the classic adverse-selection-plus-mean-reversion profile.
+
+**Confirms C45's proxy concern for alpha=4.** The inside-spread fill count at alpha=4 (6,504
+over 5 days = ~1,300/day) would be grossly inflated under the quote-proxy L2, which gives
+queue_ahead=0 for any bid above natural best_bid. C45's +$100.85/day OOS figure at alpha=4
+must be read as a proxy-inflated upper bound; the in-sample result (+$56/day with real L2) is
+the honest benchmark.
+
+Reproduce:
+```
+python experiments/77_fill_realism/fill_realism.py
+```
+
+---
+
+## C47 — LINK PERP baseline: 1-tick spread arbitraged, OBI skew acts as post_only gating (exp 80)
+
+**Experiment:** LINK/USDT perpetual market making at L2-honest settings (10ms latency, 50ms
+requote, 5 LINK order size, QF=0.5, 30 days Apr-2026). L2 model: quote-proxy (perp quote
+bid_size/ask_size as L1 depth, since real PERP orderbook parquets are mislabeled as LINK spot).
+Four configs: baseline (symmetric at-touch), perp_obi_a1/a4 (PERP own OBI skew), spot_obi_a1
+(cross-venue LINK spot OBI on PERP quotes).
+
+**Results:**
+
+| Config          | Mean PnL/day | Days+ | Fills/day | Taker% |
+|-----------------|-------------|-------|-----------|--------|
+| baseline        | -$74.94     | 0%    | 11,289    | 0.0%   |
+| perp_obi_a1     | -$46.52     | 0%    |  5,850    | 0.0%   |
+| perp_obi_a4     | -$16.99     | 3%    |  2,141    | 0.0%   |
+| spot_obi_a1     | -$63.28     | 0%    |  9,240    | 0.0%   |
+
+All configs: 0% taker rate, 0/30 positive days (except perp_obi_a4: 1/30).
+
+**Mechanism — 1-tick spread vs inside-spread placement:**
+
+LINK PERP has a 1-tick spread (0.001 = 1.11 bps at $9) on every quote (100% of 85,937
+quotes/day). With `half = max(spread/2, TICK) = TICK`, the baseline bid is:
+
+```
+bid = round((mid - TICK) / TICK) * TICK
+```
+
+Python's banker's rounding at the half-tick mid (e.g., mid=8.7775):
+- `round(8776.5) = 8776` → bid = 8.776 (1 tick BELOW best_bid = 8.777)
+- `round(8778.5) = 8778` → ask = 8.778 (AT best_ask = 8.778)
+
+The baseline is effectively **ask-only**: bid is 1 tick below touch, ask is at touch.
+Adverse selection from ask fills at 8.778 drives the -$74.94/day loss.
+
+**Why taker% = 0 despite aggressive OBI shifts:** The engine uses `order_type="post_only"` (the
+correct mode for a maker-rebate strategy). With LINK PERP's 1-tick spread, any bid shift > 0.25
+ticks makes the bid marketable on arrival (bid ≥ best_ask). Post_only rejects these silently:
+
+```
+At OBI=0.5, alpha=4: shift = 4×0.5×0.001 = 0.002 → bid = 8.779 > best_ask = 8.778 → REJECTED
+```
+
+Diagnostic confirmed 58,756 post_only rejections per day at alpha=4 (30-35% of all orders, matching
+P(OBI > 0.33) ≈ 30% empirically). These are not taker fills — they are orders that would cross the
+spread on a 1-tick market, correctly rejected.
+
+**The OBI skew improvement is OBI-gated bid suppression, not inside-spread selection:**
+
+The improvement from alpha=4 (-$74.94 → -$16.99/day, 2,141 vs 11,289 fills) arises because:
+1. When OBI > 0.33 (buy pressure): bid would cross ask → POST_ONLY REJECT → no bid fill
+2. When OBI ≤ 0.33 (neutral/sell pressure): bid stays below touch → normal maker placement
+
+This is mechanically equivalent to "suppress bid when OBI > threshold", i.e., OBI-gated
+one-sided quoting. The 5.3× fill reduction at alpha=4 vs baseline explains most of the PnL
+improvement. The mechanism is **avoidance** (fewer adverse bid fills), not **selection** (choosing
+directionally-correct inside-spread fills as in LINK spot C42/C44).
+
+**Contrast with LINK spot (C42/C44):** In LINK spot, the 10-tick natural spread allows
+inside-spread bid placement (bid > best_bid but < best_ask) → resting maker fills on
+directionally-correct trades → +$22/day improvement. In LINK PERP, the 1-tick spread leaves no
+room: bid > best_bid ≡ bid ≥ best_ask → post_only reject. The LINK spot mechanism requires a
+wider spread to work.
+
+**Cross-venue signal fails to rescue PERP:** spot_obi_a1 (-$63.28/day) is worse than
+perp_obi_a4. The cross-venue LINK spot OBI signal (proven in C39-C45 to be valuable for LINK
+spot) does not help LINK PERP because the fundamental constraint is the spread, not the signal
+quality.
+
+**Hypothesis confirmed:** LINK PERP behaves like BTC-PERP (C43: -$182/day) in that the 1-tick
+spread equilibrium is fully arbitraged. No market-making strategy tested produces positive
+expected PnL. OBI skew improves PnL only through bid suppression (reducing adverse fill
+exposure), not through a positive alpha. The Wyart-Bouchaud zero-profit law (C33) holds for
+tight-spread perpetuals as well as spot.
+
+Reproduce:
+```
+python experiments/80_link_perp_baseline/link_perp_baseline.py
+```
+
+---
+
+## C48 — Asymmetric bid/ask OBI alpha: the symmetric diagonal is optimal and the two sides are superadditive (exp 78)
+
+**Experiment:** LINK spot Apr-2026, 30 days, real L2 orderbooks (`queue_model="l2"`,
+`queue_fraction=0.5`), latency=10ms, requote=50ms, tolerance=0.5 ticks — identical engine
+settings to C44. Grid: `bid_alpha × ask_alpha ∈ {0,2,4,6,8}²` (25 cells), where
+`bid_shift = bid_alpha × OBI × tick` and `ask_shift = ask_alpha × OBI × tick` independently.
+C44's symmetric sweep is the diagonal. Taker fills: 0% in every cell (post-only regime).
+
+| bid_alpha | ask_alpha | mean PnL/day | std | days+ | fills/day |
+|---|---|---|---|---|---|
+| **4** | **4** | **+$56.00** | 18.21 | 100% | 2,245 |
+| 4 | 6 | +$54.94 | 18.32 | 100% | 2,335 |
+| 6 | 4 | +$54.24 | 17.77 | 100% | 2,299 |
+| 2 | 2 | +$48.52 | 14.73 | 100% | 1,844 |
+| 8 | 8 | +$48.22 | 17.62 | 100% | 2,479 |
+| 0 | 2 | +$15.00 | 9.89 | 97% | 1,813 |
+| 2 | 0 | +$10.77 | 7.43 | 93% | 1,492 |
+| 4 | 0 | +$8.78 | 7.35 | 93% | 1,335 |
+| 0 | 0 | −$0.24 | 6.76 | 47% | 3,232 |
+
+**(1) No asymmetric improvement exists.** The global optimum is the symmetric (4,4) cell at
++$56.00/day; the best off-diagonal cells ((4,6), (6,4)) sit within one std error below it. The
+entire region with both alphas ≥ 2 is a plateau (+$46–56/day, 100% days+), so the optimum is
+robust, but leaning the bid harder than the ask (or vice versa) never helps.
+
+**(2) One alpha alone earns far less than half the joint edge.** Setting either alpha to zero
+collapses PnL to +$6–15/day. The interaction is strongly superadditive: (2,0) + (0,2) sum to
++$25.77/day while the joint (2,2) earns +$48.52/day. Each side's alpha does two jobs for its own
+side — it leans that quote inside the spread when the signal favors it *and* retreats it when the
+signal opposes it. But the P&L is earned on round-trips: a favorable inside-spread buy (OBI > 0)
+is monetised when the ask, leaning down after OBI flips negative, sells favorably. With one alpha
+at zero, every round-trip has one signal-timed leg and one naive leg, and the naive leg gives most
+of the edge back. The mechanism is a *pair* strategy — a reservation-price shift at constant
+quoted width — not two independent side hedges.
+
+**(3) Degradation beyond alpha=4 is symmetric and mild** ((8,8): +$48.22), matching C44-D's
+finding that too-aggressive leaning trades signal quality for placement depth.
+
+Reproduce:
+```
+python experiments/78_asymmetric_skew/asymmetric_skew.py
+```
+
+---
+
+## C49 — One-sided quoting is a null: the continuous skew already implements adverse-side avoidance (exp 79)
+
+**Experiment:** same engine and window as C48 (real L2, 30 days Apr-2026). Strategy: symmetric
+alpha=4 skew plus a hard gate — when `OBI > θ` suppress the ask entirely (don't sell into buy
+pressure); when `OBI < −θ` suppress the bid; otherwise quote both sides.
+θ ∈ {0.1, 0.2, 0.3, 0.5, 0.7} plus θ=∞ (never suppress = C48's (4,4)). Control: the same gate
+with alpha=0 (suppression without skew).
+
+| config | mean PnL/day | days+ | fills/day (bid/ask) |
+|---|---|---|---|
+| alpha=4, θ=∞ (reference) | **+$56.00** | 100% | 2,245 (1,125/1,119) |
+| alpha=4, θ=0.1 | +$55.68 | 100% | 2,067 (1,036/1,031) |
+| alpha=4, θ=0.3 | +$55.43 | 100% | 2,089 (1,048/1,042) |
+| alpha=4, θ=0.7 | +$55.41 | 100% | 2,174 (1,090/1,084) |
+| alpha=0, θ=0.2 | −$0.34 | 53% | 346 (183/163) |
+| alpha=0, θ=0.5 | −$1.18 | 47% | 1,697 (885/812) |
+| alpha=0, θ=∞ (baseline) | −$0.24 | 47% | 3,232 (1,689/1,543) |
+
+Every gated variant sits $0.3–0.7/day *below* the ungated reference — a monotone-in-suppression
+null. The gate-only control (alpha=0) is indistinguishable from the zero-profit baseline even
+though it cuts fills by up to 10×. Two conclusions:
+
+**(1) C44's residual ~10% adverse fills are not identifiable by an OBI threshold.** The
+continuous shift already prices the signal: by the time OBI exceeds any θ, the adverse-side
+quote has *already* retreated by `4×OBI` ticks and rarely fills. Hard suppression removes the
+few remaining small-but-favorable fills on that side along with the adverse ones, netting
+slightly negative. Bid/ask fill counts stay balanced (~50/50) in every config — the skew never
+turns the strategy one-sided in practice.
+
+**(2) Contrast with C47 (LINK PERP):** on the 1-tick perp, OBI "skew" only worked *as* gating
+(post-only rejection = forced one-sidedness, −$74.94 → −$16.99/day, still negative). On 10-tick
+spot, explicit gating adds nothing because inside-spread *selection* (C46: 63.5% of fills at new
+NBBO, +3.40 ticks markout) dominates mere avoidance. Avoidance is what you're left with when the
+spread leaves no room to select.
+
+Reproduce:
+```
+python experiments/79_one_sided_quoting/one_sided_quoting.py
+```
+
+---
+
+## C50 — Decoupling recompute from requote: a strategy-level cancel gate at 10ms; the gate only matters where queue priority matters (exp 81)
+
+**Experiment:** recompute every 10ms, but the *strategy* gates the cancel: it returns the
+last-posted prices (backtest hysteresis sees zero movement, skips) unless the ideal bid/ask has
+moved more than `gate_ticks` from the last posting, or the mid has drifted more than 5 ticks
+(staleness trigger). `tolerance_ticks=0` so the engine is neutral. Grid: alpha ∈ {1, 4} ×
+gate ∈ {0.5, 1.5, 3.0}, on two windows: in-sample Apr-2026 (30 days) and OOS Jun 11 – Jul 10
+2025 (30 days). Both windows use the **quote-proxy L2 tracker** (single-level book from the
+quotes file, per C45), which also enables an in-sample proxy-vs-real cross-check against C44.
+
+| window | alpha | gate | mean PnL/day | days+ | fills/day | cancel% |
+|---|---|---|---|---|---|---|
+| IS Apr-2026 | 1 | 0.5 | +$19.38 | 100% | 970 | 2.4% |
+| IS Apr-2026 | 1 | 1.5 | +$35.88 | 100% | 2,273 | 0.7% |
+| IS Apr-2026 | 4 | 0.5 | +$56.34 | 100% | 2,269 | 6.2% |
+| IS Apr-2026 | 4 | 1.5 | +$54.75 | 100% | 2,358 | 1.9% |
+| IS Apr-2026 | 4 | 3.0 | +$49.65 | 100% | 2,475 | 1.1% |
+| OOS Jun–Jul 2025 | 1 | 0.5 | +$23.47 | 90% | 1,803 | 5.2% |
+| OOS Jun–Jul 2025 | 1 | 1.5 | **−$2.72** | 43% | 3,780 | 1.6% |
+| OOS Jun–Jul 2025 | 1 | 3.0 | **−$11.37** | 27% | 3,815 | 1.5% |
+| OOS Jun–Jul 2025 | 4 | 0.5 | +$99.01 | 100% | 4,666 | 13.4% |
+| OOS Jun–Jul 2025 | 4 | 1.5 | +$98.97 | 100% | 4,981 | 4.8% |
+| OOS Jun–Jul 2025 | 4 | 3.0 | +$97.62 | 100% | 5,487 | 2.9% |
+
+**(1) At alpha=4 the gate barely matters** (IS: 56.3/54.8/49.7; OOS: 99.0/99.0/97.6 across a 6×
+range of gate widths and cancel rates from 1.1% to 13.4%). Inside-spread placements have little
+or no queue ahead of them, so cancelling costs almost nothing — the alpha=4 edge is *placement*,
+not *priority*. This is the requote-policy analogue of C44's flat queue-fraction plateau.
+
+**(2) At alpha=1 the gate is decisive and its optimum inverts across regimes.** In-sample, the
+looser 1.5-tick gate nearly doubles PnL over 0.5 ticks (+$35.88 vs +$19.38) — fewer cancels keep
+at-touch queue position. Out-of-sample, in the fast-trending Jun–Jul 2025 regime, the same
+loosening is catastrophic: −$2.72/day (43% days+) at gate=1.5 and −$11.37 (27% days+) at 3.0,
+with fills doubling to ~3,800/day. A weakly-shifted quote left standing in a trending market is
+a stale-quote target: the fills you keep by not cancelling are precisely the adverse ones. The
+naive hypothesis motivating this experiment — "every cancel destroys valuable queue priority" —
+is *inverted* in the honest regime: at-touch queue position on LINK is an asset only in the
+artifact regime (C30); in the honest regime it is a liability under trend.
+
+**(3) Proxy-vs-real cross-check.** IS alpha=4/gate=1.5 under the quote-proxy gives +$54.75/day
+on 2,358 fills — nearly identical to C44's +$56.00/day on 2,245 fills with real L2 orderbooks
+(engines differ in requote machinery, so this is consistency, not proof). The proxy inflation
+flagged in C45/C46 is evidently modest in April-2026 book conditions, consistent with C21's
+hollow-touch finding (real inside-spread depth is usually near zero anyway). The 2025-window
+alpha=4 figures remain upper bounds.
+
+Selected config going forward: **alpha=4, gate=1.5** (top of the IS plateau at 2.5× lower churn
+than gate=0.5).
+
+Reproduce:
+```
+python experiments/81_smart_requote/smart_requote.py
+```
+
+---
+
+## C51 — Fresh OOS on 182 untouched days (Oct 2025 – Mar 2026): the alpha=4 mechanism generalises at scale (exp 82)
+
+**Experiment:** the exp-81 configuration (GatedSpotSkewMM, 10ms recompute, strategy-level gate,
+mid-drift=5 ticks, quote-proxy L2, qf=0.5, zero maker fee, 4.5bps taker fee on 0% taker fills)
+run on six completely untouched months: LINK Oct 2025 – Mar 2026, 182 days. No parameter was
+chosen on any part of this window. Arms: alpha=4/gate=1.5 (the C50 selection) and
+alpha=1/gate=0.5 (the C45-proven conservative reference).
+
+| config | mean PnL/day | std | days+ | worst day | fills/day |
+|---|---|---|---|---|---|
+| alpha=4, gate=1.5 | **+$80.15** | 84.81 | **99.5% (181/182)** | −$1.44 | 5,725 |
+| alpha=1, gate=0.5 | +$16.84 | 52.67 | 77.5% | −$69.77 | 2,583 |
+
+Monthly means, alpha=4: Oct +$123.4 → Nov +$107.7 → Dec +$70.2 → Jan +$59.7 → Feb +$62.6 →
+Mar +$56.5. All six months positive for both arms.
+
+**(1) Persistence.** Combined with C44 (Apr 2026 IS), C45/C50 (Jun–Jul 2025) and this window,
+every tested month from Jun 2025 through Apr 2026 is positive at alpha=4. This closes C44's
+caveat (d) on the time axis: the result is not specific to LINK April 2026.
+
+**(2) The amplitude decays roughly monotonically** from ~$123/day (Oct 2025) to ~$55–57/day
+(Mar–Apr 2026). Whether this is regime (declining volatility/volumes) or genuine crowding-out
+of the signal is not identified by this experiment.
+
+**(3) Tail behaviour favors the aggressive config.** Alpha=4's worst day over 182 days is
+−$1.44; alpha=1's is −$69.77 (and its std is *lower* only relative to its mean). Stronger
+leaning means fewer stale at-touch fills (the C50 mechanism), so the aggressive config is less
+tail-risky, not more — the opposite of the usual aggressiveness/risk intuition.
+
+**(4) Caveats.** Quote-proxy L2 (no real orderbook data before Apr 2026), so the alpha=4 level
+is an upper bound per C45/C46 — though the C50 cross-check suggests the inflation is modest —
+and zero maker fee (see C53 for what a realistic maker fee does). The near-total absence of
+losing days should be read within those two caveats.
+
+Reproduce:
+```
+python experiments/82_fresh_oos/fresh_oos.py
+```
+
+---
+
+## C52 — The spread-width gate: identical strategy, notional-matched, LINK +$99/day vs BTC −$133/day (exp 83)
+
+**Experiment:** the same GatedSpotSkewMM run on LINK spot and BTC spot over the *same* 30 days
+(Jun 11 – Jul 10 2025), with order sizes matched to ~$44–45 notional (5 LINK vs 0.0004 BTC),
+inventory caps at ~7.5× order size on both, quote-proxy L2, identical latency/requote/gate
+settings. The only economically meaningful difference is book geometry: LINK's mean spread is
+**10.0 ticks**, BTC's is **1.16 ticks**.
+
+| asset | spread (ticks) | config | mean PnL/day | days+ | fills/day | PnL/fill |
+|---|---|---|---|---|---|---|
+| LINK | 10.0 | a4/g1.5 | **+$98.97** | 100% | 4,981 | +$0.0204 |
+| LINK | 10.0 | a1/g0.5 | +$23.47 | 90% | 1,803 | +$0.0142 |
+| BTC | 1.16 | a4/g1.5 | **−$133.21** | **0%** | 20,175 | −$0.0066 |
+| BTC | 1.16 | a1/g0.5 | −$131.57 | 0% | 26,805 | −$0.0047 |
+
+**(1) The mechanism requires room between the touches.** On a 1.16-tick book there is no
+inside-spread price to place at: the OBI shift either rounds back to the touch or crosses. The
+strategy degrades to high-churn at-touch making — 20–27K fills/day — which is the known
+zero-to-negative honest regime. Alpha choice becomes irrelevant (−$133 vs −$132).
+
+**(2) The economics are three orders of magnitude apart.** BTC's spread capture per fill is
+`1.16 ticks × $0.01 × 0.0004 BTC ≈ $5×10⁻⁶`, while the realised −$0.0066/fill is ~1,000×
+larger: on a small-relative-tick asset the P&L is pure adverse-selection and inventory noise;
+spread revenue is a rounding error. On LINK, capture per fill (~$0.02 ≈ 4.5 ticks × $0.001 ×
+5 LINK) is the *dominant* term. Equal notional, same code, same days — the tick-normalised
+spread alone flips the sign.
+
+**(3) This completes a clean 2×2 over every book tested** with the honest engine and the OBI
+mechanism: LINK spot (10 ticks) profitable; BTC spot (1.16 ticks, this entry), BTC-PERP
+(~1 tick, C43: −$182/day), LINK-PERP (1 tick, C47: −$75/day) all negative. One binding state
+variable — spread width in ticks, i.e. relative tick size — separates the profitable cell from
+the three unprofitable ones, exactly as C33's two-axis framing predicts: on small-relative-tick
+assets the spread axis is already arbitraged to zero-profit; LINK spot's wide spread is the one
+place where an information signal still has room to select its fills.
+
+Reproduce:
+```
+python experiments/83_spread_viability/spread_viability.py
+```
+
+---
+
+## C53 — Maker fees gate the edge, and a DQN cancel-controller degrades more gracefully than the rule when the regime shifts (exp 84)
+
+**Motivation:** every result in C48–C52 assumes zero maker fee. Binance spot maker fees range
+from 10bps (VIP0) to ~0bps (top tiers). The strategy's gross capture is ~3–5bps of notional per
+fill (IS: $54.75/2,358 fills on ~$46 notional ≈ 5.1bps; Jun–Jul: ≈3.0bps), so the maker fee is
+*the* first-order external parameter: 10bps is hopeless, ~2bps is marginal. This experiment
+prices the strategy at **2bps maker fee** and asks whether a learned, fee-aware cancel policy
+beats the fixed rule.
+
+**Setup:** rule = GatedSpotSkewMM (alpha=4, gate=1.5). RL = DQN (7-dim state: OBI, OBI-vol,
+inventory, time-since-cancel, mid-drift, log-vol, time-of-day; 6 actions: HOLD, cancel-repost
+at α ∈ {+4,+2,0,−4}, post-at-touch; reward = spread-captured − maker fee per step), trained on
+a simplified 100ms environment over the 30 IS days (Apr 2026, 4 epochs), then evaluated inside
+the real 10ms backtest engine. Three windows: IS, OOS Jun–Jul 2025, and a fresh-OOS spot-check
+(first 20 available days of Nov–Dec 2025 — a window C51 identifies as high-churn/high-gross).
+
+| window | strategy | net/day | days+ | gross/day | fills/day |
+|---|---|---|---|---|---|
+| IS Apr 2026 | rule | +$33.24 | 100% | +$54.75 | 2,358 |
+| IS Apr 2026 | DQN | +$32.33 | 100% | +$48.89 | 1,815 |
+| OOS Jun–Jul 2025 | rule | +$32.41 | 100% | +$98.97 | 4,981 |
+| OOS Jun–Jul 2025 | DQN | +$33.11 | 100% | +$80.73 | 3,568 |
+| Fresh OOS Nov 2025 | rule | **−$1.58** | 60% | +$119.46 | 8,141 |
+| Fresh OOS Nov 2025 | DQN | **+$11.89** | 75% | +$100.76 | 5,985 |
+
+**(1) At 2bps the edge survives — except where it churns.** IS and Jun–Jul both net +$32–33/day
+(100% days+). But the Nov 2025 window — the *highest-gross* window of the three (+$119/day) —
+nets **negative** for the rule: fills scale faster than gross (8,141/day at ~$75 notional ⇒
+~$121/day of maker fees), so the fee bill exactly consumes the gross. Gross P&L and net
+viability decouple: the fee-tier gate that bounded the taker strategy (C31) binds the maker
+strategy through *churn*, not through the spread.
+
+**(2) The DQN matches the rule in-regime and beats it out-of-regime.** On IS and Jun–Jul the
+two are statistically indistinguishable (±$1/day). On Nov 2025 the DQN nets +$11.89/day vs
+−$1.58 (75% vs 60% days+) by trading 27% less (5,985 vs 8,141 fills): it surrenders $19/day of
+gross to save ~$32/day of fees. The fixed rule's implicit regime assumption (Apr-2026-like
+churn) breaks; the learned policy's state (OBI-vol, mid-drift, realised vol) lets it modulate
+participation.
+
+**(3) What the agent actually learned is fill selection, not queue preservation.** Its cancel
+rate is ~100% — it never learned to HOLD; it re-decides the posting level (which α, or at-touch)
+every 10ms. Consistent with C50: queue priority is not the asset here, so the only fee lever
+that matters is *which fills you stand for*, and that is what the action space over α controls.
+
+**(4) Context.** C23/C24 found RL beat A-S only inside the artifact engine. This is the first
+honest-engine result where RL adds value — and it adds it precisely as a regime/fee adaptor on
+top of a known signal, not as a signal discoverer. Caveats: one seed, one 20-day fresh window,
+simplified training environment, quote-proxy L2, and the 2bps fee is a mid-tier assumption —
+at VIP0's 10bps every row above is deeply negative.
+
+Reproduce:
+```
+python experiments/84_rl_fee_gate/rl_fee_gate.py
+```
+
+---
+
 ## Future Work
 
 The items below were drafted before the queue-priority verdict (C30) and the zero-profit
@@ -2739,7 +3166,10 @@ finding rather than dropped — some still test it directly, others are supersed
   monotonically-increasing reduction in adverse selection (54-63% -> 31-34% -> ~10% adverse fills
   for alpha=0/1/4). Remaining: (d) out-of-sample validation — a different window (different month,
   or a held-out asset with similar tick-to-price ratio) to check both the +$56.00/day level and the
-  alpha≈4 optimum location are not specific to LINK April 2026.
+  alpha≈4 optimum location are not specific to LINK April 2026. **Update:** C51 closes (d) on the
+  time axis (182 fresh days Oct 2025 – Mar 2026, +$80.15/day, 99.5% days+, quote-proxy-L2 caveat);
+  the held-out-asset axis remains open — C52 shows BTC fails for structural spread-width reasons,
+  so a third LINK-like (large-relative-tick) asset is still the missing test.
 - **L2 diff-depth validation of `queue_fraction`** (motivated by C42(a) above, now de-prioritized
   by C44's flat-plateau result, but still useful for the absolute fill-rate calibration): buy or capture
   full Binance L2 order-book-update streams (current CoinAPI orderbook files are ~1Hz

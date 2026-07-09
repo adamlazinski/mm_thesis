@@ -1,5 +1,58 @@
 # Codebase State — HFT Market Making Thesis
-_Last updated: 2026-06-16 (checkpoint after 10ms/LINK perp-signal arc, weekend engine work)_
+_Last updated: 2026-07-09 (checkpoint after exp 77–84 arc: fill realism, asymmetric/one-sided
+skew, smart requote, 182-day fresh OOS, spread viability, RL fee gate — written up as C46–C53)_
+
+---
+
+## CHECKPOINT — 2026-07-09
+
+### Committed in this checkpoint
+- `thesis_contributions.md`: C46–C53 added (exps 77–84)
+- Experiment folders 77–84 (scripts + result JSONs + DQN weights)
+
+### The exp 77–84 arc (all LINK spot OBI-skew follow-ups to C42/C44/C45)
+- **C46 (exp 77)** fill realism: at alpha=4, 63.5% of fills are inside-spread/new-NBBO with
+  +3.40t markout and 4.3% adverse — the edge lives in OBI-conditional inside-spread placement.
+- **C47 (exp 80)** LINK PERP baseline: 1-tick spread fully arbitraged (−$74.94/day); OBI skew
+  only helps as post_only gating (avoidance), not selection.
+- **C48 (exp 78)** asymmetric bid/ask alpha grid: symmetric (4,4) optimal (+$56.00/day, real L2);
+  one-sided alphas superadditive — pair mechanism, not per-side hedges.
+- **C49 (exp 79)** one-sided quoting gate: null; the continuous skew already implements
+  adverse-side avoidance.
+- **C50 (exp 81)** 10ms recompute + strategy-level cancel gate: gate irrelevant at alpha=4
+  (placement, not priority); at alpha=1 the gate optimum inverts IS→OOS (stale at-touch quotes
+  are liabilities under trend). IS proxy-vs-real cross-check: +$54.75 (proxy) vs C44 +$56.00
+  (real L2) — proxy inflation modest in Apr-2026 conditions.
+- **C51 (exp 82)** fresh OOS, 182 untouched days Oct 2025–Mar 2026: alpha=4/gate=1.5 →
+  **+$80.15/day, 181/182 days+, worst day −$1.44**; monthly means decay $123→$56; closes C44
+  caveat (d) on the time axis. Proxy-L2 + zero-maker-fee caveats.
+- **C52 (exp 83)** spread viability, notional-matched same-window: LINK (10.0-tick spread)
+  +$98.97/day vs BTC (1.16-tick) −$133.21/day, 0% days+. Spread width in ticks is the binding
+  state variable; completes the 2×2 (LINK spot + vs BTC spot / BTC-PERP / LINK-PERP −).
+- **C53 (exp 84)** 2bps maker fee + DQN cancel controller: rule nets +$32–33/day IS and Jun–Jul
+  OOS but **−$1.58/day on Nov 2025** (fee bill ≈ gross in the high-churn window); DQN matches
+  rule in-regime and holds **+$11.89/day** on Nov 2025 by trading 27% less. First honest-engine
+  RL win — RL as regime/fee adaptor, not signal discoverer. Cancel rate ~100%: it learned fill
+  selection, not queue preservation.
+
+### Also on disk, deliberately NOT committed
+- `rebuild_v2/` — isolated corrected rebuild of the whole backtester (June 13): engine-semantics
+  audit (post_only, aggressor-side fills, trade-quantity conservation, queue-at-activation,
+  A-S/GLFT unit+formula corrections), 406-backtest rerun of the central LINK Apr-2026 matrix,
+  `REBUILD_CHANGELOG.md` (canonical audit), `CLAIM_EVIDENCE_MATRIX.md` (A–E claim grades),
+  `defense_audit.md`, `hypotheses.md`, `PHD_RESEARCH_POSITIONING.md` (qf-sensitivity-curve PhD
+  framing). Headline: queue-burden penalty robust (every qf>0 below no-queue, sign-test
+  p=0.0023); qf=0.001 +$9.74/day (grade C), qf=0.01 ≈ breakeven, qf≥0.05 negative. Decide
+  separately whether/how to merge or keep as parallel tree.
+
+### Open threads (next session candidates)
+1. Third large-relative-tick asset (LINK-like) — the remaining axis of C44 caveat (d), needs a
+   new CoinAPI pull.
+2. Alpha-decay vs regime question from C51's monthly amplitude decline ($123→$56/day).
+3. RL: more seeds, longer fresh windows, action-distribution logging (exp 84 printed but did
+   not persist per-day action mixes).
+4. Reconcile main-tree results with rebuild_v2 corrected engine (the C42–C53 arc runs on the
+   main engine post-taker-fix; rebuild_v2 has stricter semantics).
 
 ---
 
