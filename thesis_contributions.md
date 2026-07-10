@@ -3110,6 +3110,22 @@ Reproduce:
 python experiments/83_spread_viability/spread_viability.py
 ```
 
+**Addendum (2026-07-10) — what survives of C52, rebuilt on the true grid.** The LINK leg of
+the contrast is retracted per C54 (its "10.0-tick spread" was one real tick; the +$98.97/day
+was phantom inside-spread placement). The BTC leg is valid as measured. The rebuilt claim is
+narrower and better supported: **every book in this dataset is a one-true-tick book, and on
+every one of them, every implementable variant tested — signal-blind or OBI-skewed, spot or
+perp — earns at most the zero-profit equilibrium** (BTC spot −$133/day under churn; BTC-PERP
+−$182/day, C43; LINK-PERP −$75/day, C47; LINK spot at the true tick +$0.36/day ≈ 0, exp 85).
+The spread-width gate therefore survives as the *hypothesis* that fill-quality selection
+requires genuine room between the touches — now untested rather than confirmed, since no
+tested book has such room. External evidence that the tick-normalised spread is the right
+axis comes from the futures literature: Kurth, et al. (2026) find post-2008 short-horizon
+trend-following survives only on **large volatility-normalised-tick** contracts, attributing
+the split to the same dense-book/sparse-book dichotomy as C33's queue-axis/spread-axis law —
+independent, cross-market corroboration that this variable partitions strategy viability.
+The wide-book test is the thesis's outstanding empirical gap (see Future Work).
+
 ---
 
 ## C53 — Maker fees gate the edge, and a DQN cancel-controller degrades more gracefully than the rule when the regime shifts (exp 84)
@@ -3322,6 +3338,9 @@ originals before final thesis submission.
   and uninformed traders. arXiv:2501.03658.
 - Barzykin, A., Bergault, P., Guéant, O. & Lemmel, F. (2025). Optimal quoting under adverse
   selection and price reading. arXiv:2508.20225.
+- Kurth, J. G. et al. (2026). Is trend still your friend? A microstructural account of the
+  demise of short-term trend-following. arXiv:2607.01550. [Volatility-normalised tick size as
+  the cross-sectional survival variable; cited in C52 addendum and Future Work.]
 - Baron, M., Brogaard, J., Hagströmer, B. & Kirilenko, A. (2019). Risk and return in
   high-frequency trading. *Journal of Financial and Quantitative Analysis*, 54(3), 993–1024.
 - Budish, E., Cramton, P. & Shim, J. (2015). The high-frequency trading arms race: frequent

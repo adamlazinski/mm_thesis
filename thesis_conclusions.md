@@ -1,15 +1,17 @@
 # Conclusions
 
 This chapter draws together the contributions in `thesis_contributions.md` (cited below as
-C1–C43) into a single argument. The project began as an implementation-and-calibration study
+C1–C54) into a single argument. The project began as an implementation-and-calibration study
 of Avellaneda–Stoikov (A-S) and Guéant–Lehalle–Fernández-Tapia (GLFT) market making on
 BTC/USDT and LINK/USDT. It ends as a demonstration that **the profitability these models (and
 a reinforcement-learning alternative) appear to show in standard event-driven backtests is not
 a strategy edge at all, but an artifact of an unmodelled queue-priority assumption — and that
 once this is corrected, the honest result is not merely unprofitable but is the *necessary*
-outcome of a zero-profit equilibrium that microstructure theory already predicts.** Three
+outcome of a zero-profit equilibrium that microstructure theory already predicts.** Four
 independent escape routes from this conclusion were tested and each closes for a related but
-distinct reason.
+distinct reason — the fourth, a directionally-informative quote skew that for several months
+appeared to be a robust exception, was ultimately traced to a mis-specified exchange price
+grid and collapses to the equilibrium when placed at prices that exist (§2.7, C54).
 
 ---
 
@@ -26,17 +28,17 @@ apparent profitability reported throughout the early chapters of this thesis (Co
 variable: whether the quote sits inside the natural bid–ask spread under a fill model that grants
 it absolute queue priority.
 
-This is not, however, the end of the story. §2.7 (C39–45) shows that a **directionally-informative
-signal** can break this equilibrium — but only on assets where queue depth, not spread width, is
-the variable left free by the equilibrium (§2.4). On LINK (relative tick ≈ 11 bps), skewing quotes
-by the L1 order-book imbalance turns the −$0.24/day signal-blind equilibrium into a robust
-+$22.32/day, 30/30 days positive (C42). On BTC-PERP (relative tick ≈ 0.15 bps, the smallest in the
-dataset), the identical mechanism is unavailable and even counterproductive (C43). The central
-claim of this thesis survives this refinement intact: queue priority still caps the *rate* at
-which any maker — signal-blind or not — can extract fills from the book (C30); what C42/43 add is
-that, on a large-relative-tick asset, the *value per fill* within that queue-gated set is not
-itself pinned to zero, and a retail-accessible signal can select for it. This refinement is
-presented with its open caveats (§5) — it is an active, not yet fully validated, result.
+The strongest challenge to this headline came from within the project itself. §2.7 (C39–C51)
+appeared to show that a **directionally-informative signal** — skewing quotes by the L1
+order-book imbalance — breaks the equilibrium on LINK, robustly and out of sample (+$22 to
++$80/day, ~100% of days positive). C54 retracts this: live-feed validation revealed that
+LINK's exchange tick size throughout the historical data was 0.01, not the 0.001 assumed in
+every LINK experiment, so the "inside-spread" placements the mechanism required were at prices
+that do not exist on the exchange. Rerun at the true tick, the same configuration earns
++$0.36/day (statistically zero) — the equilibrium, again. The headline above therefore stands
+**without exception** across every book, strategy class, and signal tested; §2.7 documents the
+episode, because both the seduction and the retraction are informative about how such
+artifacts arise and how they are caught.
 
 ---
 
@@ -85,8 +87,12 @@ bid–ask spread**, and the fill model (`order_manager.py`, pre-fix `queue_model
 a resting order on the *first* trade that touches its price, i.e. grants it absolute queue
 priority, as though no other order were resting ahead of it.
 
-LINK's natural spread is exactly 10 ticks (5 per side) for 99.9% of April 2026. Decomposing a
-flat A-S strategy by regime (30 days, zero fees):
+LINK's natural spread is exactly 10 backtest ticks (5 per side) for 99.9% of April 2026 —
+where, per C54, one "backtest tick" is 0.001 but the exchange tick was 0.01, so this is one
+*real* tick and the inside-spread placements below were doubly impossible: granted absolute
+queue priority by the fill model, at prices the exchange would have rejected. This sharpens
+rather than weakens the decomposition — the artifact regimes were unimplementable twice over.
+Decomposing a flat A-S strategy by regime (30 days, zero fees):
 
 | Regime | Half-spread | Inside natural touch? | Honest fill model? | Fills/day | PnL/day | 1s markout |
 |---|---|---|---|---|---|---|
@@ -344,142 +350,78 @@ variance-risk-premium for *bearing risk*, C35's "practical corollary"), not a re
 microstructure edge, and requires two-venue infrastructure regardless. **This was the last
 untested escape, and it closes negative.**
 
-### 2.7 A directional signal breaks the equilibrium — but only where the queue axis is free (C39–45)
+### 2.7 The apparent exception and its retraction: the directional-skew episode (C39–C51, C54)
 
-Sections 2.1–2.6 establish the equilibrium for a **signal-blind** maker: one whose quotes carry
-no information about the direction of the next price move. C39–45 ask whether a
-directionally-informative signal changes the picture — and, per §2.4's spread-axis/queue-axis
-unification, whether the answer depends on which axis is free.
+Sections 2.1–2.6 establish the equilibrium for a **signal-blind** maker. C39–C51 asked
+whether a directionally-informative signal changes the picture — and for several months of
+this project the answer appeared to be an emphatic yes.
 
-**The mechanism (C42).** `stats.obi`, the L1 order-book imbalance `(bid_size − ask_size) /
-total_size`, is positive-IC for near-term price direction (IC ≈ 0.20–0.36, established in
-earlier chapters). Shifting both quotes *and* the reservation price by `spot_alpha · obi · tick`
-(`spot_alpha = 1`, "`spot1`") does not change fill *quantity* much, but changes fill *quality* —
-which side gets filled, and how adversely-selected that fill is.
+**The apparent result.** `stats.obi`, the L1 order-book imbalance, is positive-IC for
+near-term price direction (IC ≈ 0.20–0.36). Shifting both quotes and the reservation price by
+`spot_alpha · obi · tick` on LINK, at the 10ms/50ms calibration that §2.3 showed sits at the
+equilibrium, appeared to break it decisively (30 April-2026 days, real L2, 4.5 bps taker fee):
 
-Result on LINK, at the 10ms-latency/50ms-requote calibration that §2.3 showed sits at the
-equilibrium (30 April days, `queue_fraction = 0.5`):
-
-| variant | mean PnL/day (4.5 bps) | days positive | mean fills/day | taker % |
-|---|---|---|---|---|
-| baseline (signal-blind) | −$0.24 | 46.7% (14/30) | 3,232 | 0.0% |
-| `spot1` (`spot_alpha = 1`) | **+$22.32** | **100% (30/30)** | 1,583 | 0.0% |
-
-`spot1` breaks the equilibrium decisively and *uniformly* — every one of 30 days is positive
-(range +$6.68 to +$49.72) — at roughly half the fill count, with `taker_pct = 0%` throughout
-(ruling out a reopening of C30's inside-spread artifact via the marketable-on-arrival door of
-§2.3). Two directionally-*agnostic* widening filters tested in the same rerun (`obi_a1`,
-`ret_a1` — multiplicative spread-widening triggered by perp-derived toxicity measures) do **not**
-show the same flip: `obi_a1` is noise-level (+$0.46/day, 56.7% days+) and `ret_a1` is actually
-*worse* than baseline (−$1.71/day) despite cutting fills by 77.5%. The contrast is mechanism, not
-magnitude: a directional signal edits *which* fills happen and how adverse-selected they are; an
-agnostic filter only edits *how many* — and scaling quantity near a zero-profit equilibrium
-scales the (small) wins and the (small) losses by roughly the same factor, netting to ≈zero
-either way.
-
-**The cross-asset test (C43).** §2.4 predicts this mechanism should fail on a
-small-relative-tick asset, where the *spread* axis — not the queue — is the variable left free,
-and is already arbitraged to its floor by sub-millisecond participants. Running the identical
-grid (same engine settings, same `spot1` mechanism, the instrument's *own* L1 OBI as the signal)
-on BTC-PERP — its own L2 book, the only instrument/window with BTC-side L2 snapshots (BTC spot
-has none at all), 5 days (2026-04-01..05):
-
-| | baseline (signal-blind) | `spot1` |
-|---|---|---|
-| mean PnL/day (4.5 bps) | **−$181.84** | **−$233.32** |
-| days positive | 0/5 | 0/5 |
-| mean fills/day | 69,939 | 60,829 |
-
-(All three spread rules tested — touch, A-S with γ→0, and a literal constant — agree to within
-$0.3/day, confirming BTC-PERP's market spread is pinned at 1 tick essentially always; the
-spread-*rule* axis is not a free variable on this instrument.)
-
-Both numbers are deeply negative: BTC-PERP's signal-blind baseline does **not** sit at the
-equilibrium the way LINK's does (−$182/day vs LINK's −$0.24/day) — it sits far below it,
-consistent with a relative tick size (~0.15 bps, ~70× smaller than LINK's ~11 bps) too small for
-a 10ms maker to capture *any* queue-axis rent at all. And `spot1` makes it **worse** — the
-*opposite* sign from LINK — losing a further ~$51/day, consistent across all 5 days. With only
-~13% fewer fills (vs LINK's −51%), the directional skew here can only re-select among an already
-fully-adversely-selected fill set, and that re-selection tilts toward the side about to move
-*against* the resting order.
-
-**A robustness pass strengthens this further (C44).** Three follow-up sweeps test (a) and (b) of
-the caveats below. A `queue_fraction` sweep over [0.3, 0.7] shows `spot1`'s edge is flat
-(21.93–22.32, 100% days positive throughout); extending down to {0.0, 0.1, 0.2} finds 0.1 and 0.2
-on the same plateau (baseline near zero, `spot1` ≈ 22.5–22.7) but a sharp discontinuity at
-`queue_fraction = 0` — fills roughly quadruple and even the signal-blind baseline jumps to
-+$71/day, which is exactly the L2-honest engine degenerating into the pre-correction "no queue"
-artifact regime (C29/30). So `queue_fraction = 0.5` sits centered in a wide,
-mechanistically-bounded plateau, not near an unknown edge. A spread-rule grid (touch / A-S γ→0 /
-constant) confirms the formula choice is inert here too — all three agree to within $0.05/day for
-both baseline and `spot1` — for a different reason than C43's BTC result (here A-S's γ→0 collapse
-happens to land on the same ~5-tick half-spread as "constant"). Finally, a `spot_alpha` sweep from 0 to 5 finds `spot_alpha = 1` (inherited from C40's
-*artifact-regime* exploration) was far from optimal: PnL rises monotonically to a plateau at
-`spot_alpha ∈ [3,5]`, peaking near **`spot_alpha = 4` at +$56.00/day, 100% days positive,
-taker% = 0%**. Unlike the 0→1 step (which roughly halved fill count), 1→4 *increases* fill
-count (1,583→2,245) while also increasing PnL per fill (~$0.014 → ~$0.025).
-
-The mechanism at high alpha is **OBI-conditional inside-spread placement**: with LINK's ~10-tick
-market spread (half ≈ 5 ticks = $0.005), a shift of `4 × OBI × $0.001 ≤ $0.004` places the bid
-up to 4 ticks inside the spread (between best\_bid and mid) without crossing the mid. Both legs
-remain passive limit orders (taker% = 0%); the strategy leans quotes into the signal direction
-rather than sitting symmetrically at the touch. This is distinct from C40's inside-spread
-artifact: in the real L2 orderbook data used here, inside-spread price levels carry actual queue
-depth from other resting participants, so fills remain gated by cumulative trade volume rather
-than being granted for free. A per-fill markout analysis (`signed_markout(h) = sign ×
-(mid(t+h) − fill.price)`, exp75) confirms the mechanism directly at horizons of 0.5–10s:
-`spot_alpha = 0` fills are adversely selected at every horizon (−1.26 to −0.41 ticks, 54–63%
-adverse), `spot_alpha = 1` flips this to favourable (+1.54 to +2.48 ticks, 31–34% adverse),
-and `spot_alpha = 4` roughly doubles `spot_alpha = 1`'s markout at every horizon (+2.88 to
-+4.06 ticks) while cutting the adverse-fill rate to ~10% — a clean, monotonic, three-point
-ordering with no sign changes.
-
-**Synthesis.** The equilibrium of §2.1–2.6 is not a single number but a *surface*, parameterised
-by relative tick size. At one end (BTC-PERP, tick ≈ 0.15 bps), the surface is at its floor and
-both the signal-blind and the signal-aware maker sit at or below it — no rent of either kind
-survives, and a directional signal can only make a bad outcome worse. At the other end (LINK,
-tick ≈ 11 bps), the signal-blind maker sits *at* the equilibrium (≈$0/day, §2.3), but a maker
-who re-selects fills using a directional signal via OBI-conditional inside-spread placement
-extracts a substantial, robust rent above it (+$22.32/day at alpha=1, +$56.00/day at the
-optimum alpha=4, in-sample; +$27.04/day at alpha=1 on the OOS window, C45). This refines, but
-does not overturn, §1's headline: queue priority gates fill *rate* (C30 — the signal-blind
-maker is capped at the equilibrium regardless), but it does not gate fill *quality*, and on an
-asset where the queue axis is the equilibrium's free variable, fill-quality selection via a
-directional signal is a genuinely retail-accessible mechanism.
-
-**Caveats.** (a)–(c) are now resolved by C44: `queue_fraction` is flat over `[0.1, 0.7]` with a
-mechanistically-understood cliff at 0 (the pre-correction artifact regime); `spot_alpha ≈ 4` (not
-1) is the honest-regime optimum, confirmed by taker%=0% throughout and per-fill markouts showing
-a cleanly ordered adverse-selection reduction (54–63% → 31–34% → ~10% for alpha=0/1/4). (d)
-Out-of-sample validation is addressed by C45 (below).
-
-**C45 — OOS validation on LINK June–July 2025 (30 days).** A fully held-out window 9 months
-before the in-sample period, using a quote-based proxy L2 tracker (real orderbook snapshots do
-not exist for this period; the proxy is exact for at-touch orders):
-
-| alpha | mean PnL/day | days+ | mean fills/day |
+| variant | mean PnL/day | days positive | fills/day |
 |---|---|---|---|
-| 0 (baseline) | −$17.28 | 10.0% | 1,030 |
-| 1 | **+$27.04** | **93.3% (28/30)** | 1,714 |
-| 4 | +$100.85* | 100% | 4,517 |
+| baseline (signal-blind) | −$0.24 | 46.7% | 3,232 |
+| `spot_alpha = 1` (C42) | +$22.32 | 100% | 1,583 |
+| `spot_alpha = 4` (C44) | +$56.00 | 100% | 2,245 |
 
-*\*Upper bound: the proxy gives queue\_ahead=0 for inside-spread orders (it knows only the BBO
-level), whereas in-sample real L2 data shows actual inside-spread queue depth. The 4,517
-fills/day at alpha=4 vs 1,030 at alpha=0 reflects this proxy limitation. Alpha=1, where the
-shift rarely exceeds one tick and quotes stay near the touch, is not affected; 1,714 fills/day
-OOS is consistent with the in-sample pattern.*
+The result survived every robustness axis it was tested on: flat across `queue_fraction ∈
+[0.1, 0.7]` (C44), monotone per-fill markout improvement with a clean adverse-selection
+ordering 54–63% → 31–34% → ~10% for alpha = 0/1/4 (C44-E), symmetric-alpha optimality (C48),
+out-of-sample confirmation on Jun–Jul 2025 (+$27.04/day at alpha=1, C45) and on 182 fresh
+days Oct 2025 – Mar 2026 (+$80.15/day, 99.5% days positive, C51), and a fee-aware RL
+variant (C53). The identified mechanism (C46) was **OBI-conditional inside-spread
+placement**: 63.5% of alpha=4 fills occurred at new-NBBO prices between LINK's best bid and
+ask, with +3.40-tick markouts and near-zero queue ahead of them. The same mechanism failed
+on BTC-PERP (C43: baseline −$182/day, skew −$233/day) — apparently confirming §2.4's
+prediction that fill-quality selection works only where the queue axis, not the spread axis,
+is the equilibrium's free variable.
 
-**Alpha=1 (+$27.04/day, 93.3% days positive) is the clean OOS confirmation.** A different
-market regime — higher volatility, a persistent downtrend from ~$15 to ~$11 before recovering,
-daily price ranges of 10–15% — produces a larger directional-signal effect (+$27 OOS vs +$22
-in-sample), consistent with OBI being more informative in trending conditions. For alpha=4,
-the in-sample result (+$56.00/day with real L2 inside-spread queue depth) remains the
-authoritative number; the OOS figure provides a directional upper bound.
+**The retraction (C54).** The first day of a live Binance L2 capture — built to validate the
+backtest's proxy L2 tracker, not to hunt for this error — showed LINK trading at a one-tick
+spread where the historical dataset showed ten. Grid analysis resolved the discrepancy:
+100.00% of quotes, trades, and L2 price levels in every historical LINK window (Jun 2025 –
+Apr 2026) sit on a **0.01 grid**, with consecutive book levels spaced exactly 0.01 apart and
+the spread pinned at exactly ten milli-ticks. LINK's exchange tick size throughout the data
+was **0.01, not the 0.001 every experiment assumed** (Binance reduced it to 0.001 only after
+April 2026; the perpetual's data, genuinely on a 0.001 grid, is the internal control that
+exonerates the data vendor). There was never a valid price inside LINK's spread. Every
+inside-spread placement in C42–C51 — the entire mechanism — was an order the exchange would
+have rejected.
 
-Reproduce: `experiments/68_l2_perp_filter_rerun/`, `experiments/71_btc_perp_spread_rule_grid/`,
-`experiments/69_queue_fraction_sweep/`, `experiments/70_spread_rule_grid/`,
-`experiments/72_queue_fraction_sweep_low/`, `experiments/74_spot_alpha_sweep_confirm/`,
-`experiments/75_markout_analysis/`, `experiments/76_link_oos_validation/`.
+Rerunning the core configuration at the true tick (exp 85: same 30 days, same real-L2
+engine, `TICK = 0.01`):
+
+| alpha | mean PnL/day | days+ | fills/day | at the phantom tick |
+|---|---|---|---|---|
+| 0 | −$0.24 | 47% | 3,232 | −$0.24 (byte-identical) |
+| 1 | −$1.07 | 40% | 838 | +$22.32 |
+| 4 | **+$0.36** (t ≈ 0.3) | 63% | **56** | +$56.00 |
+
+At the true tick the OBI shift either rounds back to the touch or crosses the book and is
+post-only rejected: alpha degenerates into a quote-suppression rule, fills collapse 40×, and
+the PnL is statistically zero — the equilibrium. This is exactly the degeneration C47 had
+already documented on the (correctly-specified) one-tick LINK perpetual, now reproduced on
+spot. The unchanged alpha=0 row confirms the mis-specification never touched the at-touch
+results on which §§2.2–2.4 rest.
+
+**What the episode establishes.** First, the substantive null: on the books tested, a
+genuinely retail-accessible directional signal, executed through exchange-feasible passive
+placements, does **not** break the zero-profit equilibrium — it merely chooses which fills
+not to take. Second, a diagnosis: the apparent edge was a third guise of §2.2's
+inside-spread artifact, manufactured this time not by the fill model but by the price grid
+itself — and its signatures were present all along. The "step-function" fill curve (C15/C20)
+and "hollow touch" (C21) of the early LINK chapters are precisely what a 0.01-grid book looks
+like when measured at 0.001 resolution; C46's inside-spread fills carried zero queue because
+no real order *can* rest at an invalid price; C44's queue-fraction cliff at zero marked the
+artifact boundary exactly. Third, a validation of the framework: §2.4's equilibrium surface
+predicted how a true one-tick LINK must behave, and the corrected rerun lands precisely on
+it. The mis-specification fooled the calibration; it never fooled the theory.
+
+Reproduce: `experiments/85_true_tick_rerun/`; the retracted arc is preserved with correction
+banners in `thesis_contributions.md` (C42–C53) for the audit trail.
 
 ---
 
@@ -501,31 +443,29 @@ Put together, §2.1–2.6 form a closed loop rather than a list of negative resu
 4. Every structurally distinct attempt to step outside this equilibrium — deeper resting
    orders, instant taker fills, a second venue — is shown to re-encounter one of the same two
    gates (queue priority or information/fees) in a new guise (§2.6).
-5. §1–4 describe a *signal-blind* maker. §2.7 shows the loop has a documented exception: a
-   directionally-informative signal (`spot_obi`) can re-select fills *from within* the
-   queue-gated set that §2.2–2.4 establish, extracting a robust rent *above* the equilibrium —
-   but only on the asset (LINK, large relative tick) where the queue-depth axis, not the
-   spread-width axis, is the equilibrium's free variable. On the small-relative-tick asset
-   tested (BTC-PERP, C43), the same mechanism is unavailable and even counterproductive: the
-   spread axis is already arbitraged below the equilibrium by faster participants, leaving no
-   fill-quality rent to select for.
+5. §1–4 describe a *signal-blind* maker. §2.7 tested the last remaining lever — a
+   directionally-informative signal — and its apparently decisive success (C42–C51, +$22 to
+   +$80/day across four windows) was retracted when live-feed validation revealed the
+   placements it required did not exist on the exchange's price grid (C54). Rerun at the true
+   tick, the signal earns the equilibrium (+$0.36/day, t ≈ 0.3). The loop closes with **no
+   exception**: on every book tested, every implementable strategy — signal-blind or
+   signal-aware, classical or RL — earns at most the zero-profit equilibrium.
 
 The two-gate meta-hypothesis — **every accessible "edge" in this market is gated by queue
 priority (a maker problem) or by fee tier / information (a taker problem), and nothing tested
 escapes both** — therefore stands not as an empirical summary of one dataset, but as a
 consequence of how competitive liquidity provision prices risk.
 
-**Refinement from §2.7.** The meta-hypothesis above describes the *rate* at which a signal-blind
-maker can extract rent — capped at, or at realistic latency sitting exactly on, zero by the
-queue-priority/zero-profit gate. It does not by itself bound the *value per fill* available to a
-maker who can select directionally among the fills the queue allows. C42 shows this margin is
-large and positive on LINK (+$22.32/day from re-selecting among ~1,600 queue-gated fills/day at
-`spot_alpha=1`; +$56.00/day at the tuned `spot_alpha≈4`), and C43 shows it is negative on
-BTC-PERP, where the queue axis has nothing left to select from. C45 confirms the alpha=1 result
-on a held-out OOS window (+$27.04/day, 93.3% days positive, 9 months before the in-sample
-period). The two-gate framing therefore survives as a description of *rate*; a third,
-asset-dependent axis — fill-quality selection via OBI-conditional spread placement, bounded by
-relative tick size — governs *value per fill*.
+**The §2.7 episode strengthens rather than qualifies this.** The directional-skew arc was, in
+effect, a year-long adversarial attack on the meta-hypothesis from inside the project — it
+survived robustness sweeps, out-of-sample windows, markout analysis, and an RL variant, and
+fell only to a validation channel *outside* the backtest entirely (the venue's live feed).
+Two lessons generalise. First, the framework predicted the corrected outcome before it was
+measured: a true one-tick LINK must behave like the one-tick perpetual (C47), and it does
+(exp 85). Second, the artifact taxonomy of §2.2 gains a third member: profit can be
+manufactured by the fill model (queue priority, C30), by the execution model
+(marketable-on-arrival, §2.3), or by the *price grid itself* (C54) — and all three
+present identically, as inside-spread placements that real markets would not admit.
 
 ---
 
@@ -545,11 +485,20 @@ queue-priority assumption*. Applied here, this diagnostic:
   which fills should, but did not, convert to taker fills (exp 62);
 - separates "no edge exists" from "no edge is *causally accessible*" via the foresight-oracle
   construction (C34), turning a single negative number into two numbers that bound the size of
-  the information/priority gate.
+  the information/priority gate;
+- caught a dataset-level mis-specification that had survived a year of robustness testing
+  (C54), by adding a second diagnostic: **validate the exchange price grid against the venue's
+  live feed and exchange filters before any tick-denominated calibration.** The signature is
+  unmistakable once looked for — a spread pinned at a constant "N ticks" with every price on a
+  coarser sub-grid — and the failure mode it prevents is severe: a backtest quoting on a finer
+  grid than the exchange's manufactures phantom room inside the spread, where placements enjoy
+  zero queue (no real order can rest at an invalid price) and therefore reproduce the
+  queue-priority artifact through a channel no fill-model correction can see.
 
 A backtest that does not report this decomposition cannot distinguish a genuine edge from a
 queue-priority rent — a distinction this thesis shows to be the difference between
-+$94/day and −$7.93/day on the *same* strategy and data.
++$94/day and −$7.93/day on the *same* strategy and data, and (via C54) between +$56.00/day
+and +$0.36/day on the same strategy, data, *and* fill model.
 
 ---
 
@@ -575,48 +524,44 @@ queue-priority rent — a distinction this thesis shows to be the difference bet
   the verdict already established on LINK.
 - **Order size.** Throughout, order sizes are assumed small relative to L1 depth (a price
   taker for sizing purposes), consistent with the retail framing.
-- **The §2.7 directional-skew result (C42–45).**  Caveats (a)–(c) are resolved by C44:
-  `queue_fraction` is flat over `[0.1, 0.7]`; `spot_alpha ≈ 4` is the honest-regime optimum
-  (+$56.00/day, 100% days+); exp75 markouts confirm a cleanly ordered adverse-selection reduction
-  (54–63% → 31–34% → ~10% for alpha=0/1/4). The mechanism is **OBI-conditional inside-spread
-  placement**: at high alpha, quotes lean 1–4 ticks inside LINK's ~10-tick spread on the
-  signal-favoured side; both legs remain passive limit orders gated by real L2 queue depth (not an
-  artifact). Caveat (d) — OOS validation — is partially resolved by C45: alpha=1 produces
-  +$27.04/day, 93.3% days positive on a fully held-out Jun–Jul 2025 window (30 days). The alpha=4
-  OOS figure (+$100.85/day) is an upper bound because the quote-based proxy L2 tracker gives
-  `queue_ahead=0` for inside-spread orders (real L2 data for Jun–Jul 2025 is unavailable). Fully
-  authoritative OOS validation for alpha=4 requires real L2 orderbook data from a second large-
-  relative-tick window (§6).
+- **No genuinely wide-spread book in the dataset.** After C54's reclassification of LINK,
+  every instrument tested — BTC spot, LINK spot, both perpetuals — has a spread of one (or
+  nearly one) true tick. §2.4's prediction that a maker with a directional signal could
+  extract fill-quality rent *where real room inside the spread exists* is therefore
+  **untested, not refuted**: the dataset contains no book on which the test can be run. The
+  directional-skew episode (§2.7) says nothing against the hypothesis — it was never actually
+  run on a wide book. Finding a liquid asset whose spread is genuinely several true ticks is
+  the outstanding empirical gap; futures-market evidence (Kurth et al., 2026, on the
+  volatility-normalised tick size as the survival variable for impact-loop strategies)
+  suggests such books behave qualitatively differently on both the maker and taker sides.
 
 ---
 
 ## 6. Suggested further work
 
-- **Cross-asset OOS validation of the directional-skew result (C42–45)**: alpha=1 is confirmed
-  OOS on LINK Jun–Jul 2025 (+$27.04/day, 93.3% days positive, C45). The alpha=4 OOS result is
-  an upper bound due to the proxy L2 tracker's single-level representation. Completing
-  caveat (d) requires running the same grid (alpha ∈ {0,1,4}, real L2 orderbook) on a second
-  large-relative-tick asset (similar tick-to-price ratio to LINK's ~11 bps); if the §2.4
-  spread-axis/queue-axis framing is correct, the OBI-conditional placement mechanism should
-  generalise to any such asset and fail on small-tick assets (as it did on BTC-PERP, C43).
-  This is a new data pull but the same experimental pipeline.
-- **L2 diff-depth validation of `queue_fraction`**: de-prioritised by C44's flat-plateau result
-  (the headline is not sensitive to where exactly in `[0.1,0.7]` the true value sits), but still
-  useful for calibrating the *absolute* fill-rate level. Capture true Binance L2
-  order-book-update streams (current CoinAPI snapshots are ~1Hz) to calibrate `queue_fraction`
-  against measured queue position and apply the correction to C42/C44's headline numbers.
-- **A second large-relative-tick asset** (similar tick-to-price ratio to LINK's ~11 bps) to test
-  whether C42's fill-quality-selection mechanism is LINK-specific or general, as §2.7's
-  spread-axis/queue-axis framing predicts it should generalise. The current dataset covers only
-  LINK and BTC (plus their perpetuals), so this requires a new CoinAPI data pull — a separate
-  scoping decision from the validation items above, which reuse existing data.
-- **BTC re-run of C36** once clean perpetual trade data is available, to confirm the
-  cross-venue closure is not LINK-specific.
-- **Live order-placement validation**: the queue-position sensitivity in C30 was simulated via
-  an L2 depth model; a small live-paper-trading study would directly measure realised queue
-  position and validate both the ~$1/day signal-blind retail ceiling and the C42/C44
-  directional-skew result (+$22.32/day at `spot_alpha = 1`, +$56.00/day at the tuned
-  `spot_alpha ≈ 4`).
+- **The wide-book test.** Find a liquid asset whose spread is genuinely several *true* ticks
+  (validated against the venue's live feed and exchange filters per §4's diagnostic, not
+  against vendor data alone) and run the directional-skew grid there with real L2 depth. This
+  is the §2.4 fill-quality-selection hypothesis' first actual test — the LINK arc, per C54,
+  never ran it. The tick-size screen should precede the data purchase this time.
+- **Live-capture program (in progress).** A Binance L2 collector (depth diffs + trades +
+  bookTicker, four instruments) and offline reconstruction pipeline are running as of July
+  2026. Beyond the tick validation that produced C54, the captured data supports: (i)
+  proxy-vs-real L2 comparison on identical days, retro-calibrating every quote-proxy result;
+  (ii) `queue_fraction` calibration from diff-depth (replacing the 0.5 assumption with a
+  measured distribution); (iii) inside-spread level lifetimes — how long a newly-created
+  price level rests alone — the empirical "dealer window" of the theory chapter's §7.
+- **BTC re-run of C36**, now unblocked: the live capture includes clean BTC perpetual trades,
+  so the Hayashi–Yoshida cross-venue check can be completed on captured days.
+- **A crypto replication of the volatility-normalised-tick result** (Kurth et al., 2026):
+  their futures evidence puts trend/impact-loop survival on the same tick-normalised axis
+  this thesis derived independently for maker rents (§2.4). Running their signal-speed ×
+  tick-tier grid on crypto (BTC vs a wide-book asset, horizons from seconds to days) would
+  connect the two literatures and directly inform the taker-side momentum design flagged in
+  C31.
+- **Live order-placement validation**: the queue-position sensitivity in C30 was simulated
+  via an L2 depth model; a small live paper-trading study would directly measure realised
+  queue position and validate the ~$1/day signal-blind retail ceiling.
 - **The capital/hedge construction** flagged in C35/C36 (warehouse + cross-venue hedge) is a
   distinct research question — a variance-risk-premium harvesting strategy — outside this
   thesis's retail-microstructure scope but a natural follow-on.
