@@ -491,6 +491,9 @@ is the persistent feature that enables the strategy, not the specific 2025 marke
 
 ## 20. Step-Function Fill Curve and Queue Penalty — LINK L2 Analysis
 
+> **ℹ POST-HOC NOTE (2026-07-10 — see C54).** The geometry documented here is now explained rather than invalidated: LINK's exchange tick in this data was 0.01, and measuring a 0.01-grid book at 0.001 resolution makes nine of ten fine-grid price levels structurally empty. The observations are real; their interpretation changes.
+
+
 **Experiment:** Computed the empirical fill probability curve P(fill | δ, T=0.5s) for LINK/USDT
 over 30 days of April 2026 using CoinAPI L2 orderbook snapshots and trade data. Two models were
 compared: (1) price-only (the backtest model — fill if a sell trade occurs at or below our bid),
@@ -555,6 +558,9 @@ analogue with direct L2 measurement.
 ---
 
 ## 21. LOB Shape: Hollow Touch and Structural Stability
+
+> **ℹ POST-HOC NOTE (2026-07-10 — see C54).** The geometry documented here is now explained rather than invalidated: LINK's exchange tick in this data was 0.01, and measuring a 0.01-grid book at 0.001 resolution makes nine of ten fine-grid price levels structurally empty. The observations are real; their interpretation changes.
+
 
 **Experiment:** Analysed the full 50-level LOB structure on LINK/USDT April 2026 (30 days,
 ~518k snapshots sampled every 5s). Computed mean depth profiles, cumulative depth distribution,
@@ -2315,6 +2321,9 @@ python experiments/67_perp_toxicity_filter/perp_toxicity_filter_mm.py
 
 ## 42. L2-Honest Rerun at Realistic Latency: the Unconditional Baseline Reaches the Zero-Profit Equilibrium, and Spot-OBI Skew Breaks It
 
+> **⚠ POST-HOC CORRECTION (2026-07-10 — see C54).** This entry assumed LINK tick = 0.001. The exchange tick throughout this data period was in fact **0.01** (100% of quotes, trades and L2 prices sit on the 0.01 grid; the "10-tick spread" is one real tick, constant). Every inside-spread placement analysed here was at an exchange-invalid price, so the positive PnL does not describe an implementable strategy. Text retained unedited for the audit trail; C54 carries the reinterpretation.
+
+
 **Motivation:** C40/C41 left an explicit open question: both perp_obi skew (C40) and perp-toxicity
 widening (C41) looked uniformly negative under `queue_model="none"`, a regime where measured PnL
 is roughly monotonic in fill COUNT — any mechanism that reduces fills looks like a loss regardless
@@ -2460,6 +2469,9 @@ python experiments/71_btc_perp_spread_rule_grid/btc_perp_spread_rule_grid.py
 ---
 
 ## 44. C42 Robustness Pass: Queue-Fraction Sweep, Spread-Rule Grid, and Spot-Alpha Optimization — alpha=1 Was Leaving More Than Half the Edge on the Table
+
+> **⚠ POST-HOC CORRECTION (2026-07-10 — see C54).** This entry assumed LINK tick = 0.001. The exchange tick throughout this data period was in fact **0.01** (100% of quotes, trades and L2 prices sit on the 0.01 grid; the "10-tick spread" is one real tick, constant). Every inside-spread placement analysed here was at an exchange-invalid price, so the positive PnL does not describe an implementable strategy. Text retained unedited for the audit trail; C54 carries the reinterpretation.
+
 
 **Motivation:** C42's caveats (a)-(c) flagged `spot1` (+$22.32/day, 30/30 days+) as not yet
 load-bearing: a single `queue_fraction=0.5` point, an `spot_alpha=1` inherited from C40's
@@ -2647,6 +2659,9 @@ python experiments/75_markout_analysis/markout_analysis.py
 
 ## 45. OOS Validation of Spot-OBI Skew on LINK June–July 2025: Signal Generalises; Proxy Limitation Identified at High Alpha
 
+> **⚠ POST-HOC CORRECTION (2026-07-10 — see C54).** This entry assumed LINK tick = 0.001. The exchange tick throughout this data period was in fact **0.01** (100% of quotes, trades and L2 prices sit on the 0.01 grid; the "10-tick spread" is one real tick, constant). Every inside-spread placement analysed here was at an exchange-invalid price, so the positive PnL does not describe an implementable strategy. Text retained unedited for the audit trail; C54 carries the reinterpretation.
+
+
 **Motivation:** C44's caveat (d): every in-sample result (C42: +$22.32/day, C44: +$56.00/day)
 comes from the same 30-day LINK April 2026 window. This entry tests on a fully held-out window:
 LINK June 11 – July 10 2025 (30 days, 9 months before the in-sample period).
@@ -2710,6 +2725,9 @@ python experiments/76_link_oos_validation/oos_validation.py
 ---
 
 ## C46 — Fill realism: inside-spread vs at-touch vs outside-spread (exp 77)
+
+> **⚠ POST-HOC CORRECTION (2026-07-10 — see C54).** This entry assumed LINK tick = 0.001. The exchange tick throughout this data period was in fact **0.01** (100% of quotes, trades and L2 prices sit on the 0.01 grid; the "10-tick spread" is one real tick, constant). Every inside-spread placement analysed here was at an exchange-invalid price, so the positive PnL does not describe an implementable strategy. Text retained unedited for the audit trail; C54 carries the reinterpretation.
+
 
 **Exp 77.** `experiments/77_fill_realism/fill_realism.py`  
 LINK Apr-2026, 5 days (Apr 1–5), alpha ∈ {0, 4}, L2-honest (qf=0.5, 10ms/50ms).
@@ -2855,6 +2873,9 @@ python experiments/80_link_perp_baseline/link_perp_baseline.py
 
 ## C48 — Asymmetric bid/ask OBI alpha: the symmetric diagonal is optimal and the two sides are superadditive (exp 78)
 
+> **⚠ POST-HOC CORRECTION (2026-07-10 — see C54).** This entry assumed LINK tick = 0.001. The exchange tick throughout this data period was in fact **0.01** (100% of quotes, trades and L2 prices sit on the 0.01 grid; the "10-tick spread" is one real tick, constant). Every inside-spread placement analysed here was at an exchange-invalid price, so the positive PnL does not describe an implementable strategy. Text retained unedited for the audit trail; C54 carries the reinterpretation.
+
+
 **Experiment:** LINK spot Apr-2026, 30 days, real L2 orderbooks (`queue_model="l2"`,
 `queue_fraction=0.5`), latency=10ms, requote=50ms, tolerance=0.5 ticks — identical engine
 settings to C44. Grid: `bid_alpha × ask_alpha ∈ {0,2,4,6,8}²` (25 cells), where
@@ -2900,6 +2921,9 @@ python experiments/78_asymmetric_skew/asymmetric_skew.py
 
 ## C49 — One-sided quoting is a null: the continuous skew already implements adverse-side avoidance (exp 79)
 
+> **⚠ POST-HOC CORRECTION (2026-07-10 — see C54).** This entry assumed LINK tick = 0.001. The exchange tick throughout this data period was in fact **0.01** (100% of quotes, trades and L2 prices sit on the 0.01 grid; the "10-tick spread" is one real tick, constant). Every inside-spread placement analysed here was at an exchange-invalid price, so the positive PnL does not describe an implementable strategy. Text retained unedited for the audit trail; C54 carries the reinterpretation.
+
+
 **Experiment:** same engine and window as C48 (real L2, 30 days Apr-2026). Strategy: symmetric
 alpha=4 skew plus a hard gate — when `OBI > θ` suppress the ask entirely (don't sell into buy
 pressure); when `OBI < −θ` suppress the bid; otherwise quote both sides.
@@ -2941,6 +2965,9 @@ python experiments/79_one_sided_quoting/one_sided_quoting.py
 ---
 
 ## C50 — Decoupling recompute from requote: a strategy-level cancel gate at 10ms; the gate only matters where queue priority matters (exp 81)
+
+> **⚠ POST-HOC CORRECTION (2026-07-10 — see C54).** This entry assumed LINK tick = 0.001. The exchange tick throughout this data period was in fact **0.01** (100% of quotes, trades and L2 prices sit on the 0.01 grid; the "10-tick spread" is one real tick, constant). Every inside-spread placement analysed here was at an exchange-invalid price, so the positive PnL does not describe an implementable strategy. Text retained unedited for the audit trail; C54 carries the reinterpretation.
+
 
 **Experiment:** recompute every 10ms, but the *strategy* gates the cancel: it returns the
 last-posted prices (backtest hysteresis sees zero movement, skips) unless the ideal bid/ask has
@@ -2998,6 +3025,9 @@ python experiments/81_smart_requote/smart_requote.py
 
 ## C51 — Fresh OOS on 182 untouched days (Oct 2025 – Mar 2026): the alpha=4 mechanism generalises at scale (exp 82)
 
+> **⚠ POST-HOC CORRECTION (2026-07-10 — see C54).** This entry assumed LINK tick = 0.001. The exchange tick throughout this data period was in fact **0.01** (100% of quotes, trades and L2 prices sit on the 0.01 grid; the "10-tick spread" is one real tick, constant). Every inside-spread placement analysed here was at an exchange-invalid price, so the positive PnL does not describe an implementable strategy. Text retained unedited for the audit trail; C54 carries the reinterpretation.
+
+
 **Experiment:** the exp-81 configuration (GatedSpotSkewMM, 10ms recompute, strategy-level gate,
 mid-drift=5 ticks, quote-proxy L2, qf=0.5, zero maker fee, 4.5bps taker fee on 0% taker fills)
 run on six completely untouched months: LINK Oct 2025 – Mar 2026, 182 days. No parameter was
@@ -3038,6 +3068,9 @@ python experiments/82_fresh_oos/fresh_oos.py
 ---
 
 ## C52 — The spread-width gate: identical strategy, notional-matched, LINK +$99/day vs BTC −$133/day (exp 83)
+
+> **⚠ POST-HOC CORRECTION (2026-07-10 — see C54).** This entry assumed LINK tick = 0.001. The exchange tick throughout this data period was in fact **0.01** (100% of quotes, trades and L2 prices sit on the 0.01 grid; the "10-tick spread" is one real tick, constant). Every inside-spread placement analysed here was at an exchange-invalid price, so the positive PnL does not describe an implementable strategy. Text retained unedited for the audit trail; C54 carries the reinterpretation.
+
 
 **Experiment:** the same GatedSpotSkewMM run on LINK spot and BTC spot over the *same* 30 days
 (Jun 11 – Jul 10 2025), with order sizes matched to ~$44–45 notional (5 LINK vs 0.0004 BTC),
@@ -3080,6 +3113,9 @@ python experiments/83_spread_viability/spread_viability.py
 ---
 
 ## C53 — Maker fees gate the edge, and a DQN cancel-controller degrades more gracefully than the rule when the regime shifts (exp 84)
+
+> **⚠ POST-HOC CORRECTION (2026-07-10 — see C54).** This entry assumed LINK tick = 0.001. The exchange tick throughout this data period was in fact **0.01** (100% of quotes, trades and L2 prices sit on the 0.01 grid; the "10-tick spread" is one real tick, constant). Every inside-spread placement analysed here was at an exchange-invalid price, so the positive PnL does not describe an implementable strategy. Text retained unedited for the audit trail; C54 carries the reinterpretation.
+
 
 **Motivation:** every result in C48–C52 assumes zero maker fee. Binance spot maker fees range
 from 10bps (VIP0) to ~0bps (top tiers). The strategy's gross capture is ~3–5bps of notional per
@@ -3132,6 +3168,89 @@ at VIP0's 10bps every row above is deeply negative.
 Reproduce:
 ```
 python experiments/84_rl_fee_gate/rl_fee_gate.py
+```
+
+---
+
+## C54 — The LINK Tick-Size Mis-specification: the Inside-Spread Mechanism Was Placing at Exchange-Invalid Prices (live-capture validation + exp 85)
+
+**Discovery.** On the first day of live Binance L2 capture (2026-07-10, built to validate the
+quote-proxy L2 tracker), LINK spot traded at $7.90 with a **one-tick spread on a 0.001 price
+grid** (bookTicker: p50 = p90 = 1 tick) — while every historical file in the thesis dataset
+shows a "10-tick" spread. Grid analysis of the historical data resolved the discrepancy:
+
+| dataset | window | % of prices on 0.01 grid | mean spread (milli-ticks) |
+|---|---|---|---|
+| LINK spot (CoinAPI) | Jun 2025 | **100.00%** | 10.00 |
+| LINK spot (CoinAPI) | Nov 2025 | **100.00%** | 10.00 |
+| LINK spot (CoinAPI) | Mar 2026 | **100.00%** | 10.01 |
+| LINK spot (CoinAPI) | Apr 2026 (quotes, trades, L2 levels) | **100.00%** | 10.00–10.01 |
+| LINK **PERP** (CoinAPI) | Apr 2026 | 9.9% (chance) | 1.00 |
+| BTC spot (CoinAPI, control at 0.1 grid) | Jun 2025 | 16.2% (chance) | — |
+| LINK spot (live capture) | Jul 2026 | 0.001 grid | 1.02 |
+
+1.18M quotes and 50K trades per day, all exactly on the 0.01 grid, with consecutive L2
+levels spaced exactly 0.01 apart and a spread pinned at exactly 10 milli-ticks all day:
+**LINK/USDT's exchange tick size throughout the historical data was 0.01, not 0.001.**
+Binance's current `exchangeInfo` reports `tickSize=0.001` (spot and perp) — the tick was
+reduced between April and July 2026 as the price fell toward $8. The perp row is the
+internal control: its data really is on a 0.001 grid (tick correctly specified in C47), so
+the spot grid is a property of the market, not of CoinAPI's pipeline.
+
+**What this invalidates.** Every LINK spot experiment assumed `TICK = 0.001`. The "10 ticks
+of room" between best bid and ask never existed — between 9.08 and 9.09 there is no valid
+price. Every inside-spread placement in the C42–C53 arc (+$22.32, +$56.00, +$80.15/day) was
+at an exchange-invalid price no real order could occupy. Those results are engine-consistent
+but not implementable; correction banners now mark C42, C44–C46, and C48–C53. The
+mechanism's own diagnostics are retroactively explained: the "step-function fill curve"
+(§20) and "hollow touch" (§21) are what a 0.01-grid book looks like when measured at 0.001
+resolution (nine of ten fine-grid levels structurally empty); C46's `queue_ahead = 0` on
+inside-spread placements reflects prices where no order *could* rest; C44's queue-fraction
+cliff at zero marks the artifact boundary exactly.
+
+**What survives.** All at-touch results — the alpha=0 baselines quote real book prices, so
+C42's −$0.24/day zero-profit equilibrium at 10ms stands. The queue-priority verdict
+(C29/C30), the zero-profit law (C33), all BTC results (its 0.01 tick was correct), BTC-PERP
+(C43), and LINK-PERP (C47, tick verified correct). The honest-engine negative verdict is
+untouched; what falls is only the celebrated exception to it.
+
+**Exp 85 — the rerun at the true tick.** Same 30-day Apr-2026 window, real L2, identical
+engine settings (qf=0.5, 10ms/50ms, post_only), `TICK = 0.01`, alpha ∈ {0, 1, 4}:
+
+| alpha | mean PnL/day | std | days+ | fills/day | vs. TICK=0.001 result |
+|---|---|---|---|---|---|
+| 0 | −$0.24 | 6.76 | 47% | 3,232 | −$0.24 (identical — at-touch prices are real) |
+| 1 | −$1.07 | 6.18 | 40% | 838 | +$22.32 |
+| 4 | **+$0.36** | 6.83 | 63% | **56** | **+$56.00** |
+
+At the true tick the +$56.00/day becomes +$0.36/day (t ≈ 0.3 over 30 days — indistinguishable
+from zero), and the fill count collapses from 2,245 to 56 per day. The mechanism degenerates
+exactly as C47 predicted for one-tick books: with no valid price inside the spread, any OBI
+shift beyond a quarter-tick makes the quote marketable and post_only rejects it, so alpha
+acts as a coarse OBI-gated quote-suppression rule — the strategy barely quotes (98% fewer
+fills than baseline), avoids some adverse selection, and earns the zero-profit equilibrium.
+The alpha=0 row is the regression test: byte-identical to the original baseline, confirming
+that only the phantom inside-spread placements — never the at-touch results — were affected
+by the mis-specification.
+
+**Synthesis.** With LINK reclassified, every book tested in this thesis — LINK spot, BTC
+spot, LINK-PERP, BTC-PERP — is a one-tick(-ish) book, and every honest, implementable
+market-making result is zero or negative. The zero-profit law (C33) now holds without
+exception, and C52's spread-width gate survives as theory but loses its positive evidence
+leg: no genuinely wide-spread asset has been tested, because none was in the dataset. The
+§7 dealer-window reading of the theory chapter inverts cleanly: no tested book ever offered
+a price at which a quoter could stand alone.
+
+**Methodological contribution.** The error was catchable only by comparing vendor historical
+data against the venue's live feed and `exchangeInfo` — a constant "N-tick" spread with all
+prices on a coarser sub-grid is the signature of tick-size mis-specification, and it
+silently manufactures phantom room inside the spread for any backtest that quotes on the
+finer grid. Validating tick size against the exchange filter should precede any
+tick-denominated calibration.
+
+Reproduce:
+```
+python experiments/85_true_tick_rerun/true_tick_rerun.py
 ```
 
 ---

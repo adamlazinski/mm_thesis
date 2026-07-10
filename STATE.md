@@ -1,6 +1,30 @@
 # Codebase State — HFT Market Making Thesis
-_Last updated: 2026-07-09 (checkpoint after exp 77–84 arc: fill realism, asymmetric/one-sided
-skew, smart requote, 182-day fresh OOS, spread viability, RL fee gate — written up as C46–C53)_
+_Last updated: 2026-07-10 (C54: LINK tick mis-specification — see checkpoint below)_
+
+---
+
+## CHECKPOINT — 2026-07-10 (CRITICAL CORRECTION)
+
+**C54 (exp 85 + live capture):** LINK's exchange tick in ALL historical data (Jun 2025 –
+Apr 2026) was **0.01, not the 0.001 assumed everywhere** — 100% of quotes/trades/L2 prices
+on the 0.01 grid; the "10-tick spread" was one real tick. Every inside-spread placement in
+C42–C53 was at an exchange-invalid price. Exp 85 rerun at TICK=0.01: alpha=4 → **+$0.36/day
+(t≈0.3), 56 fills/day** vs +$56.00 at the phantom tick; alpha=0 baseline byte-identical
+(−$0.24/day). Correction banners on C42, C44–C46, C48–C53; §20/§21 get "explained" notes.
+C47 (LINK-PERP) verified correct (perp data truly on 0.001 grid). Zero-profit law (C33)
+now holds with NO exception. Discovered by validating live Binance capture (collector +
+reconstruction pipeline, committed 6a977bc) against the historical dataset on day one.
+
+**Also this session:** thesis_theory.md §7 "dealer lineage" section (d7045d2); live L2
+collector running (4 instruments, 25h, data/live/); offline reconstruction pipeline
+(`hft_market_maker/data/binance_capture.py` + `scripts/process_binance_capture.py`)
+validated end-to-end incl. DataLoader/L2BookTracker round-trip. Highly relevant paper found:
+arXiv 2607.01550 "Is Trend Still Your Friend?" — vol-normalised tick size as the same
+binding variable; candidate crypto replication + taker-momentum redesign.
+
+**Next:** thesis_conclusions.md reframe (leans on C42–C51 numbers); C52 rebuild on the
+small/large-tick taxonomy; process full captured day (exp 85+ proxy-vs-real, qf calibration,
+level lifetimes); decide multi-day capture extension.
 
 ---
 
