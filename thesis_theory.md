@@ -16,7 +16,10 @@ order-driven markets they sit inside, supply the vocabulary and the formulas tha
 chapter develops that vocabulary: the A-S and GLFT closed forms (§2–3), the fill-intensity
 primitive both models share (§4), and the two pieces of microstructure theory — price-time
 priority (§5) and zero-profit equilibrium (§6) — that Chapter 5 shows are the actual
-determinants of the honest result.
+determinants of the honest result. It closes (§7) by asking what kind of market the
+A-S/GLFT lineage was built to describe in the first place — a dealer market, not an order
+book — a distinction that turns out to organize the thesis's negative and positive results
+alike.
 
 ---
 
@@ -254,7 +257,79 @@ variable (spread width, or queue depth) is free to adjust.
 
 ---
 
-## 7. Synthesis: What This Chapter Predicts for Chapters 4–6
+## 7. What Market Were These Models Built For? The Dealer Lineage
+
+The preceding two sections catalogued, one assumption at a time, where the A-S/GLFT
+formalism and the order-driven market part ways: fills gated by queue position rather than
+by distance alone (§5), and a fill-decay rate κ that competition pins to σ rather than
+leaving free (§6). This section makes the case that these are not two independent oversights
+but a single one, visible in the models' ancestry: **A-S is a dealer model, and the limit
+order book is not a dealer market.**
+
+**The lineage.** Avellaneda & Stoikov (2008) do not derive their framework from order-book
+first principles; they explicitly adapt Ho & Stoll (1981), a model of a *dealer* — a single
+intermediary who observes a reference price and quotes a bid and an ask around it, facing a
+stochastic arrival of client demand. In Ho & Stoll's world there is no order book at all.
+The intensity `λ(δ)` is the dealer's *private demand curve*: quote further from the
+reference price and clients trade with you less often, but every client who trades does so
+at your quote, because you are the counterparty they came to. Three structural features
+follow, and all three survive intact into A-S and GLFT: **(i)** there are no competing
+quotes in the model — the trade-off is only between the dealer's spread and the client's
+patience, never between the dealer's quote and a better one displayed next to it;
+**(ii)** there is no queue — a client's order cannot be intercepted by someone else's
+resting order at the same price, so `λ(δ)` alone determines fills; **(iii)** price is
+continuous — δ is a real number, not a multiple of a tick. The familiar picture is a
+commodity or FX dealer quoted on request: the client calls to buy, the dealer looks at the
+screen price and decides whether to quote one tick or ten above it. Everything the dealer
+needs to know is the reference price and their own demand curve — which is exactly, and
+only, what A-S's state and primitives encode.
+
+**What the order book adds is precisely what §5–6 documented.** Transplant this dealer into
+a lit order book and each of the three features above fails in a specific, by-now-familiar
+way. Competition (i) is §6: the spread the dealer's formula wants to capture is an
+equilibrium object that other liquidity providers have already bid down to the zero-profit
+level, and κ — far from being a private demand curve — is the public residue of that
+competition, pinned to σ. Priority (ii) is §5: at a shared price level the dealer is not
+"the counterparty the client came to" but one order in a FIFO queue, and the fills that do
+reach the back of the queue are adversely selected. Discreteness (iii) is the tick-size
+wrinkle of §6 and the reason Guilbaud & Pham's formulation (§5) loses the closed form. Read
+this way, the empirical failures documented in Chapters 4–5 — the GLFT spread that lands in
+the momentum plateau whatever the calibration (Contribution 27), the γ that must be
+inflated by orders of magnitude to move at all (Contribution 26), the honest-engine
+zero-profit verdict itself (Contributions 30, 33) — are not defects being discovered
+*inside* the model so much as a category error about its habitat: the model answers "how
+should a monopolistic dealer quote?", and the backtest asks "what does a marginal,
+queue-anonymous order in a competitive book earn?". Those are different questions, and the
+zero-profit theory of §6 says the second has a known answer that no quoting formula can
+improve.
+
+**The literature's own trajectory corroborates the reading.** The most direct descendants
+of the A-S/GLFT framework found their least-qualified applications not in lit order books
+but back in dealer markets: optimal market making for corporate bond dealers and multi-asset
+OTC desks (Bergault & Guéant, 2021; Guéant, 2016, pt. III) and for FX dealers internalizing
+client flow (Barzykin, Bergault & Guéant, 2022, 2023). In an RFQ or streaming-quote market
+the model's primitives are literally true: each dealer faces their own arrival process,
+`λ(δ)` is estimable from that dealer's request-and-hit history, there is no queue, and
+quotes are private. The framework did not fail and get replaced; it migrated home.
+
+**The exception that proves the rule.** This reading also reorganizes the thesis's one
+robust *positive* result. The OBI-conditional inside-spread placement of Contributions
+42–46 is, mechanically, the act of posting at a price level where no other order rests: for
+the life of that quote the strategy is alone at its price, faces the arrival flow directly,
+and is subject to no queue — a momentary, self-constructed reconstruction of the dealer's
+situation inside the order book, held open until competing liquidity joins the level. It is
+profitable only when conditioned on a directional signal (the unconditional version is the
+`{B+}` choice of §5, which buys fills but not favorable ones), and it is *possible* only
+where the book leaves room to stand alone: on wide-spread, large-relative-tick assets
+(Contribution 52's LINK) and not on one-tick books (BTC, and both perpetuals), where there
+exists no price at which an order can be alone and passive at once (Contributions 43, 47).
+The dealer model, in other words, stops describing the market maker's problem *except* at
+the times and places where the market maker can locally re-create the dealer's market — and
+the empirical results select exactly those times and places.
+
+---
+
+## 8. Synthesis: What This Chapter Predicts for Chapters 4–6
 
 Three things follow from §2–6 that the rest of the thesis tests directly.
 
@@ -277,6 +352,16 @@ Three things follow from §2–6 that the rest of the thesis tests directly.
    (Contribution 33) closes the loop: it derives the breakeven spread `δ_be ∝ σ` directly from
    data and synthetic ground truth, and shows the honest-regime result is this equilibrium
    condition being satisfied, not violated.
+
+To these, §7 adds a fourth, about where any *positive* result should be found:
+
+4. **If the dealer-lineage reading of §7 is right, surviving positive performance should be
+   confined to the times and places where the order book locally reproduces the dealer
+   setting** — assets whose spread leaves room to stand alone at a price level, and quoting
+   policies that claim that position selectively, on a directional signal, rather than
+   unconditionally. Chapter 6 finds exactly this pattern: the signal-conditioned
+   inside-spread mechanism works on wide-spread LINK and fails structurally on every
+   one-tick book tested (Contributions 42–52).
 
 The theory in this chapter is therefore used twice in the thesis: first, conventionally, as
 the source of the strategies under test (Chapters 4); second, as the explanation for why
