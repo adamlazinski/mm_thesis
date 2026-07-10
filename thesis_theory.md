@@ -131,7 +131,8 @@ approaches (unconditional market-distance, execution-aware simulation, survival/
 analysis) and finds, in both cases, a fill curve that is not a clean exponential: BTC shows a
 two-component structure (a fast-decaying "liquidity" component plus a roughly
 distance-invariant "momentum" floor), and LINK's curve is closer to a step function (flat
-inside the spread, flat — at a different level — outside it). Both findings are read in
+inside the spread, flat — at a different level — outside it; Contribution 54 later traces
+this shape to the exchange's price grid being ten times coarser than the measurement grid). Both findings are read in
 Chapter 5 not as failures of A-S/GLFT *per se*, but as symptoms of the independence
 assumption above breaking down (§6; Contribution 33).
 
@@ -312,20 +313,26 @@ the model's primitives are literally true: each dealer faces their own arrival p
 `λ(δ)` is estimable from that dealer's request-and-hit history, there is no queue, and
 quotes are private. The framework did not fail and get replaced; it migrated home.
 
-**The exception that proves the rule.** This reading also reorganizes the thesis's one
-robust *positive* result. The OBI-conditional inside-spread placement of Contributions
-42–46 is, mechanically, the act of posting at a price level where no other order rests: for
-the life of that quote the strategy is alone at its price, faces the arrival flow directly,
-and is subject to no queue — a momentary, self-constructed reconstruction of the dealer's
-situation inside the order book, held open until competing liquidity joins the level. It is
-profitable only when conditioned on a directional signal (the unconditional version is the
-`{B+}` choice of §5, which buys fills but not favorable ones), and it is *possible* only
-where the book leaves room to stand alone: on wide-spread, large-relative-tick assets
-(Contribution 52's LINK) and not on one-tick books (BTC, and both perpetuals), where there
-exists no price at which an order can be alone and passive at once (Contributions 43, 47).
-The dealer model, in other words, stops describing the market maker's problem *except* at
-the times and places where the market maker can locally re-create the dealer's market — and
-the empirical results select exactly those times and places.
+**The exception that proved the rule — twice.** This reading also reorganizes the fate of
+the thesis's one apparent *positive* result. The OBI-conditional inside-spread placement of
+Contributions 42–46 was, mechanically, the act of posting at a price level where no other
+order rests: for the life of that quote the strategy would be alone at its price, facing the
+arrival flow directly, subject to no queue — a momentary, self-constructed reconstruction of
+the dealer's situation inside the order book. The mechanism appeared profitable precisely
+and only when conditioned on a directional signal (the unconditional version is the `{B+}`
+choice of §5, which buys fills but not favorable ones). Contribution 54, however, shows the
+reconstruction was illusory: LINK's exchange tick was 0.01, not the 0.001 the experiments
+assumed, so the price levels the strategy stood alone at *did not exist* — there was no
+queue at them because no real order can rest at an invalid price, which is the dealer
+premise counterfeited rather than recreated. On the true grid the mechanism collapses to the
+equilibrium (exp 85), exactly as on the one-tick books where it was never available
+(Contributions 43, 47). The corrected empirical statement is stark: **no book tested in this
+thesis offers a price at which a quoter can stand alone**, and the dealer model
+correspondingly never regains traction — its one apparent foothold was a phantom of the
+price grid. The dealer-window reading survives as a *prediction*: on a book whose spread is
+genuinely several true ticks wide, signal-conditioned inside-spread placement should work
+for exactly the reasons developed here. That test awaits an asset the dataset does not
+contain.
 
 ---
 
@@ -359,9 +366,12 @@ To these, §7 adds a fourth, about where any *positive* result should be found:
    confined to the times and places where the order book locally reproduces the dealer
    setting** — assets whose spread leaves room to stand alone at a price level, and quoting
    policies that claim that position selectively, on a directional signal, rather than
-   unconditionally. Chapter 6 finds exactly this pattern: the signal-conditioned
-   inside-spread mechanism works on wide-spread LINK and fails structurally on every
-   one-tick book tested (Contributions 42–52).
+   unconditionally. Chapter 6 confirms the prediction's negative half exhaustively: on every
+   book tested no such place exists, and no positive performance survives — including the
+   apparent counter-example (Contributions 42–51), which turned out to be standing on price
+   levels the exchange's grid did not contain (Contribution 54). The affirmative half —
+   that the mechanism works where real room exists — remains an untested prediction,
+   pending a genuinely wide-spread asset.
 
 The theory in this chapter is therefore used twice in the thesis: first, conventionally, as
 the source of the strategies under test (Chapters 4); second, as the explanation for why

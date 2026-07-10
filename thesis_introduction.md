@@ -140,8 +140,12 @@ tabular-Q / DQN RL agent, calibrated to the above and backtested on LINK and BTC
 headline early result: a near-degenerate, GLFT-recommended flat-spread A-S configuration is
 robustly profitable on LINK (nine-month zero-shot transfer, Contribution 19), and RL improves
 on it by roughly 5% (Contribution 23) — while the identical action space fails completely on
-BTC (Contribution 24), establishing spread width (1-tick vs. 10-tick) as the organizing axis
-for everything that follows.
+BTC (Contribution 24), establishing relative tick size — BTC's spread-free book against
+LINK's spread-floored one — as the organizing axis for everything that follows. (The early
+chapters describe LINK's spread as "10 ticks"; Contribution 54 later shows the exchange tick
+was ten times coarser than assumed, making it one *true* tick — a correction that reshapes
+the positive results of Chapter 6 but leaves this axis, and the negative results organized
+along it, intact.)
 
 **The queue-priority decomposition** (C29, C30, C32) — the central result. C29 quantifies how
 optimistic a price-only fill model is relative to an L2 queue-clearing model (a 41× overstatement

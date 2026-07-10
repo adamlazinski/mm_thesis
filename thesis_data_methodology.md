@@ -17,9 +17,15 @@ The two assets were not chosen for their names but for what they represent on op
 of a single axis: **tick size relative to price**. BTC trades with a $0.01 tick at a price
 of roughly $100,000 — a relative tick of ~1 part in 10 million — and its quoted spread is
 almost always exactly one tick (CLAUDE.md: "Mid price is always at X.5 cents since market
-spread is almost always 1 tick"). LINK trades at a price of roughly $9–10 with a tick of
-$0.001, but its *quoted* spread sits at a roughly constant ten ticks essentially 100% of the
-time (Contribution 15) — an order of magnitude wider than the minimum the exchange allows.
+spread is almost always 1 tick"). LINK trades at a price of roughly $9–10 with an exchange
+tick of **$0.01** throughout the sample period — a relative tick of ~11 bps, four orders of
+magnitude coarser than BTC's — and its quoted spread is pinned at exactly that one tick
+essentially 100% of the time. (Establishing this tick size is itself a result: the
+experiments of Chapters 4–6 were originally parameterised with a $0.001 tick, under which
+the spread appears as a constant "10 ticks"; Contribution 54 documents how live-feed
+validation exposed the mis-specification — every price in the dataset sits on the $0.01
+grid — and what it retracts. Binance reduced the tick to $0.001 only after the sample
+period.)
 BTC is what the market-microstructure literature calls a **small-tick asset** (the spread is
 free to move and is set by competition at close to its minimum); LINK is a **large-tick
 asset** in the sense of Dayri & Rosenbaum (2015): the spread is pinned at its floor and
@@ -58,12 +64,17 @@ highest-quality 15-minute windows, R²>0.8) but a distance-invariant **momentum 
 `A_mom` — roughly 15% of total arrivals — persists no matter how far the quote sits from the
 mid. On LINK, the picture is different again: a crossing-intensity estimate of κ (Approach
 C, Contribution 25, fit directly to how often the mid moves a given number of ticks, with no
-order-placement simulation) gives κ=2.08/tick with R²=0.97 — a *clean* exponential, but with
-essentially **no momentum floor** (`A_mom≈0`). Combined with the pinned 10-tick spread, this
-produces the step-function shape of Contribution 15: fill probability is roughly flat
-(17–37%) for any quote *inside* the natural spread, and roughly flat at a much lower level
-(1–14%, markout −1.89 bps) for any quote *at or outside* it. There is no smooth exponential
-regime on LINK at all — the curve has two plateaus and a cliff between them.
+order-placement simulation) gives κ=2.08 per measurement tick with R²=0.97 — a *clean*
+exponential, but with essentially **no momentum floor** (`A_mom≈0`). Combined with the
+spread pinned at one true tick, this produces the step-function shape of Contribution 15:
+fill probability is roughly flat (17–37%) for any quote *inside* the natural spread, and
+roughly flat at a much lower level (1–14%, markout −1.89 bps) for any quote *at or outside*
+it. There is no smooth exponential regime on LINK at all — the curve has two plateaus and a
+cliff between them. Contribution 54 supplies the structural explanation: these distances are
+denominated in the $0.001 measurement grid, but the exchange grid was $0.01, so the
+"inside-spread" plateau spans sub-tick price points that were never placeable order levels —
+the two plateaus are the two *real* price regions (at the touch, and behind it), and the
+cliff between them is the tick boundary itself.
 
 **(c) The exponential/Poisson model is regime-dependent on BTC, and regime dominates
 strategy choice (Contributions 7, 13).** Restricting to BTC, the two-component fit of (b)
