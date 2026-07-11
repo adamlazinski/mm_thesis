@@ -3271,6 +3271,72 @@ python experiments/85_true_tick_rerun/true_tick_rerun.py
 
 ---
 
+## C55 — Live-Capture Day One: the Proxy Is Unbiased Where Placements Are Real, queue_fraction=0.5 Is Inside the Identifiable Band, and the Dealer Window Is Sub-Second (exps 86–87)
+
+**Data.** First captured day (2026-07-10, ~17.5h across LINK/BTC spot + both perps),
+processed through the reconstruction pipeline (snapshot + diff replay, update-id-chain
+verified, clock offset recv-vs-exchange p50 ≈ 14–16ms). Three measurements that were
+impossible with vendor snapshots:
+
+**(1) Proxy-vs-real L2 — the same day, same strategy, two trackers (exp 87).** The
+quote-proxy L2 tracker (single-level book, used for every 2025-window result) against the
+full 20-level reconstructed book, identical engine (qf=0.5, 10ms/50ms, post_only):
+
+| config | real L2 | proxy L2 | fills real/proxy |
+|---|---|---|---|
+| LINK alpha=0 | −$19.03 | −$19.03 (identical) | 4,343 / 4,343 |
+| LINK alpha=4 | +$2.66 | +$2.79 | 249 / 242 |
+| BTC alpha=0 | −$53.38 | −$53.38 (identical) | 22,169 / 22,169 |
+| BTC alpha=4 | −$51.35 | −$51.35 | 16,456 / 16,437 |
+
+At-touch (alpha=0) results are **byte-identical** — the proxy is exact for at-touch orders,
+as C45 argued and this proves. At alpha=4 the divergence is pennies and a handful of fills:
+on a one-tick book there are no inside-spread placements for the proxy to inflate (shifted
+quotes post_only-reject identically under both trackers). Together with C54 this closes the
+proxy question cleanly: **the proxy was never the source of error — the tick was.** The
+C45/C46 "proxy inflation" concern was real only for placements that C54 shows were
+impossible anyway. Incidentally, the captured day's honest baselines are themselves
+negative (LINK −$19/day, BTC −$53/day at-touch): one Saturday, so only suggestive, but
+consistent with the tick-reduction reading — Binance's 0.01→0.001 LINK tick change moved
+LINK from the large-tick (queue-axis, ≈$0 equilibrium) regime into the small-tick
+(spread-axis, below-equilibrium) regime of C33/C43.
+
+**(2) queue_fraction is bounded, and 0.5 is inside the band (exp 86).** ~4,000 virtual
+orders per asset placed at the best bid every 10s with the full displayed depth ahead,
+replayed against reality under the two L2-identifiable bounds (all cancellations behind us
+vs pro-rata):
+
+| asset | effective qf, trades-only bound (p50) | pro-rata bound (p50) | episodes ending price-moved |
+|---|---|---|---|
+| LINK | 1.01 | 0.067 | 91% |
+| BTC | 1.02 | 0.324 | 81% |
+
+The engine's `queue_fraction = 0.5` sits inside the identifiable band on both assets, and
+C44 already showed results are flat across [0.1, 0.7] — the assumption is now bracketed by
+measurement, not just insensitive. The sharper finding is the outcome distribution: **only
+8–19% of at-touch resting episodes end with the queue clearing at all** (within 120s); the
+rest end with the price moving away — up (order left stale behind the touch, 47–51%) or
+down (order becomes the new front, 34–40%). Queue position on these books is mostly a race
+against repricing, not against the queue — the C50 finding ("cancels are cheap because the
+queue is not the asset") measured directly.
+
+**(3) The dealer window is sub-second and nearly non-existent (exp 86).** New price levels
+created strictly inside the spread — the §7 "momentary dealer" of the theory chapter —
+occurred only 49 times (LINK) and 37 times (BTC) in ~17.5 hours, because both books quote a
+one-tick spread ≥99.99% of the time (measured mean 1.0003 / 1.051 ticks). When such a level
+does appear, its median time alone is **0.2–0.6 seconds** before being joined, traded, or
+overtaken. The theory chapter's dealer-window prediction gets its empirical scale: on
+one-tick books the window is a few dozen sub-second events per day — no habitat at all.
+
+Reproduce:
+```
+python scripts/process_binance_capture.py --date 2026-07-10
+python experiments/86_capture_diagnostics/capture_diagnostics.py --date 2026-07-10
+python experiments/87_proxy_vs_real/proxy_vs_real.py --date 2026-07-10
+```
+
+---
+
 ## Future Work
 
 The items below were drafted before the queue-priority verdict (C30) and the zero-profit

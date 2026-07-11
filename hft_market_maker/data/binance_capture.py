@@ -128,6 +128,12 @@ class BookReplayer:
         self.book_rows: list[tuple] = []
         self.book_sink = None          # callable(list[tuple]) — set for chunked output
         self.book_chunk = 100_000
+        # Optional hooks for streaming analyses (no output tables needed):
+        #   on_depth(t_exch, replayer)        — after each applied diff
+        #   on_trade(t_exch, price, qty, taker_side)
+        self.on_depth = None
+        self.on_trade = None
+        self.collect_tables = True     # False: skip trade/quote/book row collection
         self.integrity = Integrity()
 
     # -- helpers ---------------------------------------------------------------
@@ -232,15 +238,21 @@ class BookReplayer:
             bid, ask = self._top()
             if bid and ask and bid >= ask:
                 self.integrity.n_crossed += 1
-            self._emit_book(t_exch, ts_recv)
+            if self.collect_tables:
+                self._emit_book(t_exch, ts_recv)
+            if self.on_depth:
+                self.on_depth(t_exch, self)
             return
 
         if stream in ("trade", "aggTrade"):
             # buyer-is-maker (m=True) => taker sold
             t_exch = data.get("T", data.get("E", 0)) / 1e3
-            self.trade_rows.append((
-                t_exch, ts_recv, float(data["p"]), float(data["q"]),
-                "SELL" if data.get("m") else "BUY"))
+            price, qty = float(data["p"]), float(data["q"])
+            side = "SELL" if data.get("m") else "BUY"
+            if self.collect_tables:
+                self.trade_rows.append((t_exch, ts_recv, price, qty, side))
+            if self.on_trade:
+                self.on_trade(t_exch, price, qty, side)
             self.integrity.n_trades += 1
 
     def _emit_book(self, t_exch: float, ts_recv: float) -> None:

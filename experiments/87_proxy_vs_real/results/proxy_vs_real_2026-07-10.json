@@ -1,0 +1,45 @@
+{
+  "date": "2026-07-10",
+  "results": {
+    "LINK_a0_real": {
+      "pnl": -19.02907999999924,
+      "fills": 4343,
+      "takers": 0
+    },
+    "LINK_a0_proxy": {
+      "pnl": -19.02907999999924,
+      "fills": 4343,
+      "takers": 0
+    },
+    "LINK_a4_real": {
+      "pnl": 2.6625000000000227,
+      "fills": 249,
+      "takers": 0
+    },
+    "LINK_a4_proxy": {
+      "pnl": 2.7874999999998806,
+      "fills": 242,
+      "takers": 0
+    },
+    "BTC_a0_real": {
+      "pnl": -53.3825532999836,
+      "fills": 22169,
+      "takers": 0
+    },
+    "BTC_a0_proxy": {
+      "pnl": -53.3825532999836,
+      "fills": 22169,
+      "takers": 0
+    },
+    "BTC_a4_real": {
+      "pnl": -51.34826599999943,
+      "fills": 16456,
+      "takers": 0
+    },
+    "BTC_a4_proxy": {
+      "pnl": -51.34604999999945,
+      "fills": 16437,
+      "takers": 0
+    }
+  }
+}
