@@ -3398,6 +3398,59 @@ python experiments/89_crossvenue_event_level/crossvenue_event_level.py --date 20
 
 ---
 
+## C57 — The Exploitation Test: the Sharpest Signal in the Project Cannot Cross the Equilibrium (exps 90–91)
+
+**Question.** C56 established the most causal, freshest signal the thesis has produced: a
+*realized* mid move on the leading venue, 40–100ms ahead of the laggard, firing 500–6,500
+times a day. Can it be exploited by a retail-accessible strategy? Both feasible expressions,
+priced honestly:
+
+**(1) Taker on the laggard (exp 90, captured day).** Gross mid-to-mid edge per divergence
+event: LINK +1.72bps at 100ms → +2.38bps at 5s (488 events/day); BTC +0.27–0.74bps (6,564
+events/day). Costs: crossing LINK's one-tick spread consumes ~1.3bps, leaving ~1bps gross
+per round trip against spot taker fees of ~2–10bps depending on tier — negative at every
+tier, and ~$2–4/day at retail clips even at *zero* fee. BTC's gross clears its (negligible)
+spread but not any fee tier. C31's ~1bps predictability wall is thereby re-measured with a
+sharper instrument: the gross roughly doubles, the wall stands.
+
+**(2) Signal-gated passive at-touch (exp 90, captured day; exp 91, April true-tick).** The
+only passive expression a one-tick book admits: quote the touch, suppress the side the
+perp-implied deviation (15ms signal lag) marks as about-to-be-adverse. On the captured
+(small-tick-regime) day the gate recovers a large fraction of the baseline loss — LINK
+−$23.54 → −$16.95 (28%), BTC −$72.30 → −$19.68 (73%) — proving the signal's causal value,
+but never flips the sign. The decisive test is exp 91: the same strategy on LINK April 2026
+at the true tick, where the ungated baseline sits *at* the equilibrium (exp 85: −$0.24/day):
+
+| config | mean PnL/day | days+ | fills/day | gated% |
+|---|---|---|---|---|
+| ungated baseline (exp 85) | −$0.24 | 47% | 3,232 | — |
+| OBI-gate (exp 85, alpha=4) | +$0.36 | 63% | 56 | — |
+| perp-gate 0.2 ticks | **+$0.31** (t ≈ 0.2) | 47% | 254 | 56% |
+| perp-gate 0.5 ticks | +$0.15 | 50% | 1,546 | 9% |
+
+Statistically zero, three times over, with two different signals of very different quality.
+**From the equilibrium, gating is PnL-invariant**: suppressing predicted-adverse fills
+removes their losses and their spread revenue together, and breaks the round-trip pairing
+that monetises the favorable leg (the C48 superadditivity, in reverse). Below the
+equilibrium (the small-tick regime), gating recovers part of the distance back *to* the
+equilibrium — avoidance is worth exactly the excess loss, never more.
+
+**Synthesis.** This closes the exploitation question with the strongest instrument
+available. The binding constraints were never signal quality: they are the fee tier (taker
+expression) and the book geometry (maker expression — a one-tick book admits only
+avoidance, and avoidance cannot cross zero). The two-gate law survives its sharpest test,
+and the thesis's signal-side program ends where the theory chapter's §7 said it must: with
+no book on which a quoter can stand alone, there is nowhere for even a true, causal,
+40ms-fresh signal to be *paid*.
+
+Reproduce:
+```
+python experiments/90_perp_lead_exploit/perp_lead_exploit.py --date 2026-07-10
+python experiments/91_perp_gate_april/perp_gate_april.py
+```
+
+---
+
 ## Future Work
 
 The items below were drafted before the queue-priority verdict (C30) and the zero-profit
