@@ -551,8 +551,10 @@ and +$0.36/day on the same strategy, data, *and* fill model.
   (ii) `queue_fraction` calibration from diff-depth (replacing the 0.5 assumption with a
   measured distribution); (iii) inside-spread level lifetimes — how long a newly-created
   price level rests alone — the empirical "dealer window" of the theory chapter's §7.
-- **BTC re-run of C36**, now unblocked: the live capture includes clean BTC perpetual trades,
-  so the Hayashi–Yoshida cross-venue check can be completed on captured days.
+- **BTC re-run of C36** — completed on captured data (C55(4), exp 88): the Hayashi–Yoshida
+  curve on the first captured day peaks at θ = −0.1s (ρ = 0.145) with near-symmetric mass,
+  confirming contemporaneous spot↔perp integration on BTC as on LINK; replication over the
+  capture week remains.
 - **A crypto replication of the volatility-normalised-tick result** (Kurth et al., 2026):
   their futures evidence puts trend/impact-loop survival on the same tick-normalised axis
   this thesis derived independently for maker rents (§2.4). Running their signal-speed ×

@@ -3328,11 +3328,22 @@ does appear, its median time alone is **0.2–0.6 seconds** before being joined,
 overtaken. The theory chapter's dealer-window prediction gets its empirical scale: on
 one-tick books the window is a few dozen sub-second events per day — no habitat at all.
 
+**(4) BTC spot↔perp lead-lag: C36's blocked symmetry check, completed (exp 88).** The
+Hayashi–Yoshida estimator of exp 61, run unchanged on the captured day's trade streams
+(307,777 spot / 471,854 perp trades — the clean BTC-PERP trade data whose absence had
+blocked this check since C36): the cross-correlation peaks at **θ = −0.1s (ρ = 0.145)** with
+near-symmetric mass on both sides (Σρ spot-leads 0.61 vs perp-leads 0.54) and decays to
+noise by ±1s. BTC's two venues are contemporaneously integrated at the sub-second scale,
+with at most a one-grid-step (~100ms) spot-leads tilt — the same "no third door" verdict as
+LINK (C36), now confirmed cross-asset. One captured day; the running week of capture will
+add replication.
+
 Reproduce:
 ```
 python scripts/process_binance_capture.py --date 2026-07-10
 python experiments/86_capture_diagnostics/capture_diagnostics.py --date 2026-07-10
 python experiments/87_proxy_vs_real/proxy_vs_real.py --date 2026-07-10
+python experiments/88_btc_hy_captured/btc_hy.py --date 2026-07-10
 ```
 
 ---
