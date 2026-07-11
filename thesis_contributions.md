@@ -3348,6 +3348,56 @@ python experiments/88_btc_hy_captured/btc_hy.py --date 2026-07-10
 
 ---
 
+## C56 — Spot Trails Perp by 40–100ms: Event-Level Cross-Venue Structure, and Liquidity Withdrawal as Repricing (exp 89)
+
+**Motivation.** C36/exp 88 established contemporaneous spot↔perp integration at the 100ms
+grid — but deferred the faster regime, which vendor data (1Hz perp books) could not resolve.
+The captured event-level books on both venues make the sub-100ms question measurable for the
+first time. Three measurements, both pairs, captured day 2026-07-10.
+
+**(A) HY lead-lag at a 10ms grid, on BBO mid-change events:** the cross-correlation now
+peaks at **θ = +50ms on LINK and +40ms on BTC — the perp leads**. The apparent θ≈0 of
+C36/exp 88 was a resolution artifact: the lead is real but lives entirely inside one 100ms
+bin. (Caveat: with shifted overlapping intervals the HY normalisation can exceed 1 — LINK's
+peak ρ=1.13 — so the peak *location*, not its level, is the robust content.)
+
+**(B) Divergence-closure — the "trailing" measured directly.** Basis deviations beyond a
+threshold (2 LINK ticks ≈ 2.5bps; $3 ≈ 0.5bps BTC) against a 60s-EWMA baseline:
+
+| pair | episodes/day | closure p50 | opened by perp | closed by laggard repricing |
+|---|---|---|---|---|
+| LINK | 503 | 104ms | 72% | 82% |
+| BTC | 6,547 | 1.2s | 80% | 78% |
+
+The structure is unambiguous: the perp moves first (3–4:1), the gap lives ~0.1–1.2s, and in
+~80% of episodes it closes by the *laggard* (usually spot) repricing toward the perp — spot
+trails perp, hundreds to thousands of times per day. Exploitability is fee-gated exactly as
+C31/C36 predicted: capturing a 0.5–2.5bps gap requires taking the laggard's spread within
+~100ms against ~4.5–10bps taker fees. A measurement contribution, not an edge.
+
+**(C) Cross-venue liquidity withdrawal manifests as repricing, not depth-fading.** After a
+mid move on venue A, venue B's best-quote depth *at the standing price* is unchanged (ratio
+p50 = 1.0 at 50ms) — but B has **repriced** within 50ms in 14–24% of events vs 1–2% at
+random control times (a ~10–20× hazard elevation), rising to 30–49% by 200ms. Depth-fading
+at a standing price does appear, asymmetrically: the *slower* venue (spot) fades before
+repricing (LINK spot book: 22% faded at 50ms after a perp move, 39–40% by 100–200ms, vs
+1–3% control), while the faster venue (perp) responds by outright cancel-and-reprice. On
+one-tick books the Kurth-et-al liquidity-withdrawal mechanism is real but takes the only
+form the geometry allows: when the whole game is one price level, you don't trim your queue
+— you leave it. This is also the cross-venue face of exp 86's finding that 81–91% of
+at-touch episodes end by repricing: the repricing *is* the withdrawal.
+
+**Caveats:** one captured day; fixed divergence thresholds; unknown (assumed ≤ few ms)
+spot-vs-futures engine timestamp skew; HY normalisation caveat above. The capture week
+supports replication.
+
+Reproduce:
+```
+python experiments/89_crossvenue_event_level/crossvenue_event_level.py --date 2026-07-10
+```
+
+---
+
 ## Future Work
 
 The items below were drafted before the queue-priority verdict (C30) and the zero-profit
