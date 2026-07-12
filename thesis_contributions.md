@@ -3451,6 +3451,68 @@ python experiments/91_perp_gate_april/perp_gate_april.py
 
 ---
 
+## C58 — Book Geometry, Observed: the Hollow Touch Is a Small-Tick Phenomenon, Cancellation Is Half of All Touch Deaths, and the Spread Self-Repairs in ~100ms (exp 92)
+
+**Question.** The queue-rent / zero-profit verdict (C30/C33) rests on three empirical
+premises that had only ever been inferred: that these are one-tick books, that the touch
+is left before it trades roughly half the time (the queue_fraction ≈ 0.5 bracket of C55),
+and that the tick binds the spread on a sub-latency timescale (Wyart-Bouchaud, assumed).
+Exp 92 measures all three directly from the live L2 capture (2026-07-11, event-level, 20
+levels, true price grids, all four books).
+
+**Books are one-tick, always.** Median spread = 1.00 tick for LINK spot, BTC spot, LINK
+perp, and BTC perp alike. The maker-side premise of the whole verdict is not an
+approximation — it is the modal state of every instrument.
+
+**The hollow touch is asset-specific, and it tracks the Kurth ρ.** The honest true-grid
+redo of C21 splits sharply:
+
+| book | touch depth | within 10t | touch / 10t | occupied /10t | Kurth ρ | rel-tick |
+|---|---|---|---|---|---|---|
+| LINK spot | $2,257 | $85,631 | 2.6% | 10 | 0.0070 | 1.25bps |
+| LINK perp | $14,056 | $246,551 | 5.7% | 10 | 0.0072 | 1.25bps |
+| BTC spot | $180,346 | $185,794 | **97%** | 3 | 0.0001 | 0.002bps |
+| BTC perp | $320,235 | $359,829 | **89%** | 7 | 0.0002 | 0.016bps |
+
+BTC is a genuinely *hollow* book — 89–97% of the near depth collapsed onto a single touch
+level, only 3–7 of 10 levels occupied — while LINK is a full *ladder* whose depth climbs
+steeply away from the touch. The discriminating variable is the volatility-normalised tick
+ρ = tick / daily-σ($): BTC's is ~30–70× smaller, and where the tick is a negligible
+fraction of daily vol, liquidity has no reason to spread across levels and piles at the
+touch. "Hollow touch" is therefore not a crypto universal (as a naive reading of C21 would
+have it) — it is what a small *relative* tick does to book shape, and BTC is the extreme.
+
+**Half of every touch death is a cancellation, not a trade.** Allocating each best-level
+depth reduction to traded volume vs. cancellation: the fraction of touch-level
+*disappearances* caused by a cancel is 55% (LINK spot), 51% (BTC spot), 60% (LINK perp),
+56% (BTC perp) — 51–60% across the board, on 3,456–6,024 disappearance events per book.
+The cancel:trade *volume* ratio is 9–20:1. This is the direct population quantity behind
+the fill-side queue_fraction bracket of C55/exp 86: a resting touch order sees the queue in
+front of it evaporate by cancellation about as often as it clears by trade, so roughly half
+of touch exposure never converts to a fill. Two unrelated methods — the fill-side
+simulation bound and this book-side disappearance census — independently land on ≈ 0.5.
+
+**The spread self-repairs in ~100ms.** Each time the spread widens beyond one tick, the
+time to repair back to one tick has p50 ≈ 100ms (97–102ms p25–p75, tight) across all four
+books, over 42–286 widenings/day. The tick binds the spread on a timescale *below* the
+100ms latency a retail quoter operates at: by the time such a quoter could react to a
+widening, the rent has already re-closed it. This is Wyart-Bouchaud enforcement observed,
+not assumed — and it is the mechanical reason the spread axis never opens on these assets.
+
+**Synthesis.** The three inferred premises of the central verdict are now measured facts of
+the book, not conveniences of the model: one-tick modal spread, ≈ 50% cancel-driven touch
+turnover (reproducing qf ≈ 0.5 from the book side), and sub-latency spread repair. The C21
+hollow-touch observation is corrected and generalised — it is a small-relative-tick effect,
+scaling with Kurth ρ, with BTC as the limiting hollow case and LINK a counter-example
+ladder. Nothing here reopens the profit question; it hardens the floor under it.
+
+Reproduce:
+```
+python experiments/92_book_geometry/book_geometry.py --date 2026-07-11
+```
+
+---
+
 ## Future Work
 
 The items below were drafted before the queue-priority verdict (C30) and the zero-profit
