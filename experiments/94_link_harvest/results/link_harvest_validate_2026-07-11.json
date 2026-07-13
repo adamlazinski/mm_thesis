@@ -1,0 +1,35 @@
+{
+  "date": "2026-07-11",
+  "gate": 5e-05,
+  "sig_lat": 0.03,
+  "runs": {
+    "real_signal": {
+      "pnl": -2.154047500000001,
+      "fills": 1379,
+      "gated_pct": 90.5430865006553,
+      "maker_notional": 33656.745425000045,
+      "be_rebate_bps": 0.6400046923134719
+    },
+    "placebo_shift": {
+      "pnl": -6.028289999999458,
+      "fills": 3046,
+      "gated_pct": 90.0422395061227,
+      "maker_notional": 61871.07902500002,
+      "be_rebate_bps": 0.9743308335650053
+    },
+    "anti_signal": {
+      "pnl": -9.84215250000102,
+      "fills": 4254,
+      "gated_pct": 90.67288474350433,
+      "maker_notional": 83044.43159999987,
+      "be_rebate_bps": 1.1851670618215222
+    },
+    "no_signal": {
+      "pnl": -16.68517499999905,
+      "fills": 5426,
+      "gated_pct": 0.0,
+      "maker_notional": 112753.41562999993,
+      "be_rebate_bps": 1.479793308856506
+    }
+  }
+}

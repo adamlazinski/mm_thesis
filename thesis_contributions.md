@@ -3513,6 +3513,107 @@ python experiments/92_book_geometry/book_geometry.py --date 2026-07-11
 
 ---
 
+## C59 — Adverse Selection, Measured Model-Free: the Maker's Half-Spread Is Eaten Within 100ms on Every Book, and the LINK Window Coincides with the Perp-Lead Clock (exp 93)
+
+**Question.** The queue-rent / zero-profit verdict (C30/C33) asserts that the maker's gross
+half-spread is consumed by adverse-selection drift. Every prior measurement of this rode on
+the engine (a fill simulation, a queue model, a `queue_fraction`). Can it be shown as a bare
+property of the trades-and-quotes stream, with no engine, no strategy, no free parameters?
+
+**Method.** A Glosten-Milgrom / Hasbrouck markout decomposition on the captured tape, per
+market trade, signed from the resting maker's side (a taker-buy lifts the ask ⇒ the maker
+*sold*, D=+1; a taker-sell hits the bid ⇒ the maker *bought*, D=−1):
+
+- `effective_half(t) = D·(price − mid_t)` — gross edge banked at the fill,
+- `impact_half(t,h) = D·(mid_{t+h} − mid_t)` — adverse drift over horizon h,
+- `realized_half(t,h) = effective − impact = D·(price − mid_{t+h})` — what the maker keeps.
+
+`mid_t` is the prevailing top-of-book mid (as-of backward, fresh within 0.5s); horizons swept
+0.015–10s; per book, per day, across 2026-07-10/11/12, all four books.
+
+**Result.** On **all four books the realized half-spread is already negative by 100ms** — the
+gross edge is fully eaten almost instantly. The sub-100ms detail splits cleanly by *relative*
+tick:
+
+| book | eff half | realized@15ms | realized@50ms | adv-selection horizon (10/11/12) |
+|---|---|---|---|---|
+| LINK (0.001, ~1.25bps/tick) | 0.87t | **+0.69t** | +0.30t | **75 / 78 / 79 ms** |
+| LINK_PERP | 0.73t | +0.63t | +0.37t | **87 / 87 / 82 ms** |
+| BTC (0.01, ~0.0006bps/tick) | 0.70t | −22t (−0.1bps) | −80t | ≤20 / ≤15 / ≤15 ms |
+| BTC_PERP | 0.72t | −1.5t | −6.2t | ≤20 / ≤15 / ≤15 ms |
+
+On the large-relative-tick books (LINK) the maker holds a real ~1bp gross edge that survives
+~**80ms** before adverse selection overtakes it; that horizon is stable to the millisecond
+across three days and lands squarely on the **C56 perp-lead clock (40–100ms)** — the informed
+flow that eats the maker's edge is the same flow that moves the perp first. On the small-tick
+books (BTC) the crossing is before the 15ms grid floor and the gross half-spread is *sub-bp*
+(the tick is economically negligible): there is no protective window at all.
+
+**Synthesis.** This is the model-free mechanism under the whole verdict, and it re-derives the
+spread-axis/queue-axis split of C30 from markouts alone: a large-tick book gives the maker a
+genuine spread to defend for a measurable ~80ms window (the queue-priority regime), while a
+small-tick book gives essentially no gross spread to begin with (the spread-equilibrium
+regime). No engine, no `queue_fraction`, no fitted parameter is involved — the adverse
+selection is visible in the tape itself.
+
+Reproduce:
+```
+python experiments/93_adverse_selection/adverse_selection.py --date 2026-07-10
+```
+
+---
+
+## C60 — The Perp Lead Is Real, Placebo-Proof, and OOS-Robust Information — and Correctly Acting on It Nets Zero (exp 94)
+
+**Question.** C57 showed the perp-gate recovers part of the below-equilibrium loss on the
+captured LINK day but is PnL-null at the true-tick equilibrium — and left two gaps: it only
+pushed the gate to 0.0005 (28% recovery), and it never proved the recovery was *signal*
+rather than mere quote-suppression (fewer fills ⇒ less loss trivially). Throw the full lever
+set at the one book with a window (C59), and add the controls that decide it.
+
+**Method.** Honest engine throughout (real L2, `post_only`, qf=0.5, 10ms order latency).
+Levers swept on LINK spot: gate threshold, signal latency (5–30ms), response mode
+(gate / widen 1 tick / lean into the move), queue fraction. The optimum is the *lowest* gate
+(5e-05): the deviation exceeds it ~93% of calls, so the strategy reduces to a directional lean
+on `sign(perp − spot basis)` — quote only the favorable side, ~1,450 fills/day. The decisive
+controls, at that config, on three days: **placebo** (dev time-scrambled — same gating
+frequency, no real timing), **anti-signal** (dev negated — gate the *favorable* side), and
+ungated baseline.
+
+**Result.**
+
+| day | real signal | placebo | anti-signal | baseline | edge (real − placebo) |
+|---|---|---|---|---|---|
+| 07-10 | −$0.48 | −$6.87 | −$20.51 | −$23.54 | **+$6.4** |
+| 07-11 | −$2.15 | −$6.03 | −$9.84 | −$16.69 | **+$3.9** |
+| 07-12 | **+$3.03** | −$7.24 | −$18.06 | −$21.76 | **+$10.3** |
+
+Two findings, in tension, and both true. **(1) The signal is genuine and robust.** The
+real-vs-placebo edge is large and positive *every day*; the ordering `real > placebo > anti
+> none` never breaks; kept fills are ~6× less toxic per-fill than placebo; deliberately gating
+the wrong side (anti) collapses back to baseline. This is causal information, not survivorship.
+**(2) The net is pinned to the equilibrium.** real_signal = {−0.48, −2.15, +3.03}, mean
+**+$0.13/day** with a ~$5 spread — statistically indistinguishable from zero, on trivial volume.
+And that mean coincides with C57's April true-tick null (+$0.31): deep-enough gating recovers
+the *entire* below-equilibrium excess loss and stops exactly at zero — the below-equilibrium
+book and the equilibrium book land in the same place. (Latency is non-monotonic across
+5/15/30ms — a noise floor, confirming we are at the resolution limit, not climbing a gradient.)
+
+**Synthesis.** This is the strongest form of the zero-profit statement the thesis makes: not a
+strategy that bleeds, but a true, placebo-validated, out-of-sample-robust signal whose optimal
+use nets *zero*, because the market has priced the 40–100ms perp lead into the spread so
+exactly that avoiding the adverse fills forfeits precisely their spread revenue in return.
+C57's two-gate law is re-confirmed with proper controls: signal quality was never the binding
+constraint — the equilibrium is.
+
+Reproduce:
+```
+python experiments/94_link_harvest/link_harvest.py --date 2026-07-10               # full sweep
+python experiments/94_link_harvest/link_harvest.py --date 2026-07-12 --validate    # placebo controls
+```
+
+---
+
 ## Future Work
 
 The items below were drafted before the queue-priority verdict (C30) and the zero-profit
