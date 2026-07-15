@@ -170,19 +170,19 @@ class PerpResponseMM:
 
 
 def run_one(date, td, dv, gate, ld, l2, sig_lat=0.015, mode="gate", qf=0.5,
-            dv_shift=0):
+            dv_shift=0, latency=LATENCY, requote=REQUOTE):
     if dv_shift:
         dv = np.roll(dv, dv_shift)      # placebo: same magnitudes, wrong timing
     tr, qt = ld.load_coinapi(str(PROC / f"trades_LINK_{date}.parquet"),
                              str(PROC / f"quotes_LINK_{date}.parquet"))
-    om = OrderManager(maker_fee=0.0, taker_fee=0.0, latency=LATENCY,
+    om = OrderManager(maker_fee=0.0, taker_fee=0.0, latency=latency,
                       queue_model="l2")
     om.queue_fraction = qf
     strat = PerpResponseMM(td, dv, gate, CFG["tick"], CFG["order_size"],
                            CFG["max_inv"], sig_lat, mode)
     res = Backtest(strat, market_state=MarketState(120, 60, 0.9),
                    order_manager=om, requote_on_fill=True,
-                   requote_interval=REQUOTE, tolerance_ticks=0,
+                   requote_interval=requote, tolerance_ticks=0,
                    tick_size=CFG["tick"], verbose=False).run(tr, qt, l2_tracker=l2)
     pnl = float(res.metrics["total_pnl"])
     maker_notional = sum(f.quantity * f.price for f in om.fills
@@ -199,6 +199,8 @@ def main():
     ap.add_argument("--date", required=True)
     ap.add_argument("--validate", action="store_true",
                     help="run winner config + placebo controls instead of the sweep")
+    ap.add_argument("--colo", action="store_true",
+                    help="collapse cancel/order latency toward 1ms (co-located limit)")
     ap.add_argument("--gate", type=float, default=5e-05)
     ap.add_argument("--sig-lat", type=float, default=0.030)
     args = ap.parse_args()
@@ -213,6 +215,33 @@ def main():
         be = f"{r['be_rebate_bps']:.3f}bps" if r['be_rebate_bps'] is not None else "n/a"
         print(f"  {tag:26s} pnl={r['pnl']:+9.3f}  fills={r['fills']:6d}  "
               f"gated%={r['gated_pct']:5.1f}  be_rebate={be}")
+
+    if args.colo:
+        # "Super MM co-located with Binance": collapse the cancel/order wire time
+        # (and the requote cadence, and the signal lag) toward 1ms, so we can pull
+        # the toxic spot order almost the instant the perp moves. Fixed-tape upper
+        # bound — optimistic, since it dodges fills while every other participant
+        # stays frozen. Decisive only if it still nets ~zero.
+        print(f"=== LINK {args.date} CO-LOCATED  gate={args.gate:g} mode=gate")
+        print("   (latency = order/cancel wire time = signal lag = requote cadence)")
+        # (latency, requote, sig_lat, qf, label)
+        configs = [
+            (0.010, 0.010, 0.015, 0.5, "baseline 10ms/qf0.5"),
+            (0.001, 0.010, 0.001, 0.5, "1ms cancel/qf0.5"),
+            (0.001, 0.001, 0.001, 0.5, "1ms all/qf0.5"),
+            (0.001, 0.001, 0.001, 1.0, "1ms all/qf1.0(front)"),
+        ]
+        runs = {}
+        for lat, rq, sl, qf, label in configs:
+            r = run_one(args.date, td, dv, args.gate, ld, l2, sig_lat=sl,
+                        mode="gate", qf=qf, latency=lat, requote=rq)
+            runs[label] = r
+            line(label, r)
+        with open(OUT / f"link_harvest_colo_{args.date}.json", "w") as fh:
+            json.dump({"date": args.date, "gate": args.gate, "runs": runs}, fh,
+                      indent=2)
+        print(f"Saved -> {OUT}/link_harvest_colo_{args.date}.json")
+        return
 
     if args.validate:
         # Does the perp signal actually help, or is -$0.48 just "trade 20%"?
