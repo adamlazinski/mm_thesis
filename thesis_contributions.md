@@ -3606,10 +3606,68 @@ exactly that avoiding the adverse fills forfeits precisely their spread revenue 
 C57's two-gate law is re-confirmed with proper controls: signal quality was never the binding
 constraint — the equilibrium is.
 
+**Co-location addendum (`--colo`): speed is not the missing ingredient either.** One remaining
+objection: our reaction was ~15ms; a co-located maker pulls the toxic order in ~1ms. Collapsing
+cancel + order + signal latency and the requote cadence toward 1ms — an *optimistic* frozen-tape
+bound, since it lets us dodge fills while every competitor stays still — changes essentially
+nothing: 07-10 −$2.04 → −$1.94, 07-12 +$1.91 → +$0.54 (slightly *worse*, from quote churn), and
+front-of-queue (qf=1.0) is worse/high-variance. The reason is C59: the perp leads by 40–100ms, so
+a 15ms gate already fires inside the lead — there is nothing left for 1ms to catch. Even rigged in
+our favour, co-location nets the same ~zero. Latency and queue position were never the constraint.
+
 Reproduce:
 ```
 python experiments/94_link_harvest/link_harvest.py --date 2026-07-10               # full sweep
 python experiments/94_link_harvest/link_harvest.py --date 2026-07-12 --validate    # placebo controls
+python experiments/94_link_harvest/link_harvest.py --date 2026-07-10 --colo        # co-location limit
+```
+
+---
+
+## C61 — Adverse Selection Is Rankable but Has No Escape Hatch: No Selectable State Isolates Benign Flow (exp 96)
+
+**Question.** C59/C60 show the *average* passive fill nets ≈zero — the Glosten-Milgrom
+competitive condition, measured. But adverse selection is an average. The canonical way a real
+maker earns is to *not face the average*: to quote only into states whose flow is benign
+(the flow-segmentation / PFOF escape). Since a maker posts passively and cannot choose *who*
+hits the order — only *when* to be quoting — the test is whether any state observable **strictly
+before** the fill isolates a sub-population with positive realized half-spread.
+
+**Method.** Extend the C59 markout: for every trade, alongside `realized_half(t,h) = D·(price −
+mid_{t+h})`, compute pre-fill state signed toward the maker's side (so higher always predicts an
+adverse move *against* the maker): `press_perp = D·dev` (C56 basis lead), `press_ofi = D·recent
+signed flow` (sweep in progress), `press_obi = D·book imbalance`, recent realized vol, trade
+intensity, and spread. Bucket `realized_half` by quintile of each feature and of a combined
+z-scored toxicity score; report the benign vs toxic corners net of maker fees. LINK and BTC spot,
+2026-07-10/11/12.
+
+**Result.** Adverse selection is genuinely **rankable** — the benign-minus-toxic gap in realized
+half-spread at 1s is +0.5 to +1.3 bps every day, every book; order-flow sweeps and intensity are
+the sharpest separators. **But there is no positive pocket to stand in.** The cleanest 20% of
+flow, selected purely from pre-quote state, still keeps *negative* realized half-spread at every
+bankable horizon, net of a *zero* fee:
+
+| | benign@0.1s | benign@1s | benign@5s | toxic@1s |
+|---|---|---|---|---|
+| LINK (10/11/12) | +0.02 / +0.05 / +0.12 | −0.99 / −0.58 / −0.28 | −0.98 / −0.85 / +0.03 | −1.49 / −1.87 / −1.38 |
+| BTC (10/11/12) | −0.17 / −0.08 / −0.05 | −0.31 / −0.15 / −0.08 | −0.33 / −0.12 / −0.03 | −0.87 / −0.67 / −0.58 |
+
+(bps.) The only positive readings are LINK at 0.1s (+0.02..+0.12 bps) — mark-to-mid, not bankable
+(C60), inside the noise, and gone by 1s; BTC is negative at every horizon. A fitted classifier
+cannot beat the most-benign observable bucket, and those are negative, so the result is robust to
+model sophistication.
+
+**Synthesis.** This is the empirical face of Glosten-Milgrom pooling being unbreakable *from the
+maker's side*: the toxicity that is predictable is already priced into who trades and when, so no
+selectable state leaves a maker facing benign-enough flow to cover even a zero fee. Together with
+C60's co-location addendum, two of the four ways out of the competitive-lit baseline are now
+closed on these books — sorting flow (C61) and being faster (C60) — leaving only external subsidy
+(rebates / MM agreements) and a different book (carry, OTC, cross-venue). Real maker profit lives
+*outside* the competitive lit game, exactly as the theory predicts.
+
+Reproduce:
+```
+python experiments/96_toxicity_heterogeneity/toxicity_heterogeneity.py --date 2026-07-10
 ```
 
 ---
