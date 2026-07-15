@@ -1,0 +1,48 @@
+{
+  "date": "2026-07-15",
+  "score_h": 60.0,
+  "score_min": 3.0,
+  "react_s": 1.0,
+  "results": {
+    "HL_HYPE": {
+      "n_train_scored": 11,
+      "n_followed": 6,
+      "followed_train_mk": {
+        "0x6bb971430554e3af58fbd469bce46ab2359a2d23": 4.44,
+        "0x469e9a7f624b04c24f0e64edf8d8a277e6bf58a5": 6.46,
+        "0x0132157369b0d073dd99011da1777920a025fd77": 6.62,
+        "0x9f3781a54303ce694e47f7b6b694c87b87983216": 5.96,
+        "0x505f21430e54d4fac9fa456ead8c35cac0b3b70d": 6.36,
+        "0x89c0fee4b7ca37711219092cd1c0d2b4f7af87c1": 7.24
+      },
+      "test": {
+        "n_events": 11,
+        "h10s": {
+          "gross_mid_bps": 2.68710040470868,
+          "gross_rt_bps": 2.5653351572122887,
+          "hit_rate_rt": 1.0,
+          "net_rt_bps": {
+            "fee_4.5": -6.435,
+            "fee_3.0": -3.435,
+            "fee_1.4": -0.235
+          }
+        },
+        "h30s": {
+          "gross_mid_bps": 6.028791851439153,
+          "gross_rt_bps": 5.882665653455858,
+          "hit_rate_rt": 1.0,
+          "net_rt_bps": {
+            "fee_4.5": -3.117,
+            "fee_3.0": -0.117,
+            "fee_1.4": 3.083
+          }
+        }
+      },
+      "placebo_rt_at_scoreH": {
+        "mean": 2.67595786386618,
+        "p95": 7.6000372351273215,
+        "real_pctile": 86.5
+      }
+    }
+  }
+}
