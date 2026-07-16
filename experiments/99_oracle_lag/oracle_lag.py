@@ -95,18 +95,37 @@ def _asof_row(qt, qbid, qask, qmid, t):
     return qbid[i], qask[i], qmid[i]
 
 
-def markouts(ev, lag_q, fees, mid0):
+DEPTH_H = 5.0             # horizon for the depth-capped PnL accounting
+DEPTH_CAPS_USD = (1_000.0, 10_000.0)
+
+
+def markouts(ev, lag_q, fees, mid0, overlap_h):
     qt = lag_q["time_exchange"].astype("int64").to_numpy() / 1e9
     qb = lag_q["bid_price"].to_numpy(); qa = lag_q["ask_price"].to_numpy()
+    qbs = lag_q["bid_size"].to_numpy(); qas = lag_q["ask_size"].to_numpy()
     qm = lag_q["mid"].to_numpy()
     res = {"n_events": len(ev)}
     per_h = {h: [] for h in HORIZONS}
+    # depth-honest accounting at DEPTH_H: fill only what the touch holds
+    # (capped), exit by crossing, net of the best fee tier
+    depth_fee = min(fees) * 1e-4
+    pnl_cap = {c: 0.0 for c in DEPTH_CAPS_USD}
+    touch_usd = []
     for t0, sgn in ev:
-        row = _asof_row(qt, qb, qa, qm, t0 + REACT_S)
-        if row is None:
+        i = np.searchsorted(qt, t0 + REACT_S, side="right") - 1
+        if i < 0 or (t0 + REACT_S - qt[i]) > QUOTE_TOL.total_seconds():
             continue
-        bid, ask, mid = row
+        bid, ask, mid = qb[i], qa[i], qm[i]
         entry = ask if sgn > 0 else bid          # cross in on the laggard
+        depth = (qas[i] if sgn > 0 else qbs[i]) * entry
+        touch_usd.append(depth)
+        r2 = _asof_row(qt, qb, qa, qm, t0 + REACT_S + DEPTH_H)
+        if r2 is not None:
+            b2, a2, _ = r2
+            exit_d = b2 if sgn > 0 else a2
+            ret = sgn * (exit_d - entry) / entry - 2 * depth_fee
+            for c in DEPTH_CAPS_USD:
+                pnl_cap[c] += min(depth, c) * ret
         for h in HORIZONS:
             r2 = _asof_row(qt, qb, qa, qm, t0 + REACT_S + h)
             if r2 is None:
@@ -115,6 +134,12 @@ def markouts(ev, lag_q, fees, mid0):
             exit_touch = b2 if sgn > 0 else a2   # cross out
             per_h[h].append((1e4 * sgn * (m2 - entry) / mid0,
                              1e4 * sgn * (exit_touch - entry) / mid0))
+    scale = 24.0 / overlap_h
+    res["depth"] = {
+        "touch_usd_p50": float(np.median(touch_usd)) if touch_usd else None,
+        "fee_bps_used": min(fees),
+        "pnl_per_day_capped": {f"cap_{int(c)}": round(pnl_cap[c] * scale, 2)
+                               for c in DEPTH_CAPS_USD}}
     for h in HORIZONS:
         arr = np.array(per_h[h])
         if not len(arr):
@@ -164,9 +189,15 @@ def main():
            "react_s": REACT_S, "thresholds": {}}
     for thr in THRESHOLDS_BPS:
         ev = events(td, dv, thr * 1e-4 * mid0)
-        r = markouts(ev, lag_q[kg].reset_index(drop=True), fees, mid0)
+        r = markouts(ev, lag_q[kg].reset_index(drop=True), fees, mid0,
+                     (t1 - t0) / 3600)
         out["thresholds"][f"{thr:g}"] = r
-        print(f"  thr={thr:g}bps  events={r['n_events']}")
+        d = r["depth"]
+        print(f"  thr={thr:g}bps  events={r['n_events']}  "
+              f"touch_p50=${d['touch_usd_p50']:,.0f}  "
+              f"pnl/day capped: " +
+              " ".join(f"@{k.split('_')[1]}$={v:+.2f}"
+                       for k, v in d['pnl_per_day_capped'].items()))
         for h in HORIZONS:
             k = f"h{h:g}s"
             if k in r:

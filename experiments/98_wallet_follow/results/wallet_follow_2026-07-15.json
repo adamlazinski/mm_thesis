@@ -5,43 +5,373 @@
   "react_s": 1.0,
   "results": {
     "HL_HYPE": {
-      "n_train_scored": 11,
-      "n_followed": 6,
+      "n_train_scored": 723,
+      "n_followed": 185,
       "followed_train_mk": {
-        "0x6bb971430554e3af58fbd469bce46ab2359a2d23": 4.44,
-        "0x469e9a7f624b04c24f0e64edf8d8a277e6bf58a5": 6.46,
-        "0x0132157369b0d073dd99011da1777920a025fd77": 6.62,
-        "0x9f3781a54303ce694e47f7b6b694c87b87983216": 5.96,
-        "0x505f21430e54d4fac9fa456ead8c35cac0b3b70d": 6.36,
-        "0x89c0fee4b7ca37711219092cd1c0d2b4f7af87c1": 7.24
+        "0x6b655309286fb77259f5f4c1e0ca0f24dfca24dd": 7.64,
+        "0x7b7f72a28fe109fa703eeed7984f2a8a68fedee2": 4.73,
+        "0x3f9a0ee7bba80568a211b7b894dfda46e902fca1": 8.74,
+        "0xe6f43e7acd1e6c3da38f9d30eab98f6e29ac6e2e": 6.07,
+        "0x6f01a1ed32dec4180e569bf13f979ebe38ac83c4": 11.79,
+        "0xaa5b7a31cd75eddc3b67d40cf2b45a22d81940a8": 7.53,
+        "0x16450bb9fdcec2d44f3c25fefcbcbb16315b4834": 4.08,
+        "0xf35660f1b05294fa14b7782b91c27bfb526877fb": 7.68,
+        "0x97a20f3a02a5cf82328b8051f137798810e0f289": 4.8,
+        "0xc0986544922b4b585da4c077f6488e2fbaf043ba": 5.47,
+        "0xe5289a88c94c2ac15500fff9dcd171c256046f40": 3.5,
+        "0x7a51ce9751493a2448c3ebc76667c6e7cf27900d": 3.07,
+        "0xfefcb685987ae54108393881cf3bc8c37f8e2066": 19.28,
+        "0xc9e839a529d1a3a46e2b48d20c461d4afecb72e4": 5.58,
+        "0x45dce3c18ade5336207affcb4623872a9bc60bfa": 3.95,
+        "0xb67c4c91728e6865b216e11d54b50c75bbd3fd5f": 3.07,
+        "0x098a67300b3ea57be03bc7fe7a54680e50676e93": 6.44,
+        "0xe94ba66bb607c0b95ae916d3d1e7e9ac4ff554eb": 4.93,
+        "0x8463d6ffcbfb56bf20ab2e1111f9a0e8359533f2": 11.4,
+        "0xa3c55bb51948f5297251958eff33100eb8432d99": 3.23
       },
       "test": {
-        "n_events": 11,
+        "n_events": 1675,
         "h10s": {
-          "gross_mid_bps": 2.68710040470868,
-          "gross_rt_bps": 2.5653351572122887,
-          "hit_rate_rt": 1.0,
+          "gross_mid_bps": 0.4415728391097917,
+          "gross_rt_bps": 0.30573890566149065,
+          "hit_rate_rt": 0.47880597014925375,
           "net_rt_bps": {
-            "fee_4.5": -6.435,
-            "fee_3.0": -3.435,
-            "fee_1.4": -0.235
+            "fee_4.5": -8.694,
+            "fee_3.0": -5.694,
+            "fee_1.4": -2.494
           }
         },
         "h30s": {
-          "gross_mid_bps": 6.028791851439153,
-          "gross_rt_bps": 5.882665653455858,
-          "hit_rate_rt": 1.0,
+          "gross_mid_bps": 0.5962256416806253,
+          "gross_rt_bps": 0.4789178835635121,
+          "hit_rate_rt": 0.49074626865671644,
           "net_rt_bps": {
-            "fee_4.5": -3.117,
-            "fee_3.0": -0.117,
-            "fee_1.4": 3.083
+            "fee_4.5": -8.521,
+            "fee_3.0": -5.521,
+            "fee_1.4": -2.321
+          }
+        },
+        "h60s": {
+          "gross_mid_bps": 0.7882260932118756,
+          "gross_rt_bps": 0.6804254085460895,
+          "hit_rate_rt": 0.5232974910394266,
+          "net_rt_bps": {
+            "fee_4.5": -8.32,
+            "fee_3.0": -5.32,
+            "fee_1.4": -2.12
+          }
+        },
+        "h300s": {
+          "gross_mid_bps": 2.832253052163277,
+          "gross_rt_bps": 2.714051295599371,
+          "hit_rate_rt": 0.5629850746268656,
+          "net_rt_bps": {
+            "fee_4.5": -6.286,
+            "fee_3.0": -3.286,
+            "fee_1.4": -0.086
           }
         }
       },
       "placebo_rt_at_scoreH": {
-        "mean": 2.67595786386618,
-        "p95": 7.6000372351273215,
-        "real_pctile": 86.5
+        "mean": -0.10186808314711286,
+        "p95": 0.2114576980963726,
+        "real_pctile": 100.0
+      }
+    },
+    "HL_BTC": {
+      "n_train_scored": 1373,
+      "n_followed": 297,
+      "followed_train_mk": {
+        "0xccdd88ec2fdf6411f4d869e8609dc3b6c9b409d4": 10.05,
+        "0x154d97e96620b08f22b41e96a77dea29da902d6d": 6.48,
+        "0x7b7f72a28fe109fa703eeed7984f2a8a68fedee2": 3.09,
+        "0x583bc1459ad20ff59aef8ee40fac9c6246c7803f": 4.1,
+        "0x60fa851cf75a8cff6e9e86d0791023d4fc264c81": 5.11,
+        "0x8f10302f2e14ffdefb1efbcbfbb7827675200c2e": 3.45,
+        "0xce29006d40b7f571497a7fd102494c2bdcea6cd5": 3.62,
+        "0x29a79ffbe0b803f59eb6b959167a9bca95cc4694": 6.3,
+        "0x6bc76cf5d2fbb884f82216fcfad7e6aafd293022": 16.31,
+        "0x3ac9b030594c1ef23a3e8fed9f62356b7bf98bf6": 10.35,
+        "0x39cc7239631b8840292c77c6befbbf0b84adef31": 4.28,
+        "0x6777c7931186085368eec467f95b350205162424": 5.19,
+        "0x5df2fed8188902f86f2074b70fd36ed3a39a1256": 11.39,
+        "0x7ebfc56e05e40b80b4b031b247f13f1de1b54eab": 4.95,
+        "0xa2e5a9f3759ec942f0027d0b75df6a1b8a47a6c8": 3.23,
+        "0xa67792c92067fabc24934abdfb7e4b5a52978500": 10.6,
+        "0xc75b3802ecb07f6c062bcf1d50f1adc2e1a83bf4": 6.23,
+        "0xe61970eea37bc45b464dc194f654ed1af741dd89": 11.11,
+        "0x43a3635f28a202c0f51f2faab8e05a5050120ea0": 9.81,
+        "0x212abcf1a07986aedb244fc4c6f5fe037913a8c6": 4.98
+      },
+      "test": {
+        "n_events": 1262,
+        "h10s": {
+          "gross_mid_bps": 0.1952825565278026,
+          "gross_rt_bps": 0.11204068717958847,
+          "hit_rate_rt": 0.393026941362916,
+          "net_rt_bps": {
+            "fee_4.5": -8.888,
+            "fee_3.0": -5.888,
+            "fee_1.4": -2.688
+          }
+        },
+        "h30s": {
+          "gross_mid_bps": 0.11645580647598502,
+          "gross_rt_bps": 0.03710157851613462,
+          "hit_rate_rt": 0.45245641838351824,
+          "net_rt_bps": {
+            "fee_4.5": -8.963,
+            "fee_3.0": -5.963,
+            "fee_1.4": -2.763
+          }
+        },
+        "h60s": {
+          "gross_mid_bps": 0.10593529940330115,
+          "gross_rt_bps": 0.02585172846605457,
+          "hit_rate_rt": 0.4928684627575277,
+          "net_rt_bps": {
+            "fee_4.5": -8.974,
+            "fee_3.0": -5.974,
+            "fee_1.4": -2.774
+          }
+        },
+        "h300s": {
+          "gross_mid_bps": -0.5854967785398293,
+          "gross_rt_bps": -0.6670089068913271,
+          "hit_rate_rt": 0.46294820717131474,
+          "net_rt_bps": {
+            "fee_4.5": -9.667,
+            "fee_3.0": -6.667,
+            "fee_1.4": -3.467
+          }
+        }
+      },
+      "placebo_rt_at_scoreH": {
+        "mean": 0.10705730257626055,
+        "p95": 0.30367110895496,
+        "real_pctile": 25.0
+      }
+    },
+    "HL_ETH": {
+      "n_train_scored": 895,
+      "n_followed": 325,
+      "followed_train_mk": {
+        "0x545b4f7a5448b6af1b2075bdf22e88d23fd356eb": 34.31,
+        "0xcf98b445b6f012ab58645b33a680f402e32228d2": 8.2,
+        "0x579fbe3fa36e48e14cc5fe65f7f6c7fb1168024e": 8.98,
+        "0x76da17bb75ce5a333156c26ef51e6266ca101e3c": 4.87,
+        "0xb97f107dab4a2e26a9cf0911f8801299e6f85dfd": 7.25,
+        "0xdcc5e0b495d5b610605691238cf1bc03663f7e7f": 5.85,
+        "0xc3a0735091f9bae28b4445c3b495a95662644d0c": 25.36,
+        "0x337c8f57be536a4848a8b69d3d66199a404b9b4e": 14.62,
+        "0x1cf935093a168f0c9d4f3800ea58b5292d8fe4bb": 8.38,
+        "0x7c7ad858264a7ffc01c818d3277260efd7c2b722": 4.55,
+        "0xe15ec2db7dcb1fced329e9b38865ce546e688764": 17.52,
+        "0x6fca13557bff1237e018f76e96a650f23663ec98": 30.29,
+        "0xb947763b6e64b4441b02562a63fda94f6b805162": 22.56,
+        "0xadcf1c25c9417072708271e8ece7c3675e2b2be8": 3.16,
+        "0xb98ec3a868b831c8c20dd93c1d180ba46fab90af": 7.6,
+        "0xf9109ada2f73c62e9889b45453065f0d99260a2d": 6.67,
+        "0xfc667adba8d4837586078f4fdcdc29804337ca06": 5.43,
+        "0xdfc4e98b261acfc40debdffcdc703c5138c932a6": 5.56,
+        "0x7af0b7a51c6bbf3970a5d0c79fc958f3d5ec58b7": 8.59,
+        "0x182f6b195b420aa202c7f1df292e414764279ec1": 3.5
+      },
+      "test": {
+        "n_events": 2734,
+        "h10s": {
+          "gross_mid_bps": -0.41201146343162454,
+          "gross_rt_bps": -0.6800992563158036,
+          "hit_rate_rt": 0.2839370654957922,
+          "net_rt_bps": {
+            "fee_4.5": -9.68,
+            "fee_3.0": -6.68,
+            "fee_1.4": -3.48
+          }
+        },
+        "h30s": {
+          "gross_mid_bps": -0.28815745662071657,
+          "gross_rt_bps": -0.5609217059878372,
+          "hit_rate_rt": 0.41126966703256496,
+          "net_rt_bps": {
+            "fee_4.5": -9.561,
+            "fee_3.0": -6.561,
+            "fee_1.4": -3.361
+          }
+        },
+        "h60s": {
+          "gross_mid_bps": -0.360588571611509,
+          "gross_rt_bps": -0.6290594183545317,
+          "hit_rate_rt": 0.4158125915080527,
+          "net_rt_bps": {
+            "fee_4.5": -9.629,
+            "fee_3.0": -6.629,
+            "fee_1.4": -3.429
+          }
+        },
+        "h300s": {
+          "gross_mid_bps": -1.341678315261207,
+          "gross_rt_bps": -1.6092960161387209,
+          "hit_rate_rt": 0.41544117647058826,
+          "net_rt_bps": {
+            "fee_4.5": -10.609,
+            "fee_3.0": -7.609,
+            "fee_1.4": -4.409
+          }
+        }
+      },
+      "placebo_rt_at_scoreH": {
+        "mean": -0.42020005765837776,
+        "p95": -0.2094630556123944,
+        "real_pctile": 7.5
+      }
+    },
+    "HL_SOL": {
+      "n_train_scored": 329,
+      "n_followed": 101,
+      "followed_train_mk": {
+        "0xd00427c666fdbd105037a334b4e7e879beafa746": 9.69,
+        "0x0a0a466738a2f3ed0929e9cba59b3105132a872c": 6.61,
+        "0x7b7f72a28fe109fa703eeed7984f2a8a68fedee2": 4.42,
+        "0xd8592afc09c864df215d8012122aed08e4ae453f": 8.08,
+        "0x212abcf1a07986aedb244fc4c6f5fe037913a8c6": 7.06,
+        "0x7ce9da67bc84c79f1d58a23d7db2c937267b3cd5": 5.61,
+        "0x155a60da6382cbfa27feef8707b2275406f3def8": 3.74,
+        "0x8c58abcf30b9f5afd43eac3cf2239f3505b5cef2": 9.16,
+        "0xa1eef496bc55811b881778abbaa7db2dd9bd93c0": 4.22,
+        "0xf9109ada2f73c62e9889b45453065f0d99260a2d": 5.92,
+        "0x4cae5bed586f6e73ae54ebd40a4ac4ed2c477c34": 12.73,
+        "0x6f5df22de82cdbf43c02669211001f1e408228a1": 5.14,
+        "0xa8cde6a19789e4d7964ce0e3da14aa29291d7275": 3.49,
+        "0x3810f4c0175f5d43b0ade0ce9a4b7233fb208baa": 18.45,
+        "0x55a8f87e59611f86a31a58b361038f36fbded9ea": 5.87,
+        "0xd7193c9436c40928ab4bbbd42fd240a1b54aa4e2": 7.35,
+        "0x55cf6cb1aa34a46a9a215b8c61c4094113e14000": 8.64,
+        "0x9f6f38e808089a5deb999fcf14fccf2e40d196ac": 3.94,
+        "0x86e655243264e7723e901b2ab279160167bc785b": 4.3,
+        "0x27c9fa86c91b84ddfa15de58c482ff662498d65d": 12.06
+      },
+      "test": {
+        "n_events": 520,
+        "h10s": {
+          "gross_mid_bps": 0.23027853129272585,
+          "gross_rt_bps": 0.1407912518951118,
+          "hit_rate_rt": 0.47591522157996147,
+          "net_rt_bps": {
+            "fee_4.5": -8.859,
+            "fee_3.0": -5.859,
+            "fee_1.4": -2.659
+          }
+        },
+        "h30s": {
+          "gross_mid_bps": -0.11385337869457442,
+          "gross_rt_bps": -0.21150457949293894,
+          "hit_rate_rt": 0.5154440154440154,
+          "net_rt_bps": {
+            "fee_4.5": -9.212,
+            "fee_3.0": -6.212,
+            "fee_1.4": -3.012
+          }
+        },
+        "h60s": {
+          "gross_mid_bps": 0.3081812053222814,
+          "gross_rt_bps": 0.21994387843087815,
+          "hit_rate_rt": 0.5105973025048169,
+          "net_rt_bps": {
+            "fee_4.5": -8.78,
+            "fee_3.0": -5.78,
+            "fee_1.4": -2.58
+          }
+        },
+        "h300s": {
+          "gross_mid_bps": -1.296593825303721,
+          "gross_rt_bps": -1.3823808486962872,
+          "hit_rate_rt": 0.4420849420849421,
+          "net_rt_bps": {
+            "fee_4.5": -10.382,
+            "fee_3.0": -7.382,
+            "fee_1.4": -4.182
+          }
+        }
+      },
+      "placebo_rt_at_scoreH": {
+        "mean": -0.23954966369764108,
+        "p95": 0.07514351744369503,
+        "real_pctile": 99.5
+      }
+    },
+    "HL_LINK": {
+      "n_train_scored": 74,
+      "n_followed": 28,
+      "followed_train_mk": {
+        "0xc8ba85fa5c213f86d99001962d78b167aa5858cd": 41.86,
+        "0x2a72b57dea119cc0bac14df798f9e9b8b148267c": 3.96,
+        "0x75f3665323cce024368870bfd89db0c21e1ce76b": 11.2,
+        "0x010461c14e146ac35fe42271bdc1134ee31c703a": 3.76,
+        "0xbb828515677729c4db2f790a52cf14b1c659e19f": 3.64,
+        "0xd4c1f7e8d876c4749228d515473d36f919583d1d": 3.46,
+        "0xcf5efb55f2599df282ee1ce2ff32f8ab62b5eb01": 6.72,
+        "0xd62f528d954ad2e2c4bd7f03782ff93dde9ea55c": 5.76,
+        "0xce2c4bf9c1f13e0793d7686038972bb5401258bd": 18.67,
+        "0x8f221939cae8dc0a69a593b1a7705158927c26ea": 6.28,
+        "0x6fbf6a1a55dd4c3d439c0a209efc639ffb5d346d": 15.4,
+        "0x72d0b1f98fd9cdd4e46976edd86857b0266a62ea": 6.58,
+        "0xcfea17596c15e0f4fe3ba9cab1fcbe804bbbdbbf": 13.26,
+        "0x0f48ddf1ad6134e552ec993129dedc212945e18f": 6.41,
+        "0xfa1c26ef92ecb44012a7dc67f76652f77b16946d": 4.58,
+        "0x0d8c0828b3d363341f2c6e4468f06f828541b1e2": 15.11,
+        "0x7c930969fcf3e5a5c78bcf2e1cefda3f53e3c8fd": 8.38,
+        "0x88ed98d5833b039cba9732de71bcb049c61418ae": 3.01,
+        "0x927161db6fda293eda57ababf63ccb6f18cafeef": 6.48,
+        "0x99223bf50978618ce3dedc9d05a29717a23a9882": 8.95
+      },
+      "test": {
+        "n_events": 260,
+        "h10s": {
+          "gross_mid_bps": 0.14526298788342573,
+          "gross_rt_bps": -0.4912554864316611,
+          "hit_rate_rt": 0.39147286821705424,
+          "net_rt_bps": {
+            "fee_4.5": -9.491,
+            "fee_3.0": -6.491,
+            "fee_1.4": -3.291
+          }
+        },
+        "h30s": {
+          "gross_mid_bps": 0.6806875014467183,
+          "gross_rt_bps": 0.05498063196153641,
+          "hit_rate_rt": 0.52734375,
+          "net_rt_bps": {
+            "fee_4.5": -8.945,
+            "fee_3.0": -5.945,
+            "fee_1.4": -2.745
+          }
+        },
+        "h60s": {
+          "gross_mid_bps": 1.078699805073811,
+          "gross_rt_bps": 0.4828219796331502,
+          "hit_rate_rt": 0.5198412698412699,
+          "net_rt_bps": {
+            "fee_4.5": -8.517,
+            "fee_3.0": -5.517,
+            "fee_1.4": -2.317
+          }
+        },
+        "h300s": {
+          "gross_mid_bps": -1.333744366284792,
+          "gross_rt_bps": -1.909367901402582,
+          "hit_rate_rt": 0.3967611336032389,
+          "net_rt_bps": {
+            "fee_4.5": -10.909,
+            "fee_3.0": -7.909,
+            "fee_1.4": -4.709
+          }
+        }
+      },
+      "placebo_rt_at_scoreH": {
+        "mean": -0.5806984232929621,
+        "p95": 0.6330753756659051,
+        "real_pctile": 90.5
       }
     }
   }
