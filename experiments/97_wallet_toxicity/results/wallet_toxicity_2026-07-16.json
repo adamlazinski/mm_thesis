@@ -1,0 +1,235 @@
+{
+  "date": "2026-07-16",
+  "horizons": [
+    1.0,
+    5.0,
+    30.0
+  ],
+  "results": {
+    "HL_HYPE": {
+      "asset": "HL_HYPE",
+      "n_fills": 319670,
+      "uniq_takers": 10008,
+      "overall_rh_bps": {
+        "1.0": -0.28229775297768994,
+        "5.0": -0.5994033915438503,
+        "30.0": -0.7158384906748374
+      },
+      "concentration": {
+        "n_takers": 10008,
+        "top5pct_share_of_adverse": 0.9165300418338675,
+        "median_taker_rh5_bps": 0.09031539475616321,
+        "iqr_taker_rh5_bps": 2.7979334897607435
+      },
+      "persistence": {
+        "n_common_wallets": 381,
+        "spearman_rho_train_test": 0.22075797979096645
+      },
+      "benign_pocket_oos": {
+        "benign": {
+          "n": 31220,
+          "rh5_bps": 0.3041563515415443,
+          "net_bps": {
+            "fee_0.0": 0.3042,
+            "fee_1.0": -0.6958,
+            "fee_2.0": -1.6958
+          }
+        },
+        "toxic": {
+          "n": 72349,
+          "rh5_bps": -1.3695243654503026,
+          "net_bps": {
+            "fee_0.0": -1.3695,
+            "fee_1.0": -2.3695,
+            "fee_2.0": -3.3695
+          }
+        },
+        "placebo_benign_rh5_bps": {
+          "mean": -0.861175444779559,
+          "p95": -0.6976408594144432,
+          "real_pctile": 100.0
+        }
+      }
+    },
+    "HL_BTC": {
+      "asset": "HL_BTC",
+      "n_fills": 269159,
+      "uniq_takers": 17307,
+      "overall_rh_bps": {
+        "1.0": -0.20676668592912695,
+        "5.0": -0.301477113721718,
+        "30.0": -0.32621570340783707
+      },
+      "concentration": {
+        "n_takers": 17307,
+        "top5pct_share_of_adverse": 0.8901277095271193,
+        "median_taker_rh5_bps": 0.0778240398459084,
+        "iqr_taker_rh5_bps": 0.7760198099688751
+      },
+      "persistence": {
+        "n_common_wallets": 579,
+        "spearman_rho_train_test": 0.30744858414984944
+      },
+      "benign_pocket_oos": {
+        "benign": {
+          "n": 24537,
+          "rh5_bps": -0.06509460114806752,
+          "net_bps": {
+            "fee_0.0": -0.0651,
+            "fee_1.0": -1.0651,
+            "fee_2.0": -2.0651
+          }
+        },
+        "toxic": {
+          "n": 49981,
+          "rh5_bps": -0.8481149640917134,
+          "net_bps": {
+            "fee_0.0": -0.8481,
+            "fee_1.0": -1.8481,
+            "fee_2.0": -2.8481
+          }
+        },
+        "placebo_benign_rh5_bps": {
+          "mean": -0.5860569398184755,
+          "p95": -0.4736136468965305,
+          "real_pctile": 100.0
+        }
+      }
+    },
+    "HL_ETH": {
+      "asset": "HL_ETH",
+      "n_fills": 192613,
+      "uniq_takers": 9066,
+      "overall_rh_bps": {
+        "1.0": -0.19303918411062634,
+        "5.0": -0.22362380138175408,
+        "30.0": -0.20276333416277809
+      },
+      "concentration": {
+        "n_takers": 9066,
+        "top5pct_share_of_adverse": 0.9198958535950901,
+        "median_taker_rh5_bps": 0.2649357530796372,
+        "iqr_taker_rh5_bps": 1.4478909540367348
+      },
+      "persistence": {
+        "n_common_wallets": 319,
+        "spearman_rho_train_test": 0.2035880108830662
+      },
+      "benign_pocket_oos": {
+        "benign": {
+          "n": 39680,
+          "rh5_bps": 0.13752353159630037,
+          "net_bps": {
+            "fee_0.0": 0.1375,
+            "fee_1.0": -0.8625,
+            "fee_2.0": -1.8625
+          }
+        },
+        "toxic": {
+          "n": 31978,
+          "rh5_bps": -0.667531558472205,
+          "net_bps": {
+            "fee_0.0": -0.6675,
+            "fee_1.0": -1.6675,
+            "fee_2.0": -2.6675
+          }
+        },
+        "placebo_benign_rh5_bps": {
+          "mean": -0.22363321861985486,
+          "p95": -0.0947027141390767,
+          "real_pctile": 100.0
+        }
+      }
+    },
+    "HL_SOL": {
+      "asset": "HL_SOL",
+      "n_fills": 74871,
+      "uniq_takers": 6295,
+      "overall_rh_bps": {
+        "1.0": -0.2695247504395534,
+        "5.0": -0.3267460891421646,
+        "30.0": -0.2933556883359448
+      },
+      "concentration": {
+        "n_takers": 6295,
+        "top5pct_share_of_adverse": 0.8802075115737478,
+        "median_taker_rh5_bps": 0.06572072634578138,
+        "iqr_taker_rh5_bps": 1.3714189778244696
+      },
+      "persistence": {
+        "n_common_wallets": 143,
+        "spearman_rho_train_test": 0.29690731803407855
+      },
+      "benign_pocket_oos": {
+        "benign": {
+          "n": 6485,
+          "rh5_bps": -0.004706338676879849,
+          "net_bps": {
+            "fee_0.0": -0.0047,
+            "fee_1.0": -1.0047,
+            "fee_2.0": -2.0047
+          }
+        },
+        "toxic": {
+          "n": 13174,
+          "rh5_bps": -1.2037088413939432,
+          "net_bps": {
+            "fee_0.0": -1.2037,
+            "fee_1.0": -2.2037,
+            "fee_2.0": -3.2037
+          }
+        },
+        "placebo_benign_rh5_bps": {
+          "mean": -0.7845130011214516,
+          "p95": -0.5666966813842386,
+          "real_pctile": 100.0
+        }
+      }
+    },
+    "HL_LINK": {
+      "asset": "HL_LINK",
+      "n_fills": 11501,
+      "uniq_takers": 947,
+      "overall_rh_bps": {
+        "1.0": 0.17982086897963281,
+        "5.0": -0.07791727751598622,
+        "30.0": 0.00751430513799172
+      },
+      "concentration": {
+        "n_takers": 947,
+        "top5pct_share_of_adverse": 0.9245293919406883,
+        "median_taker_rh5_bps": 0.3089434721718743,
+        "iqr_taker_rh5_bps": 1.2180206938244376
+      },
+      "persistence": {
+        "n_common_wallets": 35,
+        "spearman_rho_train_test": 0.5806722689075631
+      },
+      "benign_pocket_oos": {
+        "benign": {
+          "n": 1673,
+          "rh5_bps": 0.447886201869768,
+          "net_bps": {
+            "fee_0.0": 0.4479,
+            "fee_1.0": -0.5521,
+            "fee_2.0": -1.5521
+          }
+        },
+        "toxic": {
+          "n": 1640,
+          "rh5_bps": -1.070305736619826,
+          "net_bps": {
+            "fee_0.0": -1.0703,
+            "fee_1.0": -2.0703,
+            "fee_2.0": -3.0703
+          }
+        },
+        "placebo_benign_rh5_bps": {
+          "mean": -0.34142392750930756,
+          "p95": -0.04068396264798503,
+          "real_pctile": 100.0
+        }
+      }
+    }
+  }
+}

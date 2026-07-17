@@ -44,6 +44,9 @@ INSTRUMENTS = {
     "BTC":       0.01,
     "LINK_PERP": 0.001,
     "BTC_PERP":  0.10,
+    # cross-venue wide books (July 2026 capture)
+    "HL_LINK":      0.001,
+    "CB_LINK_PERP": 0.001,
 }
 HORIZONS = (0.015, 0.02, 0.05, 0.1, 0.25, 0.5, 1.0, 5.0, 10.0)
 QUOTE_TOL = pd.Timedelta("0.5s")   # prevailing quote must be this fresh
