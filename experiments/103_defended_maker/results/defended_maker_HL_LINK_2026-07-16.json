@@ -1,0 +1,89 @@
+{
+  "asset": "HL_LINK",
+  "date": "2026-07-16",
+  "train": "2026-07-15",
+  "leader": "CB_LINK",
+  "day_h": 23.999693888889418,
+  "n_wd_events": 2337,
+  "tox_bar_usd": 26375.69096500001,
+  "configs": {
+    "none": {
+      "weighted_fills": 4380.0,
+      "fills_per_day": 4380.1,
+      "rh_1s_bps": 0.5494563879866455,
+      "rh_5s_bps": 0.41601456532264647,
+      "rh_30s_bps": 0.4669821628549993,
+      "net_5s_bps": {
+        "fee_1.5": -1.084,
+        "fee_0": 0.416,
+        "fee_-0.3": 0.716
+      },
+      "pnl_day_rebate_cap1k": 48.96
+    },
+    "A": {
+      "weighted_fills": 3968.5,
+      "fills_per_day": 3968.6,
+      "rh_1s_bps": 0.6388389907343207,
+      "rh_5s_bps": 0.5636143175094536,
+      "rh_30s_bps": 0.5711270861236791,
+      "net_5s_bps": {
+        "fee_1.5": -0.936,
+        "fee_0": 0.564,
+        "fee_-0.3": 0.864
+      },
+      "pnl_day_rebate_cap1k": 63.67
+    },
+    "W": {
+      "weighted_fills": 3810.0,
+      "fills_per_day": 3810.0,
+      "rh_1s_bps": 0.5654037350543094,
+      "rh_5s_bps": 0.499187799893078,
+      "rh_30s_bps": 0.5931225756505051,
+      "net_5s_bps": {
+        "fee_1.5": -1.001,
+        "fee_0": 0.499,
+        "fee_-0.3": 0.799
+      },
+      "pnl_day_rebate_cap1k": 49.76
+    },
+    "T": {
+      "weighted_fills": 4328.5,
+      "fills_per_day": 4328.6,
+      "rh_1s_bps": 0.534625430039124,
+      "rh_5s_bps": 0.3995275312315133,
+      "rh_30s_bps": 0.43664166210740335,
+      "net_5s_bps": {
+        "fee_1.5": -1.1,
+        "fee_0": 0.4,
+        "fee_-0.3": 0.7
+      },
+      "pnl_day_rebate_cap1k": 38.36
+    },
+    "A+W": {
+      "weighted_fills": 3474.0,
+      "fills_per_day": 3474.0,
+      "rh_1s_bps": 0.6322929478756874,
+      "rh_5s_bps": 0.6168927867131597,
+      "rh_30s_bps": 0.6699624068344732,
+      "net_5s_bps": {
+        "fee_1.5": -0.883,
+        "fee_0": 0.617,
+        "fee_-0.3": 0.917
+      },
+      "pnl_day_rebate_cap1k": 58.02
+    },
+    "A+W+T": {
+      "weighted_fills": 3433.5,
+      "fills_per_day": 3433.5,
+      "rh_1s_bps": 0.6145891868074831,
+      "rh_5s_bps": 0.6042760434373464,
+      "rh_30s_bps": 0.6564022572104412,
+      "net_5s_bps": {
+        "fee_1.5": -0.896,
+        "fee_0": 0.604,
+        "fee_-0.3": 0.904
+      },
+      "pnl_day_rebate_cap1k": 50.53
+    }
+  }
+}
