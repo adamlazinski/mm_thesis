@@ -99,12 +99,78 @@ def gated_at(t, ev_t, ev_s, hold_s, side):
     return False
 
 
+FILL_CAP_USD = 500.0      # per-fill notional clip (inventory mode)
+MAX_INV_USD = 2_000.0     # pull the loading side beyond this exposure
+
+
+def inventory_sim(tt, tpx, tsz, tbuy, tusd, i_q, qt, qb, qa, qm,
+                  gates, qf=QF):
+    """
+    Round-trip P&L: maintain position; join both touches unless gated or
+    inventory-capped; fills at qf weight; mark to mid continuously.
+    Returns dict with gross P&L (fee-free), maker notional, inventory stats.
+    """
+    eps = 1e-9
+    cash = 0.0; inv = 0.0
+    notional = 0.0; n_fills = 0.0
+    max_abs_inv_usd = 0.0
+    min_eq = np.inf; max_eq = -np.inf
+    for k in range(len(tt)):
+        iq = i_q[k]
+        if iq < 0 or (tt[k] - qt[iq]) > QUOTE_TOL_S:
+            continue
+        mid = qm[iq]
+        inv_usd = inv * mid
+        if tbuy[k]:
+            # taker BUY hits our ask (we sell) — skip if short-capped or gated
+            if inv_usd <= -MAX_INV_USD or any(g(tt[k], 1) for g in gates):
+                pass
+            else:
+                if tpx[k] > qa[iq] + eps:
+                    w = 1.0
+                elif abs(tpx[k] - qa[iq]) <= eps * max(tpx[k], 1):
+                    w = qf
+                else:
+                    w = 0.0
+                if w > 0:
+                    fill_usd = min(tusd[k], FILL_CAP_USD) * w
+                    units = fill_usd / tpx[k]
+                    inv -= units; cash += fill_usd
+                    notional += fill_usd; n_fills += w
+        else:
+            if inv_usd >= MAX_INV_USD or any(g(tt[k], -1) for g in gates):
+                pass
+            else:
+                if tpx[k] < qb[iq] - eps:
+                    w = 1.0
+                elif abs(tpx[k] - qb[iq]) <= eps * max(tpx[k], 1):
+                    w = qf
+                else:
+                    w = 0.0
+                if w > 0:
+                    fill_usd = min(tusd[k], FILL_CAP_USD) * w
+                    units = fill_usd / tpx[k]
+                    inv += units; cash -= fill_usd
+                    notional += fill_usd; n_fills += w
+        eq = cash + inv * qm[iq]
+        min_eq = min(min_eq, eq); max_eq = max(max_eq, eq)
+        max_abs_inv_usd = max(max_abs_inv_usd, abs(inv * qm[iq]))
+    final = cash + inv * qm[-1]
+    return {"gross_pnl": final, "maker_notional": notional,
+            "weighted_fills": n_fills, "max_abs_inv_usd": max_abs_inv_usd,
+            "end_inv_usd": inv * qm[-1], "min_equity": min_eq,
+            "max_equity": max_eq}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--train", required=True)
     ap.add_argument("--date", required=True)
     ap.add_argument("--asset", default="HL_LINK")
     ap.add_argument("--leader", default="CB_LINK")
+    ap.add_argument("--inventory", action="store_true",
+                    help="run the inventory-aware round-trip sim (bankability)")
+    ap.add_argument("--qf", type=float, default=QF)
     args = ap.parse_args()
 
     ol = _mod("ol", "experiments/99_oracle_lag/oracle_lag.py")
@@ -180,6 +246,34 @@ def main():
     i_q = np.searchsorted(qt, tt, side="right") - 1
     ok = i_q >= 0
     eps = 1e-9
+
+    if args.inventory:
+        out = {"asset": args.asset, "date": args.date, "mode": "inventory",
+               "qf": args.qf, "fill_cap_usd": FILL_CAP_USD,
+               "max_inv_usd": MAX_INV_USD, "day_h": day_h, "configs": {}}
+        for name, gates in [("none", []), ("A+W", [gate_A, gate_W])]:
+            r = inventory_sim(tt, tpx, tsz, tbuy, tusd, i_q, qt, qb, qa, qm,
+                              gates, qf=args.qf)
+            scale = 24 / day_h
+            r["gross_pnl_day"] = round(r["gross_pnl"] * scale, 2)
+            r["net_pnl_day"] = {
+                f"fee_{f:g}": round((r["gross_pnl"] - f * 1e-4 * r["maker_notional"])
+                                    * scale, 2)
+                for f in MAKER_FEES_BPS}
+            r["rt_bps_gross"] = round(1e4 * r["gross_pnl"] / r["maker_notional"], 3) \
+                if r["maker_notional"] else None
+            out["configs"][name] = r
+            print(f"  INV {name:5s} qf={args.qf:g}: gross={r['gross_pnl_day']:+9.2f}/day "
+                  f"({r['rt_bps_gross']:+.2f}bps of ${r['maker_notional']:,.0f}) "
+                  f"net: base={r['net_pnl_day']['fee_1.5']:+8.2f} "
+                  f"zero={r['net_pnl_day']['fee_0']:+8.2f} "
+                  f"rebate={r['net_pnl_day']['fee_-0.3']:+8.2f}  "
+                  f"max|inv|=${r['max_abs_inv_usd']:,.0f} end=${r['end_inv_usd']:+,.0f}")
+        tag = f"{args.asset}_{args.date}_inv_qf{args.qf:g}"
+        with open(OUT / f"defended_maker_{tag}.json", "w") as fh:
+            json.dump(out, fh, indent=2)
+        print(f"Saved -> {OUT}/defended_maker_{tag}.json")
+        return
 
     # horizon mids per trade (shared across configs)
     mid_h = {}
