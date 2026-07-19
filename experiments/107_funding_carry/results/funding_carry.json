@@ -1,0 +1,31 @@
+{
+  "date": "2026-07-19",
+  "structure": "short HL perp / long Binance perp, delta-neutral",
+  "caveats": "carry not alpha; gross of margin/borrow/execution; basis-gap + funding-regime tail risk; short window",
+  "rows": {
+    "HL_BTC": {
+      "hl_ann_pct": 10.83,
+      "hl_frac_pos": 99.9,
+      "binance_ann_pct": 4.46,
+      "net_carry_ann_pct": 6.37
+    },
+    "HL_ETH": {
+      "hl_ann_pct": 10.95,
+      "hl_frac_pos": 100.0,
+      "binance_ann_pct": 3.11,
+      "net_carry_ann_pct": 7.84
+    },
+    "HL_LINK": {
+      "hl_ann_pct": 10.95,
+      "hl_frac_pos": 100.0,
+      "binance_ann_pct": 4.2,
+      "net_carry_ann_pct": 6.75
+    },
+    "HL_SOL": {
+      "hl_ann_pct": 3.72,
+      "hl_frac_pos": 71.9,
+      "binance_ann_pct": -1.73,
+      "net_carry_ann_pct": 5.45
+    }
+  }
+}
