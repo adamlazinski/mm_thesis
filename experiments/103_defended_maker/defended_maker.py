@@ -185,20 +185,25 @@ def main():
     qm = q["mid"].to_numpy()
     day_h = (qt[-1] - qt[0]) / 3600
 
-    # ── gate A: consensus dev series ─────────────────────────────────────────
-    lead_q = ol.load_quotes(args.leader, args.date)
-    tl = lead_q["time_exchange"].astype("int64").to_numpy() / 1e9
-    k_l = (tl >= qt[0]) & (tl <= qt[-1])
-    td, dv = ol.dev_series(tl[k_l], lead_q["mid"].to_numpy()[k_l], qt, qm)
-    cons_thr = CONS_GATE_BPS * 1e-4 * mid0
+    # ── gate A: consensus dev series (skipped if no leader venue) ─────────────
+    have_leader = (PROC / f"quotes_{args.leader}_{args.date}.parquet").exists()
+    if have_leader:
+        lead_q = ol.load_quotes(args.leader, args.date)
+        tl = lead_q["time_exchange"].astype("int64").to_numpy() / 1e9
+        k_l = (tl >= qt[0]) & (tl <= qt[-1])
+        td, dv = ol.dev_series(tl[k_l], lead_q["mid"].to_numpy()[k_l], qt, qm)
+        cons_thr = CONS_GATE_BPS * 1e-4 * mid0
 
-    def gate_A(t, side):
-        i = np.searchsorted(td, t, side="right") - 1
-        if i < 0:
+        def gate_A(t, side):
+            i = np.searchsorted(td, t, side="right") - 1
+            if i < 0:
+                return False
+            d = dv[i]
+            # dev>0: HL below consensus, price about to rise -> pull ask (side=+1)
+            return (d > cons_thr and side == 1) or (d < -cons_thr and side == -1)
+    else:
+        def gate_A(t, side):
             return False
-        d = dv[i]
-        # dev>0: HL below consensus, price about to rise -> pull ask (side=+1)
-        return (d > cons_thr and side == 1) or (d < -cons_thr and side == -1)
 
     # ── gate W: withdrawal events (exp 102 detector) ─────────────────────────
     wd_ev = wl.find_withdrawals(q)      # (t, sgn): sgn=+1 asks pulled (up)

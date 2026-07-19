@@ -47,6 +47,13 @@ INSTRUMENTS = {
     # cross-venue wide books (July 2026 capture)
     "HL_LINK":      0.001,
     "CB_LINK_PERP": 0.001,
+    # route-5 thin/wide tail books (tick nominal; horizon & bps are tick-free)
+    "HL_HMSTR":  1e-6,
+    "HL_CELO":   1e-4,
+    "HL_USUAL":  1e-4,
+    "HL_VINE":   1e-5,
+    "HL_ZORA":   1e-5,
+    "HL_EIGEN":  1e-3,
 }
 HORIZONS = (0.015, 0.02, 0.05, 0.1, 0.25, 0.5, 1.0, 5.0, 10.0)
 QUOTE_TOL = pd.Timedelta("0.5s")   # prevailing quote must be this fresh

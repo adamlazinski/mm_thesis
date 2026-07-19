@@ -1,0 +1,43 @@
+{
+  "asset": "HL_CELO",
+  "date": "2026-07-18",
+  "mode": "inventory",
+  "qf": 0.5,
+  "fill_cap_usd": 500.0,
+  "max_inv_usd": 2000.0,
+  "day_h": 19.25776444448365,
+  "configs": {
+    "none": {
+      "gross_pnl": 29.624475462286703,
+      "maker_notional": 34750.37433550002,
+      "weighted_fills": 943.0,
+      "max_abs_inv_usd": 2124.2211124051287,
+      "end_inv_usd": 52.07143196228741,
+      "min_equity": -12.211386245338645,
+      "max_equity": 35.14870269282903,
+      "gross_pnl_day": 36.92,
+      "net_pnl_day": {
+        "fee_1.5": 30.42,
+        "fee_0": 36.92,
+        "fee_-0.3": 38.22
+      },
+      "rt_bps_gross": 8.525
+    },
+    "A+W": {
+      "gross_pnl": 43.129761660143004,
+      "maker_notional": 27234.509402500076,
+      "weighted_fills": 860.5,
+      "max_abs_inv_usd": 2042.3082120461377,
+      "end_inv_usd": 1675.5579571601418,
+      "min_equity": -5.613770245338287,
+      "max_equity": 52.475157035534494,
+      "gross_pnl_day": 53.75,
+      "net_pnl_day": {
+        "fee_1.5": 48.66,
+        "fee_0": 53.75,
+        "fee_-0.3": 54.77
+      },
+      "rt_bps_gross": 15.836
+    }
+  }
+}
