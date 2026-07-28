@@ -1,0 +1,23 @@
+{
+  "hl": "HL_LINK",
+  "binance": "LINK_PERP",
+  "dates": [
+    "2026-07-15"
+  ],
+  "hours": 12.1,
+  "n_bars": 714,
+  "funding_ann_pct": 8.32,
+  "basis_ann_pct": -8.63,
+  "carry_ann_pct": -0.31,
+  "basis_vol_ann_pct": 11.91,
+  "gross_sharpe": -0.03,
+  "max_drawdown_pct": -0.201,
+  "roundtrip_cost_bps": 5.6,
+  "cost_drag_ann_pct": {
+    "rebal_1": 20.44,
+    "rebal_7": 2.92,
+    "rebal_30": 0.68
+  },
+  "hl_funding_total_pct": 0.018,
+  "bin_funding_total_pct": 0.006
+}
