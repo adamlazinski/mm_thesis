@@ -1,0 +1,77 @@
+{
+  "laggard": "HL_BTC",
+  "leader": "BTC_PERP",
+  "dates": [
+    "2026-07-16"
+  ],
+  "thresholds": {
+    "3": {
+      "n": 331,
+      "all_rt_bps": 2.910216597454209,
+      "dev_prem_align_corr": -0.8701144928447139,
+      "groups": {
+        "confirmed(prem opposes reversion, stretched)": {
+          "n": 109,
+          "rt_bps": 2.574138361436009,
+          "hit": 0.8165137614678899,
+          "net_bps": {
+            "fee_4.5": -6.43,
+            "fee_1.4": -0.23
+          }
+        },
+        "neutral": {
+          "n": 109,
+          "rt_bps": 3.070977046837968,
+          "hit": 0.8715596330275229,
+          "net_bps": {
+            "fee_4.5": -5.93,
+            "fee_1.4": 0.27
+          }
+        },
+        "opposed(prem agrees w/ move)": {
+          "n": 113,
+          "rt_bps": 3.0793284447387586,
+          "hit": 0.8761061946902655,
+          "net_bps": {
+            "fee_4.5": -5.92,
+            "fee_1.4": 0.28
+          }
+        }
+      }
+    },
+    "5": {
+      "n": 55,
+      "all_rt_bps": 4.787406743537744,
+      "dev_prem_align_corr": -0.8735528257897419,
+      "groups": {
+        "confirmed(prem opposes reversion, stretched)": {
+          "n": 18,
+          "rt_bps": 4.0547398525596305,
+          "hit": 0.8888888888888888,
+          "net_bps": {
+            "fee_4.5": -4.95,
+            "fee_1.4": 1.25
+          }
+        },
+        "neutral": {
+          "n": 18,
+          "rt_bps": 5.1873004510357745,
+          "hit": 0.8333333333333334,
+          "net_bps": {
+            "fee_4.5": -3.81,
+            "fee_1.4": 2.39
+          }
+        },
+        "opposed(prem agrees w/ move)": {
+          "n": 19,
+          "rt_bps": 5.102665548939927,
+          "hit": 0.8421052631578947,
+          "net_bps": {
+            "fee_4.5": -3.9,
+            "fee_1.4": 2.3
+          }
+        }
+      }
+    }
+  }
+}
