@@ -1,0 +1,477 @@
+{
+  "grid_ms": 100,
+  "dates": [
+    "2026-07-15",
+    "2026-07-16"
+  ],
+  "n_rows": 396986,
+  "results": {
+    "BTC_PERP|CB_BTC": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.4975,
+      "zero_lag_corr": 0.4975,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "BTC_PERP|HL_BTC": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.269,
+      "zero_lag_corr": 0.0413,
+      "leader": "BTC_PERP",
+      "peak_over_zero": 0.2277
+    },
+    "BTC_PERP|LINK": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.324,
+      "zero_lag_corr": 0.324,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "BTC_PERP|LINK_PERP": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.3359,
+      "zero_lag_corr": 0.3359,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "BTC_PERP|CB_LINK": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.2573,
+      "zero_lag_corr": 0.2573,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "BTC_PERP|HL_LINK": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.1185,
+      "zero_lag_corr": 0.0428,
+      "leader": "BTC_PERP",
+      "peak_over_zero": 0.0757
+    },
+    "BTC_PERP|HL_ETH": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.1991,
+      "zero_lag_corr": 0.0528,
+      "leader": "BTC_PERP",
+      "peak_over_zero": 0.1464
+    },
+    "BTC_PERP|HL_SOL": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.1654,
+      "zero_lag_corr": 0.0584,
+      "leader": "BTC_PERP",
+      "peak_over_zero": 0.107
+    },
+    "BTC_PERP|HL_HYPE": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.0906,
+      "zero_lag_corr": 0.0286,
+      "leader": "BTC_PERP",
+      "peak_over_zero": 0.062
+    },
+    "CB_BTC|HL_BTC": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.236,
+      "zero_lag_corr": 0.0404,
+      "leader": "CB_BTC",
+      "peak_over_zero": 0.1955
+    },
+    "CB_BTC|LINK": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.3084,
+      "zero_lag_corr": 0.3084,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "CB_BTC|LINK_PERP": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.3158,
+      "zero_lag_corr": 0.3158,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "CB_BTC|CB_LINK": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.3237,
+      "zero_lag_corr": 0.3237,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "CB_BTC|HL_LINK": {
+      "peak_lag_ms": 200,
+      "peak_corr": 0.1176,
+      "zero_lag_corr": 0.0354,
+      "leader": "CB_BTC",
+      "peak_over_zero": 0.0822
+    },
+    "CB_BTC|HL_ETH": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.2021,
+      "zero_lag_corr": 0.0358,
+      "leader": "CB_BTC",
+      "peak_over_zero": 0.1663
+    },
+    "CB_BTC|HL_SOL": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.1662,
+      "zero_lag_corr": 0.0587,
+      "leader": "CB_BTC",
+      "peak_over_zero": 0.1074
+    },
+    "CB_BTC|HL_HYPE": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.091,
+      "zero_lag_corr": 0.025,
+      "leader": "CB_BTC",
+      "peak_over_zero": 0.066
+    },
+    "HL_BTC|LINK": {
+      "peak_lag_ms": -500,
+      "peak_corr": 0.1688,
+      "zero_lag_corr": 0.0438,
+      "leader": "LINK",
+      "peak_over_zero": 0.125
+    },
+    "HL_BTC|LINK_PERP": {
+      "peak_lag_ms": -400,
+      "peak_corr": 0.1546,
+      "zero_lag_corr": 0.0356,
+      "leader": "LINK_PERP",
+      "peak_over_zero": 0.119
+    },
+    "HL_BTC|CB_LINK": {
+      "peak_lag_ms": -500,
+      "peak_corr": 0.1236,
+      "zero_lag_corr": 0.0253,
+      "leader": "CB_LINK",
+      "peak_over_zero": 0.0983
+    },
+    "HL_BTC|HL_LINK": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.1535,
+      "zero_lag_corr": 0.1535,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "HL_BTC|HL_ETH": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.2245,
+      "zero_lag_corr": 0.2245,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "HL_BTC|HL_SOL": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.2002,
+      "zero_lag_corr": 0.2002,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "HL_BTC|HL_HYPE": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.097,
+      "zero_lag_corr": 0.097,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "LINK|LINK_PERP": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.481,
+      "zero_lag_corr": 0.481,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "LINK|CB_LINK": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.3421,
+      "zero_lag_corr": 0.3421,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "LINK|HL_LINK": {
+      "peak_lag_ms": 200,
+      "peak_corr": 0.1766,
+      "zero_lag_corr": 0.056,
+      "leader": "LINK",
+      "peak_over_zero": 0.1207
+    },
+    "LINK|HL_ETH": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.2001,
+      "zero_lag_corr": 0.0481,
+      "leader": "LINK",
+      "peak_over_zero": 0.1519
+    },
+    "LINK|HL_SOL": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.1532,
+      "zero_lag_corr": 0.0589,
+      "leader": "LINK",
+      "peak_over_zero": 0.0943
+    },
+    "LINK|HL_HYPE": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.0763,
+      "zero_lag_corr": 0.0311,
+      "leader": "LINK",
+      "peak_over_zero": 0.0452
+    },
+    "LINK_PERP|CB_LINK": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.3589,
+      "zero_lag_corr": 0.3589,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "LINK_PERP|HL_LINK": {
+      "peak_lag_ms": 200,
+      "peak_corr": 0.1893,
+      "zero_lag_corr": 0.0428,
+      "leader": "LINK_PERP",
+      "peak_over_zero": 0.1465
+    },
+    "LINK_PERP|HL_ETH": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.1884,
+      "zero_lag_corr": 0.042,
+      "leader": "LINK_PERP",
+      "peak_over_zero": 0.1464
+    },
+    "LINK_PERP|HL_SOL": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.1589,
+      "zero_lag_corr": 0.0488,
+      "leader": "LINK_PERP",
+      "peak_over_zero": 0.1101
+    },
+    "LINK_PERP|HL_HYPE": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.0741,
+      "zero_lag_corr": 0.0249,
+      "leader": "LINK_PERP",
+      "peak_over_zero": 0.0492
+    },
+    "CB_LINK|HL_LINK": {
+      "peak_lag_ms": 200,
+      "peak_corr": 0.1306,
+      "zero_lag_corr": 0.0413,
+      "leader": "CB_LINK",
+      "peak_over_zero": 0.0893
+    },
+    "CB_LINK|HL_ETH": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.1539,
+      "zero_lag_corr": 0.0268,
+      "leader": "CB_LINK",
+      "peak_over_zero": 0.1271
+    },
+    "CB_LINK|HL_SOL": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.1304,
+      "zero_lag_corr": 0.0348,
+      "leader": "CB_LINK",
+      "peak_over_zero": 0.0956
+    },
+    "CB_LINK|HL_HYPE": {
+      "peak_lag_ms": 500,
+      "peak_corr": 0.064,
+      "zero_lag_corr": 0.0175,
+      "leader": "CB_LINK",
+      "peak_over_zero": 0.0465
+    },
+    "HL_LINK|HL_ETH": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.1753,
+      "zero_lag_corr": 0.1753,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "HL_LINK|HL_SOL": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.1761,
+      "zero_lag_corr": 0.1761,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "HL_LINK|HL_HYPE": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.083,
+      "zero_lag_corr": 0.083,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "HL_ETH|HL_SOL": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.2273,
+      "zero_lag_corr": 0.2273,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "HL_ETH|HL_HYPE": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.1094,
+      "zero_lag_corr": 0.1094,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "HL_SOL|HL_HYPE": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.1127,
+      "zero_lag_corr": 0.1127,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    }
+  },
+  "flagged": [
+    {
+      "pair": "BTC_PERP->HL_BTC",
+      "lead_ms": 500,
+      "peak": 0.2689528317130198,
+      "zero": 0.04129327557467808
+    },
+    {
+      "pair": "BTC_PERP->HL_LINK",
+      "lead_ms": 500,
+      "peak": 0.11852826626811806,
+      "zero": 0.04282057991473992
+    },
+    {
+      "pair": "BTC_PERP->HL_ETH",
+      "lead_ms": 500,
+      "peak": 0.19911632782470273,
+      "zero": 0.05275228017803311
+    },
+    {
+      "pair": "BTC_PERP->HL_SOL",
+      "lead_ms": 500,
+      "peak": 0.16535469607492395,
+      "zero": 0.05836231530815384
+    },
+    {
+      "pair": "BTC_PERP->HL_HYPE",
+      "lead_ms": 500,
+      "peak": 0.09058388301798442,
+      "zero": 0.028571822000502855
+    },
+    {
+      "pair": "CB_BTC->HL_BTC",
+      "lead_ms": 500,
+      "peak": 0.23595542704989392,
+      "zero": 0.04042708984337284
+    },
+    {
+      "pair": "CB_BTC->HL_LINK",
+      "lead_ms": 200,
+      "peak": 0.11759436340775611,
+      "zero": 0.03544381607092055
+    },
+    {
+      "pair": "CB_BTC->HL_ETH",
+      "lead_ms": 500,
+      "peak": 0.20212412129188956,
+      "zero": 0.03584575149427331
+    },
+    {
+      "pair": "CB_BTC->HL_SOL",
+      "lead_ms": 500,
+      "peak": 0.1661790804723896,
+      "zero": 0.0587346267268145
+    },
+    {
+      "pair": "CB_BTC->HL_HYPE",
+      "lead_ms": 500,
+      "peak": 0.0909838206812476,
+      "zero": 0.025013418698019162
+    },
+    {
+      "pair": "LINK->HL_BTC",
+      "lead_ms": 500,
+      "peak": 0.16882464134673425,
+      "zero": 0.043774750940648255
+    },
+    {
+      "pair": "LINK_PERP->HL_BTC",
+      "lead_ms": 400,
+      "peak": 0.15461115695292751,
+      "zero": 0.03557753915749518
+    },
+    {
+      "pair": "CB_LINK->HL_BTC",
+      "lead_ms": 500,
+      "peak": 0.12364571810857979,
+      "zero": 0.025331886715341964
+    },
+    {
+      "pair": "LINK->HL_LINK",
+      "lead_ms": 200,
+      "peak": 0.17664551394391056,
+      "zero": 0.055974960271334466
+    },
+    {
+      "pair": "LINK->HL_ETH",
+      "lead_ms": 500,
+      "peak": 0.2000875494499141,
+      "zero": 0.04814226511965041
+    },
+    {
+      "pair": "LINK->HL_SOL",
+      "lead_ms": 500,
+      "peak": 0.15322952436725415,
+      "zero": 0.05888907587703729
+    },
+    {
+      "pair": "LINK->HL_HYPE",
+      "lead_ms": 500,
+      "peak": 0.07631919741989221,
+      "zero": 0.031073629920972918
+    },
+    {
+      "pair": "LINK_PERP->HL_LINK",
+      "lead_ms": 200,
+      "peak": 0.189349345151608,
+      "zero": 0.042823305107080815
+    },
+    {
+      "pair": "LINK_PERP->HL_ETH",
+      "lead_ms": 500,
+      "peak": 0.18843434638593848,
+      "zero": 0.04198794305416705
+    },
+    {
+      "pair": "LINK_PERP->HL_SOL",
+      "lead_ms": 500,
+      "peak": 0.15894443985548412,
+      "zero": 0.04883631752445459
+    },
+    {
+      "pair": "LINK_PERP->HL_HYPE",
+      "lead_ms": 500,
+      "peak": 0.07414161426559204,
+      "zero": 0.024940109453739086
+    },
+    {
+      "pair": "CB_LINK->HL_LINK",
+      "lead_ms": 200,
+      "peak": 0.13063317611550174,
+      "zero": 0.04132578127074
+    },
+    {
+      "pair": "CB_LINK->HL_ETH",
+      "lead_ms": 500,
+      "peak": 0.15388888242699877,
+      "zero": 0.02677781747172974
+    },
+    {
+      "pair": "CB_LINK->HL_SOL",
+      "lead_ms": 500,
+      "peak": 0.13042982124735944,
+      "zero": 0.034792092880115325
+    },
+    {
+      "pair": "CB_LINK->HL_HYPE",
+      "lead_ms": 500,
+      "peak": 0.06397111042976653,
+      "zero": 0.017484455366007692
+    }
+  ]
+}
