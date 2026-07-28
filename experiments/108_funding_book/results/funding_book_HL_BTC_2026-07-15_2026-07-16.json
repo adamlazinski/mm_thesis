@@ -1,0 +1,24 @@
+{
+  "hl": "HL_BTC",
+  "binance": "BTC_PERP",
+  "dates": [
+    "2026-07-15",
+    "2026-07-16"
+  ],
+  "hours": 36.0,
+  "n_bars": 2127,
+  "funding_ann_pct": 6.74,
+  "basis_ann_pct": 1.65,
+  "carry_ann_pct": 8.39,
+  "basis_vol_ann_pct": 6.65,
+  "gross_sharpe": 1.26,
+  "max_drawdown_pct": -0.095,
+  "roundtrip_cost_bps": 5.6,
+  "cost_drag_ann_pct": {
+    "rebal_1": 20.44,
+    "rebal_7": 2.92,
+    "rebal_30": 0.68
+  },
+  "hl_funding_total_pct": 0.047,
+  "bin_funding_total_pct": 0.019
+}
