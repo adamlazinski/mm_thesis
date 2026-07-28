@@ -44,14 +44,17 @@ SERIES = ["BTC", "BTC_PERP", "CB_BTC", "HL_BTC",
           "HL_ETH", "HL_SOL", "HL_HYPE"]
 
 
-def load_grid(asset, dates, grid_ms):
+def load_grid(asset, dates, grid_ms, clock="exchange"):
+    """clock: 'exchange' = venue's own stamp; 'recv' = our local receive time
+    (a single common clock, but includes per-venue network latency)."""
+    tcol = "time_exchange" if clock == "exchange" else "time_coinapi"
     frames = []
     for d in dates:
         p = PROC / f"quotes_{asset}_{d}.parquet"
         if not p.exists():
             continue
-        q = pd.read_parquet(p, columns=["time_exchange", "bid_price", "ask_price"])
-        q = q.sort_values("time_exchange").set_index("time_exchange")
+        q = pd.read_parquet(p, columns=[tcol, "bid_price", "ask_price"])
+        q = q.sort_values(tcol).set_index(tcol)
         mid = (q["bid_price"] + q["ask_price"]) / 2.0
         frames.append(mid.resample(f"{grid_ms}ms").last())
     if not frames:
@@ -81,13 +84,17 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dates", required=True)
     ap.add_argument("--grid-ms", type=int, default=GRID_MS)
+    ap.add_argument("--max-lag-ms", type=int, default=MAX_LAG_MS)
+    ap.add_argument("--clock", choices=["exchange", "recv"], default="exchange")
+    ap.add_argument("--only", action="append",
+                    help="restrict to these series (repeatable)")
     args = ap.parse_args()
     dates = args.dates.split(",")
-    max_lag = int(MAX_LAG_MS / args.grid_ms)
+    max_lag = int(args.max_lag_ms / args.grid_ms)
 
     series = {}
-    for a in SERIES:
-        s = load_grid(a, dates, args.grid_ms)
+    for a in (args.only or SERIES):
+        s = load_grid(a, dates, args.grid_ms, args.clock)
         if s is not None and len(s) > 5000:
             series[a] = s
     print(f"loaded {len(series)} series at {args.grid_ms}ms: {list(series)}")
@@ -127,12 +134,12 @@ def main():
     else:
         print("  none — all peaks are contemporaneous at this grid")
 
-    with open(OUT / f"leadlag_{args.grid_ms}ms.json", "w") as fh:
-        json.dump({"grid_ms": args.grid_ms, "dates": dates,
+    with open(OUT / f"leadlag_{args.grid_ms}ms_{args.clock}.json", "w") as fh:
+        json.dump({"grid_ms": args.grid_ms, "clock": args.clock, "dates": dates,
                    "n_rows": len(df), "results": results,
                    "flagged": [{"pair": f, "lead_ms": l, "peak": p, "zero": z}
                                for f, l, p, z in flagged]}, fh, indent=2)
-    print(f"\nSaved -> {OUT}/leadlag_{args.grid_ms}ms.json")
+    print(f"\nSaved -> {OUT}/leadlag_{args.grid_ms}ms_{args.clock}.json")
 
 
 if __name__ == "__main__":

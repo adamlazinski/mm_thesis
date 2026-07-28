@@ -1,0 +1,33 @@
+{
+  "grid_ms": 10,
+  "clock": "recv",
+  "dates": [
+    "2026-07-15",
+    "2026-07-16"
+  ],
+  "n_rows": 12109422,
+  "results": {
+    "BTC_PERP|CB_BTC": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.0518,
+      "zero_lag_corr": 0.0518,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "BTC_PERP|HL_BTC": {
+      "peak_lag_ms": 430,
+      "peak_corr": 0.017,
+      "zero_lag_corr": 0.0163,
+      "leader": "BTC_PERP",
+      "peak_over_zero": 0.0008
+    },
+    "CB_BTC|HL_BTC": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.0173,
+      "zero_lag_corr": 0.0173,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    }
+  },
+  "flagged": []
+}

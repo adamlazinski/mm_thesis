@@ -45,9 +45,16 @@ HORIZONS = (1.0, 5.0, 15.0, 60.0)
 QUOTE_TOL = pd.Timedelta("5s")
 
 
-def load_quotes(asset, date):
-    q = pd.read_parquet(PROC / f"quotes_{asset}_{date}.parquet").sort_values(
-        "time_exchange").reset_index(drop=True)
+def load_quotes(asset, date, clock="exchange"):
+    """clock='exchange' uses the venue's own stamp; clock='recv' uses our local
+    receive time (time_coinapi) — a single common clock across venues, which is
+    what a trader at our location actually observes. Cross-venue signals must
+    survive the recv clock or they may be an inter-venue clock-offset artifact."""
+    q = pd.read_parquet(PROC / f"quotes_{asset}_{date}.parquet")
+    if clock == "recv":
+        q = q.drop(columns=["time_exchange"]).rename(
+            columns={"time_coinapi": "time_exchange"})
+    q = q.sort_values("time_exchange").reset_index(drop=True)
     q["mid"] = (q["bid_price"] + q["ask_price"]) / 2.0
     t = q["time_exchange"].astype("int64").to_numpy() / 1e9
     keep = np.concatenate([[True], np.diff(t) > 0])
@@ -163,11 +170,13 @@ def main():
     ap.add_argument("--laggard", required=True, help="processed asset name (e.g. HL_BTC)")
     ap.add_argument("--fees", default="4.5,3.0,1.4",
                     help="laggard taker fee tiers, bps, comma-sep")
+    ap.add_argument("--clock", choices=["exchange", "recv"], default="exchange",
+                    help="timestamp basis; recv = common local clock (artifact check)")
     args = ap.parse_args()
     fees = tuple(float(x) for x in args.fees.split(","))
 
-    lead_q = load_quotes(args.leader, args.date)
-    lag_q = load_quotes(args.laggard, args.date)
+    lead_q = load_quotes(args.leader, args.date, args.clock)
+    lag_q = load_quotes(args.laggard, args.date, args.clock)
     tl = lead_q["time_exchange"].astype("int64").to_numpy() / 1e9
     tg = lag_q["time_exchange"].astype("int64").to_numpy() / 1e9
     # clip to the overlapping window
@@ -182,7 +191,7 @@ def main():
     lag_spread_bps = float(np.median(
         1e4 * (lag_q["ask_price"] - lag_q["bid_price"])[kg] / gm[kg]))
 
-    print(f"=== {args.leader} -> {args.laggard} {args.date}  "
+    print(f"=== {args.leader} -> {args.laggard} {args.date} [clock={args.clock}]  "
           f"overlap={(t1-t0)/3600:.1f}h  laggard spread p50={lag_spread_bps:.2f}bps")
     out = {"date": args.date, "leader": args.leader, "laggard": args.laggard,
            "overlap_h": (t1 - t0) / 3600, "laggard_spread_p50_bps": lag_spread_bps,
@@ -207,7 +216,7 @@ def main():
                       f"net@{fees[0]:g}={x['net_rt_bps'][f'fee_{fees[0]}']:+7.2f} "
                       f"net@{fees[-1]:g}={x['net_rt_bps'][f'fee_{fees[-1]}']:+7.2f}")
 
-    tag = f"{args.leader}_to_{args.laggard}_{args.date}"
+    tag = f"{args.leader}_to_{args.laggard}_{args.date}_{args.clock}"
     with open(OUT / f"oracle_lag_{tag}.json", "w") as fh:
         json.dump(out, fh, indent=2)
     print(f"Saved -> {OUT}/oracle_lag_{tag}.json")

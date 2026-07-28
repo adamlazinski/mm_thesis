@@ -1,0 +1,46 @@
+{
+  "grid_ms": 10,
+  "clock": "exchange",
+  "dates": [
+    "2026-07-15",
+    "2026-07-16"
+  ],
+  "n_rows": 12116546,
+  "results": {
+    "BTC_PERP|CB_BTC": {
+      "peak_lag_ms": 0,
+      "peak_corr": 0.0697,
+      "zero_lag_corr": 0.0697,
+      "leader": "contemporaneous",
+      "peak_over_zero": 0.0
+    },
+    "BTC_PERP|HL_BTC": {
+      "peak_lag_ms": 490,
+      "peak_corr": 0.0389,
+      "zero_lag_corr": 0.0154,
+      "leader": "BTC_PERP",
+      "peak_over_zero": 0.0235
+    },
+    "CB_BTC|HL_BTC": {
+      "peak_lag_ms": 450,
+      "peak_corr": 0.0292,
+      "zero_lag_corr": 0.0172,
+      "leader": "CB_BTC",
+      "peak_over_zero": 0.012
+    }
+  },
+  "flagged": [
+    {
+      "pair": "BTC_PERP->HL_BTC",
+      "lead_ms": 490,
+      "peak": 0.03888951833922658,
+      "zero": 0.015400777396032276
+    },
+    {
+      "pair": "CB_BTC->HL_BTC",
+      "lead_ms": 450,
+      "peak": 0.02923095606261424,
+      "zero": 0.01720724775545456
+    }
+  ]
+}
