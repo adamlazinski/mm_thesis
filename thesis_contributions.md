@@ -3672,6 +3672,346 @@ python experiments/96_toxicity_heterogeneity/toxicity_heterogeneity.py --date 20
 
 ---
 
+## C62 — Counterparty Identity Is the Strongest Sorting Instrument That Can Exist, and It Reaches the Equilibrium Exactly (exp 97)
+
+**Question.** C61 closed flow-sorting using *anonymous* state, but left the strongest version
+untested: a maker who knows *who* is trading. On a central limit order book that information does
+not exist. On Hyperliquid it does — every trade on the public feed carries both counterparty
+wallet addresses (`users: [buyer, seller]`). If adverse selection is a property of *traders*
+rather than of *states*, a maker who can identify and avoid the toxic ones should escape the
+zero. This is the sharpest possible test of the Glosten-Milgrom pooling assumption.
+
+**Method.** The C59 markout, conditioned on the *taker wallet*. Per wallet: mean realized
+half-spread; then (1) **concentration** — what share of total adverse selection the worst wallets
+carry; (2) **persistence** — Spearman correlation of a wallet's toxicity between the first and
+second half of the day (necessary for it to be learnable); (3) **benign-pocket OOS** — rank
+wallets on the train half, and on the held-out half measure the realized half-spread of fills
+from the benign-ranked wallets, net of fees. Control: **wallet-label placebo** — shuffle
+identities, preserving class sizes and trade counts but destroying identity, repeated N times.
+Five Hyperliquid assets, two full days (2026-07-15, 07-16).
+
+**Result.** Identity is real, learnable, and worth exactly nothing.
+
+| | HYPE | BTC | ETH | SOL | LINK |
+|---|---|---|---|---|---|
+| top-5% share of adverse selection | 90% | 88% | 90% | 84% | 91% |
+| persistence ρ (train→test) | 0.22–0.30 | 0.27–0.31 | 0.20–0.36 | 0.30 | 0.58–0.68 |
+| benign-pocket realized @5s (bps) | +0.30 | −0.07 | +0.14 | −0.01 | +0.45 |
+| placebo percentile of the real split | 100th | 100th | 100th | 100th | 100th |
+
+Toxicity is extremely concentrated (top 5% of takers carry **84–91%**), genuinely persistent
+across the day, and the identity-based split beats its wallet-shuffled placebo at the **100th
+percentile on all five assets, on both days** — this is not survivorship, it is causal
+information. And the benign pocket it buys is **+0.0 ± 0.3 bps**: the maker is lifted from the
+pooled −0.4 bps to *zero*, and no further.
+
+**Synthesis.** Three instruments, three years of the literature's best ideas, one number:
+gating on a causal signal (C60), sorting on observable state (C61), and sorting on counterparty
+identity (C62) all terminate at the competitive equilibrium. C62 is the strongest form of the
+statement because the instrument is maximal — there is no better sorting variable than knowing
+exactly who your counterparty is, and it still does not cross zero. The pooling in
+Glosten-Milgrom is not an artifact of anonymity: the toxicity that is *predictable* is already
+priced into who trades, when, and at what spread, so perfect sorting recovers the maker to the
+equilibrium and stops. Positive P&L from this instrument requires an external subsidy (a
+top-tier maker rebate), not better information.
+
+Reproduce:
+```
+python experiments/97_wallet_toxicity/wallet_toxicity.py --date 2026-07-16
+```
+
+---
+
+## C63 — The One Venue-Level Lead in the Data: Renting a Slow Venue's Clock, Priced Honestly and Clock-Validated (exps 99, 109, 110)
+
+**Question.** C57 killed cross-venue exploitation on Binance: a 40–100ms lead yields ~1.7bps of
+drift against a 2–10bps fee wall. But that inequality has two sides, and both are venue
+properties. On a venue whose makers reprice on a *seconds* clock rather than a millisecond one,
+the drift per event should be far larger against the same toll. Is there such a venue, and does
+the trade survive honest accounting?
+
+**Method.** Leader-laggard divergence taker. `dev(t) = leader_mid − laggard_mid`, EWMA-detrended
+(removing the USDT/USD stablecoin basis and any structural perp basis). An event opens when
+`|dev|` crosses a threshold and re-arms at half of it, so bursts count once. At event + 250ms we
+enter as a **taker at the laggard's executable touch** (ask for buys, bid for sells) and exit by
+**crossing back** at the touch — a full round trip at transactable prices, never mark-to-mid.
+Net of Hyperliquid taker tiers. Capacity is bounded by filling only what the touch actually
+holds, capped per event. Two days, two independent leaders (Binance perp, Coinbase spot).
+
+**Result.** Hyperliquid trails the CEX consensus, and the tail of that distribution clears its
+costs.
+
+| leader → HL_BTC | events (thr=5bps) | gross round trip @5s | hit | depth-capped P&L/day |
+|---|---|---|---|---|
+| Binance perp, 07-15 | 91 | +4.83bps | 87% | +$231 |
+| Coinbase, 07-15 | 90 | +4.91bps | 89% | +$168 |
+| Binance perp, 07-16 | 55 | +4.79bps | 85% | +$73 |
+| Coinbase, 07-16 | 49 | +5.77bps | 96% | +$112 |
+
+Median ≈ mean (not outlier-driven), and the result is *leader-agnostic* — the signal is "HL is
+stretched from consensus", not any one venue's feed. Three structural gates bound it: the 2bps
+threshold population is decisively **negative** (~1,300 events/day under the wall — threshold
+discipline *is* the strategy); it is negative at the 4.5bps base taker tier; and the HL touch
+holds only $1.4–8k at event times, because HL's own makers pull on the same signal. **Capacity
+is the reason the edge is not competed away.**
+
+Two further tests bound the interpretation. **Exp 109** conditioned the trade on HL's own premium
+(perp vs oracle) and found a clean null — the premium is ≈ −dev, a slower redundant read of the
+same basis, so the dislocation taker and the funding carry (C67) are *the same object at two
+timescales*, not combinable signals. **Exp 110** built the lead-lag matrix across all captured
+venues and assets: Binance↔Coinbase peak at 0ms (one clock), and every nonzero-lag pair is a CEX
+venue leading a Hyperliquid series — one relationship times the market factor, not many. There is
+no untested pair carrying an exploitable lead.
+
+**The clock check.** At 10ms resolution the measured 200–500ms "HL lag" proved partly an
+inter-venue **clock offset**: under our common local receive clock, `CB_BTC|HL_BTC` becomes
+contemporaneous. Since the `dev` signal is built on exchange stamps, the alpha itself was rerun
+end-to-end on the common clock — the decision-relevant basis, being what a trader at our location
+actually observes. It **survives and improves**: +5.27bps (from +4.79), hit 93% (from 85%),
++$101/day (from +$73). The correlation measure is attenuated by receive jitter across *all*
+times; the event study selects ≥5bps dislocations where millisecond jitter is irrelevant.
+
+**Synthesis.** This is the single strategy in the project that survives every test applied to it:
+two days, two leaders, executable round-trip pricing, depth-capped capacity, and a clock-artifact
+check. It is not a signal the market failed to price — it is **rent from a structural seam**, a
+venue whose repricing clock runs seconds behind consensus, and it is exactly as small as the seam
+(capacity-gated, fee-tier-gated, threshold-gated). Its existence confirms rather than contradicts
+the zero-profit law: profit persists only where competition physically cannot arrive in time, and
+only at a size that does not attract it.
+
+Reproduce:
+```
+python experiments/99_oracle_lag/oracle_lag.py --date 2026-07-16 --leader BTC_PERP --laggard HL_BTC --clock recv
+python experiments/110_leadlag_matrix/leadlag_matrix.py --dates 2026-07-15,2026-07-16 --grid-ms 10 --max-lag-ms 500 --clock recv
+```
+
+---
+
+## C64 — Maker Withdrawal Leads Price on a Slow Venue, and the Defended Maker Is Still Retracted (exps 102, 103)
+
+**Question.** Two linked questions about maker behaviour as a signal. First: when liquidity
+providers pull quotes, does price follow? On Binance the answer was no — C56/C58 showed
+withdrawal and repricing are the *same* event at ~50ms, so the pull is not observable in advance.
+On a seconds-clock venue the lead might be actionable. Second: if withdrawal, consensus
+divergence, and toxic-flow presence are each free to act on *defensively* (pulling a quote costs
+nothing), can a maker on the one book with seconds of adverse-selection protection assemble them
+into a profitable passive strategy?
+
+**Method.** (a) Withdrawal detection: one-sided touch collapse — a side's notional falls below
+20% of its own trailing 60s median while the other side stays healthy — with per-side cooldown,
+then signed markout toward the withdrawn side, plus an honest crossing round trip, against a
+random-timestamp placebo. (b) The defended maker: quote both sides of HL_LINK with three
+zero-cost gates (consensus dev, withdrawal-follow, toxic-tier flow), ablated, fills from the tape
+under the project-standard price-only convention with a `qf=0.5` at-price haircut.
+
+**Result (a): the lead is real and sub-toll.** On HL_BTC, 7,674 withdrawal events/day precede
+drift of **+0.40bps @1s** and **+0.91bps @15s** against a placebo of ≈0.00, with 61–64%
+directional hit. The seconds-clock hypothesis is confirmed: what is simultaneous on Binance is
+*separated* on Hyperliquid. But acting on it as a taker means crossing into the **thinned** side —
+a degraded entry — and the honest round trip nets **−2.3bps** at the good tier. Real information,
+smaller than the cost of acting on it: the C57 pattern on a third venue. The user's interaction
+hypothesis is also confirmed: taker aggression rises **×1.3–1.4** in the 10s after a withdrawal.
+
+**Result (b): retraction.** Per-fill mark-to-mid accounting made the defended maker look like the
+project's first positive passive configuration (realized @5s +1.01/+0.62bps with the consensus +
+withdrawal gates, net positive at a rebate tier). The **inventory-aware round-trip simulation
+reverses it**:
+
+| A+W gates, round trip | 07-15 | 07-16 | 07-17 |
+|---|---|---|---|
+| bps of notional | **−1.60** | +0.12 | **−4.21** |
+
+Sign-unstable across `qf ∈ {0.25, 0.5, 1.0}`, negative at base fees everywhere, and inventory
+pins at the cap every single day. The mechanism: trend flow is one-sided, so the market fills you
+*to* your cap and the "positive realized half-spread" was unrealized mark on a position whose
+paired exit never fills at those mids. The gates made the round trip **worse** on two of three
+days — C57's pairing-breakage (gating removes the losses and the exit fills together), reproduced
+on a new venue.
+
+**Synthesis.** Two results that sharpen the same edge of the argument. Maker withdrawal is a
+genuine leading indicator where the venue clock is slow enough to separate the pull from the
+reprice — a new microstructure fact — and it is still priced below the cost of trading it. And
+the defended maker is the project's second self-retraction: a mark-to-mid positive killed within
+a day by its own inventory-aware follow-up. C60 taught that mark-to-mid overstates at the level
+of a single fill; C64 shows the same error at the level of a *position*. Only the round trip
+counts.
+
+Reproduce:
+```
+python experiments/102_withdrawal_lead/withdrawal_lead.py --date 2026-07-16 --asset HL_BTC
+python experiments/103_defended_maker/defended_maker.py --train 2026-07-15 --date 2026-07-16 --inventory
+```
+
+---
+
+## C65 — The Flow-Analysis Family, Closed: Meta-Order Drift Is Real and Priced to Within 0.06bps of the Wall (exps 98, 101, 104, 105)
+
+**Question.** Flow analysis is the canonical answer to "where does HFT alpha come from". Wallet
+identity makes four of its variants directly testable on the same tape: following informed
+traders, detecting bursts of informed aggression, reconstructing institutional meta-orders, and
+fading uninformed liquidity demand. Does any of them clear its access cost?
+
+**Method and result, by variant.**
+
+**(1) Wallet-follow taker (exp 98).** Score wallets by signed markout on the train half, copy the
+winners' trades on the test half as a taker at the executable touch, with a random-follow-set
+placebo. Informed wallets' per-trade forward drift is **0.1–2.7bps** — under the fee wall at every
+horizon and asset, with placebo percentiles inconsistent across assets (100/25/7.5/99.5/90.5).
+Identity tells you *who* is informed; their edge per trade is too small to tax as a follower.
+
+**(2) Toxic-flow bursts (exp 101).** Aggregate the informed tier's signed flow over a rolling
+window and trade the surges. Informed wallets do not act as a crowd: tradeable-size bursts occur
+**0–1 times per day**. Dead as a standalone signal — but the Part B gate is informative: **45 of
+49** exp-99 dislocations show no informed-flow involvement at all, independently confirming that
+those events are stale-lag repricing rather than informed leading.
+
+**(3) Meta-order drift (exp 104).** The strongest of the four, and the most precisely priced.
+Streaks of same-wallet, same-direction prints reconstruct institutional executions in real time —
+a measurement that elsewhere requires proprietary broker data. ~4,000–6,000 streaks/day/asset,
+median ride ~20s, median $9–22k detected. The Kyle/Almgren execution drift **exists**:
+ride-to-end gross **+1.80 / +1.88 / +2.74 bps** (BTC/HYPE/ETH) at 60–62% hit, and identity is
+what carries it — real streaks beat the wallet-shuffled placebo at the **100th percentile on all
+three assets**, while shuffled streaks mean-revert. Net at the 1.4bps tier: **−1.00 / −0.92 /
+−0.06**. The best-documented flow effect in market microstructure is priced by this market to
+within **six hundredths of a basis point** of the fee wall on ETH.
+
+**(4) Sweep-fade (exp 105).** Fade liquidity-demand sweeps not confirmed by the leader venue. The
+population is nearly empty — **90%** of large HL_BTC sweeps *are* leader-confirmed, i.e. big flow
+on a laggard venue is cross-venue repricing, not someone paying for immediacy — and on HL_LINK
+the few unconfirmed sweeps **continue** rather than revert (fading them: −4.1bps @60s, 17% hit).
+
+**Synthesis.** The flow family is now fully mapped and uniformly closed: toxicity classification
+lands at zero (C61/C62), OFI/momentum is walled (C31), VPIN-style gating is PnL-invariant (C57),
+meta-order drift is real and priced to the penny, and the uninformed-sweep population does not
+exist at these sizes. The meta-order result deserves emphasis because of how *precisely* it
+fails: this is not a market that leaves flow information unpriced and happens to fall short —
+it is a market that prices the single most-documented flow effect to within 0.06bps of the cost
+of acting on it. That precision is the strongest available evidence that the equilibrium is
+enforced rather than approximate.
+
+Reproduce:
+```
+python experiments/104_metaorder_drift/metaorder_drift.py --date 2026-07-16 --asset HL_ETH
+python experiments/105_sweep_fade/sweep_fade.py --date 2026-07-16 --laggard HL_BTC --leader BTC_PERP
+```
+
+---
+
+## C66 — The Immediacy Premium: Where Competition Is Thin, the Spread Exceeds Adverse Selection — and It Is Priced by Spread Width (exps 93, 103, 111)
+
+**Question.** Every zero in this thesis was measured on densely-competed books, where the spread
+is compressed to the adverse-selection cost tick by tick. But that compression is performed *by
+competitors*. Grossman-Miller predicts an immediacy premium wherever entry is costly enough that
+few providers show up. Crypto's long tail is the natural test: does a book with two or three
+makers at the touch sit *above* the Wyart-Bouchaud equilibrium?
+
+**Method.** A screening tool ranks all 232 Hyperliquid perpetuals by spread × √volume within a
+volume band; six candidates spanning 9–56bps were captured for five days. Three tests, in the
+order that matters: (1) the C59 markout, to see whether the adverse-selection horizon is longer
+than on dense books; (2) the **inventory-aware round-trip simulation** — run first, mark-to-mid
+banned as a headline after the C64 retraction; (3) fair-value anchoring and quote distance —
+quote at `anchor ± k·(rolling median half-spread)` with anchors mid / micro-price (Stoikov,
+imbalance-weighted) / trade-EWMA, sweeping k.
+
+**Result.** The tail is a different regime. On five of six books the realized half-spread never
+goes negative within 5s — the adverse-selection horizon is off the end of the measurement window,
+against ~80ms on Binance and 3.4s on HL_LINK. Competition is directly observable as thin:
+**13–101 unique makers/day** against thousands on the majors.
+
+The round trip clears **base fees** on four of six coins (HMSTR +20.6bps of notional, USUAL
++16.4, CELO/VINE +8–9; the two tightest and most-competed, ZORA and EIGEN, are negative). Per-coin
+P&L is **sign-unstable day to day**, but the equal-weight basket is positive on **all five days**
+(mean +$243/day mid-anchored).
+
+Fair-value anchoring improves it further. The micro-price anchor beats the mid anchor on the
+basket on 4 of 5 days (+$291 vs +$243/day), and wider quoting raises margin per unit: on HMSTR,
+k = 0.5/1.0/1.5 gives **44.9 / 55.2 / 88.1 bps of notional** on 887/563/266 fills/day. The
+mechanism is the one that killed C64 — a mid anchor lags and keeps buying into a downtrend; a
+leading anchor skews away from it. A *depth-conditioned* refinement of the anchor choice was
+fitted and then **failed out of sample** (+$228/day vs +$218 for using micro everywhere) and is
+reported as a negative.
+
+**The pre-registered replication.** Because the six coins were *selected* for wide spreads, the
+result was re-tested on a disjoint sample (six new coins plus one bridge control), with the
+prediction committed to version control before the data was seen. Both checks pass: the basket is
+positive **4/4 days** (also excluding an outlier coin) and micro ≥ mid **4/4 days**. The effect is
+not a selection artifact. But the **bridge control** carries the real finding: USUAL — the same
+coin — fell from +40bps of notional in July to **+0.39bps** in August while the tail's widest
+spread compressed from 56bps to 14bps. The magnitude is **regime**, not technique.
+
+**Synthesis.** This is the affirmative half of the zero-profit law and its cleanest confirmation.
+Where competition is thin, the spread genuinely exceeds adverse selection and a maker is paid —
+but the payment is an immediacy *premium*, compensation for warehousing inventory and bearing
+jump risk in illiquid names, and it is **priced by spread width**, shrinking as the tail tightens.
+It is not a fixed edge and not a signal; it is the market's price for a service, and it is
+harvestable only as a diversified, hard-flattened basket. The zero-profit law is not violated at
+the boundary — it is *parameterised* there.
+
+Reproduce:
+```
+python scripts/screen_hl_universe.py
+python experiments/93_adverse_selection/adverse_selection.py --date 2026-07-18
+python experiments/111_fair_value_wide/fair_value_wide.py --date 2026-07-18 --asset HL_HMSTR
+```
+
+---
+
+## C67 — Carry: the Cross-Venue Funding Basis Pays, Intraday Cointegration Does Not (exps 106, 107, 108)
+
+**Question.** Two families that trade the same underlying without providing liquidity:
+statistical arbitrage between correlated assets, and carry on the perpetual funding basis. Both
+are standard answers to "how do market-neutral desks earn". Do they survive the same accounting
+discipline that dissolved the market-making results?
+
+**Method.** (a) **Cointegration (exp 106):** Engle-Granger and Johansen on log-mids of five
+Hyperliquid majors, 2,164 aligned 60s bars, OU half-life from an AR(1) fit, and an in-sample /
+out-of-sample z-score backtest with real per-leg costs. (b) **Funding carry (exps 107–108):**
+the delta-neutral book — short the high-funding venue's perp, long the low-funding venue's — where
+P&L is funding collected **plus** the continuous basis mark-to-market, because the two price legs
+do not fully cancel; their difference *is* the basis, and it moves.
+
+**Result (a): the intraday cointegration edge does not exist.** Five of ten pairs "pass"
+cointegration at p<0.05 (ETH/LINK 0.006, LINK/HYPE 0.004) — the multiple-testing trap on a short
+intraday sample. Half-lives run 45–140 minutes, and net P&L per trade is negative essentially
+everywhere (IS −6 to −12bps/trade): the reversion does not cover the ~8.6bps pair round trip. The
+marginally-positive OOS pairs had negative IS — sign-flip noise on small samples. Sound
+econometrics, priced out at retail fees at this frequency; a genuine edge here would need
+months-to-years of daily data, breadth, and dynamic hedging — a different thesis on public bars.
+
+**Result (b): the funding basis pays, and the basis is the risk.** Hyperliquid funding ran
+**92–100% positive** over the captured window (~11% annualised); against Binance the net
+differential is **+6.4% BTC / +7.8% ETH / +6.8% LINK / +5.4% SOL** annualised. The book-level
+simulation decomposes it:
+
+| short HL / long Binance | funding leg | basis drift | gross carry | basis vol | Sharpe |
+|---|---|---|---|---|---|
+| BTC, 36h | +6.7%/yr | **+1.7%/yr** (aligned) | **+8.4%/yr** | 6.6%/yr | ~1.26 |
+| LINK, 12h | +8.3%/yr | **−8.6%/yr** (adverse) | ~0 | 11.9%/yr | ~0 |
+
+On BTC the basis *helps* — the short leg profits as the rich perp converges, partly self-hedging
+the funding. On LINK an adverse basis drift ate the entire funding leg. Costs are the swing
+factor: the one-time 5.6bps round trip amortises to +0.68%/yr at monthly rebalance but **20%/yr
+if churned daily** — this is a hold-and-collect book, dead if traded.
+
+**Synthesis.** Carry is the third and cleanest survivor, and the most honest about what it is.
+Over any short window the realized P&L is **basis-dominated** (7–12%/yr of basis vol against a
+~7%/yr funding signal), so the funding expectation is harvestable only by holding long enough for
+the mean-reverting basis to average out — bearing that volatility, and a fat left tail, the whole
+time. That tail is the one quantity this thesis could not measure: both captured windows were
+benign (max drawdown <20bps), and the cascade that spikes a perp against a short leg is precisely
+what kills carry desks. The result therefore takes the same shape as C66: a real risk premium,
+per-unit and per-window unstable, positive only as a held and diversified position — and, again,
+compensation for bearing a risk rather than payment for a forecast.
+
+Reproduce:
+```
+python experiments/106_cointegration/cointegration.py --dates 2026-07-15,2026-07-16,2026-07-17,2026-07-18
+python experiments/107_funding_carry/funding_carry.py
+python experiments/108_funding_book/funding_book.py --dates 2026-07-15,2026-07-16
+```
+
+---
+
 ## Future Work
 
 The items below were drafted before the queue-priority verdict (C30) and the zero-profit
