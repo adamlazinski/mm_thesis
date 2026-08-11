@@ -1,0 +1,216 @@
+{
+  "asset": "HL_USUAL",
+  "date": "2026-08-08",
+  "hours": 14.14,
+  "spread_bps": 11.1,
+  "runs": {
+    "mid_k0.5": {
+      "fills_per_day": 2471.4,
+      "notional": 60000.2,
+      "gross_pnl_day": -36.0,
+      "bps_of_notional": -3.53,
+      "net_day": {
+        "fee_1.5": -51.28,
+        "fee_0": -36.0,
+        "fee_-0.3": -32.94
+      },
+      "max_abs_inv_usd": 2467.0,
+      "end_inv_usd": 37.0
+    },
+    "mid_k1": {
+      "fills_per_day": 1266.2,
+      "notional": 38616.0,
+      "gross_pnl_day": -1.3,
+      "bps_of_notional": -0.2,
+      "net_day": {
+        "fee_1.5": -11.14,
+        "fee_0": -1.3,
+        "fee_-0.3": 0.66
+      },
+      "max_abs_inv_usd": 2317.0,
+      "end_inv_usd": -181.9
+    },
+    "mid_k1.5": {
+      "fills_per_day": 176.5,
+      "notional": 14922.9,
+      "gross_pnl_day": 39.13,
+      "bps_of_notional": 15.45,
+      "net_day": {
+        "fee_1.5": 35.33,
+        "fee_0": 39.13,
+        "fee_-0.3": 39.89
+      },
+      "max_abs_inv_usd": 2294.3,
+      "end_inv_usd": -449.2
+    },
+    "mid_k2.5": {
+      "fills_per_day": 27.2,
+      "notional": 3584.6,
+      "gross_pnl_day": 39.21,
+      "bps_of_notional": 64.44,
+      "net_day": {
+        "fee_1.5": 38.3,
+        "fee_0": 39.21,
+        "fee_-0.3": 39.39
+      },
+      "max_abs_inv_usd": 2002.8,
+      "end_inv_usd": 443.8
+    },
+    "micro_k0.5": {
+      "fills_per_day": 1619.3,
+      "notional": 45206.0,
+      "gross_pnl_day": -53.12,
+      "bps_of_notional": -6.92,
+      "net_day": {
+        "fee_1.5": -64.63,
+        "fee_0": -53.12,
+        "fee_-0.3": -50.82
+      },
+      "max_abs_inv_usd": 2346.2,
+      "end_inv_usd": 1159.8
+    },
+    "micro_k1": {
+      "fills_per_day": 1094.8,
+      "notional": 32937.5,
+      "gross_pnl_day": -1.73,
+      "bps_of_notional": -0.31,
+      "net_day": {
+        "fee_1.5": -10.12,
+        "fee_0": -1.73,
+        "fee_-0.3": -0.06
+      },
+      "max_abs_inv_usd": 2417.3,
+      "end_inv_usd": -1894.4
+    },
+    "micro_k1.5": {
+      "fills_per_day": 767.2,
+      "notional": 17250.5,
+      "gross_pnl_day": -39.64,
+      "bps_of_notional": -13.54,
+      "net_day": {
+        "fee_1.5": -44.03,
+        "fee_0": -39.64,
+        "fee_-0.3": -38.76
+      },
+      "max_abs_inv_usd": 2164.4,
+      "end_inv_usd": 1022.0
+    },
+    "micro_k2.5": {
+      "fills_per_day": 32.3,
+      "notional": 2408.2,
+      "gross_pnl_day": -15.47,
+      "bps_of_notional": -37.84,
+      "net_day": {
+        "fee_1.5": -16.08,
+        "fee_0": -15.47,
+        "fee_-0.3": -15.35
+      },
+      "max_abs_inv_usd": 390.9,
+      "end_inv_usd": -286.4
+    },
+    "ewma_k0.5": {
+      "fills_per_day": 1206.8,
+      "notional": 52645.8,
+      "gross_pnl_day": -79.11,
+      "bps_of_notional": -8.85,
+      "net_day": {
+        "fee_1.5": -92.51,
+        "fee_0": -79.11,
+        "fee_-0.3": -76.43
+      },
+      "max_abs_inv_usd": 2447.0,
+      "end_inv_usd": 1289.2
+    },
+    "ewma_k1": {
+      "fills_per_day": 714.6,
+      "notional": 39215.1,
+      "gross_pnl_day": -38.32,
+      "bps_of_notional": -5.76,
+      "net_day": {
+        "fee_1.5": -48.31,
+        "fee_0": -38.32,
+        "fee_-0.3": -36.32
+      },
+      "max_abs_inv_usd": 2501.2,
+      "end_inv_usd": 2260.7
+    },
+    "ewma_k1.5": {
+      "fills_per_day": 466.8,
+      "notional": 29258.1,
+      "gross_pnl_day": -24.2,
+      "bps_of_notional": -4.87,
+      "net_day": {
+        "fee_1.5": -31.65,
+        "fee_0": -24.2,
+        "fee_-0.3": -22.71
+      },
+      "max_abs_inv_usd": 2475.3,
+      "end_inv_usd": 2306.5
+    },
+    "ewma_k2.5": {
+      "fills_per_day": 193.5,
+      "notional": 20111.0,
+      "gross_pnl_day": -9.31,
+      "bps_of_notional": -2.73,
+      "net_day": {
+        "fee_1.5": -14.43,
+        "fee_0": -9.31,
+        "fee_-0.3": -8.28
+      },
+      "max_abs_inv_usd": 2476.2,
+      "end_inv_usd": 1503.7
+    },
+    "blend_k0.5": {
+      "fills_per_day": 1498.8,
+      "notional": 50082.8,
+      "gross_pnl_day": -29.23,
+      "bps_of_notional": -3.44,
+      "net_day": {
+        "fee_1.5": -41.99,
+        "fee_0": -29.23,
+        "fee_-0.3": -26.68
+      },
+      "max_abs_inv_usd": 2456.2,
+      "end_inv_usd": 1835.5
+    },
+    "blend_k1": {
+      "fills_per_day": 726.5,
+      "notional": 29320.0,
+      "gross_pnl_day": -5.89,
+      "bps_of_notional": -1.18,
+      "net_day": {
+        "fee_1.5": -13.36,
+        "fee_0": -5.89,
+        "fee_-0.3": -4.4
+      },
+      "max_abs_inv_usd": 2422.8,
+      "end_inv_usd": 1741.9
+    },
+    "blend_k1.5": {
+      "fills_per_day": 325.9,
+      "notional": 19395.8,
+      "gross_pnl_day": 37.63,
+      "bps_of_notional": 11.43,
+      "net_day": {
+        "fee_1.5": 32.69,
+        "fee_0": 37.63,
+        "fee_-0.3": 38.62
+      },
+      "max_abs_inv_usd": 2367.7,
+      "end_inv_usd": 315.7
+    },
+    "blend_k2.5": {
+      "fills_per_day": 125.6,
+      "notional": 11902.9,
+      "gross_pnl_day": 12.52,
+      "bps_of_notional": 6.2,
+      "net_day": {
+        "fee_1.5": 9.49,
+        "fee_0": 12.52,
+        "fee_-0.3": 13.13
+      },
+      "max_abs_inv_usd": 2106.0,
+      "end_inv_usd": 1493.9
+    }
+  }
+}
