@@ -237,9 +237,116 @@ building toward, is the subject of Chapter 5.
 
 ---
 
-## 6. Summary
+## 6. The 2026 Live Multi-Venue Capture
 
-This chapter has two outputs that the rest of the thesis depends on. The first is a set of
+The data of §1 is purchased history, and Contribution 54 showed how badly that can fail: the
+vendor files were silently wrong about the single most basic parameter of the market — the
+price grid — and an entire arc of results had been placing orders at prices the exchange
+would have rejected. Three further needs pointed the same way. The queue-priority
+decomposition of Chapter 5 rests on real resting depth, which a quote feed can only proxy.
+The cross-venue questions of Part II require *synchronised* observation of several venues at
+once. And the flow-sorting question of Chapter 6 requires knowing who the counterparty is,
+which no centralised exchange discloses. All four needs are met by recording the market
+directly, so the second half of the thesis rests on a purpose-built capture rather than on
+vendor files.
+
+**Venues and streams.** Four venues were recorded concurrently over July–August 2026:
+
+| venue | instruments | depth captured |
+|---|---|---|
+| Binance spot | LINK/USDT, BTC/USDT | full L2 (depth-diff + REST anchors), trades, bookTicker |
+| Binance USDT-M perp | LINK, BTC | full L2, trades |
+| Coinbase Exchange spot | LINK-USD, BTC-USD | full L2 (snapshot + `l2update`), matches |
+| Coinbase International perp | BTC-PERP, LINK-PERP | top-of-book + trades (L2 requires auth) |
+| Hyperliquid perp | BTC, ETH, SOL, LINK, HYPE + a screened tail | trades **with both counterparty wallet addresses**, BBO, 20-level book, funding and open interest |
+
+**Raw-first design.** Every websocket message is appended verbatim, with a local receive
+timestamp, to hourly-rotated gzipped JSONL; nothing is interpreted at capture time, so a
+collector bug cannot corrupt the record. REST depth snapshots are written into the same
+stream at start, on every reconnect, and periodically as safety anchors; detected gaps are
+logged in band. Book reconstruction happens offline, replaying snapshot-plus-diff under each
+venue's official synchronisation rules (Binance spot's `U`/`u` chain, futures' `pu` chain,
+Coinbase's snapshot + `l2update`, Hyperliquid's native snapshots). Each instrument-day
+produces an integrity report — sync violations, re-anchors, crossed books, and the
+receive-minus-exchange clock offset distribution — and the reconstructed output is written in
+the same CoinAPI schema as §1, so every experiment script consumes purchased and captured
+data interchangeably.
+
+**Two clocks per event.** Each record carries both the venue's own timestamp and our local
+receive time. This dual-clock record is not bookkeeping: §7 and Contribution 63 show that
+inter-venue timestamp offsets can manufacture an apparent price-discovery lead of several
+hundred milliseconds, and only a common-clock recomputation distinguishes a real lead from an
+artifact.
+
+**Scale and what it enabled.** A single instrument-day runs to millions of events (3.0M
+trades and 838k depth updates for BTC perp on 2026-07-15 alone). The capture is what makes
+possible: real-L2 validation of the quote proxy and the queue-fraction bracket (C55), the
+model-free adverse-selection decomposition across four books (C59), counterparty-resolved
+toxicity (C62), the venue-clock hierarchy and its clock-artifact check (C63), the thin-book
+screen and immediacy-premium tests (C66), and the funding-basis book (C67).
+
+**Limits, stated plainly.** The capture spans days to weeks, not months, so every result
+drawn from it is a short-window result and seasonal or regime claims cannot be made from it
+alone — Contribution 66's bridge control is a direct demonstration of how much regime
+matters. Observation is from a single geographic vantage, so receive timestamps carry this
+location's network path. No centralised venue discloses order-level (L3) data, so queue
+position remains inferred rather than observed even here. Coinbase International's book and
+Hyperliquid's depth beyond the touch are gated behind authentication and were not captured.
+
+---
+
+## 7. The Honest-Accounting Discipline
+
+The fill-model audit of §5 is one instance of a general problem: a backtest is a claim about
+counterfactual executions, and every simplification in it biases the same direction — toward
+fills that a real order would not have received, at prices it could not have transacted. Over
+the course of this thesis six distinct such errors were found, four of them in results this
+author had already accepted. The response is a standing set of rules, each traceable to the
+failure that motivated it. They are stated here as method because Chapters 4–9 apply them
+uniformly, and because the discipline is itself a contribution.
+
+1. **Exchange-valid prices.** Every quoted price must lie on the venue's real tick grid,
+   validated against a live feed rather than inferred from a vendor's data (C54).
+2. **Real queue, not price-only.** Price-only filling is a front-of-queue assumption; fills
+   are cleared against estimated resting volume, with `queue_fraction` bracketed from L2 and
+   from a book-side census of touch-level disappearances (C29, C30, C55, C58).
+3. **Taker-on-arrival.** An order that is marketable when it reaches the venue is a taker: it
+   crosses immediately, bypasses the queue, and pays the taker fee (C30 addendum).
+4. **Round-trip pricing at executable touches.** Entry and exit are both priced where a
+   transaction could actually occur — crossing the touch to take, joining it to make — never
+   at the mid. Mark-to-mid overstates edge at the level of a single fill (C60) and again, more
+   severely, at the level of a position (C64).
+5. **Inventory-aware simulation.** A per-fill number is a diagnostic, not a P&L. Positions are
+   tracked with explicit caps, because one-sided flow fills a maker *to* its cap and the
+   apparently positive unrealised mark never realises (C64, C66).
+6. **Placebo and anti-signal controls.** A signal is compared against its own structure
+   destroyed — timing scrambled, labels shuffled — preserving event counts and magnitudes, and
+   must beat that distribution; where a direction exists, the inverted signal is a second
+   control (C60, C62, C65).
+7. **Out-of-sample replication.** Results are replicated on separate days, and where the
+   sample itself was selected, on a fresh disjoint sample with the prediction registered in
+   version control before the data is examined (C51, C63, C66).
+8. **Depth-capped capacity.** Fills are limited to what the touch actually holds, and results
+   are reported per unit of capital deployable rather than per event, since an edge that
+   exists only at unavailable size is not an edge (C63).
+9. **Common-clock validation.** Any cross-venue signal is recomputed on a single clock, since
+   inter-venue timestamp offsets manufacture leads that do not exist (C63).
+10. **Explicit fee tiers.** P&L is reported across the realistic fee schedule, because a
+    strategy alive only at a tier its own volume cannot earn is not alive (C47, C53).
+
+The test of such a discipline is whether it can kill the author's own positive results, and in
+this thesis it did so twice: the defended maker of Contribution 64, which survived per-fill
+accounting and was reversed within a day by its inventory-aware follow-up, and the
+depth-conditioned anchor rule of Contribution 66, which was fitted, extended out of sample,
+and abandoned. Both retractions are reported in full. A method that only ever confirms is not
+evidence; the value of the surviving results in Part II rests on the same rules having
+removed the others.
+
+---
+
+## 8. Summary
+
+This chapter has three outputs that the rest of the thesis depends on. The first is a set of
 calibrated parameters and functional forms — §3's κ/A/γ/σ_$ values and §2's two fill-curve
 shapes — that Chapter 4 plugs into A-S, GLFT, and their extensions exactly as derived here,
 with no further tuning. The second is the engine itself, ending at the point described in §5:
@@ -249,3 +356,8 @@ depth, and a taker-on-arrival correction for marketable orders. Chapter 4 runs s
 against the *first* of these fill conditions (price-only — the conventional choice, and the
 one implicit in nearly all published backtests of this kind). Chapter 5 re-runs the same
 strategies against the *last* — and the gap between the two is the thesis's central result.
+
+The third is the empirical and methodological foundation for Part II: the multi-venue capture of §6,
+which supplies real order books, four venues observed at once, counterparty identity, and two
+clocks per event; and the discipline of §7, under which every result in Chapters 6–9 —
+including the two that were withdrawn — was obtained.
