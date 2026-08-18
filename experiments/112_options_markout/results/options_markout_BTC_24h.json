@@ -1,73 +1,73 @@
 {
   "currency": "BTC",
-  "hours_span": 23.9,
-  "n_trades": 4776,
-  "n_instruments": 346,
-  "fee_bps_underlying": 3.0,
+  "hours_span": 23.88,
+  "n_trades": 4790,
+  "n_instruments": 347,
+  "fee_bps_underlying": 0.0,
   "fee_cap_frac": 0.125,
-  "pricing_check_rel_p50_pct": 5.21404431496869,
+  "pricing_check_rel_p50_pct": 1.0040611240597175,
   "entry": {
-    "edge_pct_premium_median": 0.8373260564344651,
-    "edge_bps_underlying_mean": 0.8939916038525965,
+    "edge_pct_premium_median": 0.8417361400786374,
+    "edge_bps_underlying_mean": 0.9069210229645095,
     "edge_bps_underlying_median": 0.38890000000000136,
-    "fee_bps_underlying_eff": 2.216152748115578,
-    "net_entry_bps_underlying": -1.3221611442629813
+    "fee_bps_underlying_eff": 0.0,
+    "net_entry_bps_underlying": 0.9069210229645095
   },
   "horizons": {
     "60s": {
-      "n": 4763,
-      "gamma_theta_bps": 0.009767909489879162,
-      "with_vega_bps": -3.688321933041538,
-      "net_of_fee_bps": -5.904678024265556,
-      "hit_rate": 0.4786899013226958
+      "n": 4787,
+      "gamma_theta_bps": -0.5315712711385862,
+      "with_vega_bps": -4.184948743424347,
+      "net_of_fee_bps": -4.184948743424347,
+      "hit_rate": 0.45686233549195737
     },
     "300s": {
-      "n": 4746,
-      "gamma_theta_bps": -0.015374720703906906,
-      "with_vega_bps": -1.3702652224035088,
-      "net_of_fee_bps": -3.589892008117795,
-      "hit_rate": 0.48504003371260007
+      "n": 4775,
+      "gamma_theta_bps": -0.5336089439356798,
+      "with_vega_bps": -1.718762066237073,
+      "net_of_fee_bps": -1.718762066237073,
+      "hit_rate": 0.48607329842931934
     },
     "1800s": {
-      "n": 4629,
-      "gamma_theta_bps": 0.0027876428688796613,
-      "with_vega_bps": -0.8093944449181282,
-      "net_of_fee_bps": -3.0332860008697375,
-      "hit_rate": 0.509397278029812
+      "n": 4653,
+      "gamma_theta_bps": -0.495729851709981,
+      "with_vega_bps": -1.1952322320192226,
+      "net_of_fee_bps": -1.1952322320192226,
+      "hit_rate": 0.5039759295078444
     },
     "7200s": {
-      "n": 4233,
-      "gamma_theta_bps": -0.6419037319423093,
-      "with_vega_bps": -1.0074583720820907,
-      "net_of_fee_bps": -3.21384405599421,
-      "hit_rate": 0.5008268367587999
+      "n": 4252,
+      "gamma_theta_bps": -0.4916143748918602,
+      "with_vega_bps": -0.8584443692660819,
+      "net_of_fee_bps": -0.8584443692660819,
+      "hit_rate": 0.501175917215428
     }
   },
   "by_moneyness_300s": {
     "deep OTM put-side": {
-      "n": 552,
-      "net_bps": -3.399502167897475,
-      "median_bps": -0.6419784912120702
+      "n": 554,
+      "net_bps": -0.322304615859588,
+      "median_bps": -0.018321302974532792
     },
     "OTM put-side": {
-      "n": 513,
-      "net_bps": -3.562083448014588,
-      "median_bps": -0.5791427899749546
+      "n": 512,
+      "net_bps": -0.6658536054575087,
+      "median_bps": -0.023911506055933292
     },
     "ATM": {
-      "n": 2145,
-      "net_bps": -2.3471286425982596,
-      "median_bps": -1.9463849733102674
+      "n": 2146,
+      "net_bps": 0.08360876668162416,
+      "median_bps": 0.060192057260967664
     },
     "OTM call-side": {
-      "n": 675,
-      "net_bps": -3.1081331865809276,
-      "median_bps": -0.7248420442323479
+      "n": 688,
+      "net_bps": 0.09925757538748964,
+      "median_bps": -0.03720977463357621
     },
     "deep OTM call-side": {
-      "n": 870,
-      "net_bps": 0.23535838082912353,
-      "median_bps": 0.042238540550031727
+      "n": 875,
+      "net_bps": -2.6013971763174553,
+      "median_bps": -0.011988665746434212
     }
   }
 }

@@ -1,0 +1,73 @@
+{
+  "currency": "BTC",
+  "hours_span": 23.94,
+  "n_trades": 4792,
+  "n_instruments": 347,
+  "fee_bps_underlying": 0.0,
+  "fee_cap_frac": 0.125,
+  "pricing_check_rel_p50_pct": 1.0044246264995933,
+  "entry": {
+    "edge_pct_premium_median": 0.8417361400786374,
+    "edge_bps_underlying_mean": 0.9065681135225379,
+    "edge_bps_underlying_median": 0.38890000000000136,
+    "fee_bps_underlying_eff": 0.0,
+    "net_entry_bps_underlying": 0.9065681135225379
+  },
+  "horizons": {
+    "60s": {
+      "n": 4790,
+      "gamma_theta_bps": -0.5626845145373308,
+      "with_vega_bps": -4.212218839283538,
+      "net_of_fee_bps": -4.212218839283538,
+      "hit_rate": 0.45678496868475993
+    },
+    "300s": {
+      "n": 4787,
+      "gamma_theta_bps": -0.5354098595607178,
+      "with_vega_bps": -1.6419618359877308,
+      "net_of_fee_bps": -1.6419618359877308,
+      "hit_rate": 0.48652600793816586
+    },
+    "1800s": {
+      "n": 4661,
+      "gamma_theta_bps": -0.5011055114177989,
+      "with_vega_bps": -1.1315413595524098,
+      "net_of_fee_bps": -1.1315413595524098,
+      "hit_rate": 0.5033254666380605
+    },
+    "7200s": {
+      "n": 4253,
+      "gamma_theta_bps": -0.49159280647773507,
+      "with_vega_bps": -0.8701047225671794,
+      "net_of_fee_bps": -0.8701047225671794,
+      "hit_rate": 0.5031742299553257
+    }
+  },
+  "by_moneyness_300s": {
+    "deep OTM put-side": {
+      "n": 560,
+      "net_bps": -0.31804488713285356,
+      "median_bps": -0.018057801619362882
+    },
+    "OTM put-side": {
+      "n": 512,
+      "net_bps": -0.6658515439959879,
+      "median_bps": -0.023911506055933292
+    },
+    "ATM": {
+      "n": 2147,
+      "net_bps": 0.08365657541035909,
+      "median_bps": 0.06034272566014738
+    },
+    "OTM call-side": {
+      "n": 691,
+      "net_bps": 0.09879544256227256,
+      "median_bps": -0.03720977463357621
+    },
+    "deep OTM call-side": {
+      "n": 877,
+      "net_bps": -2.613300101041487,
+      "median_bps": -0.012093618882262624
+    }
+  }
+}

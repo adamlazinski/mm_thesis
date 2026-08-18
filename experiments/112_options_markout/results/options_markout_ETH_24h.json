@@ -1,0 +1,73 @@
+{
+  "currency": "ETH",
+  "hours_span": 23.67,
+  "n_trades": 1520,
+  "n_instruments": 214,
+  "fee_bps_underlying": 0.0,
+  "fee_cap_frac": 0.125,
+  "pricing_check_rel_p50_pct": 0.841572082644386,
+  "entry": {
+    "edge_pct_premium_median": 2.137151901036355,
+    "edge_bps_underlying_mean": 1.1368355263157888,
+    "edge_bps_underlying_median": 0.59,
+    "fee_bps_underlying_eff": 0.0,
+    "net_entry_bps_underlying": 1.1368355263157888
+  },
+  "horizons": {
+    "60s": {
+      "n": 1519,
+      "gamma_theta_bps": 0.48090499724946023,
+      "with_vega_bps": 0.76092869943608,
+      "net_of_fee_bps": 0.76092869943608,
+      "hit_rate": 0.5233706385780118
+    },
+    "300s": {
+      "n": 1519,
+      "gamma_theta_bps": 0.4815697606366281,
+      "with_vega_bps": 1.0418508370047805,
+      "net_of_fee_bps": 1.0418508370047805,
+      "hit_rate": 0.532587228439763
+    },
+    "1800s": {
+      "n": 1432,
+      "gamma_theta_bps": 0.3494633850268753,
+      "with_vega_bps": 1.729756716595881,
+      "net_of_fee_bps": 1.729756716595881,
+      "hit_rate": 0.547486033519553
+    },
+    "7200s": {
+      "n": 1274,
+      "gamma_theta_bps": 0.7850867778103969,
+      "with_vega_bps": -1.2687947906799404,
+      "net_of_fee_bps": -1.2687947906799404,
+      "hit_rate": 0.5486656200941915
+    }
+  },
+  "by_moneyness_300s": {
+    "deep OTM put-side": {
+      "n": 178,
+      "net_bps": 2.593465651119538,
+      "median_bps": -0.0031119606377021753
+    },
+    "OTM put-side": {
+      "n": 261,
+      "net_bps": 0.494127556565654,
+      "median_bps": 0.04623739153731209
+    },
+    "ATM": {
+      "n": 671,
+      "net_bps": 0.09020950063197034,
+      "median_bps": -0.00588649137106198
+    },
+    "OTM call-side": {
+      "n": 268,
+      "net_bps": 1.5247737956268157,
+      "median_bps": -0.008725576324739975
+    },
+    "deep OTM call-side": {
+      "n": 141,
+      "net_bps": -2.328153644736979,
+      "median_bps": -0.0069743361266886615
+    }
+  }
+}

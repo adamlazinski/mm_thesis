@@ -122,22 +122,54 @@ def _npdf(x):
     return math.exp(-0.5 * x * x) / math.sqrt(2.0 * math.pi)
 
 
-def bs(S, K, T, sigma, is_call):
-    """Black-Scholes price (in underlying units, as Deribit quotes) and delta."""
-    if T <= 0 or sigma <= 0 or S <= 0:
-        intrinsic = max(0.0, (S - K) if is_call else (K - S))
-        return intrinsic / S, (1.0 if (is_call and S > K) else
-                               (-1.0 if (not is_call and S < K) else 0.0))
+def bs_usd(F, K, T, sigma, is_call):
+    """
+    Undiscounted Black-76 on the FORWARD: USD price and dV/dF.
+
+    Deribit prices options off the forward, not the spot index, and quotes the
+    premium in the underlying (BTC). Working in USD on the forward keeps the
+    hedge ratio honest; the BTC-quoted premium is converted once, at the index.
+    """
+    if T <= 0 or sigma <= 0 or F <= 0:
+        intrinsic = max(0.0, (F - K) if is_call else (K - F))
+        dv = (1.0 if (is_call and F > K) else
+              (-1.0 if (not is_call and F < K) else 0.0))
+        return intrinsic, dv
     v = sigma * math.sqrt(T)
-    d1 = (math.log(S / K) + 0.5 * v * v) / v
+    d1 = (math.log(F / K) + 0.5 * v * v) / v
     d2 = d1 - v
     if is_call:
-        px_usd = S * _nd(d1) - K * _nd(d2)
-        delta = _nd(d1)
-    else:
-        px_usd = K * _nd(-d2) - S * _nd(-d1)
-        delta = _nd(d1) - 1.0
-    return px_usd / S, delta      # price quoted in underlying units
+        return F * _nd(d1) - K * _nd(d2), _nd(d1)
+    return K * _nd(-d2) - F * _nd(-d1), _nd(d1) - 1.0
+
+
+def implied_forward(mark_usd, K, T, sigma, is_call, S):
+    """Invert Black-76 for the forward Deribit's own mark+IV imply. Monotone in F."""
+    if T <= 0 or sigma <= 0 or mark_usd <= 0:
+        return np.nan
+    lo, hi = 0.2 * S, 5.0 * S
+    for _ in range(60):
+        mid = 0.5 * (lo + hi)
+        v, _dv = bs_usd(mid, K, T, sigma, is_call)
+        if v < mark_usd:
+            lo = mid
+        else:
+            hi = mid
+        if is_call:
+            pass
+    f = 0.5 * (lo + hi)
+    # puts are decreasing in F, so the bisection above must be flipped for them
+    if not is_call:
+        lo, hi = 0.2 * S, 5.0 * S
+        for _ in range(60):
+            mid = 0.5 * (lo + hi)
+            v, _dv = bs_usd(mid, K, T, sigma, is_call)
+            if v > mark_usd:
+                lo = mid
+            else:
+                hi = mid
+        f = 0.5 * (lo + hi)
+    return f
 
 
 def build_series(df):
@@ -166,6 +198,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--currency", default="BTC")
     ap.add_argument("--hours", type=float, default=24.0)
+    ap.add_argument("--fee-bps", type=float, default=FEE_BPS_UNDERLYING,
+                    help="maker fee, bps of underlying; 0 = hypothetical top tier")
     args = ap.parse_args()
 
     print(f"fetching {args.currency} option trades, last {args.hours}h ...")
@@ -197,10 +231,34 @@ def main():
     call = df["is_call"].to_numpy()
     ts = df["ts"].to_numpy()
 
-    px_bs = np.array([bs(S0[i], K[i], T0[i], sig0[i], call[i])[0]
-                      for i in range(len(df))])
-    delta0 = np.array([bs(S0[i], K[i], T0[i], sig0[i], call[i])[1]
-                       for i in range(len(df))])
+    # --- forward calibration -------------------------------------------------
+    # Deribit prices off the forward. Recover it from Deribit's OWN mark + IV
+    # (self-consistent), using near-ATM trades where the forward is well
+    # identified, then carry a per-expiry basis multiplier b = F/S to every
+    # trade of that expiry.
+    mark_usd = M0 * S0
+    atm_mask = np.abs(df["log_m"].to_numpy()) < 0.10
+    basis = {}
+    for e in np.unique(df["expiry"].to_numpy()):
+        sel = atm_mask & (df["expiry"].to_numpy() == e) & (T0 > 0) & (mark_usd > 0)
+        if sel.sum() < 5:
+            continue
+        fs = [implied_forward(mark_usd[i], K[i], T0[i], sig0[i], call[i], S0[i])
+              for i in np.flatnonzero(sel)]
+        rr = np.array(fs) / S0[sel]
+        rr = rr[np.isfinite(rr) & (rr > 0.5) & (rr < 2.0)]
+        if len(rr):
+            basis[e] = float(np.median(rr))
+    b = np.array([basis.get(e, 1.0) for e in df["expiry"].to_numpy()])
+    F0 = b * S0
+    print(f"  forward basis F/S by expiry: "
+          f"{ {datetime.utcfromtimestamp(k).strftime('%d%b%y'): round(v,4) for k,v in sorted(basis.items())[:6]} }")
+
+    px_bs = np.array([bs_usd(F0[i], K[i], T0[i], sig0[i], call[i])[0]
+                      for i in range(len(df))]) / S0
+    dVdF = np.array([bs_usd(F0[i], K[i], T0[i], sig0[i], call[i])[1]
+                     for i in range(len(df))])
+    delta0 = b * dVdF                      # dV_usd / dS, hedged on the underlying
     # validation: the trade's own IV must reprice to the trade's own price
     rel = np.abs(px_bs - P0) / np.maximum(P0, 1e-9)
     print(f"  pricing check |BS(iv_trade) - price|/price: "
@@ -212,12 +270,12 @@ def main():
     # underlying is the statistic used everywhere else.
     edge = D * (P0 - M0)
     prem = np.maximum(M0, 1e-9)
-    fee = np.minimum(FEE_BPS_UNDERLYING * 1e-4, FEE_CAP_FRAC * prem)
+    fee = np.minimum(args.fee_bps * 1e-4, FEE_CAP_FRAC * prem)
 
     out = {"currency": args.currency, "hours_span": round(span_h, 2),
            "n_trades": int(len(df)),
            "n_instruments": int(df["instrument_name"].nunique()),
-           "fee_bps_underlying": FEE_BPS_UNDERLYING, "fee_cap_frac": FEE_CAP_FRAC,
+           "fee_bps_underlying": args.fee_bps, "fee_cap_frac": FEE_CAP_FRAC,
            "pricing_check_rel_p50_pct": float(np.nanmedian(rel) * 100),
            "entry": {
                "edge_pct_premium_median": float(np.nanmedian(edge / prem) * 100),
@@ -235,6 +293,7 @@ def main():
 
     print(f"\n{'horizon':>9s} {'n':>7s} {'gamma/theta':>12s} {'+vega':>10s} "
           f"{'net of fee':>11s}  (bps of underlying, maker-signed)")
+    v_at_trade = asof(t_atm, v_atm, ts, tol=1800.0)
     for h in HORIZONS_S:
         S1 = asof(t_idx, idx, ts + h, tol=600.0)
         v1 = asof(t_atm, v_atm, ts + h, tol=1800.0)
@@ -242,14 +301,16 @@ def main():
         ok = np.isfinite(S1) & (ts + h <= ts[-1])
         if ok.sum() < 20:
             continue
+        F1 = b * S1                                # basis carried forward
         # (a) constant-IV revaluation -> isolates gamma vs theta
-        fair_const = np.array([bs(S1[i], K[i], T1[i], sig0[i], call[i])[0]
-                               if ok[i] else np.nan for i in range(len(df))])
+        fair_const = np.array([bs_usd(F1[i], K[i], T1[i], sig0[i], call[i])[0]
+                               if ok[i] else np.nan for i in range(len(df))]) / S0
         # (b) revalue at the later ATM IV, shifted by this option's smile offset
-        sig1 = np.where(np.isfinite(v1), np.maximum(sig0 + (v1 - asof(t_atm, v_atm, ts, tol=1800.0)), 1e-4), sig0)
-        fair_vega = np.array([bs(S1[i], K[i], T1[i], sig1[i], call[i])[0]
-                              if ok[i] else np.nan for i in range(len(df))])
-        hedge = delta0 * (S1 - S0) / S0            # delta leg, in underlying units
+        sig1 = np.where(np.isfinite(v1) & np.isfinite(v_at_trade),
+                        np.maximum(sig0 + (v1 - v_at_trade), 1e-4), sig0)
+        fair_vega = np.array([bs_usd(F1[i], K[i], T1[i], sig1[i], call[i])[0]
+                              if ok[i] else np.nan for i in range(len(df))]) / S0
+        hedge = delta0 * (S1 - S0) / S0            # delta leg, normalised by S0
         gt = D * (P0 - (fair_const - hedge))       # gamma/theta only
         gv = D * (P0 - (fair_vega - hedge))        # gamma/theta + vega
         m = ok & np.isfinite(gt) & np.isfinite(gv)
@@ -268,8 +329,8 @@ def main():
     S1 = asof(t_idx, idx, ts + h, tol=600.0)
     T1 = np.maximum(T0 - h / (365 * 86400), 0.0)
     ok = np.isfinite(S1) & (ts + h <= ts[-1])
-    fair = np.array([bs(S1[i], K[i], T1[i], sig0[i], call[i])[0] if ok[i] else np.nan
-                     for i in range(len(df))])
+    fair = np.array([bs_usd(b[i]*S1[i], K[i], T1[i], sig0[i], call[i])[0] if ok[i] else np.nan
+                     for i in range(len(df))]) / S0
     hedge = delta0 * (S1 - S0) / S0
     gt = D * (P0 - (fair - hedge)) - fee
     bucket = pd.cut(df["log_m"], MONEYNESS_EDGES, labels=MONEYNESS_LABELS)
