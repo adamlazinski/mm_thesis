@@ -1,0 +1,73 @@
+{
+  "currency": "BTC",
+  "hours_span": 23.9,
+  "n_trades": 4776,
+  "n_instruments": 346,
+  "fee_bps_underlying": 3.0,
+  "fee_cap_frac": 0.125,
+  "pricing_check_rel_p50_pct": 5.21404431496869,
+  "entry": {
+    "edge_pct_premium_median": 0.8373260564344651,
+    "edge_bps_underlying_mean": 0.8939916038525965,
+    "edge_bps_underlying_median": 0.38890000000000136,
+    "fee_bps_underlying_eff": 2.216152748115578,
+    "net_entry_bps_underlying": -1.3221611442629813
+  },
+  "horizons": {
+    "60s": {
+      "n": 4763,
+      "gamma_theta_bps": 0.009767909489879162,
+      "with_vega_bps": -3.688321933041538,
+      "net_of_fee_bps": -5.904678024265556,
+      "hit_rate": 0.4786899013226958
+    },
+    "300s": {
+      "n": 4746,
+      "gamma_theta_bps": -0.015374720703906906,
+      "with_vega_bps": -1.3702652224035088,
+      "net_of_fee_bps": -3.589892008117795,
+      "hit_rate": 0.48504003371260007
+    },
+    "1800s": {
+      "n": 4629,
+      "gamma_theta_bps": 0.0027876428688796613,
+      "with_vega_bps": -0.8093944449181282,
+      "net_of_fee_bps": -3.0332860008697375,
+      "hit_rate": 0.509397278029812
+    },
+    "7200s": {
+      "n": 4233,
+      "gamma_theta_bps": -0.6419037319423093,
+      "with_vega_bps": -1.0074583720820907,
+      "net_of_fee_bps": -3.21384405599421,
+      "hit_rate": 0.5008268367587999
+    }
+  },
+  "by_moneyness_300s": {
+    "deep OTM put-side": {
+      "n": 552,
+      "net_bps": -3.399502167897475,
+      "median_bps": -0.6419784912120702
+    },
+    "OTM put-side": {
+      "n": 513,
+      "net_bps": -3.562083448014588,
+      "median_bps": -0.5791427899749546
+    },
+    "ATM": {
+      "n": 2145,
+      "net_bps": -2.3471286425982596,
+      "median_bps": -1.9463849733102674
+    },
+    "OTM call-side": {
+      "n": 675,
+      "net_bps": -3.1081331865809276,
+      "median_bps": -0.7248420442323479
+    },
+    "deep OTM call-side": {
+      "n": 870,
+      "net_bps": 0.23535838082912353,
+      "median_bps": 0.042238540550031727
+    }
+  }
+}
