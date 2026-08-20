@@ -1,0 +1,73 @@
+{
+  "currency": "BTC",
+  "hours_span": 37.95,
+  "n_trades": 29647,
+  "n_instruments": 678,
+  "fee_bps_underlying": 0.0,
+  "fee_cap_frac": 0.125,
+  "pricing_check_rel_p50_pct": 1.0031352293398301,
+  "entry": {
+    "edge_pct_premium_median": 0.5309951419593417,
+    "edge_bps_underlying_mean": 1.067191891253752,
+    "edge_bps_underlying_median": 0.4643000000000008,
+    "fee_bps_underlying_eff": 0.0,
+    "net_entry_bps_underlying": 1.067191891253752
+  },
+  "horizons": {
+    "60s": {
+      "n": 29621,
+      "gamma_theta_bps": -0.08225377660086275,
+      "with_vega_bps": -1.1645652393632917,
+      "net_of_fee_bps": -1.1645652393632917,
+      "hit_rate": 0.5040680598224233
+    },
+    "300s": {
+      "n": 29555,
+      "gamma_theta_bps": -0.041243207756351596,
+      "with_vega_bps": 0.16775737129577145,
+      "net_of_fee_bps": 0.16775737129577145,
+      "hit_rate": 0.5004567755032989
+    },
+    "1800s": {
+      "n": 28833,
+      "gamma_theta_bps": -0.49091861690628275,
+      "with_vega_bps": -2.936719029740223,
+      "net_of_fee_bps": -2.936719029740223,
+      "hit_rate": 0.4835778448305761
+    },
+    "7200s": {
+      "n": 25890,
+      "gamma_theta_bps": -1.2034649586413584,
+      "with_vega_bps": -3.2873499113211877,
+      "net_of_fee_bps": -3.2873499113211877,
+      "hit_rate": 0.498570876786404
+    }
+  },
+  "by_moneyness_300s": {
+    "deep OTM put-side": {
+      "n": 3293,
+      "net_bps": 0.06182995203613136,
+      "median_bps": 0.0028383941008664317
+    },
+    "OTM put-side": {
+      "n": 4355,
+      "net_bps": -0.19501891735299784,
+      "median_bps": -0.010905100438553271
+    },
+    "ATM": {
+      "n": 11388,
+      "net_bps": -0.004517654642647215,
+      "median_bps": 0.02194582411300434
+    },
+    "OTM call-side": {
+      "n": 5473,
+      "net_bps": -0.0393606454086264,
+      "median_bps": -0.08862905294047162
+    },
+    "deep OTM call-side": {
+      "n": 5046,
+      "net_bps": -0.06071616901105189,
+      "median_bps": 0.008386523297232393
+    }
+  }
+}

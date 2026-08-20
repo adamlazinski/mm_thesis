@@ -39,6 +39,7 @@ Run: python experiments/112_options_markout/options_markout.py --hours 24 --curr
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import math
 import re
@@ -97,6 +98,35 @@ def fetch_trades(currency: str, hours: float) -> pd.DataFrame:
             break
         cursor = oldest - 1
         time.sleep(0.12)
+    df = pd.DataFrame(rows).drop_duplicates(subset="trade_id")
+    return df.sort_values("timestamp").reset_index(drop=True)
+
+
+def load_capture(currency: str, capture_dir: str = "data/live") -> pd.DataFrame:
+    """
+    Read the locally captured option tape (collect_deribit_options.py).
+
+    Preferred over fetch_trades: Deribit's REST history endpoint silently
+    truncates — it returned ~4.8k BTC trades for a day where the live tape shows
+    ~18.7k, keeping only the most recent slice, which is a biased subsample.
+    """
+    import gzip
+    import zlib
+    rows = []
+    for f in sorted(glob.glob(str(Path(capture_dir) / f"deribit_{currency}_*.jsonl.gz"))):
+        try:
+            with gzip.open(f, "rt") as fh:
+                for line in fh:
+                    try:
+                        m = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    if m.get("stream") == "trades":
+                        rows.extend(m["data"])
+        except (EOFError, zlib.error):
+            pass          # in-progress hourly file: take what decompresses
+    if not rows:
+        return pd.DataFrame()
     df = pd.DataFrame(rows).drop_duplicates(subset="trade_id")
     return df.sort_values("timestamp").reset_index(drop=True)
 
@@ -200,10 +230,19 @@ def main():
     ap.add_argument("--hours", type=float, default=24.0)
     ap.add_argument("--fee-bps", type=float, default=FEE_BPS_UNDERLYING,
                     help="maker fee, bps of underlying; 0 = hypothetical top tier")
+    ap.add_argument("--from-capture", action="store_true",
+                    help="use the locally captured tape (complete) instead of "
+                         "Deribit REST history (silently truncated)")
     args = ap.parse_args()
 
-    print(f"fetching {args.currency} option trades, last {args.hours}h ...")
-    df = fetch_trades(args.currency, args.hours)
+    if args.from_capture:
+        print(f"loading captured {args.currency} option tape ...")
+        df = load_capture(args.currency)
+    else:
+        print(f"fetching {args.currency} option trades, last {args.hours}h ...")
+        df = fetch_trades(args.currency, args.hours)
+    if df.empty:
+        raise SystemExit("no trades")
     parsed = [parse_instrument(n) for n in df["instrument_name"]]
     keep = [p is not None for p in parsed]
     df = df[keep].reset_index(drop=True)
@@ -346,7 +385,8 @@ def main():
               f"median={np.median(gt[m])*1e4:+8.3f}")
     out["by_moneyness_300s"] = bym
 
-    tag = f"{args.currency}_{int(args.hours)}h"
+    tag = (f"{args.currency}_capture" if args.from_capture
+           else f"{args.currency}_{int(args.hours)}h")
     with open(OUT / f"options_markout_{tag}.json", "w") as fh:
         json.dump(out, fh, indent=2)
     print(f"\nSaved -> {OUT}/options_markout_{tag}.json")

@@ -1,0 +1,73 @@
+{
+  "currency": "ETH",
+  "hours_span": 37.9,
+  "n_trades": 15274,
+  "n_instruments": 654,
+  "fee_bps_underlying": 0.0,
+  "fee_cap_frac": 0.125,
+  "pricing_check_rel_p50_pct": 0.7781247602356407,
+  "entry": {
+    "edge_pct_premium_median": 0.7548981535364182,
+    "edge_bps_underlying_mean": 1.8525932957967788,
+    "edge_bps_underlying_median": 0.7000000000000001,
+    "fee_bps_underlying_eff": 0.0,
+    "net_entry_bps_underlying": 1.8525932957967788
+  },
+  "horizons": {
+    "60s": {
+      "n": 15273,
+      "gamma_theta_bps": -0.7553864023610509,
+      "with_vega_bps": 0.5581667983037439,
+      "net_of_fee_bps": 0.5581667983037439,
+      "hit_rate": 0.5073004648726511
+    },
+    "300s": {
+      "n": 15263,
+      "gamma_theta_bps": -0.9159395248149083,
+      "with_vega_bps": -1.618124716181327,
+      "net_of_fee_bps": -1.618124716181327,
+      "hit_rate": 0.50553626416825
+    },
+    "1800s": {
+      "n": 15037,
+      "gamma_theta_bps": -1.669870202630367,
+      "with_vega_bps": -0.7668541522655367,
+      "net_of_fee_bps": -0.7668541522655367,
+      "hit_rate": 0.4956440779410787
+    },
+    "7200s": {
+      "n": 14293,
+      "gamma_theta_bps": -3.910609110612713,
+      "with_vega_bps": -5.3398568890462474,
+      "net_of_fee_bps": -5.3398568890462474,
+      "hit_rate": 0.5115091303435249
+    }
+  },
+  "by_moneyness_300s": {
+    "deep OTM put-side": {
+      "n": 2873,
+      "net_bps": -1.747625554872782,
+      "median_bps": 0.005414832855535107
+    },
+    "OTM put-side": {
+      "n": 2660,
+      "net_bps": -1.6562028715344193,
+      "median_bps": -0.08218929111012893
+    },
+    "ATM": {
+      "n": 5664,
+      "net_bps": -0.5727442940867206,
+      "median_bps": 0.042758898385992714
+    },
+    "OTM call-side": {
+      "n": 1970,
+      "net_bps": -0.1465866844201654,
+      "median_bps": 0.02772453084978234
+    },
+    "deep OTM call-side": {
+      "n": 2096,
+      "net_bps": -0.48700270028815795,
+      "median_bps": -0.012125561657435604
+    }
+  }
+}
