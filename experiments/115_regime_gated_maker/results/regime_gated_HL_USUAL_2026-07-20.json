@@ -1,0 +1,55 @@
+{
+  "asset": "HL_USUAL",
+  "date": "2026-07-20",
+  "hours": 24.0,
+  "bar_s": 30.0,
+  "win_bars": 60,
+  "runs": {
+    "VR<=0.9": {
+      "quoting_frac": 0.63,
+      "fills_per_day": 267.0,
+      "notional": 10507.5,
+      "gross_pnl_day": -14.69,
+      "bps_of_notional": -13.98,
+      "max_abs_inv_usd": 2220.6
+    },
+    "VR<=1": {
+      "quoting_frac": 0.733,
+      "fills_per_day": 300.0,
+      "notional": 11022.4,
+      "gross_pnl_day": -14.06,
+      "bps_of_notional": -12.76,
+      "max_abs_inv_usd": 2164.3
+    },
+    "VR<=1.1": {
+      "quoting_frac": 0.857,
+      "fills_per_day": 408.0,
+      "notional": 16866.1,
+      "gross_pnl_day": 29.76,
+      "bps_of_notional": 17.65,
+      "max_abs_inv_usd": 2109.1
+    },
+    "ungated": {
+      "quoting_frac": 1.0,
+      "fills_per_day": 416.0,
+      "notional": 17511.2,
+      "gross_pnl_day": -7.21,
+      "bps_of_notional": -4.12,
+      "max_abs_inv_usd": 2028.2
+    }
+  },
+  "placebo": {
+    "VR<=0.9": {
+      "bps": -3.08,
+      "pnl_day": -3.77
+    },
+    "VR<=1": {
+      "bps": -4.6,
+      "pnl_day": -5.34
+    },
+    "VR<=1.1": {
+      "bps": -4.62,
+      "pnl_day": -6.19
+    }
+  }
+}

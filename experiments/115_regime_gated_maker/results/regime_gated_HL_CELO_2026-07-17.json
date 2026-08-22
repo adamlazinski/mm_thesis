@@ -1,0 +1,55 @@
+{
+  "asset": "HL_CELO",
+  "date": "2026-07-17",
+  "hours": 10.27,
+  "bar_s": 30.0,
+  "win_bars": 60,
+  "runs": {
+    "VR<=0.9": {
+      "quoting_frac": 0.402,
+      "fills_per_day": 416.1,
+      "notional": 8707.0,
+      "gross_pnl_day": 106.38,
+      "bps_of_notional": 52.26,
+      "max_abs_inv_usd": 2296.7
+    },
+    "VR<=1": {
+      "quoting_frac": 0.532,
+      "fills_per_day": 558.7,
+      "notional": 14120.3,
+      "gross_pnl_day": 199.62,
+      "bps_of_notional": 60.47,
+      "max_abs_inv_usd": 2245.3
+    },
+    "VR<=1.1": {
+      "quoting_frac": 0.658,
+      "fills_per_day": 656.9,
+      "notional": 19348.0,
+      "gross_pnl_day": 151.99,
+      "bps_of_notional": 33.6,
+      "max_abs_inv_usd": 2471.3
+    },
+    "ungated": {
+      "quoting_frac": 1.0,
+      "fills_per_day": 1024.0,
+      "notional": 32492.0,
+      "gross_pnl_day": 62.55,
+      "bps_of_notional": 8.23,
+      "max_abs_inv_usd": 2365.6
+    }
+  },
+  "placebo": {
+    "VR<=0.9": {
+      "bps": 17.35,
+      "pnl_day": 52.23
+    },
+    "VR<=1": {
+      "bps": 18.66,
+      "pnl_day": 73.78
+    },
+    "VR<=1.1": {
+      "bps": 14.55,
+      "pnl_day": 70.51
+    }
+  }
+}

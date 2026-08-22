@@ -1,0 +1,55 @@
+{
+  "asset": "HL_ZORA",
+  "date": "2026-07-20",
+  "hours": 24.0,
+  "bar_s": 30.0,
+  "win_bars": 60,
+  "runs": {
+    "VR<=0.9": {
+      "quoting_frac": 0.472,
+      "fills_per_day": 332.0,
+      "notional": 29059.3,
+      "gross_pnl_day": 47.66,
+      "bps_of_notional": 16.4,
+      "max_abs_inv_usd": 2459.5
+    },
+    "VR<=1": {
+      "quoting_frac": 0.589,
+      "fills_per_day": 433.0,
+      "notional": 33141.2,
+      "gross_pnl_day": 24.23,
+      "bps_of_notional": 7.31,
+      "max_abs_inv_usd": 2324.8
+    },
+    "VR<=1.1": {
+      "quoting_frac": 0.716,
+      "fills_per_day": 527.0,
+      "notional": 47578.8,
+      "gross_pnl_day": 44.59,
+      "bps_of_notional": 9.37,
+      "max_abs_inv_usd": 2345.4
+    },
+    "ungated": {
+      "quoting_frac": 1.0,
+      "fills_per_day": 729.1,
+      "notional": 69189.2,
+      "gross_pnl_day": 92.14,
+      "bps_of_notional": 13.32,
+      "max_abs_inv_usd": 2468.6
+    }
+  },
+  "placebo": {
+    "VR<=0.9": {
+      "bps": 15.88,
+      "pnl_day": 58.97
+    },
+    "VR<=1": {
+      "bps": 15.16,
+      "pnl_day": 63.32
+    },
+    "VR<=1.1": {
+      "bps": 13.9,
+      "pnl_day": 70.67
+    }
+  }
+}

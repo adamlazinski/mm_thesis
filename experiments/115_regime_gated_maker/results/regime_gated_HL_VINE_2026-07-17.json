@@ -1,0 +1,55 @@
+{
+  "asset": "HL_VINE",
+  "date": "2026-07-17",
+  "hours": 10.27,
+  "bar_s": 30.0,
+  "win_bars": 60,
+  "runs": {
+    "VR<=0.9": {
+      "quoting_frac": 0.907,
+      "fills_per_day": 325.0,
+      "notional": 6509.4,
+      "gross_pnl_day": -5.82,
+      "bps_of_notional": -3.83,
+      "max_abs_inv_usd": 983.5
+    },
+    "VR<=1": {
+      "quoting_frac": 0.936,
+      "fills_per_day": 336.7,
+      "notional": 6618.3,
+      "gross_pnl_day": -6.12,
+      "bps_of_notional": -3.96,
+      "max_abs_inv_usd": 1028.7
+    },
+    "VR<=1.1": {
+      "quoting_frac": 0.944,
+      "fills_per_day": 341.3,
+      "notional": 6622.0,
+      "gross_pnl_day": -6.12,
+      "bps_of_notional": -3.95,
+      "max_abs_inv_usd": 1032.4
+    },
+    "ungated": {
+      "quoting_frac": 1.0,
+      "fills_per_day": 369.4,
+      "notional": 7027.7,
+      "gross_pnl_day": -5.97,
+      "bps_of_notional": -3.64,
+      "max_abs_inv_usd": 1114.7
+    }
+  },
+  "placebo": {
+    "VR<=0.9": {
+      "bps": -3.5,
+      "pnl_day": -5.34
+    },
+    "VR<=1": {
+      "bps": -3.23,
+      "pnl_day": -5.04
+    },
+    "VR<=1.1": {
+      "bps": -3.54,
+      "pnl_day": -5.56
+    }
+  }
+}
