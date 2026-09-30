@@ -11,12 +11,15 @@ Avellaneda–Stoikov (2008) framework ("A-S") and its ergodic refinement by Gué
 Fernández-Tapia (2013) ("GLFT") cast this as a stochastic optimal control problem: choose a
 quoting policy that maximizes expected utility of terminal wealth, trading off expected
 spread capture against inventory risk. Both models, and the broader literature on
-order-driven markets they sit inside, supply the vocabulary and the formulas that Chapters
-4–6 implement, calibrate, and ultimately stress-test against an honest fill model. This
-chapter develops that vocabulary: the A-S and GLFT closed forms (§2–3), the fill-intensity
-primitive both models share (§4), and the two pieces of microstructure theory — price-time
-priority (§5) and zero-profit equilibrium (§6) — that Chapter 5 shows are the actual
-determinants of the honest result. It closes (§7) by asking what kind of market the
+order-driven markets they sit inside, supply the vocabulary and the formulas that Part I
+implements, calibrates, and ultimately stress-tests against an honest fill model — and the
+theory that Part II uses to locate the few places where liquidity provision does pay. This
+chapter develops that vocabulary: the A-S and GLFT closed forms and their multi-asset
+extension (§2–3), the fill-intensity primitive all of them share (§4), and the microstructure
+theory that governs what a quote actually earns — price-time priority (§5), the fair-value
+anchor the models take for granted (§6), and the zero-profit and immediacy-premium equilibria
+(§7) that Part I shows are the actual determinants of the honest result and Part II shows are
+the actual determinants of the exceptions. It closes (§8) by asking what kind of market the
 A-S/GLFT lineage was built to describe in the first place — a dealer market, not an order
 book — a distinction that turns out to organize the thesis's negative and positive results
 alike.
@@ -105,6 +108,29 @@ differ only in how the inventory-risk horizon is parameterized (`T−t` vs. `1/(
 Anything that breaks one of those three assumptions breaks both models in the same way; this
 is why Chapters 4–5 treat A-S and GLFT as a single object ("classical MM") rather than as
 competing hypotheses.
+
+**The multi-asset extension.** Bergault, Evangelista, Guéant & Vieira (2021) generalize the
+ergodic solution to a market maker quoting `d` correlated assets simultaneously, replacing the
+scalar σ² with a covariance matrix Σ and obtaining closed-form approximations in which the skew
+on asset `i` responds not to `q_i` alone but to the *projection of the whole inventory vector*
+through Σ. Intuitively, a long position in one asset is partly hedged by a short in a
+correlated one, so the optimal quotes on each asset are shifted by the inventory of all of
+them; in the limiting case of two perfectly correlated assets the policy depends only on net
+inventory.
+
+This is directly relevant here, because two of the instruments this thesis quotes — LINK spot
+and the LINK perpetual — have a measured mid-return correlation of ρ = 0.76, and the naive
+single-asset treatment would manage their inventories independently. The multi-asset machinery
+is therefore *correct* for this setting. It is also, as implemented, empirically inert: at the
+γ this thesis calibrates, the optimal policy puts weight 0.85 on net inventory (confirming the
+near-perfect-correlation intuition), but the resulting cross-asset adjustment to the quoted
+price is on the order of **0.04 ticks** — an order of magnitude below the exchange's minimum
+price increment, so it quantizes to zero before it reaches the book. The finding is worth
+recording as more than a footnote: it is the same collision that §6 and §7 formalize and that
+Contribution 54 turns into the thesis's sharpest retraction. A continuous-price control model
+can specify an adjustment as precisely as one likes, and a discrete price grid will round it
+away. On a one-tick book, a great deal of the optimal-control apparatus is unobservable in
+principle, not merely in practice.
 
 ---
 
@@ -212,7 +238,63 @@ drift term, rather than as an ad hoc addition bolted onto A-S/GLFT.
 
 ---
 
-## 6. Zero-Profit Equilibrium: Glosten–Milgrom and Wyart–Bouchaud
+## 6. The Fair-Value Anchor: The Mid and the Micro-Price
+
+Every formula in §2–3 is written as a displacement from `mid`. The models treat that reference
+price as exogenous and, implicitly, as an unbiased estimate of the asset's current value: the
+reservation price `r` skews *away* from it, and the half-spread δ is measured *from* it. Neither
+model says where it comes from, because in the dealer market they descend from (§8) the
+reference price is simply the screen price the dealer looks at.
+
+On a discrete limit order book, the mid is a poor estimator of value, and for a reason specific
+to the assets this thesis trades. When the spread is almost always one tick — as it is on LINK
+and on every perpetual studied here (Contribution 58) — the mid can take only one value per
+price-pair, sitting exactly half a tick above the bid. It carries no information about which
+side of the book is about to give way, and it jumps discontinuously by a full tick when the
+book moves. A quoter anchored to it is anchored to a quantity that is, half of the time,
+demonstrably on the wrong side of the imminent price change.
+
+**Stoikov (2018)** formalizes the alternative. The *micro-price* is defined as the expected
+future mid conditional on the current state of the book, `E[m_{t+τ} | I_t, s_t]`, where `I_t`
+is the queue imbalance at the touch and `s_t` the spread — the unique value that makes the
+estimator a martingale with respect to that information set. The practical estimator is a
+size-weighted mid,
+
+```
+micro = (bid · Q_ask + ask · Q_bid) / (Q_bid + Q_ask)
+```
+
+which leans toward the side with *less* resting size, on the reasoning that the thinner side is
+the one that will be consumed. Unlike the mid, it is continuous in the book state and takes a
+full range of values between the touches, which is precisely what a one-tick book otherwise
+denies the model.
+
+This matters in three places downstream, and it is worth separating them because they are
+different claims.
+
+First, **as an anchor**: if the reference price is biased, every quote inherits the bias, and
+no amount of care in choosing γ or κ recovers it. Chapter 8 tests mid against micro-price
+directly as the fair-value anchor for a thin-book quoter and finds the micro-price better on
+four of five books — a small but consistent improvement, and the reason Part II's strategies
+are anchored on it.
+
+Second, **as a measurement instrument**: the whole of Chapters 5 and 6 quantifies adverse
+selection as the price change following a fill, so the choice of reference price is not
+cosmetic. The model-free markout of Contribution 59 is a statement about how fast the
+post-fill reference price moves, and it would be a different statement under a different
+reference.
+
+Third — and this is the limit of the idea — **the micro-price is a better estimator, not an
+edge.** What it predicts is the mid's own next value, from the book's own displayed state. That
+is exactly the class of information Contribution 61 tests and finds already incorporated in the
+price at which a maker is permitted to trade. Nor does it repair mark-to-mid accounting, the
+third mirage of Chapter 5: a round trip is closed at an executable touch, and no improvement in
+the estimate of fair value changes where a transaction can occur. The micro-price is the right
+anchor for a quote and the wrong instrument for a valuation.
+
+---
+
+## 7. Equilibrium: Glosten–Milgrom, Wyart–Bouchaud, and the Price of Immediacy
 
 The two results below are not about queue position directly — they are about what
 *determines the spread* in a competitive market, and they supply the theoretical reason
@@ -239,6 +321,33 @@ timescale of one trade* — equivalently, for a market with trade arrival rate A
 volatility σ, to `σ/√A`. This is a spread-level restatement of the same zero-profit logic:
 competitive liquidity provision earns the volatility it bears, not more.
 
+**Grossman & Miller (1988).** Both results above explain the spread as a *cost* being
+recovered — of adverse selection, or of volatility borne between trades — and both drive
+liquidity provision to zero profit. Grossman & Miller supply the counterweight, and it is the
+one classical result in this chapter that predicts a strictly positive expected return for
+providing liquidity. Their market has a liquidity demander who must trade *now* and a finite
+number `M` of market makers willing to take the other side and hold the position until the
+natural counterparty arrives. Because those `M` suppliers are risk-averse and few, the demander
+pays a price concession — the **immediacy premium** — that compensates them for the inventory
+risk borne over the waiting interval. The premium scales with the risk held and, critically,
+falls as `1/M`: it vanishes only in the limit of infinitely many competing suppliers.
+
+This reframes what the zero-profit results actually assert. Glosten-Milgrom's condition is zero
+*economic* profit — a dealer compensated exactly for the risk and adverse selection they bear,
+not a dealer earning nothing. On a book with hundreds of competing quoters, `M` is large, the
+risk-bearing compensation is driven down to the point where it is indistinguishable from zero
+at any measurable resolution, and the Wyart-Bouchaud spread is the whole story. On a book with
+two or three makers at the touch, the same theory says the premium should be *measurable*. The
+two families are therefore not in conflict; they describe the same market at different values
+of `M`.
+
+The practical consequence is a search instruction, and Part II follows it literally: to find
+positive liquidity-provision returns, condition on the number of competing suppliers rather
+than on the quoting formula. Chapter 8 tests this on books with `M` of two to three at the
+touch, and the theory's comparative static — the premium should decay as competition arrives —
+is what that chapter's bridge control measures directly, observing a single instrument's
+premium fall from +40 bps to +0.39 bps over two months as its tail tightened.
+
 **The combined prediction.** Read together, these results say that in a competitive market
 the spread (Wyart–Bouchaud) and the fill-decay rate κ that A-S/GLFT take as a free input are
 *the same equilibrium object viewed from two sides* — a market that has reached this
@@ -258,14 +367,15 @@ variable (spread width, or queue depth) is free to adjust.
 
 ---
 
-## 7. What Market Were These Models Built For? The Dealer Lineage
+## 8. What Market Were These Models Built For? The Dealer Lineage
 
-The preceding two sections catalogued, one assumption at a time, where the A-S/GLFT
+The preceding three sections catalogued, one assumption at a time, where the A-S/GLFT
 formalism and the order-driven market part ways: fills gated by queue position rather than
-by distance alone (§5), and a fill-decay rate κ that competition pins to σ rather than
-leaving free (§6). This section makes the case that these are not two independent oversights
-but a single one, visible in the models' ancestry: **A-S is a dealer model, and the limit
-order book is not a dealer market.**
+by distance alone (§5), a reference price that a coarse book renders uninformative (§6), and
+a fill-decay rate κ that competition pins to σ rather than leaving free (§7). This section
+makes the case that these are not three independent oversights but a single one, visible in
+the models' ancestry: **A-S is a dealer model, and the limit order book is not a dealer
+market.**
 
 **The lineage.** Avellaneda & Stoikov (2008) do not derive their framework from order-book
 first principles; they explicitly adapt Ho & Stoll (1981), a model of a *dealer* — a single
@@ -285,15 +395,16 @@ screen price and decides whether to quote one tick or ten above it. Everything t
 needs to know is the reference price and their own demand curve — which is exactly, and
 only, what A-S's state and primitives encode.
 
-**What the order book adds is precisely what §5–6 documented.** Transplant this dealer into
+**What the order book adds is precisely what §5–7 documented.** Transplant this dealer into
 a lit order book and each of the three features above fails in a specific, by-now-familiar
-way. Competition (i) is §6: the spread the dealer's formula wants to capture is an
+way — and the reference price the dealer simply reads off a screen becomes, as §6 showed,
+something that has to be estimated. Competition (i) is §7: the spread the dealer's formula wants to capture is an
 equilibrium object that other liquidity providers have already bid down to the zero-profit
 level, and κ — far from being a private demand curve — is the public residue of that
 competition, pinned to σ. Priority (ii) is §5: at a shared price level the dealer is not
 "the counterparty the client came to" but one order in a FIFO queue, and the fills that do
 reach the back of the queue are adversely selected. Discreteness (iii) is the tick-size
-wrinkle of §6 and the reason Guilbaud & Pham's formulation (§5) loses the closed form. Read
+wrinkle of §7 and the reason Guilbaud & Pham's formulation (§5) loses the closed form. Read
 this way, the empirical failures documented in Chapters 4–5 — the GLFT spread that lands in
 the momentum plateau whatever the calibration (Contribution 27), the γ that must be
 inflated by orders of magnitude to move at all (Contribution 26), the honest-engine
@@ -301,7 +412,7 @@ zero-profit verdict itself (Contributions 30, 33) — are not defects being disc
 *inside* the model so much as a category error about its habitat: the model answers "how
 should a monopolistic dealer quote?", and the backtest asks "what does a marginal,
 queue-anonymous order in a competitive book earn?". Those are different questions, and the
-zero-profit theory of §6 says the second has a known answer that no quoting formula can
+zero-profit theory of §7 says the second has a known answer that no quoting formula can
 improve.
 
 **The literature's own trajectory corroborates the reading.** The most direct descendants
@@ -336,9 +447,11 @@ contain.
 
 ---
 
-## 8. Synthesis: What This Chapter Predicts for Chapters 4–6
+## 9. Synthesis: What This Chapter Predicts for Parts I and II
 
-Three things follow from §2–6 that the rest of the thesis tests directly.
+Five things follow from §2–7 that the rest of the thesis tests directly. The first three
+concern Part I, and predict a zero; the last two concern Part II, and predict where that zero
+is escapable.
 
 1. **A-S and GLFT, calibrated to a fixed (κ, σ, A) and run against a price-only fill model,
    should be profitable** — they are explicitly the solution to the profit-maximization
@@ -349,10 +462,10 @@ Three things follow from §2–6 that the rest of the thesis tests directly.
 2. **If §5's price-time-priority point is what the price-only model assumes away, then
    re-fitting the same strategies against a queue-position-aware fill model should remove
    the profit** — not necessarily to exactly zero (real markets are not in perfect
-   equilibrium at every instant), but toward the zero-profit benchmark of §6. Chapter 5
+   equilibrium at every instant), but toward the zero-profit benchmark of §7. Chapter 5
    tests this directly.
 
-3. **§6 predicts *why* the result of (2) should be zero/negative rather than merely smaller**:
+3. **§7 predicts *why* the result of (2) should be zero/negative rather than merely smaller**:
    a fixed-κ quoter calibrated from historical data is, by the Wyart–Bouchaud argument,
    calibrated to a stale σ the moment volatility changes — and §4 already found that BTC and
    LINK's fill curves are *not* the clean, σ-independent exponentials §2–3 assume. Chapter 5
@@ -360,20 +473,38 @@ Three things follow from §2–6 that the rest of the thesis tests directly.
    data and synthetic ground truth, and shows the honest-regime result is this equilibrium
    condition being satisfied, not violated.
 
-To these, §7 adds a fourth, about where any *positive* result should be found:
+To these, §8 adds a fourth, about where any *positive* result should be found:
 
-4. **If the dealer-lineage reading of §7 is right, surviving positive performance should be
+4. **If the dealer-lineage reading of §8 is right, surviving positive performance should be
    confined to the times and places where the order book locally reproduces the dealer
    setting** — assets whose spread leaves room to stand alone at a price level, and quoting
-   policies that claim that position selectively, on a directional signal, rather than
-   unconditionally. Chapter 6 confirms the prediction's negative half exhaustively: on every
-   book tested no such place exists, and no positive performance survives — including the
-   apparent counter-example (Contributions 42–51), which turned out to be standing on price
-   levels the exchange's grid did not contain (Contribution 54). The affirmative half —
-   that the mechanism works where real room exists — remains an untested prediction,
-   pending a genuinely wide-spread asset.
+   policies that claim that position selectively rather than unconditionally. Chapters 5 and 6
+   confirm the prediction's negative half exhaustively: on every centralised book tested no
+   such place exists, and no positive performance survives — including the apparent
+   counter-example (Contributions 42–51), which turned out to be standing on price levels the
+   exchange's grid did not contain (Contribution 54). The affirmative half is no longer
+   untested. Chapter 8 supplies the asset class the earlier data did not contain — books whose
+   spreads are genuinely several true ticks wide, with two or three makers at the touch — and
+   there the prediction holds: the spread exceeds the adverse-selection cost, on an
+   inventory-aware round trip, at base fees.
 
-The theory in this chapter is therefore used twice in the thesis: first, conventionally, as
-the source of the strategies under test (Chapters 4); second, as the explanation for why
-those strategies' honest performance comes out the way it does (Chapter 5) — the same
-formulas, read for what they assume rather than what they prescribe.
+And §7's third result adds a fifth, which is the sharper version of the fourth:
+
+5. **The immediacy premium should be found by conditioning on the number of competing
+   suppliers, not on the strategy.** Grossman-Miller's `1/M` scaling makes competition, rather
+   than quoting skill, the state variable that determines whether liquidity provision pays.
+   This predicts three things that Part II tests separately: that a screen over instruments
+   ranked by touch competition should find positive books where a screen over strategies does
+   not (Chapter 8's route-5 screen); that the premium should *decay* as competition arrives,
+   observable as a time series on a single instrument (Chapter 8's bridge control); and that
+   the horizon over which adverse selection is realised should track the venue's own repricing
+   speed rather than any universal constant (Part II's organising law, measured from about
+   15 ms on Binance to beyond five seconds in the Hyperliquid tail). §6 adds a rider: on the
+   coarse books where `M` is small, the fair-value anchor matters most, so the micro-price
+   should outperform the mid there — which is where Chapter 8 finds it does.
+
+The theory in this chapter is therefore used three times in the thesis: first, conventionally,
+as the source of the strategies under test (Chapter 4); second, as the explanation for why
+those strategies' honest performance comes out the way it does (Chapters 5 and 6); and third,
+as the map that says where a positive result could still exist and how to look for it
+(Part II) — the same formulas, read for what they assume rather than what they prescribe.
