@@ -1,573 +1,419 @@
 # Conclusions
 
-This chapter draws together the contributions in `thesis_contributions.md` (cited below as
-C1–C54) into a single argument. The project began as an implementation-and-calibration study
-of Avellaneda–Stoikov (A-S) and Guéant–Lehalle–Fernández-Tapia (GLFT) market making on
-BTC/USDT and LINK/USDT. It ends as a demonstration that **the profitability these models (and
-a reinforcement-learning alternative) appear to show in standard event-driven backtests is not
-a strategy edge at all, but an artifact of an unmodelled queue-priority assumption — and that
-once this is corrected, the honest result is not merely unprofitable but is the *necessary*
-outcome of a zero-profit equilibrium that microstructure theory already predicts.** Four
-independent escape routes from this conclusion were tested and each closes for a related but
-distinct reason — the fourth, a directionally-informative quote skew that for several months
-appeared to be a robust exception, was ultimately traced to a mis-specified exchange price
-grid and collapses to the equilibrium when placed at prices that exist (§2.7, C54).
+This thesis set out to implement and calibrate the Avellaneda-Stoikov and
+Guéant-Lehalle-Fernández-Tapia market-making models on crypto tick data, and to ask whether
+they are profitable. They appeared to be. Establishing that they are not, and then finding
+what is, took the project through five accounting artefacts, four independent measurements of
+the same equilibrium, a purpose-built capture of four venues, two retractions of its own
+positive results, and finally to three positions that do pay — none of which is a market-making
+strategy in the sense the first chapter meant.
+
+This chapter states the resulting claim, sets out why it is a necessary rather than a
+contingent result, explains why the exceptions in Part II confirm it rather than qualify it,
+answers the four research questions in order, and closes on what the thesis contributes as
+method, what it cannot support, and what should be done next.
 
 ---
 
-## 1. Headline result
+## 1. The Claim
 
-For a **signal-blind** maker — one whose quotes carry no information about the direction of the
-next price move — no retail-accessible edge exists in classical (A-S/GLFT) or RL-based crypto
-spot market making once the fill model is made physically honest and latency/requoting are
-realistic, and this is not an empirical accident of the May 2025 – April 2026 sample. It follows
-from a zero-profit equilibrium condition (Wyart, Bouchaud, Kockelkoren, Potters & Vettorazzo,
-2008; Glosten & Milgrom, 1985) that links the quoted spread to realised volatility per trade. The
-apparent profitability reported throughout the early chapters of this thesis (Contributions
-16–23) is real *within the backtest*, but is shown in C30 to be entirely explained by one
-variable: whether the quote sits inside the natural bid–ask spread under a fill model that grants
-it absolute queue priority.
+The thesis makes a two-part claim, and the parts are not independent — the second is the first
+read at its boundary.
 
-The strongest challenge to this headline came from within the project itself. §2.7 (C39–C51)
-appeared to show that a **directionally-informative signal** — skewing quotes by the L1
-order-book imbalance — breaks the equilibrium on LINK, robustly and out of sample (+$22 to
-+$80/day, ~100% of days positive). C54 retracts this: live-feed validation revealed that
-LINK's exchange tick size throughout the historical data was 0.01, not the 0.001 assumed in
-every LINK experiment, so the "inside-spread" placements the mechanism required were at prices
-that do not exist on the exchange. Rerun at the true tick, the same configuration earns
-+$0.36/day (statistically zero) — the equilibrium, again. The headline above therefore stands
-**without exception** across every book, strategy class, and signal tested; §2.7 documents the
-episode, because both the seduction and the retraction are informative about how such
-artifacts arise and how they are caught.
+**Part one.** For a participant without co-location or a negotiated fee schedule, competitive
+liquidity provision on a lit crypto book earns **exactly zero**. Not approximately zero, and
+not zero in this sample: zero as the enforced outcome of a competitive equilibrium that
+microstructure theory specified before any of this was measured. Every apparently profitable
+backtest produced in the course of this project — classical, signal-overlaid, or
+reinforcement-learned — decomposes into one of five accounting errors, and the residue that
+survives their removal is the equilibrium itself.
+
+**Part two.** Positive expected returns are nevertheless available at the boundary of that
+equilibrium, and three were found and hardened here. None of them is a forecast. Each is
+compensation for bearing a risk or for occupying a structural position that someone must
+occupy: trading against a venue whose makers reprice on a slower clock, providing immediacy on
+a book where two or three participants are willing to, and being paid to carry a cross-venue
+basis. Each is bounded by the thing that makes it available — capacity, competition, or a tail
+the sample does not contain — and each is as small as that bound permits.
+
+Stated as one sentence: **markets pay for risk-bearing and structural position, not for
+prediction a single participant can compute.**
 
 ---
 
-## 2. The evidentiary chain
+## 2. Part I: Why the Zero Is Necessary Rather Than Contingent
 
-### 2.1 The machinery is validated before it is doubted (C33a–c)
+The argument is a chain, and its force comes from the order of the links rather than from any
+single measurement. Each step forecloses a different objection to the one before it.
 
-Before any negative result can be trusted, the backtest engine and the two classical strategies
-are checked against markets whose profitability is known in closed form
-(`experiments/59_synthetic_engine_validation/`).
+**Step 1 — the machinery is validated before it is doubted.** On synthetic data with known
+ground truth, the engine reproduces analytically-derived P&L exactly, and A-S and GLFT,
+injected with the *true* volatility on an exponential-fill market matching their own
+assumptions, are robustly profitable (Contribution 33). The implementations are therefore
+sound and the engine is not rigged toward a negative answer. On a high-volatility martingale
+the same quoter loses, which is the correct short-gamma behaviour rather than a defect, and
+connects to Contribution 35's reading of the maker as a writer of a short straddle.
 
-- **Engine exactness.** A fixed 2-tick quoter resting at the BBO, run on a market with a
-  *constant* true value and Poisson taker flow, books
+**Step 2 — the apparent profit is real, and stable, and none of it comes from the models.**
+On LINK the calibrated strategies earn +$154/day, profitable on thirty consecutive days and
+transferring nine months forward across a 30% price move (Chapter 4). But the optimum is
+degenerate — random search converges on switching the market-making formula *off*, and a
+controlled comparison shows the formula is a liability rather than an asset — signal overlays
+make it worse, reinforcement learning improves on it by about 5%, and the identical
+configuration yields −$2.10/day on BTC with no learning signal at all. A P&L that survives the
+deletion of the entire theoretical apparatus is not being produced by that apparatus.
 
-  ```
-  expected = n_fills × half_spread × size = 38,520 × $0.02 × 1.0 = $770.40
-  realized = $769.44   (residual −$0.96 = open inventory marked at mid)
-  ```
+**Step 3 — five accounting errors, all biasing the same way** (Chapter 5). *Queue priority*: a
+price-only fill model grants a resting order absolute priority, overstating fill probability at
+the touch by a factor of 41, and the profit is confined precisely to the quote regime where
+that model is accidentally correct (Contributions 20, 29, 30). *Prices that do not exist*:
+LINK's exchange tick was 0.01, not the 0.001 assumed throughout, so the inside-spread
+placements the mechanism required were on a grid the venue would have rejected (Contribution
+54). *Mark-to-mid accounting*, at the level of a single fill and again more severely at the
+level of a position. *Fee tiers a strategy's own volume cannot earn.* *The winner's curse in
+maker fill selection.* Each was found by looking for it, and each had survived robustness
+testing before it was found.
 
-  to floating-point precision. Mean-reverting (OU, +$558) and mildly volatile Brownian
-  (+$690) worlds are likewise profitable. The fill condition and the
-  `cash + inventory × mid` accounting are correct.
+**Step 4 — the residue is measured, and it is small and adversely selected.** With all five
+removed, the honest at-touch quoter earns between **+$0.60/day** at a one-second evaluation
+horizon and **+$4.06/day** at thirty seconds, with a negative mean markout at every horizon and
+only 39.7%-48.9% of fills profitable (Contribution 34). Against that, a perfect-foresight
+oracle keeping only the fills that turn out well earns **$19.76 to $30.03/day** on the same
+book. The dispersion in fill quality is real; what is missing is the information to sort it.
+The constraint is identified as informational at this point, not assumed.
 
-- **The negative control is structural, not a bug.** In a high-volatility *martingale*
-  (σ = 0.20 $/√s — driftless, so no informational adverse selection), the same fixed quoter
-  loses robustly (mean −$920, 12 seeds). This is the **short-gamma cost**: a passive maker's
-  ask is lifted as price rises and its bid is hit as price falls, so inventory and price move
-  in opposite directions and the realised inventory-variance cost scales with σ². The engine
-  books this loss correctly.
+**Step 5 — the residue is derived, not merely observed.** Sweeping dollar volatility on
+synthetic data and solving for the half-spread at which a fixed quoter breaks even gives a
+ratio δ_be/σ_$ that is **constant at about 76 across a tenfold range of volatility**
+(Contribution 33). The breakeven spread is not a free parameter to be optimised; it is pinned
+to volatility by the market's own structure, exactly as Wyart-Bouchaud requires and as
+Glosten-Milgrom's zero-expected-profit dealer implies. This step also dissolves Chapter 4's
+asset-specificity without appealing to anything about LINK's character: where the spread is
+free to move (BTC, small relative tick) competition compresses it to the breakeven width and
+the maker earns zero *on the spread axis*; where the tick floors the spread wider than
+breakeven (LINK, large relative tick) the surplus is competed away through **queue depth**
+instead, and accrues to whoever is at the front. One zero-profit law, enforced through
+whichever variable happens to be free. Chapter 4's numbers were an accurate measurement of the
+queue rent on LINK, credited in full to a five-LINK order with no claim on it.
 
-- **The strategies are sound when given the truth.** Real `AvellanedaStoikov` and
-  `GLFTMarketMaker` objects, injected with the *true* σ, are robustly profitable
-  (100% of seeds) in constant, mild, and medium-volatility regimes, and widen their
-  half-spread monotonically with σ and risk aversion (A-S 1.0t → 24.6t; GLFT 2.0t → 16.2t) —
-  exactly as the `γσ²` / inventory term prescribes.
+**Step 6 — four independent instruments, all terminating at zero** (Chapter 6). The obvious
+remaining objection is that the right information was never brought to bear. Four mutually
+independent classes of it were, on books from three venues:
 
-**Conclusion of this step:** nothing in the chain that follows is an engine bug or a
-strategy-implementation error. The code finds profit precisely where theory says it should
-exist.
+| instrument | what it knows | result |
+|---|---|---|
+| model-free markout (C59) | nothing — the tape alone | realized half-spread negative within 100 ms on every book |
+| speed (C60) | the leading venue, 1 ms sooner | 10 ms to 1 ms: −$2.04 to −$1.94, and +$1.91 to +$0.54 |
+| observable state (C61) | flow, imbalance, volatility, intensity | toxicity rankable; cleanest 20% still negative at a *zero* fee |
+| counterparty identity (C62) | exactly who is trading | placebo separation at the 100th percentile; benign pocket +0.0 ± 0.3 bps |
 
-### 2.2 The queue-priority decomposition (C30)
+Three of the four detect genuine, placebo-validated structure. The decisive feature is not that
+each fails but that **each fails at exactly zero rather than below it**. Contribution 60 is the
+sharpest form: a true, placebo-proof, out-of-sample-robust signal — the 40-100 ms perpetual
+lead — whose optimal use nets **+$0.13/day** against a spread of about $5. Acting correctly on
+real information forfeits exactly the spread revenue it saves, because the market has already
+priced the lead into the width at which the maker is permitted to quote. Speed is not the
+missing ingredient either: a 15 ms gate already fires inside a 40-100 ms lead, so collapsing
+the stack to the co-located 1 ms limit has nothing left to catch, and front-of-queue
+positioning is worse.
 
-Every profitable backtest result in the project — classical A-S/GLFT and both RL agents, on
-both LINK and BTC — shares one structural feature: **the quote sits inside the natural
-bid–ask spread**, and the fill model (`order_manager.py`, pre-fix `queue_model='none'`) fills
-a resting order on the *first* trade that touches its price, i.e. grants it absolute queue
-priority, as though no other order were resting ahead of it.
+Four unlucky experiments would be a coincidence. Four instruments landing at zero is what an
+enforced equilibrium looks like from the inside: a market where liquidity provision paid
+positively would attract quoting until the spread compressed or the queue lengthened, and one
+where it paid negatively would lose quoters until the spread widened. Rankable toxicity, real
+signals, and a net of zero is the only stable configuration.
 
-LINK's natural spread is exactly 10 backtest ticks (5 per side) for 99.9% of April 2026 —
-where, per C54, one "backtest tick" is 0.001 but the exchange tick was 0.01, so this is one
-*real* tick and the inside-spread placements below were doubly impossible: granted absolute
-queue priority by the fill model, at prices the exchange would have rejected. This sharpens
-rather than weakens the decomposition — the artifact regimes were unimplementable twice over.
-Decomposing a flat A-S strategy by regime (30 days, zero fees):
+---
 
-| Regime | Half-spread | Inside natural touch? | Honest fill model? | Fills/day | PnL/day | 1s markout |
-|---|---|---|---|---|---|---|
-| Deep inside | 2t | yes | no | 7,673 | +$35 | +0.98 bps |
-| Inside (optimum) | 4t | yes | no | 7,288 | **+$94** | +2.80 bps |
-| At touch | 5t | at | partial | 2,502 | +$33 | −0.41 bps |
-| Outside | 8t | no | **yes** | 216 | +$2.5 | **−0.65 bps** |
+## 3. Part II: What the Boundary Pays, and Why It Is Not a Counterexample
 
-Only the outside-spread regime is physically honest — a fill there requires the price to trade
-*through* your level, so there is no queue to jump. It earns +$2.5/day with a *negative*
-1-second markout: every fill is initially adverse, and the small positive total comes only
-from longer-horizon mean reversion.
+If the competitive zero is exact, a positive return requires leaving the competitive game. Part
+II establishes three ways to do so, and the temptation is to read them as counterexamples to
+Part I. They are not. Each is the zero-profit law evaluated where competition has not arrived,
+and each is bounded by exactly how far it has not arrived.
 
-**RL is the same artifact, harder to see.** The TabularQ policy that "outperforms" A-S
-(Contribution 23, +$45.94/day on April 2026) runs through the identical fill model and learned
-to quote inside/at-touch almost exclusively — its fill rate (median 4,970/day, min 1,495) is
-7–38× the honest outside-spread ceiling of 216/day on *every single day*. A paired overfit test
-(exp 58, train = eval, 200 epochs) confirms the diagnosis directly: under the artifact-prone
-fill model the same TabularQ overfits to +$58/day; under an honest L2-queue model with an
-action space that cannot inherit the inside-quote artifact, **no policy over the observable
-state can overfit to profit at all** (best stable result +$0.7/day).
+**Renting a slow venue's clock** (Chapter 7, Contribution 63). Exactly one venue-level lead
+exists in the captured universe: the centralised complex moves as a block ahead of Hyperliquid
+by 200-500 ms, and the twenty-five pairs that show it are one relationship multiplied by the
+market factor, not twenty-five findings. Trading dislocations above 5 bps as a taker at
+executable touches on both legs returns **+4.8 to +5.8 bps per event**, across two days and two
+independent leaders, with hit rates of 85-96% and a median approximately equal to the mean. It
+survived a clock-artefact check by improving under the common receive clock. It is bounded on
+three sides: below 5 bps the population is large and decisively negative, it is negative at
+Hyperliquid's 4.5 bps base taker fee and positive only at the 1.4 bps high-volume tier, and the
+touch holds **$1.4k to $8k** at event times because Hyperliquid's own makers withdraw on the
+same signal. The capacity bound is not a defect of the measurement — it is the answer to why an
+edge visible in public data has not been competed away.
 
-**BTC is the control that confirms the mechanism.** BTC's natural spread is 1 tick, so no
-action in the RL's action space (which starts at 5 ticks) can land inside it. BTC RL is
-therefore forced into the honest regime by construction — and loses (−$2.09/day, 0% win),
-exactly as LINK does once forced honest. *The asset that cannot produce the artifact produces
-no profit.*
+**Providing immediacy where nobody else will** (Chapter 8, Contribution 66). On Hyperliquid tail
+books with two or three makers at the touch, the maker's realized half-spread never goes
+negative within five seconds. Four of six books clear **base** fees on an inventory-aware round
+trip — HMSTR +20.6 bps of notional, USUAL +16.4, CELO and VINE +8 to +9 — and the two failures
+are the two tightest and most-competed books, which is the result rather than an exception to
+it. Per-coin P&L is sign-unstable day to day; the equal-weighted **basket** is positive on all
+five days of the original sample and on 4 of 4 days of a pre-registered replication on disjoint
+coins, with the micro-price anchor beating the mid on 4 of 4.
 
-**Queue-position sensitivity** (at-touch, L2 queue model): PnL/day falls from +$11.8 at the
-front of the queue (9 LINK ahead) to a +$1.0/day, −2.9 bps-markout noise floor at a realistic
-retail queue position (4,313 LINK ahead). From ~5% of visible depth onward, the only fills
-that clear the queue are informed sweeps moving against the maker.
+**Being paid to carry a basis** (Chapter 9, Contribution 67). Hyperliquid's funding ran 92-100%
+positive over the captured window at roughly 11% annualised; net of Binance's funding the
+delta-neutral differential is **+5.4% to +7.8%** on all four majors — a contractual cash flow
+rather than an estimated edge. But the differential is what the book collects, not what it
+earns: the two price legs do not cancel, and the basis moves. On BTC the basis happened to help
+(+1.7%/yr on top of +6.7% of funding) for a gross **+8.4%/yr at a Sharpe near 1.26**; on LINK an
+adverse drift of −8.6%/yr consumed the entire funding leg and the book returned approximately
+zero. With basis volatility of 7-12% against a funding signal of about 7%, any short window
+measures the basis rather than the carry.
 
-**The unified law (C30):**
+**The law that unifies them.** Chapter 8's central measurement is not the P&L but the ordering
+of adverse-selection horizons across venues:
 
-> Every positive backtest result in this project lives inside the natural spread under a
-> no-queue fill model. Every result in the physically honest regime — outside the spread, or
-> at-touch behind a realistic L2 queue — is ≈0 or negative. This holds across both assets
-> (BTC, LINK) and both strategy classes (classical, RL). The "edge" is not a strategy edge; it
-> is a **queue-priority rent**.
-
-### 2.3 The corrected engine strengthens the verdict (exp 62, June 2026)
-
-A later code audit found that the fill engine mis-handled *marketable-on-arrival* orders: an
-order that becomes active (after its latency delay) into a market that has already moved
-through its limit price was treated as a passive maker — filled at the stale limit and, under
-the L2 queue model, forced to wait behind the same-side queue (so it usually never filled). In
-reality such an order is a **taker**: it crosses the spread immediately and takes the opposing
-liquidity, bypassing the same-side queue entirely.
-
-The engine was corrected (commit `24a687f`): marketable-on-arrival orders now convert to taker
-fills at the touch, priced from references at or before the activation timestamp (no
-look-ahead), and verified against 6 unit tests and 5 integration invariants — including that
-latency-0 results are byte-identical to the pre-fix engine (the bug is scoped entirely to
-`latency > 0`).
-
-Re-running the honest at-touch LINK strategy on the corrected engine, over all 30 April days,
-with a realistic 4.5 bps taker fee applied to the now-correctly-identified crossing fills:
-
-> **−$7.93/day, negative on 30 of 30 days** (≈10–15% of fills are toxic latency-adverse takers,
-> with a 1-second markout of roughly −4 ticks).
-
-The old engine was *systematically too generous* to the honest strategy, by burying these
-latency-adverse crossings inside the queue model where they never resolved. Honest market
-making at this latency is not marginal — it is **reliably money-losing** once latency adverse
-selection and a realistic fee are priced. The inside-spread artifact, which never crosses the
-opposing quote and therefore never converts to a taker fill, is unaffected by this correction —
-which is itself diagnostic: the artifact and the honest regime are not just different
-magnitudes, they are different *mechanisms*.
-
-**This result is latency-specific, and is itself superseded by a faster, more realistic
-calibration (C42).** The −$7.93/day figure above was measured at exp 62's 100ms latency / 100ms
-requote. Re-running the identical corrected-engine, honest at-touch LINK strategy at 10ms
-latency / 50ms requote (C42, 30 April days) moves the *same* strategy from reliably money-losing
-to sitting almost exactly **at** the equilibrium derived in §2.4: **−$0.24/day, 46.7% of days
-positive**. This is the first real-data confirmation of C37's synthetic "speed restores latency
-tolerance" result (§2.5's curable-Layer-1 boundary). It does not overturn the honest/dishonest
-distinction established here — the −$7.93/day figure remains a valid demonstration that the
-latency-adverse-selection mechanism is real and economically large at retail-typical 100ms
-latencies — but it means −$7.93/day is not *the* honest-regime number; "≈$0/day, at the
-equilibrium" is, with the 100ms figure showing how far *below* the equilibrium an insufficiently
-fast maker falls. §2.7 takes this 10ms/50ms equilibrium point as its baseline and asks what a
-directional signal can do from there.
-
-### 2.4 Why: the zero-profit equilibrium (C33d–e)
-
-The synthetic experiments in §2.1 treat the mid-price volatility σ and the order-flow
-parameters (arrival rate `A`, fill-decay `κ`) as **independent** — and this decoupling is the
-*only* reason the synthetic market maker can be made arbitrarily profitable (dial the
-vol-to-flow ratio `σ²/(Aκ)` low). In a real order-driven market, σ and order flow are the same
-underlying process, and the coupling pins `κ` to `σ`:
-
-1. **Volatility is flow.** Over an interval `t` there are `N = A·t` trades, so
-   `σ_$² · t = N · σ_trade²`, giving `σ_trade = σ_$ / √A` — the volatility *per trade*, which
-   is the irreducible adverse-selection cost between quoting and being filled.
-2. **Market-maker zero-profit.** Free entry competes the half-spread down to `δ* ≈ σ_trade`.
-   The fill curve decays on scale `1/κ`; in equilibrium the quoted spread sits at that scale,
-   giving `κ_equilibrium ≈ √A / σ_$` — κ *falls* as σ rises.
-
-This was confirmed directly (`equilibrium_pinning.py`, with a fraction φ = 0.5 of takers
-trading in the direction of the next 5-second move, i.e. genuine adverse selection). Locating
-the breakeven half-spread `δ_be(σ)`:
-
-| σ_$ | fixed-κ 2-tick quoter PnL | δ_be (ticks) | δ_be / σ_$ | implied κ = 1/δ_be |
-|---|---|---|---|---|
-| 0.02 | +$118 | 2.0 (floored) | 100 | 0.500 |
-| 0.05 | −$540 | 3.9 | 77.5 | 0.258 |
-| 0.10 | −$1,436 | 7.6 | 76.0 | 0.132 |
-| 0.20 | −$2,843 | 15.2 | 75.9 | 0.066 |
-
-`δ_be / σ_$` is constant at ≈76 across a 10× range of σ — the breakeven half-spread is
-**linear in σ**, exactly the Wyart–Bouchaud "spread ≈ volatility per trade" law. The
-market-clearing `κ` therefore falls as `1/σ`. A fixed-κ quoter (the implicit assumption of
-§2.1's synthetic profitability) is in *disequilibrium*: profitable while σ is small,
-catastrophic once σ exceeds the level its spread was calibrated for. At the equilibrium κ, the
-spread premium exactly equals the adverse-selection cost: **E[honest profit] = 0**. Breakeven
-is the fixed point of the system, not an artifact of this dataset.
-
-**Unification with C30.** `δ* ≈ σ_$ / √A` assumes the quoted spread is free to move. On a
-**large-tick** asset such as LINK, the spread is floored at one tick and cannot tighten to
-`δ*` — so the market enforces the *same* zero-profit condition on the **queue-depth** axis
-instead: the touch queue grows until the marginal back-of-queue order breaks even. This is
-precisely the ~8,600 LINK observed in C20/C30. The Wyart–Bouchaud spread equilibrium
-(small-tick assets, e.g. BTC) and the C30 queue-priority rent (large-tick assets, e.g. LINK)
-are **the same zero-profit law**, enforced through whichever variable is free — spread width
-or queue position. Queue priority is the scarce, retail-inaccessible resource *precisely
-because* the spread lever is jammed on large-tick assets.
-
-### 2.5 The unifying frame: market making as a short straddle (C35)
-
-Tracking inventory `q(t)` as the *delta* of the book: a passive maker's ask is lifted as price
-rises (`q` falls) and bid is hit as price falls (`q` rises), so `dq/dS < 0` — a
-**linear-decreasing delta**, i.e. negative gamma. This is not an analogy; a resting two-sided
-quote literally *is* a written straddle (the bid a written put, the ask a written call;
-Copeland & Galai, 1983). Total P&L decomposes as
-
-```
-dPnL = δ · dN        (spread capture, per fill)                         ← THETA
-     + q · dS        (inventory mark-to-market)                          ← DELTA · dS
-```
-
-and, with `q ≈ −(φ/Δ)(S − S_ref)`, the inventory term integrates to
-`∫ q dS ≈ −½(φ/Δ)(ΔS)²` — a **gamma bleed** proportional to realised `(ΔS)²`, the exact
-functional form of `−½|Γ|(dS)²` in the Black–Scholes P&L identity `Θ = −½σ²S²Γ`. Every term
-maps:
-
-| Market making | Short straddle |
+| book | adverse-selection horizon |
 |---|---|
-| half-spread `δ` per fill | option premium / implied vol |
-| spread-capture rate `δ·dN/dt` | theta |
-| inventory `q` | delta |
-| fill intensity / tick `φ/Δ` | gamma |
-| `∫q dS ≈ −½(φ/Δ)(ΔS)²` | gamma bleed |
-| inventory skew (reservation shift) | delta hedging |
-| spread widens with σ (`δ* ∝ σ`, §2.4) | short vega |
+| Binance spot / perp (small relative tick) | ≤ 15-20 ms |
+| Binance / Hyperliquid LINK (large relative tick) | 75-87 ms |
+| Hyperliquid BTC | seconds |
+| Hyperliquid LINK | 3.4 s |
+| Hyperliquid tail (5 of 6 books) | > 5 s |
 
-**§2.4's zero-profit law is the Black–Scholes fair-pricing identity, transplanted into
-spread/queue variables.** A short straddle written at fair implied vol has E[P&L] = 0 by
-construction (theta exactly funds expected gamma bleed); the competitive market-making spread
-`δ* ≈ σ_trade` does the same.
+**The adverse-selection horizon is the venue's repricing clock.** A maker's edge survives for
+as long as it takes the rest of the market to notice the price is wrong, and that interval
+spans three orders of magnitude across the venues captured here. Chapters 7 and 8 are the same
+observation from the two sides of the trade: Chapter 7 profits by being the fast participant
+against a slow venue, and Chapter 8 asks whether being the slow venue's maker is itself paid.
+It is, by the amount the clock is slow.
 
-**Where the analogy breaks — and why this is the thesis.** A textbook short-gamma book assumes
-the underlying is exogenous (`E[dS]=0`, only the `(dS)²` bleed matters). A maker's fills are
-*selected*: the counterparty lifting the ask may be informed, so `E[dS | filled] ≠ 0` — an
-adverse **drift** layered on top of the symmetric bleed (Bagehot/Treynor, 1971; Glosten &
-Milgrom, 1985). The book therefore has two layers:
+**Why these are premia and not edges.** All three share five properties, and the list is what
+distinguishes a risk premium from an information edge:
 
-- **Layer 1 — symmetric short gamma**, present even with uninformed flow (the synthetic
-  −$920 in §2.1). *Curable* by charging enough spread (theta).
-- **Layer 2 — adverse-selection drift**, the informed-counterparty selection effect. This is
-  what makes the *competitive* spread adverse-selection-driven and the honest markout
-  negative even after the spread is collected.
+1. *Nothing is predicted.* The dislocation taker trades a measured deviation from consensus;
+   the thin-book maker quotes a spread; the carry book collects a contractual payment.
+2. *Each is unstable per unit and stable only in aggregate* — per-coin immediacy P&L is close
+   to a coin flip, per-window carry is basis-dominated — which is what compensation per unit of
+   idiosyncratic risk borne must look like.
+3. *Each is priced by the competition it faces, not by the skill applied.* The bridge control
+   is the cleanest evidence in the thesis: USUAL, the same coin and the same strategy, fell from
+   **+40 bps of notional in July to +0.39 bps in August** while the tail's widest spread
+   compressed from 56 bps to 14 bps. Nothing about the technique changed; the regime did.
+4. *Costs can invert the usual logic.* The carry book's 5.6 bps round trip amortises to
+   +0.68%/yr rebalanced monthly and to **20%/yr churned daily** — a position destroyed by being
+   traded.
+5. *The binding parameter is the one a benign sample cannot show.* Both carry windows had
+   maximum drawdown under 20 bps, so the measured basis volatility is the *calm* volatility, and
+   what ends such books is the liquidation cascade the capture does not contain.
 
-Queue priority is the Layer-2 defence with no options analog: being early in the queue means
-being filled by *uninformed* flow before the informed arrive. The foresight oracle (§2.6,
-C34) attacks Layer 2 from the other side — knowing the future `dS` lets you decline adverse
-fills. **Both convert the breakeven book to profit; both are retail-inaccessible.**
-
-#### C37 — Mapping the curable boundary of Layer 1 (exp 59, Parts E–F, June 2026)
-
-Because the synthetic high-volatility world (§2.1, σ = 0.20) is Layer-1-only, its short-gamma
-loss should be fully curable by pricing. Contribution 37 confirms this with a systematic lever
-sweep (`experiments/59_synthetic_engine_validation/`), with a sharp boundary:
-
-- **Widening alone** (2t → 6t) lifts −$514 → +$67, but is marginal and noisy (50% days
-  positive).
-- **Inventory skew** *hurts the mean* while crushing variance — a pure mean-for-variance
-  trade, since the cost here is a drift, not variance.
-- **Speed alone** (requote 0.5s → 0.05s) turns −$898 → +$169 (80% days positive) — but
-  **only at exactly zero latency**; at the same configuration, 20 ms latency is already
-  −$95/day.
-- **Widen + speed jointly**, however, is materially better than either alone: at 8 ticks and a
-  0.05 s requote, the high-volatility world is robustly profitable (+$188 to +$463/day, 60–90%
-  days positive) across the *entire* 0–100 ms latency range, only collapsing at 200 ms
-  (−$581/day).
-
-This sharpens, but does not overturn, the Layer-1/Layer-2 boundary: an 8-tick resting quote
-that is profitable against *uninformed* flow at realistic latency is, on a real venue, exactly
-the stale, easy-to-pick-off level that Layer-2 informed flow targets (the deep-reversion
-mechanism of C32). The result is useful precisely because it isolates *how good* the curable
-Layer-1 problem can be made — and shows that even its best-case corner does not survive contact
-with Layer 2.
-
-### 2.6 Closing the alternatives
-
-Three further hypotheses — each a candidate for an edge that does *not* require queue
-priority — were tested and each closes, for related but distinct reasons.
-
-**(a) Deep / patient liquidity provision (C32) — refuted.** If informed flow only crosses the
-narrow touch, perhaps resting deeper in the book and waiting avoids it. Tested via both a
-risk-gated "sit unless conditions change" policy and direct deep-limit reversion analysis: a
-price move large enough to *reach* a deep resting limit is, by that very fact, selectively
-informed and tends to *continue* rather than revert (adverse selection **by selection**).
-Reversion is shallow (8–50 ticks), vanishes by 50 ticks, and is strongly negative beyond, on
-both assets and with a censoring-robust (touch-based) re-measurement. The only positive zone
-remains the touch — i.e. the queue-rent regime of C30.
-
-**(b) The maker→taker pivot (C31) — a real signal, but fee-gated.** A taker crosses the spread
-for an instant fill and needs no queue priority, sidestepping the entire C30 artifact. The
-signal is genuinely real and queue-independent: top-decile momentum/OBI is positive on 100% of
-days tested (including volatile periods), survives a random-direction control (which floors at
-the spread, −1.7 ticks, ruling out look-ahead), and is essentially latency-insensitive (10 ms
-to 500 ms barely moves it — the edge plays out over seconds, not milliseconds). But the
-per-trade edge is capped at **≈1.1 bps** and *nothing* moves it: neither selectivity (top
-decile vs. top 0.1%), nor combining signals, nor a longer hold, nor — critically — XGBoost,
-which performs marginally *worse* than the simple OBI signal in both training and OOS regimes
-despite a genuinely higher directional AUC (0.75). This is a **predictability wall**, not a
-tooling gap. Net of a realistic perpetual taker fee (≈3.6 bps round trip), the edge is
-negative everywhere; net of spot taker fees (≈15 bps) it is hopeless.
-
-**(c) Cross-venue spot↔perpetual lead-lag (C36) — closed, no third door.** The one remaining
-untested hypothesis was that a *cross-venue* lead-lag could supply a **larger** signal — the
-only lever that could produce a bigger edge rather than just a cheaper cost, potentially
-escaping both the queue gate and the fee gate at once. Tested on LINK spot vs. perpetual,
-30 days. A naive 1-second-grid BBO cross-correlation reported "spot leads perp by ~1 second"
-(ρ = 0.31) — but the perpetual's top-of-book updates only once per second (an
-orderbook-snapshot artifact), so it *always* appears one second stale on a 1-second grid. The
-**Hayashi–Yoshida estimator** (Hayashi & Yoshida, 2005; lead–lag contrast: Hoffmann, Rosenbaum
-& Yoshida, 2013) on trade-vs-trade prices — asynchronous, event-time, immune to this staleness
-— overturns the naive reading entirely:
-
-| θ (perp shift) | −1.0 s | −0.5 s | **0.0 s** | +0.5 s | +1.0 s |
-|---|---|---|---|---|---|
-| ρ(θ) | 0.196 | 0.214 | **0.236 (peak)** | 0.151 | 0.132 |
-
-The cross-correlation peaks at **θ = 0** — the venues are contemporaneously integrated at the
-100 ms–2 s scale that matters for a ~100 ms-latency retail strategy. A weak, diffuse
-spot-leads tilt remains but is smeared across lags, not a sharp exploitable peak. Separately,
-the perpetual's spread is 1 tick (BTC-like, ten times tighter than LINK spot) — so a passive
-quote on the perpetual is forced outside its spread into the same honest/losing regime as
-BTC (C24/C30); the perpetual offers **no inside-spread artifact** to substitute for the spot
-one. The only surviving cross-venue construction — warehousing a position on one venue and
-hedging directional continuation on the other — is a capital/infrastructure play (a
-variance-risk-premium for *bearing risk*, C35's "practical corollary"), not a retail
-microstructure edge, and requires two-venue infrastructure regardless. **This was the last
-untested escape, and it closes negative.**
-
-### 2.7 The apparent exception and its retraction: the directional-skew episode (C39–C51, C54)
-
-Sections 2.1–2.6 establish the equilibrium for a **signal-blind** maker. C39–C51 asked
-whether a directionally-informative signal changes the picture — and for several months of
-this project the answer appeared to be an emphatic yes.
-
-**The apparent result.** `stats.obi`, the L1 order-book imbalance, is positive-IC for
-near-term price direction (IC ≈ 0.20–0.36). Shifting both quotes and the reservation price by
-`spot_alpha · obi · tick` on LINK, at the 10ms/50ms calibration that §2.3 showed sits at the
-equilibrium, appeared to break it decisively (30 April-2026 days, real L2, 4.5 bps taker fee):
-
-| variant | mean PnL/day | days positive | fills/day |
-|---|---|---|---|
-| baseline (signal-blind) | −$0.24 | 46.7% | 3,232 |
-| `spot_alpha = 1` (C42) | +$22.32 | 100% | 1,583 |
-| `spot_alpha = 4` (C44) | +$56.00 | 100% | 2,245 |
-
-The result survived every robustness axis it was tested on: flat across `queue_fraction ∈
-[0.1, 0.7]` (C44), monotone per-fill markout improvement with a clean adverse-selection
-ordering 54–63% → 31–34% → ~10% for alpha = 0/1/4 (C44-E), symmetric-alpha optimality (C48),
-out-of-sample confirmation on Jun–Jul 2025 (+$27.04/day at alpha=1, C45) and on 182 fresh
-days Oct 2025 – Mar 2026 (+$80.15/day, 99.5% days positive, C51), and a fee-aware RL
-variant (C53). The identified mechanism (C46) was **OBI-conditional inside-spread
-placement**: 63.5% of alpha=4 fills occurred at new-NBBO prices between LINK's best bid and
-ask, with +3.40-tick markouts and near-zero queue ahead of them. The same mechanism failed
-on BTC-PERP (C43: baseline −$182/day, skew −$233/day) — apparently confirming §2.4's
-prediction that fill-quality selection works only where the queue axis, not the spread axis,
-is the equilibrium's free variable.
-
-**The retraction (C54).** The first day of a live Binance L2 capture — built to validate the
-backtest's proxy L2 tracker, not to hunt for this error — showed LINK trading at a one-tick
-spread where the historical dataset showed ten. Grid analysis resolved the discrepancy:
-100.00% of quotes, trades, and L2 price levels in every historical LINK window (Jun 2025 –
-Apr 2026) sit on a **0.01 grid**, with consecutive book levels spaced exactly 0.01 apart and
-the spread pinned at exactly ten milli-ticks. LINK's exchange tick size throughout the data
-was **0.01, not the 0.001 every experiment assumed** (Binance reduced it to 0.001 only after
-April 2026; the perpetual's data, genuinely on a 0.001 grid, is the internal control that
-exonerates the data vendor). There was never a valid price inside LINK's spread. Every
-inside-spread placement in C42–C51 — the entire mechanism — was an order the exchange would
-have rejected.
-
-Rerunning the core configuration at the true tick (exp 85: same 30 days, same real-L2
-engine, `TICK = 0.01`):
-
-| alpha | mean PnL/day | days+ | fills/day | at the phantom tick |
-|---|---|---|---|---|
-| 0 | −$0.24 | 47% | 3,232 | −$0.24 (byte-identical) |
-| 1 | −$1.07 | 40% | 838 | +$22.32 |
-| 4 | **+$0.36** (t ≈ 0.3) | 63% | **56** | +$56.00 |
-
-At the true tick the OBI shift either rounds back to the touch or crosses the book and is
-post-only rejected: alpha degenerates into a quote-suppression rule, fills collapse 40×, and
-the PnL is statistically zero — the equilibrium. This is exactly the degeneration C47 had
-already documented on the (correctly-specified) one-tick LINK perpetual, now reproduced on
-spot. The unchanged alpha=0 row confirms the mis-specification never touched the at-touch
-results on which §§2.2–2.4 rest.
-
-**What the episode establishes.** First, the substantive null: on the books tested, a
-genuinely retail-accessible directional signal, executed through exchange-feasible passive
-placements, does **not** break the zero-profit equilibrium — it merely chooses which fills
-not to take. Second, a diagnosis: the apparent edge was a third guise of §2.2's
-inside-spread artifact, manufactured this time not by the fill model but by the price grid
-itself — and its signatures were present all along. The "step-function" fill curve (C15/C20)
-and "hollow touch" (C21) of the early LINK chapters are precisely what a 0.01-grid book looks
-like when measured at 0.001 resolution; C46's inside-spread fills carried zero queue because
-no real order *can* rest at an invalid price; C44's queue-fraction cliff at zero marked the
-artifact boundary exactly. Third, a validation of the framework: §2.4's equilibrium surface
-predicted how a true one-tick LINK must behave, and the corrected rerun lands precisely on
-it. The mis-specification fooled the calibration; it never fooled the theory.
-
-Reproduce: `experiments/85_true_tick_rerun/`; the retracted arc is preserved with correction
-banners in `thesis_contributions.md` (C42–C53) for the audit trail.
+The zero-profit law is therefore not violated at its boundary. It is **parameterised** there:
+the majors sit at zero because competition has arrived and compressed the spread to its cost,
+the tail sits above zero by the amount competition has not yet removed, and applying the same
+law to the same book two months later predicts the decay the bridge control measures.
 
 ---
 
-## 3. Synthesis: why this is necessary, not contingent
+## 4. The Answers to the Research Questions
 
-Put together, §2.1–2.6 form a closed loop rather than a list of negative results:
+**RQ1 — Implementation.** Yes. A-S, GLFT, a two-component shifted GLFT, OFI and momentum
+overlays, regime filters and tabular-Q/DQN agents were implemented and calibrated from the data
+rather than from equity-literature defaults, and the calibration is where the first substantive
+findings are: BTC's fill curve is two-component rather than exponential and LINK's is a step
+function, so the exponential premise both models share is violated on every book tested
+(Contributions 6, 25-28); the γ implied by crypto's much smaller σ² is orders of magnitude from
+the literature's (Contribution 26); and GLFT's textbook spread lands inside BTC's momentum
+plateau whatever the calibration (Contribution 27). The backtests are profitable on LINK and
+not on BTC.
 
-1. The machinery is shown sound by reproducing closed-form profitability where it must exist
-   (§2.1).
-2. Every observed profit in the realistic backtests is shown to come from exactly one source —
-   an unmodelled queue-priority assumption (§2.2) — and correcting a second, related
-   assumption (latency-adverse fills, §2.3) reveals how sharply the honest loss depends on
-   speed: deeply negative (−$7.93/day) at 100ms latency, sitting almost exactly *at* the §2.4
-   equilibrium (−$0.24/day) at 10ms/50ms.
-3. The honest loss is shown to be the *equilibrium*, not a calibration failure: the same
-   coupling of volatility and order flow that determines the fair spread also determines the
-   fair queue-depth on assets where the spread cannot move (§2.4), and both are special cases
-   of a single fair-pricing identity for a short-gamma position (§2.5).
-4. Every structurally distinct attempt to step outside this equilibrium — deeper resting
-   orders, instant taker fills, a second venue — is shown to re-encounter one of the same two
-   gates (queue priority or information/fees) in a new guise (§2.6).
-5. §1–4 describe a *signal-blind* maker. §2.7 tested the last remaining lever — a
-   directionally-informative signal — and its apparently decisive success (C42–C51, +$22 to
-   +$80/day across four windows) was retracted when live-feed validation revealed the
-   placements it required did not exist on the exchange's price grid (C54). Rerun at the true
-   tick, the signal earns the equilibrium (+$0.36/day, t ≈ 0.3). The loop closes with **no
-   exception**: on every book tested, every implementable strategy — signal-blind or
-   signal-aware, classical or RL — earns at most the zero-profit equilibrium.
+**RQ2 — Mechanism.** The profit is queue rent, not spread capture. It is confined to the quote
+regimes where the fill model grants priority it has not earned, and it disappears in the one
+regime where a fill physically requires the market to trade through the level — where the
+markout also inverts from positive to negative. Contribution 54 then removes the mechanism
+entirely on tick-grid grounds. Four further errors compound in the same direction, and
+reinforcement learning leans into the artefact harder than the hand-tuned baselines do, which
+is the clearest evidence that what was being optimised was the simulation rather than the
+market.
 
-The two-gate meta-hypothesis — **every accessible "edge" in this market is gated by queue
-priority (a maker problem) or by fee tier / information (a taker problem), and nothing tested
-escapes both** — therefore stands not as an empirical summary of one dataset, but as a
-consequence of how competitive liquidity provision prices risk.
+**RQ3 — The competitive margin.** The honest result is zero as an enforced equilibrium, not by
+accident of sample: it is derived from a zero-profit condition, validated against synthetic
+ground truth, and shown to hold on whichever of the two available axes is free. No class of
+information opens it. Speed saturates before co-location; observable state ranks toxicity
+without producing a tradeable pocket even at zero fees; counterparty identity — the strongest
+sorting instrument that can exist, available only because Hyperliquid discloses wallets —
+separates flow at the 100th percentile against a shuffle placebo and finds a benign pocket of
++0.0 ± 0.3 bps; a price-process regime filter's entire apparent improvement is reproduced by a
+matched-frequency placebo; and the sharpest causal signal in the project nets +$0.13/day. The
+gate is not the quality of the information but the fact that its predictable content is already
+in the price at which a maker is permitted to trade.
 
-**The §2.7 episode strengthens rather than qualifies this.** The directional-skew arc was, in
-effect, a year-long adversarial attack on the meta-hypothesis from inside the project — it
-survived robustness sweeps, out-of-sample windows, markout analysis, and an RL variant, and
-fell only to a validation channel *outside* the backtest entirely (the venue's live feed).
-Two lessons generalise. First, the framework predicted the corrected outcome before it was
-measured: a true one-tick LINK must behave like the one-tick perpetual (C47), and it does
-(exp 85). Second, the artifact taxonomy of §2.2 gains a third member: profit can be
-manufactured by the fill model (queue priority, C30), by the execution model
-(marketable-on-arrival, §2.3), or by the *price grid itself* (C54) — and all three
-present identically, as inside-spread placements that real markets would not admit.
-
----
-
-## 4. Methodological contribution
-
-Independent of the substantive (negative) result, this thesis contributes a **diagnostic that
-generalises to any limit-order-book backtest, classical or RL**: decompose realised
-profitability by the *quote regime relative to the natural spread, under the fill model's
-queue-priority assumption*. Applied here, this diagnostic:
-
-- explains a +5%/+24% Sharpe RL "outperformance" over a calibrated classical baseline as two
-  measurements of the *same* artifact at different intensities, not as evidence of a learned
-  edge (C30);
-- predicts, from the natural spread alone, *which assets can produce the artifact* (BTC
-  cannot; LINK can) — confirmed by both classical and RL results on both assets (C30);
-- localises a latent engine bug (marketable-on-arrival mis-pricing) by identifying exactly
-  which fills should, but did not, convert to taker fills (exp 62);
-- separates "no edge exists" from "no edge is *causally accessible*" via the foresight-oracle
-  construction (C34), turning a single negative number into two numbers that bound the size of
-  the information/priority gate;
-- caught a dataset-level mis-specification that had survived a year of robustness testing
-  (C54), by adding a second diagnostic: **validate the exchange price grid against the venue's
-  live feed and exchange filters before any tick-denominated calibration.** The signature is
-  unmistakable once looked for — a spread pinned at a constant "N ticks" with every price on a
-  coarser sub-grid — and the failure mode it prevents is severe: a backtest quoting on a finer
-  grid than the exchange's manufactures phantom room inside the spread, where placements enjoy
-  zero queue (no real order can rest at an invalid price) and therefore reproduce the
-  queue-priority artifact through a channel no fill-model correction can see.
-
-A backtest that does not report this decomposition cannot distinguish a genuine edge from a
-queue-priority rent — a distinction this thesis shows to be the difference between
-+$94/day and −$7.93/day on the *same* strategy and data, and (via C54) between +$56.00/day
-and +$0.36/day on the same strategy, data, *and* fill model.
+**RQ4 — The boundary.** Yes, a positive return is available without professional
+infrastructure, and it comes from structural position rather than prediction. The three
+survivors are compensation for bearing a basis, for warehousing inventory where few others
+will, and for being the fast side of a slow venue — each bounded by capacity, competition, or an
+unmeasured tail. The corollary is the thesis's answer to its own opening question: the
+A-S/GLFT apparatus is not what makes any of them work, and in Chapter 4 it was measurably a
+liability.
 
 ---
 
-## 5. Limitations and scope
+## 5. What Makes This More Than One Dataset's Result
 
-- **Fees.** Most cells assume zero fees, making every negative result an *upper bound* on
-  retail economics; the corrected-engine LINK result (§2.3) and the taker-pivot fee comparison
-  (§2.6b) additionally apply realistic fees and remain negative.
-- **Latency class.** Early chapters' "retail" claims assumed ~100 ms latency; §2.7 (C39–45)
-  extends the honest-regime tests to 10 ms latency / 50 ms requote, where the directional-skew
-  result lives. A standard cloud instance in the same AWS region as Binance's matching engine
-  (ap-northeast-1, Tokyo) achieves ~10–15 ms round-trip without co-location infrastructure,
-  placing 10 ms within reach of a technically capable retail participant. True sub-millisecond
-  co-location remains explicitly out of scope and is the regime to which the C36 cross-venue
-  caveat is *deferred*, not refuted.
-- **Maker rebates.** Not modelled directly, but addressed in C30: rebates accrue only on
-  fills, fills require queue priority, so a rebate is one more component of the same
-  queue-priority rent rather than an escape from it.
-- **Assets and period.** Binance spot BTC/USDT and LINK/USDT, May 2025 – April 2026, plus LINK
-  perpetuals (April 2026) for C36. The BTC cross-asset symmetry check for C36 is blocked by a
-  data-integrity issue in the BTC perpetual pull (perpetual trades ≈27% below spot at
-  identical timestamps) and remains an open confirmatory item — it would strengthen, not alter,
-  the verdict already established on LINK.
-- **Order size.** Throughout, order sizes are assumed small relative to L1 depth (a price
-  taker for sizing purposes), consistent with the retail framing.
-- **No genuinely wide-spread book in the dataset.** After C54's reclassification of LINK,
-  every instrument tested — BTC spot, LINK spot, both perpetuals — has a spread of one (or
-  nearly one) true tick. §2.4's prediction that a maker with a directional signal could
-  extract fill-quality rent *where real room inside the spread exists* is therefore
-  **untested, not refuted**: the dataset contains no book on which the test can be run. The
-  directional-skew episode (§2.7) says nothing against the hypothesis — it was never actually
-  run on a wide book. Finding a liquid asset whose spread is genuinely several true ticks is
-  the outstanding empirical gap; futures-market evidence (Kurth et al., 2026, on the
-  volatility-normalised tick size as the survival variable for impact-loop strategies)
-  suggests such books behave qualitatively differently on both the maker and taker sides.
+Two features of the evidence generalise beyond the instruments and the period.
+
+**The recurring configuration.** The same shape appeared seven times, on different signals,
+venues and horizons: a genuine, placebo-validated effect priced at or just under the cost of
+acting on it. Short-horizon momentum is real and worth +0.8 to +1.9 bps against a 2.8 bps toll.
+The perpetual lead is real, out-of-sample robust, and worth +1.72 bps against a 2-10 bps wall.
+Institutional meta-order drift — the best-documented flow effect in the literature — is priced
+to within **0.06 bps** of the wall. Order-book imbalance, maker withdrawal, wallet-level
+toxicity and intraday cointegration between correlated majors all land the same way; the last
+loses 6-12 bps per trade because a 45-to-140-minute reversion does not cover an 8.6 bps round
+trip, and five of ten pairs passing a significance test is itself a finding about
+multiple testing rather than about cointegration. A single effect priced at its access cost is
+an observation. Seven, found by looking for reasons to reject them, is a description of how the
+market allocates the returns to information.
+
+**One axis, measured twice.** The organising variable of Part I is relative tick size — whether
+the equilibrium is enforced on the spread or on the queue — and the organising variable of Part
+II is the venue's repricing clock. These are the same quantity seen at two resolutions: how
+finely the price can move, and how quickly it does. Both were derived here from the data rather
+than imported, and both make predictions that were subsequently tested: the tick axis predicted
+that a true one-tick LINK must behave like the one-tick perpetual, and it does; the clock axis
+predicted that positive maker returns should be found by conditioning on competition rather than
+on strategy, and Chapter 8's screen found them that way.
 
 ---
 
-## 6. Suggested further work
+## 6. Methodological Contribution
 
-- **The wide-book test.** Find a liquid asset whose spread is genuinely several *true* ticks
-  (validated against the venue's live feed and exchange filters per §4's diagnostic, not
-  against vendor data alone) and run the directional-skew grid there with real L2 depth. This
-  is the §2.4 fill-quality-selection hypothesis' first actual test — the LINK arc, per C54,
-  never ran it. The tick-size screen should precede the data purchase this time.
-- **Live-capture program (in progress).** A Binance L2 collector (depth diffs + trades +
-  bookTicker, four instruments) and offline reconstruction pipeline are running as of July
-  2026. Beyond the tick validation that produced C54, the captured data supports: (i)
-  proxy-vs-real L2 comparison on identical days, retro-calibrating every quote-proxy result;
-  (ii) `queue_fraction` calibration from diff-depth (replacing the 0.5 assumption with a
-  measured distribution); (iii) inside-spread level lifetimes — how long a newly-created
-  price level rests alone — the empirical "dealer window" of the theory chapter's §7.
-- **BTC re-run of C36** — completed on captured data (C55(4), exp 88): the Hayashi–Yoshida
-  curve on the first captured day peaks at θ = −0.1s (ρ = 0.145) with near-symmetric mass,
-  confirming contemporaneous spot↔perp integration on BTC as on LINK; replication over the
-  capture week remains.
-- **A crypto replication of the volatility-normalised-tick result** (Kurth et al., 2026):
-  their futures evidence puts trend/impact-loop survival on the same tick-normalised axis
-  this thesis derived independently for maker rents (§2.4). Running their signal-speed ×
-  tick-tier grid on crypto (BTC vs a wide-book asset, horizons from seconds to days) would
-  connect the two literatures and directly inform the taker-side momentum design flagged in
-  C31.
-- **Live order-placement validation**: the queue-position sensitivity in C30 was simulated
-  via an L2 depth model; a small live paper-trading study would directly measure realised
-  queue position and validate the ~$1/day signal-blind retail ceiling.
-- **The capital/hedge construction** flagged in C35/C36 (warehouse + cross-venue hedge) is a
-  distinct research question — a variance-risk-premium harvesting strategy — outside this
-  thesis's retail-microstructure scope but a natural follow-on.
+Independent of the substantive result, the thesis contributes a set of diagnostics and a
+discipline, each traceable to a specific failure it made and then caught.
+
+**Two diagnostics that generalise to any limit-order-book backtest.** First, *decompose realised
+profitability by quote regime relative to the natural spread, under the fill model's
+queue-priority assumption.* Applied here, this single decomposition explains a +5% RL
+"outperformance" as two measurements of the same artefact at different intensities, predicts
+from the natural spread alone which assets can produce the artefact at all, and separates "no
+edge exists" from "no edge is causally accessible" via the foresight-oracle construction.
+Second, *validate the exchange price grid against the venue's live feed and filters before any
+tick-denominated calibration.* The signature is unmistakable once looked for — a spread pinned
+at a constant number of ticks, with every price on a coarser sub-grid — and the failure it
+prevents is severe, because a backtest quoting on a finer grid than the exchange's manufactures
+phantom room inside the spread where no real order can rest, reproducing the queue-priority
+artefact through a channel no fill-model correction can see. It cost this project a year of
+apparently robust results to learn.
+
+**The honest-accounting discipline** (Chapter 3 §7): ten rules — exchange-valid prices, real
+queue clearing, taker-on-arrival treatment, round-trip pricing at executable touches rather
+than mark-to-mid, inventory-aware simulation, placebo and anti-signal controls, out-of-sample
+and pre-registered replication, depth-capped capacity, common-clock validation, and explicit
+fee tiers. Each rule exists because its absence produced a false positive here.
+
+**The evidence that the discipline has teeth is that it removed the author's own results.** The
+directional-skew arc survived robustness sweeps, a 182-day fresh out-of-sample window at +$80/day,
+markout analysis and an RL variant, and fell to a validation channel outside the backtest
+entirely (Contribution 54). The defended maker's +1.01 bps per-fill mark-to-mid reversed to
+negative under an inventory-aware round trip (Contribution 64). A depth-conditioned anchor rule
+that improved in sample failed out of sample and is reported as a negative. Contribution 36
+closed the cross-venue question on contemporaneous integration, and Contribution 56 showed that
+θ = 0 was a resolution artefact of a 100 ms grid — the perpetual leads by 40-100 ms — which
+reopened the question Chapter 7 eventually answers. Four further errors of my own analysis are
+documented in the log rather than silently corrected: a sign inversion in a placebo comparison,
+a one-time cost annualised as recurring, a pooled-series composition artefact that manufactured
+autocorrelation where per-instrument series show none, and a forward-versus-spot repricing error
+worth 5.21% until Black-76 was inverted on the venue's own marks.
+
+**A negative result of independent interest.** Options market making on Deribit fails even at a
+hypothetical zero maker fee, so no fee schedule rescues it. Reaching that conclusion required
+two corrections worth recording as method: the venue's REST trade history silently truncates to
+roughly a quarter of the tape, keeping the most recent slice, which is a biased subsample severe
+enough to flip a sign; and pooling "at-the-money implied volatility" across strikes and expiries
+manufactures large negative autocorrelation that vanishes per instrument.
 
 ---
 
-*Full reference list: see `thesis_contributions.md`, References section.*
+## 7. Limitations and Scope
+
+- **Latency class.** Results are reported at 10 ms order latency, which a standard cloud
+  instance in Binance's matching-engine region achieves without co-location infrastructure. True
+  sub-millisecond co-location is out of scope as an *infrastructure* claim, though Contribution
+  60's collapse to the 1 ms limit is direct evidence that it does not change the maker verdict.
+- **Fees.** Most Part I cells assume zero fees, making the negative results upper bounds. Part
+  II reports every tier explicitly, and Chapter 7's alpha exists at one tier and not another.
+- **Maker rebates.** Not modelled directly. Rebates accrue only on fills, fills require queue
+  priority, so a rebate is one more component of the same queue rent rather than an escape from
+  it.
+- **Assets, venues and period.** Binance spot BTC/USDT and LINK/USDT plus LINK perpetuals (May
+  2025 - April 2026, with 182 further days for out-of-sample work), and a four-venue live capture
+  (Binance, Coinbase, Hyperliquid, Deribit) from July to September 2026. Crypto only, and a
+  period with no market-wide stress event.
+- **Part II rests on short windows.** Chapter 7's alpha is two days and two leaders; Chapter 8's
+  premium is five days plus a four-day replication; Chapter 9's carry is two windows. These are
+  adequate to establish existence and to price the bounds, and inadequate to estimate a
+  long-run Sharpe.
+- **The cascade tail is unmeasured.** Both carry windows had drawdown under 20 bps. A
+  negative-skew premium's information is concentrated in the rare loss the sample does not
+  contain, so the +8.4%/yr and Sharpe 1.26 on BTC are *conditional on no cascade*, and the
+  unconditional figures are unknown and lower. The same caveat applies to the thin-book premium,
+  where the frozen tape cannot show a maker being run over during a volume explosion — which is
+  exactly when the July-to-August decay of the bridge control originated.
+- **Capacity.** Chapter 7's touch holds $1.4k to $8k, and Chapter 8's books trade a few million
+  a day. These are real strategies at a scale that will not support a fund, and the small scale
+  is causally connected to their existence.
+- **Frozen-tape simulation.** No result models the market's reaction to our own orders. This
+  biases *toward* the strategy, and every positive result should be read accordingly.
+- **No genuinely wide centralised book.** After Contribution 54, every centralised instrument
+  tested has a spread of one true tick or nearly so. Chapter 2 §8's dealer-window prediction is
+  confirmed on Hyperliquid's tail, but Hyperliquid is a decentralised venue with a different
+  participant mix and fee structure; whether a wide-tick *centralised* book behaves the same way
+  is untested.
+- **Options.** The Deribit conclusion rests on a capture of limited duration and on a zero-fee
+  upper bound, which is the right shape for a negative result but not for any positive claim
+  about the asset class.
+
+---
+
+## 8. Suggested Further Work
+
+- **Measure the cascade tail.** This is the single most valuable missing quantity, and it is a
+  data-collection problem rather than an analytical one: run the Chapter 9 book's reconstruction
+  through a stressed window and size the carry position against the tail rather than the
+  observed volatility. The collector already captures what is required; what is needed is an
+  episode.
+- **Extend Part II's windows.** Each of the three survivors was established on days, not months.
+  The pre-registration apparatus of Chapter 8 should be applied to Chapters 7 and 9 as well —
+  register the prediction, then capture the sample — which converts three existence proofs into
+  three estimates.
+- **The wide *centralised* book test.** Find a liquid centralised instrument whose spread is
+  genuinely several true ticks, validated against the venue's live feed and filters rather than
+  vendor data, and run the signal-conditioned inside-spread grid there with real L2 depth. This
+  is the one prediction of Chapter 2 that remains untested on the venue class it was made about,
+  and the tick screen should precede the data purchase.
+- **Model the reaction to our own orders.** Every result here is frozen-tape. A queue-reactive
+  simulator — even a crude one, in which the far side's makers withdraw on the same signal the
+  strategy acts on — would put an upper bound on how much of Part II's edge survives being
+  traded, and Chapter 7's disappearing touch is direct evidence that this channel is active.
+- **Push the venue-clock law past three orders of magnitude.** The adverse-selection horizon
+  spans 15 ms to beyond five seconds across the venues captured here. Testing it on venue classes
+  not represented — other decentralised exchanges, regional centralised venues, tokenised
+  equities — would establish whether the clock is the right state variable in general or a
+  property of this particular set of four.
+- **Measure queue position live.** The queue-position sensitivity underlying Contribution 30 is
+  simulated from an L2 depth model. A small live order-placement study would measure realised
+  queue position directly and validate the roughly $1/day signal-blind ceiling that the whole of
+  Part I rests on.
+- **The variance-risk-premium construction** flagged in Contribution 35 — warehouse inventory
+  against a cross-venue hedge, and harvest the short-gamma premium deliberately rather than
+  incidentally — is a distinct research question outside this thesis's scope and a natural
+  follow-on to Chapter 8.
+
+---
+
+The project's arc is worth stating plainly, because it is the strongest thing it has to offer a
+reader who wants to do similar work. It began by asking whether a well-known model is
+profitable, found that it appeared to be, and spent most of its length discovering that every
+apparent profit was something the simulation had given away. The zero it arrived at is not a
+failure to find an edge; it is a measurement of how completely competition prices the
+information a single participant can compute. What survived the search was found only after
+that was accepted — by looking for slow clocks, thin books and contractual cash flows instead of
+for better forecasts. The models this thesis set out to implement turned out to answer a
+question about a dealer market, and the market answered a different one.
+
+---
+
+*Full contribution log and reference list: `thesis_contributions.md`.*

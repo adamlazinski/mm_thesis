@@ -31,7 +31,7 @@ free to move and is set by competition at close to its minimum); LINK is a **lar
 asset** in the sense of Dayri & Rosenbaum (2015): the spread is pinned at its floor and
 price dynamics are dominated by queue formation and depletion rather than continuous
 repricing. Chapter 5 (Contribution 33) shows this single axis — spread-free vs. spread-floored
-— is what determines *how* the zero-profit equilibrium of Chapter 2 §6 is enforced on each
+— is what determines *how* the zero-profit equilibrium of Chapter 2 §7 is enforced on each
 asset, which is why both assets are carried through the whole thesis rather than one being
 used as a robustness check on the other.
 
@@ -259,6 +259,18 @@ vendor files.
 | Coinbase Exchange spot | LINK-USD, BTC-USD | full L2 (snapshot + `l2update`), matches |
 | Coinbase International perp | BTC-PERP, LINK-PERP | top-of-book + trades (L2 requires auth) |
 | Hyperliquid perp | BTC, ETH, SOL, LINK, HYPE + a screened tail | trades **with both counterparty wallet addresses**, BBO, 20-level book, funding and open interest |
+
+**One consequence for reading Part II: LINK's tick changed between the two datasets.** The
+purchased history of §1 sits entirely on the $0.01 grid, at a price near $9 — a relative tick
+of about 11 bps. Binance reduced LINK's tick to $0.001 between April and July 2026 as the price
+fell toward $8, so the captured LINK is on the finer grid, at about 1.25 bps per tick. Both
+figures are correct for their own period, and the apparent conflict between a "$0.01 tick" in
+this chapter and a "0.001, ~1.25 bps/tick" label in Chapter 6's markout tables is this change
+and nothing else. The classification is unaffected: at 1.25 bps against BTC's 0.0006 bps per
+tick, captured LINK remains a large-relative-tick book by more than three orders of magnitude,
+and it still quotes a one-tick spread. What the change does mean is that no result may be
+carried across the boundary in tick units — every tick-denominated quantity in Part II is
+recomputed on the captured grid rather than inherited from Part I.
 
 **Raw-first design.** Every websocket message is appended verbatim, with a local receive
 timestamp, to hourly-rotated gzipped JSONL; nothing is interpreted at capture time, so a

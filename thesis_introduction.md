@@ -200,8 +200,9 @@ equilibrium itself, and infrastructure is one of several ways to sit outside it.
 
 ## 5. Summary of Contributions
 
-The thesis makes 67 numbered contributions, logged in full in `thesis_contributions.md`, in seven
-groups.
+The thesis makes 67 numbered contributions, logged in full in `thesis_contributions.md`. The
+seven groups below summarise them by theme rather than enumerate them; the log is the exhaustive
+record.
 
 **Empirical microstructure characterisation** (C1, C5, C6, C12, C13, C15, C25–28, C58). BTC
 return autocorrelation of about 0.15–0.18 at the 300 ms–1 s horizon decaying to zero by 20 s; a

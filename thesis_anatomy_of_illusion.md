@@ -22,7 +22,8 @@ simulation. A model that marks positions to the mid credits the quoter with a pr
 counterparty offered.
 
 This chapter dissects the errors that produced Chapter 4's results. Three are established
-here on Part I's material; two more are established in Part II and are stated here with
+here on the purchased data; two more are established later, on the captured data, and are
+stated here with
 forward references, because the catalogue is more useful whole than split. Section 7 then
 asks what remains once all five are removed, and §8 gives the theoretical account of why the
 remainder is what it is.
@@ -153,7 +154,7 @@ fee assumption conceals a discontinuity in the result. The corresponding rule is
 P&L across the realistic fee schedule rather than at one point on it, which is why every
 table in Part II carries multiple tiers.
 
-## 5. Two Further Mirages, Established in Part II
+## 5. Two Further Mirages, Established on the Captured Data
 
 For completeness, the remaining two entries in the catalogue, both demonstrated later on the
 live multi-venue capture:
@@ -190,8 +191,9 @@ $0.60 and $19.76 is not a modelling failure; it is information. There is real di
 fill quality, and a quoter that could identify in advance which fills to accept would earn a
 meaningful amount. No causal policy over the observable state can do so, which is precisely
 what the overfitting experiment of §2 demonstrated by exhaustion. The edge exists and is
-information-gated, and Part II spends four chapters establishing that the gate does not open
-for speed, for state, for counterparty identity or for regime.
+information-gated, and Chapter 6 applies four independent instruments to that gate: it opens for
+none of them — not for speed, not for observable state, not for counterparty identity, not for
+regime.
 
 Contribution 32 supplies the complementary result on the other side of the book: reversion
 after a fill is shallow and queue-gated, so deep liquidity provision is not a diversified
@@ -249,6 +251,6 @@ where the spread is free and on the queue axis where it is not.
 
 What remains is not nothing. The foresight oracle values perfect fill selection at $20–30/day
 on the same book, so the dispersion is real and the constraint is informational. The rest of
-this thesis is an attempt to open that gate: Part II tests speed, observable state,
-counterparty identity and price-process regime against it, and then asks what — if anything —
+this thesis is an attempt to open that gate: Chapter 6 tests speed, observable state,
+counterparty identity and price-process regime against it, and Part II asks what — if anything —
 is left once all four have failed.

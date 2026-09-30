@@ -60,7 +60,7 @@ the position is long only the ask is quoted and when short only the bid, so the 
 sells into local highs and buys from local lows, turning over roughly 1,800 inventory sign
 changes per day. The positive markout is the striking number: fills are followed by
 *favourable* price movement, which is the opposite of what a market maker normally
-experiences and the opposite of what Chapter 2 §6 predicts.
+experiences and the opposite of what Chapter 2 §7 predicts.
 
 That anomaly is worth holding onto. A positive average markout means the strategy is being
 filled by counterparties who are, on average, wrong. Chapter 5 explains how a backtest
