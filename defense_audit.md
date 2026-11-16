@@ -81,7 +81,7 @@ analysis also reports longer horizons, so the conclusion is not horizon-cherry-p
 `metrics["sharpe"] = mean/std × sqrt(len(rets))` over per-100-event PnL increments was a
 **t-statistic of per-step PnL**, not an annualized Sharpe ratio. Fixed 2026-06-10: renamed
 `pnl_tstat` (legacy `sharpe` key kept as deprecated alias), summary label corrected,
-deprecation note added at the top of thesis_contributions.md. Deeper point, agreed with the
+deprecation note added at the top of thesis/contributions.md. Deeper point, agreed with the
 author: risk-adjusted ratios are not meaningful here at all — the verdict is that the
 honest-regime mean is ≈0/negative, and a ratio of a near-zero mean to its own noise carries
 no information. Thesis tables report mean ± std daily PnL, win rate, and markout.
@@ -221,7 +221,7 @@ prerequisite), but a sentence acknowledging it closes the hole.
    conclusion confirmed, not softened — deep adversity survives the censoring fix.
 2. ~~**Rename/recompute the Sharpe metric**~~ **DONE**: engine metric renamed `pnl_tstat`
    (`sharpe` kept as deprecated alias for old _metrics.json readers); aggregate label marked
-   unannualized; deprecation note added at the top of thesis_contributions.md instructing
+   unannualized; deprecation note added at the top of thesis/contributions.md instructing
    thesis tables to use mean ± std daily PnL / win rate / markout instead. Rationale: with a
    ≈0/negative honest-regime mean, a risk-adjusted ratio is a ratio of noise to noise.
 3. ~~**Trailing decile threshold in exp 55**~~ **DONE**: `btc_taker_latency.py` now uses

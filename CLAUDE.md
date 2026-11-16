@@ -72,7 +72,12 @@ master2/
 │   └── survival_analysis.ipynb     # Survival/hazard estimation notebook
 │
 ├── search/                         # Random search CSV outputs
-├── thesis_contributions.md         # Running log of thesis contributions
+├── thesis/                         # The thesis itself
+│   ├── 01_introduction.md ...      # Ten chapters, in reading order
+│   ├── contributions.md            # Running log of thesis contributions (C1-C67)
+│   ├── hypotheses.md               # Hypothesis register, cross-referenced to the log
+│   ├── structure.md                # Chapter plan
+│   └── figures/                    # Built by scripts/make_figures.py
 └── README.md
 ```
 
@@ -259,4 +264,4 @@ pip install numpy pandas pyarrow matplotlib plotly statsmodels scipy scikit-lear
   `(self, stats: MicrostructureStats, inventory, timestamp, t_remaining=None, **kwargs)`
 - When adding new strategies, register them in `make_strategy()` in `scripts/run_daily.py`
 - The `fill_analysis.py` module is shared between notebooks — changes there affect all analysis
-- `thesis_contributions.md` is the running log of findings — update it when adding new results
+- `thesis/contributions.md` is the running log of findings — update it when adding new results

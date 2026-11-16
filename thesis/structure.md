@@ -36,17 +36,17 @@ prediction a single participant can compute.*
 
 ### Foundations
 
-**Ch1 — Introduction.** `thesis_introduction.md` — DRAFTED (1,917w).
+**Ch1 — Introduction.** `01_introduction.md` — DRAFTED (1,917w).
 *Revision needed:* headline result and contribution roadmap now cover both halves;
 §6 structure section must be rewritten to this plan.
 
-**Ch2 — Theoretical Background.** `thesis_theory.md` — DRAFTED (3,999w).
+**Ch2 — Theoretical Background.** `02_theory.md` — DRAFTED (3,999w).
 *Additions needed:* Grossman–Miller (immediacy premium — the theory behind Part II
 Ch8); Stoikov micro-price (the fair-value anchor, exp 111); Bergault–Guéant
 multi-asset closed forms (§, with the measured 0.04-tick cross-asset skew showing
 it quantizes away on one-tick books).
 
-**Ch3 — Data, Venues and Methodology.** `thesis_data_methodology.md` — DRAFTED
+**Ch3 — Data, Venues and Methodology.** `03_data_methodology.md` — DRAFTED
 (2,662w) but covers only CoinAPI 2025.
 *Major addition:* the 2026 live capture — four venues (Binance spot+perp,
 Coinbase spot+perp, Hyperliquid majors + tail), collectors, raw-first design,
@@ -95,7 +95,7 @@ short-window carry is basis-dominated; the unmeasured cascade tail.
 
 ### Synthesis
 
-**Ch10 — Conclusions.** `thesis_conclusions.md` — EXISTS (5,853w) but predates the
+**Ch10 — Conclusions.** `10_conclusions.md` — EXISTS (5,853w) but predates the
 capture arc; needs substantial rewrite, not a light pass. Sections: headline
 result; the evidentiary chain across both parts; why the zero is necessary rather
 than contingent; the methodological contribution (including the two
@@ -103,7 +103,7 @@ self-retractions as evidence the discipline has teeth); limitations; further wor
 
 ## 4. Source of truth
 
-`thesis_contributions.md` (36,983w, C1–C61) is the lab notebook and every chapter
+`contributions.md` (36,983w, C1–C61) is the lab notebook and every chapter
 is drafted from it. **C62–C67 must be written first** — they are the raw material
 for Ch6–Ch9:
 
@@ -118,7 +118,7 @@ for Ch6–Ch9:
 
 ## 5. Schedule (5 weeks)
 
-- **Week 1** — C62–C67 into `thesis_contributions.md`; Ch3 capture + discipline sections.
+- **Week 1** — C62–C67 into `contributions.md`; Ch3 capture + discipline sections.
 - **Week 2** — Ch4, Ch5.
 - **Week 3** — Ch6, Ch7.
 - **Week 4** — Ch8, Ch9.

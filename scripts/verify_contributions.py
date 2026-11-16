@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Check numeric claims in thesis_contributions.md against the committed experiment
+Check numeric claims in thesis/contributions.md against the committed experiment
 JSONs that each entry references.
 
     .venv/bin/python3 scripts/verify_contributions.py 29 30 33 34
@@ -20,7 +20,8 @@ quoting a superseded pre-engine-fix table.
 import re,glob,os,json,sys
 from collections import defaultdict
 
-body=open('thesis_contributions.md').read()
+ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+body=open(os.path.join(ROOT,'thesis','contributions.md')).read()
 parts=re.split(r'\n## (?:C(\d+) — |(\d+)\. )',body)
 ent={}
 for i in range(1,len(parts),3):

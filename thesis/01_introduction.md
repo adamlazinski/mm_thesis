@@ -201,7 +201,7 @@ equilibrium itself, and infrastructure is one of several ways to sit outside it.
 
 ## 5. Summary of Contributions
 
-The thesis makes 67 numbered contributions, logged in full in `thesis_contributions.md`. The
+The thesis makes 67 numbered contributions, logged in full in `contributions.md`. The
 seven groups below summarise them by theme rather than enumerate them; the log is the exhaustive
 record.
 
@@ -294,5 +294,5 @@ The thesis is in two parts, preceded by foundations.
 10. **Conclusions** — the evidentiary chain across both parts, why the zero is necessary rather
     than contingent, the methodological contribution, limitations and scope, and further work.
 
-The full numbered contribution log is in `thesis_contributions.md`, and `hypotheses.md` holds the
+The full numbered contribution log is in `contributions.md`, and `hypotheses.md` holds the
 hypothesis register that cross-references it.

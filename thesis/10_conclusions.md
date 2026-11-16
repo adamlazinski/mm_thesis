@@ -430,4 +430,4 @@ question about a dealer market, and the market answered a different one.
 
 ---
 
-*Full contribution log and reference list: `thesis_contributions.md`.*
+*Full contribution log and reference list: `contributions.md`.*

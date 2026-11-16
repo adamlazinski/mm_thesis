@@ -6,7 +6,7 @@ This is the thesis's organizing skeleton — update the status markers as result
 **Status:** `✓` confirmed · `✗` refuted · `◐` true-but-nuanced · `⧖` pending data ·
 `⊘` **retracted or superseded by a later contribution**
 
-Cross-references point to numbered entries in [thesis_contributions.md](thesis_contributions.md)
+Cross-references point to numbered entries in [contributions.md](contributions.md)
 (C1–C67) and to experiment folders. The `→` marker on each section head gives the chapter that
 now carries it.
 

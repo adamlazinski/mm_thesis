@@ -3,7 +3,7 @@
 Thesis figures. Run from the repo root:
     .venv/bin/python3 scripts/make_figures.py
 
-Writes figures/fN_*.png (slides, 150 dpi) and .pdf (thesis, vector).
+Writes thesis/figures/fN_*.png (slides, 150 dpi) and .pdf (thesis, vector).
 
 Every number is either read from a committed experiment JSON or carried in a
 TABLE_* constant transcribed from the contribution it cites. Nothing is
@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT  = os.path.join(ROOT, "figures")
+OUT  = os.path.join(ROOT, "thesis", "figures")
 os.makedirs(OUT, exist_ok=True)
 
 INK, MUTED, GRID = "#1a1a1a", "#6b7280", "#d9dce1"
@@ -41,7 +41,7 @@ def save(fig, name):
     for ext, kw in (("png", {"dpi": 150}), ("pdf", {})):
         fig.savefig(os.path.join(OUT, f"{name}.{ext}"), **kw)
     plt.close(fig)
-    print(f"  wrote figures/{name}.png + .pdf")
+    print(f"  wrote thesis/figures/{name}.png + .pdf")
 
 _CAPS = {}
 

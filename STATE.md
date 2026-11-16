@@ -15,14 +15,14 @@ C47 (LINK-PERP) verified correct (perp data truly on 0.001 grid). Zero-profit la
 now holds with NO exception. Discovered by validating live Binance capture (collector +
 reconstruction pipeline, committed 6a977bc) against the historical dataset on day one.
 
-**Also this session:** thesis_theory.md §7 "dealer lineage" section (d7045d2); live L2
+**Also this session:** thesis/02_theory.md §7 "dealer lineage" section (d7045d2); live L2
 collector running (4 instruments, 25h, data/live/); offline reconstruction pipeline
 (`hft_market_maker/data/binance_capture.py` + `scripts/process_binance_capture.py`)
 validated end-to-end incl. DataLoader/L2BookTracker round-trip. Highly relevant paper found:
 arXiv 2607.01550 "Is Trend Still Your Friend?" — vol-normalised tick size as the same
 binding variable; candidate crypto replication + taker-momentum redesign.
 
-**Next:** thesis_conclusions.md reframe (leans on C42–C51 numbers); C52 rebuild on the
+**Next:** thesis/10_conclusions.md reframe (leans on C42–C51 numbers); C52 rebuild on the
 small/large-tick taxonomy; process full captured day (exp 85+ proxy-vs-real, qf calibration,
 level lifetimes); decide multi-day capture extension.
 
@@ -31,7 +31,7 @@ level lifetimes); decide multi-day capture extension.
 ## CHECKPOINT — 2026-07-09
 
 ### Committed in this checkpoint
-- `thesis_contributions.md`: C46–C53 added (exps 77–84)
+- `thesis/contributions.md`: C46–C53 added (exps 77–84)
 - Experiment folders 77–84 (scripts + result JSONs + DQN weights)
 
 ### The exp 77–84 arc (all LINK spot OBI-skew follow-ups to C42/C44/C45)
@@ -64,7 +64,7 @@ level lifetimes); decide multi-day capture extension.
   audit (post_only, aggressor-side fills, trade-quantity conservation, queue-at-activation,
   A-S/GLFT unit+formula corrections), 406-backtest rerun of the central LINK Apr-2026 matrix,
   `REBUILD_CHANGELOG.md` (canonical audit), `CLAIM_EVIDENCE_MATRIX.md` (A–E claim grades),
-  `defense_audit.md`, `hypotheses.md`, `PHD_RESEARCH_POSITIONING.md` (qf-sensitivity-curve PhD
+  `defense_audit.md`, `thesis/hypotheses.md`, `PHD_RESEARCH_POSITIONING.md` (qf-sensitivity-curve PhD
   framing). Headline: queue-burden penalty robust (every qf>0 below no-queue, sign-test
   p=0.0023); qf=0.001 +$9.74/day (grade C), qf=0.01 ≈ breakeven, qf≥0.05 negative. Decide
   separately whether/how to merge or keep as parallel tree.
@@ -84,8 +84,8 @@ level lifetimes); decide multi-day capture extension.
 
 ### Last clean commit
 `a8d18ae` — "Add thesis Chapters 1-3 drafts (Introduction, Theory, Data/Methodology)"
-- thesis_contributions.md: C1–C38 committed
-- thesis_theory.md, thesis_intro.md, thesis_data.md: initial chapter drafts
+- thesis/contributions.md: C1–C38 committed
+- thesis/02_theory.md, thesis_intro.md, thesis_data.md: initial chapter drafts
 - Engine: taker-on-arrival fix already committed in `cafc7ae` (L2 queue model baseline)
 
 ### Weekend work (uncommitted — done, needs commit)
@@ -107,7 +107,7 @@ level lifetimes); decide multi-day capture extension.
   Result: XGBoost overlay adds nothing (vs baseline: -$0.22/day); spike filter alone halves
   loss (-$46.67 → -$22.56 over 5 days); all 5 variants net negative OOS
 
-**Analytical/feasibility studies (all complete, written up as C31–C38 in thesis_contributions.md)**:
+**Analytical/feasibility studies (all complete, written up as C31–C38 in thesis/contributions.md)**:
 - `exp51_crossing_intensity` — LINK + BTC fill-curve analysis with L2 conditioning (C25-area)
 - `exp52_link_classical_mm` — LINK Apr 2026, calibrated A-S 30-day run (feeds C28)
 - `exp53_link_spread_sweep` — LINK spread-rule grid
@@ -143,19 +143,19 @@ level lifetimes); decide multi-day capture extension.
   - Only caveat (d) open: OOS validation (all from same 30-day LINK Apr 2026 window)
 
 **Theory addition:**
-- `thesis_theory.md` §5: Guilbaud & Pham (2013) model added (3 paragraphs) — spread as
+- `thesis/02_theory.md` §5: Guilbaud & Pham (2013) model added (3 paragraphs) — spread as
   finite Markov chain on tick multiples, `{B,B+}` priority control with `λ(B+,s)>λ(B,s)`,
   QVI/IDE system with no closed form; forward-links to C42/C44
 
-**All changes written up in `thesis_contributions.md` (C39–C44) and `thesis_conclusions.md`**
+**All changes written up in `thesis/contributions.md` (C39–C44) and `thesis/10_conclusions.md`**
 
 ### What is uncommitted (to commit next)
 1. Engine additions: `forecast_as.py` (new), edits to `backtest.py`, `order_manager.py`,
    `fill_analysis.py`, `l2_features.py`, `market_state.py`, `loader.py`, `aggressiveness.py`,
    `avellaneda_stoikov.py`, `glft.py`, `scripts/run_daily.py`, `random_search.py`
 2. New experiments: exp49, exp50, exp52–57, exp60, exp63, exp64 (results + configs)
-3. Thesis text: C39–C44 additions to `thesis_contributions.md`, `thesis_conclusions.md`,
-   `thesis_theory.md` §5 (Guilbaud-Pham)
+3. Thesis text: C39–C44 additions to `thesis/contributions.md`, `thesis/10_conclusions.md`,
+   `thesis/02_theory.md` §5 (Guilbaud-Pham)
 4. Analysis artifacts: `analysis/fill_intensity_calibration.json`,
    `experiments/55_taker_feasibility/analysis/`, `experiments/57_deep_reversion/analysis/`,
    etc.
@@ -264,7 +264,7 @@ without it the formula gives 40+ ticks.
 spreads that are always adversely selected on BTC. This is a thesis-worthy finding: the model's
 implicit assumptions about order arrival rates are calibrated to equity markets, not crypto.
 
-> This is the special case of a general law: Contribution 33 (`thesis_contributions.md`) shows
+> This is the special case of a general law: Contribution 33 (`thesis/contributions.md`) shows
 > κ is pinned to σ by zero-profit (`κ_eq ≈ √A/σ_$`), so any fixed-κ model — not just GLFT — is
 > calibrated to the wrong equilibrium once σ moves. The "momentum plateau" above is what that
 > mismatch looks like on BTC specifically.
@@ -303,19 +303,19 @@ queue-priority verdict (C30) as the central thesis result.
 
 The authoritative sources for where the project stands now:
 
-- **`thesis_contributions.md`** — the full numbered contribution log (C1–C37). C30 is the
+- **`thesis/contributions.md`** — the full numbered contribution log (C1–C37). C30 is the
   central result; C33 generalizes it into a zero-profit equilibrium law; C35 frames MM as a
   written straddle; C36 closes the cross-venue (spot↔perp) escape route; C37 maps the
   latency-tolerant corner of the *curable* (Layer-1) part of the problem.
-- **`thesis_conclusions.md`** — the synthesis chapter: headline result, evidentiary chain,
+- **`thesis/10_conclusions.md`** — the synthesis chapter: headline result, evidentiary chain,
   and limitations/further work, written for direct use in the thesis.
-- **`hypotheses.md`** — the hypothesis register (sections A–G + meta-hypothesis), tracking
+- **`thesis/hypotheses.md`** — the hypothesis register (sections A–G + meta-hypothesis), tracking
   confirmed/refuted/nuanced/pending status for every claim tested.
 
 ### Genuinely open items
 
 - BTC perp data re-pull (CoinAPI trades endpoint mislabeled) — needed for the C36 BTC
   cross-asset symmetry check. User-side action, not yet done.
-- Two small untested threads in `hypotheses.md` §F: whether a lower perp fee tier makes the
+- Two small untested threads in `thesis/hypotheses.md` §F: whether a lower perp fee tier makes the
   taker viable (reasoned "likely no" but untested), and funding rate as a queue-independent
   carry return (a different strategy class, not market making).
