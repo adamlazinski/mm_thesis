@@ -75,11 +75,11 @@ maker fill selection.* Each was found by looking for it, and each had survived r
 testing before it was found.
 
 **Step 4 — the residue is measured, and it is small and adversely selected.** With all five
-removed, the honest at-touch quoter earns between **+$0.60/day** at a one-second evaluation
-horizon and **+$4.06/day** at thirty seconds, with a negative mean markout at every horizon and
-only 39.7%-48.9% of fills profitable (Contribution 34). Against that, a perfect-foresight
-oracle keeping only the fills that turn out well earns **$19.76 to $30.03/day** on the same
-book. The dispersion in fill quality is real; what is missing is the information to sort it.
+removed, the honest at-touch quoter is not merely unprofitable but **negative before fees** at
+short horizons: −$9.78/day measured at one second, −$2.87 at ten, and +$1.35 only at thirty, with
+a negative mean markout at every horizon and 35.9%-48.2% of fills profitable (Contribution 34,
+corrected engine). Against that, a perfect-foresight oracle keeping only the fills that turn out
+well earns **$28.62 to $47.24/day** on the same book. The dispersion in fill quality is real; what is missing is the information to sort it.
 The constraint is identified as informational at this point, not assumed.
 
 **Step 5 — the residue is derived, not merely observed.** Sweeping dollar volatility on

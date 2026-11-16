@@ -6,7 +6,7 @@
 
 Chapter 5 left the thesis with a specific, well-posed problem. Once the five accounting
 mirages are removed, an honest quoter earns about a dollar a day with a negative markout —
-but a perfect-foresight oracle on the same book earns $20–30/day, so the dispersion in fill
+but a perfect-foresight oracle on the same book earns $29–47/day, so the dispersion in fill
 quality is real and large. The constraint is therefore informational: the maker's problem is
 not that good fills do not exist, but that they cannot be identified in advance.
 
@@ -220,7 +220,7 @@ identified rather than assumed: it is not that these signals are weak, since thr
 instruments detect genuine, placebo-validated structure. It is that the predictable component
 of adverse selection is already incorporated in the price at which the maker is permitted to
 trade. Second, the foresight oracle of Chapter 5 §6 is not contradicted. Perfect *ex post*
-fill selection is worth $20–30/day; every *ex ante* proxy for it tested here is worth nothing.
+fill selection is worth $29–47/day; every *ex ante* proxy for it tested here is worth nothing.
 The gap between those two numbers is the price of information, and this chapter measures it as
 the whole of the available edge.
 

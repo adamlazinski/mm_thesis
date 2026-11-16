@@ -57,8 +57,9 @@ in sample and failed out of sample (C66).
   only one positive cell (high-vol overshoot-catch, +0.38 bps, ~$0.01/day), economically negligible. *(C30 addendum)*
 - `◐` **Honest MM (outside-spread / L2-queue-modeled) is viable.** Breakeven — the price-only model
   overstates touch fills 41× and total PnL ~2.4×; realistic queue position pins PnL at a sub-$1/day noise
-  floor with negative markout. The best current estimate of the honest number is **+$0.60/day (1 s) to
-  +$4.06/day (30 s)** against a foresight ceiling of $19.76–$30.03. *(C20, C29, C30, C34)*
+  floor with negative markout. On the corrected engine the honest number is **−$9.78/day (1 s),
+  −$2.87 (10 s), +$1.35 (30 s)** against a foresight ceiling of $28.62–$47.24 — negative before
+  fees at short horizons. *(C20, C29, C30, C34)*
 
 ## C. Asset structure — the organizing axis is relative tick size → Ch4 §7, Ch5 §7
 
@@ -92,7 +93,8 @@ in sample and failed out of sample (C66).
   ±$1/day noise floor under L2-queue even memorizing 3 days × 200 epochs; a continuous-state DQN learns to
   halt. *(C30, C33, exp 58)*
 - `◐` **In-sample honest profit exists at all.** Yes, but only with FORESIGHT — a perfect-foresight oracle
-  keeping only positive-markout fills earns ~$20–30/day vs ~$1–4/day causal. The edge is real, and
+  keeping only positive-markout fills earns ~$29–47/day against a causal result that is negative
+  before fees at short horizons. The edge is real, and
   information-gated. *(C34, exp 60)*
 - `◐` **RL can win on the honest engine.** Once: a DQN cancel-controller degrades more gracefully than the
   hand-written rule under regime shift — the first honest-engine RL win in the project, but on the
@@ -211,7 +213,8 @@ because the seduction and the retraction are both evidence.
 - `✓` **Mirage 5 — the winner's curse in maker fill selection.** The fills a maker gets are selected against
   it, so measuring fill quality on realised fills alone is not neutral. *(C59, C61)*
 - `✓` **All five bias the same direction, and the residue after removing them is the equilibrium.** Ch4's
-  +$154/day becomes ~+$1/day with a negative mean markout and 39.7–48.9% of fills profitable. *(C33, C34)*
+  +$154/day becomes approximately zero — negative before fees at short horizons — with a negative
+  mean markout and 35.9–48.2% of fills profitable. *(C33, C34)*
 
 ## J. Information: the four instruments → Ch6
 

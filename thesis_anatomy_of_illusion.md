@@ -36,23 +36,32 @@ correct. On a real book it grants **absolute queue priority** — the simulated 
 at the front, ahead of everything already resting there.
 
 On LINK the consequence is severe and precisely identifiable. The natural spread is exactly
-ten ticks (five per side) for 99.9% of April 2026, with median, mean, p10 and p90 all equal
-to ten. Ordinary sells print at the natural bid, at `mid − 5t`. The strategy of Chapter 4 §2
-posts its bid *inside* that, at `mid − δ` with δ < 5. Since `mid − 5t ≤ mid − δ`, the
-price-only condition fills the inside quote on **every ordinary sell** — crediting it with
-the entire taker flow that in reality would have to clear against the roughly 8,600 LINK
-already resting at the natural bid. A five-LINK order is being handed the fills belonging to
-a queue 1,700 times its size.
+one tick for 99.9% of April 2026 — $0.01 on a price near $9, or 22.2 bps, with median, mean,
+p10 and p90 all identical. (On the $0.001 grid the experiments were originally parameterised
+with, the same observation reads as a constant ten ticks; Contribution 54 is the correction,
+and this chapter quotes basis points throughout to avoid inheriting the error.) Ordinary sells
+print at the natural bid, half a tick below the mid. The strategy of Chapter 4 §2 posts its bid
+*inside* that, at `mid − δ` with δ less than half a tick. Since the natural bid is at or below
+the quoted bid, the price-only condition fills the inside quote on **every ordinary sell** —
+crediting it with the entire taker flow that in reality would have to clear against the roughly
+8,600 LINK already resting at the natural bid. A five-LINK order is being handed the fills
+belonging to a queue 1,700 times its size.
 
 **The decomposition.** Contribution 30 partitions the results by quote regime (LINK, April
 2026, thirty days, zero fees, flat A-S):
 
-| regime | half-spread | inside the touch? | fill model honest? | fills/day | P&L/day | 1s markout |
+| regime | half-spread | vs. the one-tick touch | fill model honest? | fills/day | P&L/day | 1s markout |
 |---|---|---|---|---|---|---|
-| deep inside | 2 ticks | yes (3t inside) | **no** | 7,673 | +$35 | +0.98 bps |
-| inside (optimum) | 4 ticks | yes (1t inside) | **no** | 7,288 | **+$94** | +2.80 bps |
-| at touch | 5 ticks | at | partial | 2,502 | +$33 | −0.41 bps |
-| outside | 8 ticks | no (3t outside) | **yes** | 216 | **+$2.5** | −0.65 bps |
+| deep inside | 4.5 bps (0.4 ticks) | 0.6 ticks inside | **no** | 7,673 | +$35.37 | +0.98 bps |
+| inside (optimum) | 8.9 bps (0.8 ticks) | 0.2 ticks inside | **no** | 7,288 | **+$94.13** | +2.80 bps |
+| at touch | 11.1 bps (1.0 tick) | at the touch | partial | 2,502 | +$33.23 | −0.41 bps |
+| outside | 17.8 bps (1.6 ticks) | 0.6 ticks outside | **yes** | 216 | **+$2.52** | −0.65 bps |
+
+Half-spreads are quoted in basis points because that is the unit the sweep was configured in and
+the only one that is unambiguous here: LINK traded near $9 against a true $0.01 tick, so one tick
+is 11.1 bps, and the "at touch" row sits at exactly one tick by construction. Earlier drafts
+labelled these rows 2/4/5/8 ticks, which is the invalid $0.001 grid of Contribution 54; the
+regimes themselves are unaffected, since they are defined by position relative to the touch.
 
 The only regime in which the price-only rule is physically honest is *outside* the natural
 spread: there a fill genuinely requires the market to trade through the level, so there is no
@@ -179,15 +188,19 @@ strategy, never charges it.
 
 ## 6. What Survives Removal
 
-Once the artefacts are removed, the honest at-touch quoter earns between **+$0.60/day** at a
-one-second evaluation horizon and **+$4.06/day** at thirty seconds, with a negative mean
-markout at every horizon and only 39.7%–48.9% of fills profitable (Contribution 34). That is
-the residue of Chapter 4's +$154/day.
+Once the artefacts are removed, the honest at-touch quoter does not merely stop earning. On the
+corrected engine — the one that converts marketable-on-arrival orders to takers rather than
+treating them as patient limits — it **loses** at the horizons on which a maker actually turns
+inventory: **−$9.78/day** at a one-second evaluation horizon, **−$2.87** at ten seconds, and only
+**+$1.35/day** at thirty, on 5,768 fills/day, with a negative mean markout at every horizon and
+35.9%–48.2% of fills profitable (Contribution 34, corrected-engine update). That is the residue
+of Chapter 4's +$154/day: approximately zero at the longest horizon measured, and negative before
+fees at every shorter one.
 
 Contribution 34 also establishes what the residue is *not*. Running the same honest quoter
 with a perfect-foresight oracle — keeping only the fills that turn out profitable — yields a
-ceiling of **$19.76/day** at one second rising to **$30.03/day** at thirty. The gap between
-$0.60 and $19.76 is not a modelling failure; it is information. There is real dispersion in
+ceiling of **$28.62/day** at one second rising to **$47.24/day** at thirty. The gap between
+−$9.78 and +$28.62 is not a modelling failure; it is information. There is real dispersion in
 fill quality, and a quoter that could identify in advance which fills to accept would earn a
 meaningful amount. No causal policy over the observable state can do so, which is precisely
 what the overfitting experiment of §2 demonstrated by exhaustion. The edge exists and is
@@ -244,12 +257,13 @@ credited in full to a five-LINK order that had no claim on it.
 
 Five distinct errors, each biasing the same way: absolute queue priority, an invalid price
 grid, mark-to-mid accounting, unearnable fee tiers, and the winner's curse in fill selection.
-Removing them takes Chapter 4's +$154/day to roughly +$1/day with a negative markout, and the
+Removing them takes Chapter 4's +$154/day to approximately zero — negative before fees at short
+horizons, +$1.35/day at thirty seconds — with a negative markout throughout, and the
 synthetic control shows this is the correct answer rather than a broken one — the breakeven
 spread is pinned to volatility, and the zero-profit condition is enforced on the spread axis
 where the spread is free and on the queue axis where it is not.
 
-What remains is not nothing. The foresight oracle values perfect fill selection at $20–30/day
+What remains is not nothing. The foresight oracle values perfect fill selection at $29–47/day
 on the same book, so the dispersion is real and the constraint is informational. The rest of
 this thesis is an attempt to open that gate: Chapter 6 tests speed, observable state,
 counterparty identity and price-process regime against it, and Part II asks what — if anything —

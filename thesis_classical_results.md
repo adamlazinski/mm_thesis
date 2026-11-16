@@ -218,9 +218,14 @@ requires cumulative traded volume to exceed the resting volume ahead of the orde
 
 | distance from mid | region | price-only | queue-aware |
 |---|---|---|---|
-| 1–4 ticks | inside the spread | 2.97% | 2.97% |
-| 5 ticks | at the natural bid | 2.97% | **0.073%** |
-| 6–15 ticks | outside the spread | 0.10% | 0.0055% |
+| under 0.5 ticks (< 5.6 bps) | inside the spread | 2.97% | 2.97% |
+| 0.5 ticks (5.6 bps) | at the natural bid | 2.97% | **0.073%** |
+| 0.6 to 1.5 ticks (6.7–16.7 bps) | outside the spread | 0.10% | 0.0055% |
+
+(Distances are given in true $0.01 ticks and in basis points at LINK's ~$9 price. The underlying
+sweep was parameterised on the $0.001 grid that Contribution 54 later corrected, where these
+three rows read as 1–4, 5 and 6–15 ticks; the regions and the probabilities are unaffected,
+since both are defined by position relative to the natural bid.)
 
 Inside the spread the two models agree exactly, because an order there has no queue in front
 of it. At the touch they differ by a factor of **41**. The strategy of §2 is defined by

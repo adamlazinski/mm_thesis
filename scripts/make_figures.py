@@ -61,11 +61,12 @@ def load(pattern):
 
 # ---------------------------------------------------------------- tables
 # C30, LINK April 2026, 30 days, zero fees, flat A-S (Ch5 section 2).
-REGIME = [  # label, half-spread (ticks), fills/day, PnL/day, 1s markout bps, honest?
-    ("deep inside\n2 ticks",     7673,  35.0,  0.98, False),
-    ("inside (optimum)\n4 ticks",7288,  94.0,  2.80, False),
-    ("at touch\n5 ticks",        2502,  33.0, -0.41, None),
-    ("outside\n8 ticks",          216,   2.5, -0.65, True),
+REGIME = [  # label, fills/day, PnL/day, 1s markout bps, fill model honest?
+    # half-spreads are exp 53's sweep configs in bps; LINK ~$9 on a true $0.01 tick => 1 tick = 11.1 bps
+    ("deep inside\n4.5 bps (0.4t)",      7673, 35.37,  0.98, False),
+    ("inside (optimum)\n8.9 bps (0.8t)", 7288, 94.13,  2.80, False),
+    ("at touch\n11.1 bps (1.0t)",        2502, 33.23, -0.41, None),
+    ("outside\n17.8 bps (1.6t)",          216,  2.52, -0.65, True),
 ]
 # C30, at-touch rerun under the L2 queue model (Ch5 section 2).
 QUEUE = [(9, 11.8), (86, 2.8), (431, 0.4), (863, 0.9), (4313, 1.0)]

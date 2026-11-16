@@ -125,8 +125,9 @@ Four further accounting errors, each biasing in the same direction, complete the
 (Chapter 5): mark-to-mid valuation, at the level of a single fill and again more severely at the
 level of a position; fee tiers a strategy's own volume cannot earn; and the winner's curse in
 maker fill selection. Once all five are removed, the honest quoter earns roughly **a dollar a
-day** — between +$0.60 and +$4.06 depending on the evaluation horizon — with a negative mean
-markout and fewer than half of its fills profitable.
+approximately zero**, and in fact *negative* before fees at the horizons that matter — −$9.78/day
+measured at one second, −$2.87 at ten, and +$1.35 only at thirty — with a negative mean markout
+throughout and fewer than half of its fills profitable.
 
 **That residue is not noise; it is an enforced equilibrium.** Contribution 33 derives the same
 result from a zero-profit condition (Glosten & Milgrom, 1985; Wyart, Bouchaud, Kockelkoren,
