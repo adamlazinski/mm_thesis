@@ -1,0 +1,43 @@
+{
+  "asset": "HL_EIGEN",
+  "date": "2026-07-21",
+  "mode": "inventory",
+  "qf": 0.5,
+  "fill_cap_usd": 500.0,
+  "max_inv_usd": 2000.0,
+  "day_h": 13.732989166643884,
+  "configs": {
+    "none": {
+      "gross_pnl": -4.563839183809478,
+      "maker_notional": 44315.620719999926,
+      "weighted_fills": 727.0,
+      "max_abs_inv_usd": 2192.0640265412153,
+      "end_inv_usd": 1783.6319488161914,
+      "min_equity": -19.04645151873183,
+      "max_equity": 17.783912627127563,
+      "gross_pnl_day": -7.98,
+      "net_pnl_day": {
+        "fee_1.5": -19.59,
+        "fee_0": -7.98,
+        "fee_-0.3": -5.65
+      },
+      "rt_bps_gross": -1.03
+    },
+    "A+W": {
+      "gross_pnl": -29.331127562144957,
+      "maker_notional": 30130.952377999984,
+      "weighted_fills": 630.5,
+      "max_abs_inv_usd": 2216.302870873027,
+      "end_inv_usd": 2164.665900437859,
+      "min_equity": -32.10427171658557,
+      "max_equity": 11.381150897255111,
+      "gross_pnl_day": -51.26,
+      "net_pnl_day": {
+        "fee_1.5": -59.16,
+        "fee_0": -51.26,
+        "fee_-0.3": -49.68
+      },
+      "rt_bps_gross": -9.735
+    }
+  }
+}

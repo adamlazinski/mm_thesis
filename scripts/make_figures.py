@@ -410,18 +410,18 @@ def f6_dislocation():
 
 # ---------------------------------------------------------------- F7
 def f7_immediacy():
-    """Panel a is the relationship C66 actually claims -- the premium is priced by
-    spread width -- plotted from exp 103's inventory-aware round trip (config
-    "none"; the "A+W" defended overlay is the one C64 retracted). The per-coin
-    table printed in C66 does not reproduce from these files; see FIGURES.md."""
+    """Panel a: the five-day per-coin round trip from exp 103 (config "none"; the
+    "A+W" overlay is the one C64 retracted), ordered by the spread actually
+    measured during the capture. Panel b: the bridge control as a slopegraph over
+    every anchor x distance configuration in exp 111, which is where the
+    spread-width claim's weight actually falls -- the six-point cross-section in
+    panel a supports it only weakly (Spearman rho = 0.60)."""
     import glob as _g
     rt, spread = defaultdict(list), defaultdict(list)
     for f in _g.glob(os.path.join(ROOT, "experiments/103_defended_maker/results/*_inv_qf0.5.json")):
         j_ = json.load(open(f))
-        if not j_["date"].startswith("2026-07"):
-            continue
         a = j_["asset"].replace("HL_", "")
-        if a == "LINK":
+        if a == "LINK" or not j_["date"].startswith("2026-07"):
             continue
         v = j_["configs"]["none"].get("rt_bps_gross")
         if v is not None:
@@ -431,60 +431,67 @@ def f7_immediacy():
         if j_["date"].startswith("2026-07"):
             spread[j_["asset"].replace("HL_", "")].append(j_["spread_bps"])
 
-    fig, (a, b) = plt.subplots(1, 2, figsize=(11.0, 4.1), gridspec_kw={"width_ratios": [1.15, 1]})
+    fig, (a, b) = plt.subplots(1, 2, figsize=(11.2, 4.2), gridspec_kw={"width_ratios": [1.1, 1]})
 
-    names = [n for n in sorted(rt) if n in spread]
-    sx = np.array([np.mean(spread[n]) for n in names])
-    ry = np.array([np.mean(rt[n]) for n in names])
-    re = np.array([np.std(rt[n]) for n in names])
-    a.errorbar(sx, ry, yerr=re, fmt="o", ms=8, lw=0, elinewidth=0.9, capsize=3,
-               ecolor=MUTED, color=ACCENT, zorder=3)
-    OFF = {"ZORA": (-14, 7), "CELO": (14, 7), "EIGEN": (0, -17), "VINE": (0, 11),
-           "USUAL": (0, 11), "HMSTR": (0, 11)}
-    for n, x, y in zip(names, sx, ry):
-        a.annotate(n, xy=(x, y), xytext=OFF.get(n, (0, 11)), textcoords="offset points",
-                   ha="center", fontsize=8, fontweight="bold")
-    a.axhline(0, color=INK, lw=1.0)
-    a.axhspan(-6, 0, color=BAD, alpha=0.06, zorder=0)
-    a.set_xscale("log")
-    a.set_xlabel("book's median quoted spread  (bps, log scale)")
+    BASE_FEE = 1.5
+    names = sorted(rt, key=lambda n: -np.mean(spread[n]))
+    means = [float(np.mean(rt[n])) for n in names]
+    npos = [sum(1 for v in rt[n] if v > 0) for n in names]
+    xs = np.arange(len(names))
+    cols = [GOOD if m > BASE_FEE else (NEUTRAL if m > 0 else BAD) for m in means]
+    a.bar(xs, means, color=cols, width=0.6, zorder=2)
+    for x, n, m, k in zip(xs, names, means, npos):
+        a.text(x, m + 0.55 if m >= 0 else m - 1.15, f"{m:+.2f}", ha="center",
+               fontsize=8.5, fontweight="bold",
+               va="bottom" if m >= 0 else "top")
+        a.text(x, -3.6, f"{k}/5 days\n{np.mean(spread[n]):.0f} bps spread", ha="center",
+               fontsize=6.6, color=MUTED)
+    a.axhline(0, color=INK, lw=1.0, zorder=3)
+    a.axhline(BASE_FEE, color=BAD, ls="--", lw=1.1, zorder=3)
+    a.text(len(names) - 0.52, BASE_FEE + 0.4, "1.5 bps base maker fee",
+           fontsize=7, color=BAD, ha="right", fontweight="bold")
+    a.set_xticks(xs); a.set_xticklabels(names, fontsize=8.5, fontweight="bold")
+    a.set_ylim(-4.6, 17.5)
     a.set_ylabel("gross round trip  (bps of notional)")
-    a.set_xlim(4.5, 95); a.set_ylim(-6, 26)
-    a.set_title("a.  The premium is priced by spread width")
-    a.text(26, -4.1, "the three tightest books sit at or below zero;\nnone of them clears a base maker fee",
-           fontsize=7.4, color=BAD, fontweight="bold", va="center", ha="center")
-    src(a, "C66 / exp 103 — inventory-aware round trip, qf=0.5, 2026-07-17/18, mean ± range over two days. "
-           'Config "none": no defensive overlay, since the defended variant is what C64 retracted.')
+    a.set_title("a.  Four of six clear the base fee")
+    src(a, "C66 / exp 103, config \"none\", qf=0.5, all 30 coin-days 2026-07-17..21. Bars ordered by measured "
+           "spread, widest left. ZORA is the tightest book in the screen and the third most profitable, so the "
+           "six-point cross-section supports the spread-width reading only weakly (Spearman \u03c1 = 0.60).")
 
-    # bridge control: one coin, one config, two months
-    ju, au, sj, sa = [], [], [], []
+    runs = defaultdict(dict)
     for f in _g.glob(os.path.join(ROOT, "experiments/111_fair_value_wide/results/*USUAL*.json")):
         j_ = json.load(open(f))
-        r = j_["runs"]["micro_k1"]["bps_of_notional"]
-        (ju if j_["date"].startswith("2026-07") else au).append(r)
-        (sj if j_["date"].startswith("2026-07") else sa).append(j_["spread_bps"])
-    vals = [float(np.mean(ju)), float(np.mean(au))]
-    xs = np.array([0, 1])
-    b.bar(xs, vals, color=[GOOD, "#b9c4bd"], width=0.46, zorder=2)
-    b.axhline(0, color=INK, lw=1.0, zorder=3)
-    for x, v in zip(xs, vals):
-        b.text(x, v + (0.9 if v >= 0 else -2.0), f"{v:+.1f} bps", ha="center",
-               fontsize=10, fontweight="bold")
-    b.set_xticks(xs)
-    b.set_xticklabels([f"July 17–21\n{len(ju)} days,  spread {np.mean(sj):.0f} bps",
-                       f"August 5–8\n{len(au)} days,  spread {np.mean(sa):.0f} bps"], fontsize=8)
+        for k, r in j_["runs"].items():
+            runs[k][j_["date"]] = r["bps_of_notional"]
+    pairs = []
+    for k, byd in runs.items():
+        ju = [v for d, v in byd.items() if d.startswith("2026-07")]
+        au = [v for d, v in byd.items() if d.startswith("2026-08")]
+        if ju and au:
+            pairs.append((k, float(np.mean(ju)), float(np.mean(au))))
+    for k, ju, au in pairs:
+        up = au > ju
+        b.plot([0, 1], [ju, au], "-o", ms=3.4, lw=1.0,
+               color=NEUTRAL if up else BAD, alpha=0.95 if not up else 0.6, zorder=2)
+    mk = [p for p in pairs if p[0] == "micro_k1"][0]
+    b.plot([0, 1], [mk[1], mk[2]], "-o", ms=7, lw=2.4, color=ACCENT, zorder=4,
+           label="micro-price, k=1  (the anchor Ch. 8 adopts)")
+    b.annotate(f"{mk[1]:+.1f} bps", xy=(0, mk[1]), xytext=(-8, 0), textcoords="offset points",
+               ha="right", va="center", fontsize=8.5, fontweight="bold", color=ACCENT)
+    b.annotate(f"{mk[2]:+.1f} bps", xy=(1, mk[2]), xytext=(8, 0), textcoords="offset points",
+               ha="left", va="center", fontsize=8.5, fontweight="bold", color=ACCENT)
+    b.axhline(0, color=INK, lw=1.0, zorder=1)
+    fell = sum(1 for _, ju, au in pairs if au < ju)
+    b.set_xticks([0, 1])
+    b.set_xticklabels([f"July 17\u201321\nwidest tail spread 56 bps",
+                       f"August 5\u20138\nwidest tail spread 14 bps"], fontsize=8)
+    b.set_xlim(-0.42, 1.42)
     b.set_ylabel("gross round trip  (bps of notional)")
-    b.set_ylim(min(vals) - 4.5, max(vals) + 6)
-    b.annotate("", xy=(0.80, vals[1] + 1.2), xytext=(0.20, vals[0] - 1.2),
-               arrowprops=dict(arrowstyle="->", lw=1.3, color=BAD,
-                               connectionstyle="arc3,rad=-0.28"))
-    b.text(0.5, max(vals) * 0.52, "same coin,\nsame strategy\n— competition arrived",
-           ha="center", fontsize=8, color=BAD, fontweight="bold")
-    b.set_xlim(-0.55, 1.55)
-    b.set_title("b.  The bridge control: USUAL, two months apart")
-    src(b, "C66 / exp 111, micro-price anchor at k=1. The premium is a regime, not a technique: it decays as the "
-           "tail tightens. C66 quotes +40 → +0.39 bps for this comparison; that pair is not reproducible from "
-           "the committed runs and is flagged in FIGURES.md.")
+    b.legend(fontsize=7, loc="upper right")
+    b.set_title("b.  The bridge control: USUAL, every configuration")
+    src(b, f"C66 / exp 111 \u2014 all {len(pairs)} anchor \u00d7 distance configurations, same coin, two months "
+           f"apart. {fell} of {len(pairs)} fall, median {np.median([ju - au for _, ju, au in pairs]):.0f} bps. "
+           "The within-instrument comparison, not the cross-section, is what prices the premium by competition.")
 
     fig.suptitle("Figure 7   The immediacy premium: paid where competition is thin, and only while it stays thin",
                  fontsize=10.5, fontweight="bold", x=0.008, ha="left")

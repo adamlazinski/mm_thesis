@@ -1,0 +1,43 @@
+{
+  "asset": "HL_VINE",
+  "date": "2026-07-21",
+  "mode": "inventory",
+  "qf": 0.5,
+  "fill_cap_usd": 500.0,
+  "max_inv_usd": 2000.0,
+  "day_h": 13.733470833367772,
+  "configs": {
+    "none": {
+      "gross_pnl": -72.39664500951596,
+      "maker_notional": 47022.69840450001,
+      "weighted_fills": 405.0,
+      "max_abs_inv_usd": 2295.321253900129,
+      "end_inv_usd": -963.3868115095153,
+      "min_equity": -84.82093126440577,
+      "max_equity": 13.488157454350812,
+      "gross_pnl_day": -126.52,
+      "net_pnl_day": {
+        "fee_1.5": -138.84,
+        "fee_0": -126.52,
+        "fee_-0.3": -124.05
+      },
+      "rt_bps_gross": -15.396
+    },
+    "A+W": {
+      "gross_pnl": -74.97360047450002,
+      "maker_notional": 39652.26867400003,
+      "weighted_fills": 341.5,
+      "max_abs_inv_usd": 2289.1720112102844,
+      "end_inv_usd": -1254.8956764744999,
+      "min_equity": -82.21632321513243,
+      "max_equity": 14.77278781787004,
+      "gross_pnl_day": -131.02,
+      "net_pnl_day": {
+        "fee_1.5": -141.41,
+        "fee_0": -131.02,
+        "fee_-0.3": -128.94
+      },
+      "rt_bps_gross": -18.908
+    }
+  }
+}

@@ -346,7 +346,7 @@ positive liquidity-provision returns, condition on the number of competing suppl
 than on the quoting formula. Chapter 8 tests this on books with `M` of two to three at the
 touch, and the theory's comparative static — the premium should decay as competition arrives —
 is what that chapter's bridge control measures directly, observing a single instrument's
-premium fall from +40 bps to +0.39 bps over two months as its tail tightened.
+premium fall from +23.5 bps to approximately zero over two months as its tail tightened.
 
 **The combined prediction.** Read together, these results say that in a competitive market
 the spread (Wyart–Bouchaud) and the fill-decay rate κ that A-S/GLFT take as a free input are

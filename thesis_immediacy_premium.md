@@ -40,7 +40,14 @@ The tail is a different world from anything measured so far:
 
 against HL_BTC's 0.15 bps and 39 orders at the touch. Two or three orders at the touch is thin
 competition *observed* rather than inferred, and the processed data makes it quantitative:
-**13 to 101 unique makers per day** on these books, against thousands on the majors. A 56 bps
+**13 to 101 unique makers per day** on these books, against thousands on the majors.
+
+One caveat on that table, which matters for §5. Those spreads are the *screening* snapshot that
+selected the six coins; the median spread actually quoted during the five captured days differs,
+in two cases substantially — CELO at 7.7 bps rather than 25, and ZORA at 6.2 rather than 16,
+with HMSTR unchanged at 56. The two measures rank the books similarly (Spearman ρ = 0.77) but
+not identically, and §5 relates the round trip to the *measured* spread, since that is the
+quantity contemporaneous with the P&L it is being compared against. A 56 bps
 spread against a 1.5 bps maker fee also means that, for the first time in this thesis, the fee
 gate of Chapter 5 §4 is not the binding constraint.
 
@@ -108,28 +115,38 @@ of using it: Chapter 6's pattern on a third venue.
 
 ## 5. The Round Trip on Thin Books
 
-With that accounting, the tail books pay. The round trip clears **base fees** — no rebate
-assumed — on four of the six:
+With that accounting, the tail books pay. Averaged over the five captured days, the gross round
+trip clears the 1.5 bps **base fee** — no rebate assumed — on four of the six:
 
-| book | bps of notional | clears base fees? |
-|---|---|---|
-| HMSTR | +20.6 | yes |
-| USUAL | +16.4 | yes |
-| CELO | +8 to +9 | yes |
-| VINE | +8 to +9 | yes |
-| ZORA | negative | no |
-| EIGEN | negative | no |
+| book | median quoted spread | gross round trip | days positive | clears base fees? |
+|---|---|---|---|---|
+| HMSTR | 56 bps | +14.40 bps | 5 / 5 | yes |
+| USUAL | 16 bps | +12.91 bps | 4 / 5 | yes |
+| ZORA | 6 bps | +7.51 bps | 4 / 5 | yes |
+| CELO | 8 bps | +3.49 bps | 4 / 5 | yes |
+| VINE | 15 bps | +0.96 bps | 4 / 5 | no |
+| EIGEN | 8 bps | −1.12 bps | 2 / 5 | no |
 
-The two failures are the two tightest and most-competed books, which is the result rather than
-an exception to it: EIGEN quotes 9 bps on $3.3M a day, which is the majors' regime in
-miniature, and it behaves accordingly.
+Only one book is persistently negative. EIGEN quotes about 8 bps on $3.3M a day, which is the
+majors' regime in miniature, and it behaves accordingly — it is the one instrument in the screen
+whose competition has already arrived.
 
-The important caveat is that **per-coin P&L is sign-unstable from day to day**. A single book's
-result is close to a coin flip, because the outcome is dominated by whether that day's flow
-happened to be one-sided. What is stable is the **basket**: equal-weighted across the six coins,
-P&L is positive on **all five days**, averaging +$243/day with a mid anchor. The premium is a
-portfolio property, not a per-instrument one — which is exactly what compensation for bearing
-idiosyncratic inventory risk should look like.
+It is worth being careful about what this cross-section does and does not establish, because the
+obvious reading overstates it. Round trip and spread width are positively related across the six
+books (Spearman ρ = 0.60), but with n = 6 and a conspicuous exception — ZORA is the *tightest*
+book in the screen and the third most profitable — the cross-section is suggestive rather than
+decisive. The claim that the premium is priced by spread width does not rest on these six points;
+it rests on the within-instrument comparison of §7, where the same coin is observed twice.
+
+The second caveat is that **per-coin P&L is sign-unstable from day to day**. No book is positive
+on every day except the widest, and the outcome on any given day is dominated by whether that
+day's flow happened to be one-sided. What is stable is the **basket**: equal-weighted across the
+six coins, gross P&L is positive on **all five days** — +$101, +$118, +$363, +$202 and +$39 —
+averaging +$164/day. (The +$243 and +$291/day figures in §6 are a different simulator: the
+anchor-and-distance sweep of Contribution 66, which quotes at a chosen anchor rather than
+running the inventory-capped round trip used here. The two are not comparable, and only the
+round trip is treated as a headline, for the reason §4 gives.) The premium is a portfolio property, not a per-instrument one, which is
+exactly what compensation for bearing idiosyncratic inventory risk should look like.
 
 ## 6. Fair Value and Distance
 
@@ -174,18 +191,20 @@ positive on **4 of 4 days**, including with the single outlier coin removed, and
 **4 of 4 days**. The effect is not an artifact of coin selection.
 
 The bridge control, however, carries the more important finding. USUAL — the *same coin*, same
-strategy — fell from **+40 bps of notional in July to +0.39 bps in August**, while the tail's
-widest available spread compressed from 56 bps to 14 bps. Nothing about the technique changed.
-What changed was the regime.
+strategy, same micro-price anchor — fell from **+23.5 bps of notional in July to −0.3 bps in
+August**, while the tail's widest available spread compressed from 56 bps (HMSTR in July) to
+14 bps (SAGA in August). The decay is not an artefact of the anchor chosen: fifteen of the
+sixteen anchor-and-distance configurations swept fall over the same two months, by a median of
+24 bps. Nothing about the technique changed. What changed was the regime.
 
 That single comparison converts the chapter's result from a claim about a strategy into a claim
 about a price. The immediacy premium is **priced by spread width**: it is large when the tail is
 wide and approximately zero when the tail tightens, and a practitioner who measured it in July
 and sized against it in August would have been sizing against a number that no longer existed.
 
-It also means the honest magnitude is the ex-ACE basket figure of roughly +$215/day rather than
-the headline that one coin's volume explosion produced — and that a frozen tape during such an
-explosion is precisely where a real maker is run over and the simulation cannot see it.
+It also means the honest magnitude is the ex-ACE basket figure rather than the headline that one
+coin's volume explosion produced — and that a frozen tape during such an explosion is precisely
+where a real maker is run over and the simulation cannot see it.
 
 ## 8. Synthesis
 
@@ -194,15 +213,18 @@ This is the affirmative half of the zero-profit law, and its cleanest confirmati
 Where competition is thin, the spread genuinely exceeds the adverse-selection cost and a maker
 is paid: four of six books clear base fees on an inventory-aware round trip, the basket is
 positive on every day of two independent samples, and a pre-registered replication on disjoint
-coins holds. The adverse-selection horizon on these books runs beyond five seconds, against
+coins holds. The per-coin cross-section is noisier than that summary suggests — the tightest book
+in the screen is among the more profitable — and the weight of the spread-width claim therefore
+falls on the within-instrument comparison rather than on the six-point cross-section. The adverse-selection horizon on these books runs beyond five seconds, against
 tens of milliseconds on Binance — one law, read at four venue clocks.
 
 But what is being paid is a **premium, not an edge**. It is compensation for warehousing
 inventory and bearing jump risk in illiquid names; it is sign-unstable per coin and positive
 only as a diversified basket; it shrinks with the spread that defines it; and its magnitude is
 set by how many competitors have arrived, not by anything the quoter knows. The bridge control
-prices that dependence exactly: a forty-fold decay in two months, on an unchanged coin, driven
-by a tightening tail.
+prices that dependence directly: a fall from +23.5 bps to approximately zero in two months, on an
+unchanged coin, driven by a tightening tail, and reproduced in fifteen of sixteen
+configurations swept.
 
 The zero-profit law is therefore not violated at its boundary. It is **parameterised** there.
 The majors sit at zero because competition has arrived and compressed the spread to its cost;

@@ -3702,7 +3702,9 @@ Five Hyperliquid assets, two full days (2026-07-15, 07-16).
 Toxicity is extremely concentrated (top 5% of takers carry **84–91%**), genuinely persistent
 across the day, and the identity-based split beats its wallet-shuffled placebo at the **100th
 percentile on all five assets, on both days** — this is not survivorship, it is causal
-information. And the benign pocket it buys is **+0.0 ± 0.3 bps**: the maker is lifted from the
+information. And the benign pocket it buys is **+0.15 ± 0.20 bps** (mean ± s.d. over the ten asset-days;
+earlier drafts rounded this to "+0.0 ± 0.3"), an order of magnitude below the cheapest maker
+fee of 1.0bps: the maker is lifted from the
 pooled −0.4 bps to *zero*, and no further.
 
 **Synthesis.** Three instruments, three years of the literature's best ideas, one number:
@@ -3918,10 +3920,23 @@ goes negative within 5s — the adverse-selection horizon is off the end of the 
 against ~80ms on Binance and 3.4s on HL_LINK. Competition is directly observable as thin:
 **13–101 unique makers/day** against thousands on the majors.
 
-The round trip clears **base fees** on four of six coins (HMSTR +20.6bps of notional, USUAL
-+16.4, CELO/VINE +8–9; the two tightest and most-competed, ZORA and EIGEN, are negative). Per-coin
-P&L is **sign-unstable day to day**, but the equal-weight basket is positive on **all five days**
-(mean +$243/day mid-anchored).
+The round trip clears the 1.5bps **base fee** on four of six coins. Over all five captured days
+(2026-07-17..21, exp 103 config `none`, qf=0.5), the gross round trip is HMSTR **+14.40**bps of
+notional (5/5 days positive), USUAL **+12.91** (4/5), ZORA **+7.51** (4/5), CELO **+3.49** (4/5),
+VINE **+0.96** (4/5) and EIGEN **−1.12** (2/5) — only EIGEN is persistently negative, and it is
+the one book in the screen whose competition has already arrived (~8bps on $3.3M/day, the majors'
+regime in miniature). Per-coin P&L is **sign-unstable day to day**, but the equal-weight basket is
+positive on **all five days** (+$101/+$118/+$363/+$202/+$39, mean **+$164**/day gross).
+
+*Correction (2026-11-16).* An earlier version of this entry reported +20.6/+16.4/+8–9 and stated
+that "the two tightest and most-competed, ZORA and EIGEN, are negative". Those figures were not
+reproducible from the committed runs, and on the complete five-day set the membership claim is
+**false**: ZORA is the tightest book in the screen (6bps) and the third most profitable. The
+count of four-of-six survives; the identity of the four does not. Consequently the per-coin
+cross-section supports the spread-width thesis only weakly (Spearman ρ = 0.60, n = 6), and the
+weight of that claim moves to the within-instrument bridge control below. The error arose from
+aggregating a two-day subset in which 2026-07-17 is a partial 10.3h session; the five-day table
+above is computed from all thirty committed coin-days.
 
 Fair-value anchoring improves it further. The micro-price anchor beats the mid anchor on the
 basket on 4 of 5 days (+$291 vs +$243/day), and wider quoting raises margin per unit: on HMSTR,
@@ -3936,8 +3951,12 @@ result was re-tested on a disjoint sample (six new coins plus one bridge control
 prediction committed to version control before the data was seen. Both checks pass: the basket is
 positive **4/4 days** (also excluding an outlier coin) and micro ≥ mid **4/4 days**. The effect is
 not a selection artifact. But the **bridge control** carries the real finding: USUAL — the same
-coin — fell from +40bps of notional in July to **+0.39bps** in August while the tail's widest
-spread compressed from 56bps to 14bps. The magnitude is **regime**, not technique.
+coin, same micro-price anchor (k=1) — fell from **+23.5bps** of notional in July to **−0.3bps**
+in August while the tail's widest spread compressed from 56bps (HMSTR, July) to 14bps (SAGA,
+August). The decay holds in **15 of the 16** anchor x distance configurations swept, median fall
+24bps, so it is not an artefact of the configuration chosen. The magnitude is **regime**, not
+technique. *(Corrected 2026-11-16: previously quoted as +40 -> +0.39bps, which no committed run
+reproduces; the spread compression 56 -> 14bps is confirmed exactly.)*
 
 **Synthesis.** This is the affirmative half of the zero-profit law and its cleanest confirmation.
 Where competition is thin, the spread genuinely exceeds adverse selection and a maker is paid —

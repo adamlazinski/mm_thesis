@@ -1,0 +1,43 @@
+{
+  "asset": "HL_ZORA",
+  "date": "2026-07-21",
+  "mode": "inventory",
+  "qf": 0.5,
+  "fill_cap_usd": 500.0,
+  "max_inv_usd": 2000.0,
+  "day_h": 13.733737500045034,
+  "configs": {
+    "none": {
+      "gross_pnl": 0.7170596107876008,
+      "maker_notional": 31404.65975249997,
+      "weighted_fills": 672.0,
+      "max_abs_inv_usd": 2221.1471095305865,
+      "end_inv_usd": -1759.823529889214,
+      "min_equity": -12.447113772440161,
+      "max_equity": 28.827770681747097,
+      "gross_pnl_day": 1.25,
+      "net_pnl_day": {
+        "fee_1.5": -6.98,
+        "fee_0": 1.25,
+        "fee_-0.3": 2.9
+      },
+      "rt_bps_gross": 0.228
+    },
+    "A+W": {
+      "gross_pnl": -16.262439135941122,
+      "maker_notional": 22817.709753499963,
+      "weighted_fills": 603.0,
+      "max_abs_inv_usd": 2248.4075270132535,
+      "end_inv_usd": -1705.9817246359423,
+      "min_equity": -29.64764257406273,
+      "max_equity": 0.9692509999999288,
+      "gross_pnl_day": -28.42,
+      "net_pnl_day": {
+        "fee_1.5": -34.4,
+        "fee_0": -28.42,
+        "fee_-0.3": -27.22
+      },
+      "rt_bps_gross": -7.127
+    }
+  }
+}

@@ -229,7 +229,8 @@ rather than below it, which is the register's single most important pattern.
   imbalance, volatility and intensity, and the cleanest quintile is still negative at a **zero** fee. *(C61)*
 - `✗` **Instrument 3 — counterparty identity isolates benign flow.** The strongest sorting instrument that
   can exist, available only because Hyperliquid discloses both wallets: it separates flow at the **100th
-  percentile** against a wallet-shuffle placebo, and the benign pocket is **+0.0 ± 0.3 bps**. *(C62)*
+  percentile** against a wallet-shuffle placebo, and the benign pocket is **+0.15 ± 0.20 bps** across
+  ten asset-days — an order of magnitude below the cheapest 1.0 bps maker fee. *(C62)*
 - `✗` **Instrument 4 — a price-process regime filter works.** No — a matched-frequency placebo reproduces
   the entire apparent improvement. *(exps 114–115)*
 - `◐` **A real, placebo-proof, OOS-robust signal nets a positive return.** No: the sharpest signal in the
@@ -250,14 +251,16 @@ rather than below it, which is the register's single most important pattern.
   event times because Hyperliquid's own makers withdraw on the same signal. The capacity bound is the
   *answer* to why a public-data edge persists. *(C63)*
 - `✓` **The immediacy premium exists where competition is thin.** Four of six tail books clear **base** fees
-  on an inventory-aware round trip (HMSTR +20.6 bps, USUAL +16.4, CELO/VINE +8–9); the two failures are the
-  two tightest books. *(C66)*
+  on an inventory-aware round trip over five days (HMSTR +14.40 bps, USUAL +12.91, ZORA +7.51,
+  CELO +3.49; VINE +0.96 and EIGEN −1.12 do not). Only EIGEN is persistently negative, and the
+  per-coin cross-section supports the spread-width reading only weakly (ρ = 0.60, n = 6).
+  *(Corrected 2026-11-16; see C66.)* *(C66)*
 - `◐` **…but it is a portfolio property, not a per-instrument one.** Per-coin P&L is sign-unstable day to
   day; the equal-weighted basket is positive on 5/5 days of the original sample and 4/4 of a
   **pre-registered** replication on disjoint coins, with micro-price ≥ mid on 4/4. *(C66)*
 - `✓` **…and its magnitude is priced by competition, not by technique.** The bridge control is the cleanest
-  evidence in the thesis: USUAL, same coin and same strategy, fell from **+40 bps in July to +0.39 bps in
-  August** as the tail's widest spread compressed from 56 to 14 bps. *(C66)*
+  evidence in the thesis: USUAL, same coin and same strategy, fell from **+23.5 bps in July to
+  −0.3 bps in August** (15 of 16 configurations fall; median 24 bps) as the tail's widest spread compressed from 56 to 14 bps. *(C66)*
 - `✓` **The adverse-selection horizon is the venue's repricing clock.** ≤15–20 ms (Binance small-tick) →
   75–87 ms (large-tick) → seconds (HL majors) → 3.4 s (HL LINK) → >5 s (HL tail). Part II's organising law,
   and the reason Ch7 and Ch8 are one observation from two sides. *(C59, C66)*
@@ -349,7 +352,7 @@ zero (§J). Along the way the project's one celebrated exception, the OBI inside
 **Part II — the boundary.** If the zero is exact, a positive return requires leaving the competitive game.
 Three ways exist, and each is bounded by what makes it available: trading against a venue whose makers
 reprice on a seconds clock (capacity-gated at a few thousand dollars of touch depth), providing immediacy on
-a book with two or three makers (priced by spread width, and decaying forty-fold in two months as
+a book with two or three makers (priced by spread width, and decaying to approximately zero in two months as
 competition arrived), and being paid to carry a cross-venue basis (where the basis, not the funding, is the
 risk, and the cascade tail is unmeasured) (§K). Options market making fails even at zero fees (§L). The
 organising law of the second half is that **the adverse-selection horizon is the venue's repricing clock** —

@@ -105,7 +105,7 @@ independent classes of it were, on books from three venues:
 | model-free markout (C59) | nothing — the tape alone | realized half-spread negative within 100 ms on every book |
 | speed (C60) | the leading venue, 1 ms sooner | 10 ms to 1 ms: −$2.04 to −$1.94, and +$1.91 to +$0.54 |
 | observable state (C61) | flow, imbalance, volatility, intensity | toxicity rankable; cleanest 20% still negative at a *zero* fee |
-| counterparty identity (C62) | exactly who is trading | placebo separation at the 100th percentile; benign pocket +0.0 ± 0.3 bps |
+| counterparty identity (C62) | exactly who is trading | placebo separation at the 100th percentile; benign pocket +0.15 ± 0.20 bps, against a 1.0 bps fee |
 
 Three of the four detect genuine, placebo-validated structure. The decisive feature is not that
 each fails but that **each fails at exactly zero rather than below it**. Contribution 60 is the
@@ -148,9 +148,9 @@ edge visible in public data has not been competed away.
 **Providing immediacy where nobody else will** (Chapter 8, Contribution 66). On Hyperliquid tail
 books with two or three makers at the touch, the maker's realized half-spread never goes
 negative within five seconds. Four of six books clear **base** fees on an inventory-aware round
-trip — HMSTR +20.6 bps of notional, USUAL +16.4, CELO and VINE +8 to +9 — and the two failures
-are the two tightest and most-competed books, which is the result rather than an exception to
-it. Per-coin P&L is sign-unstable day to day; the equal-weighted **basket** is positive on all
+trip over five days — HMSTR +14.40 bps of notional, USUAL +12.91, ZORA +7.51, CELO +3.49 — while
+VINE at +0.96 does not clear and EIGEN at −1.12 is persistently negative. EIGEN is the one book
+in the screen whose competition has already arrived. Per-coin P&L is sign-unstable day to day; the equal-weighted **basket** is positive on all
 five days of the original sample and on 4 of 4 days of a pre-registered replication on disjoint
 coins, with the micro-price anchor beating the mid on 4 of 4.
 
@@ -192,8 +192,9 @@ distinguishes a risk premium from an information edge:
    idiosyncratic risk borne must look like.
 3. *Each is priced by the competition it faces, not by the skill applied.* The bridge control
    is the cleanest evidence in the thesis: USUAL, the same coin and the same strategy, fell from
-   **+40 bps of notional in July to +0.39 bps in August** while the tail's widest spread
-   compressed from 56 bps to 14 bps. Nothing about the technique changed; the regime did.
+   **+23.5 bps of notional in July to approximately zero in August** while the tail's widest
+   spread compressed from 56 bps to 14 bps, a decay reproduced in fifteen of the sixteen
+   configurations swept. Nothing about the technique changed; the regime did.
 4. *Costs can invert the usual logic.* The carry book's 5.6 bps round trip amortises to
    +0.68%/yr rebalanced monthly and to **20%/yr churned daily** — a position destroyed by being
    traded.
@@ -236,7 +237,8 @@ information opens it. Speed saturates before co-location; observable state ranks
 without producing a tradeable pocket even at zero fees; counterparty identity — the strongest
 sorting instrument that can exist, available only because Hyperliquid discloses wallets —
 separates flow at the 100th percentile against a shuffle placebo and finds a benign pocket of
-+0.0 ± 0.3 bps; a price-process regime filter's entire apparent improvement is reproduced by a
++0.15 ± 0.20 bps against a 1.0 bps fee; a price-process regime filter's entire apparent
+improvement is reproduced by a
 matched-frequency placebo; and the sharpest causal signal in the project nets +$0.13/day. The
 gate is not the quality of the information but the fact that its predictable content is already
 in the price at which a maker is permitted to trade.

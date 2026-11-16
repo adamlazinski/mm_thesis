@@ -5,6 +5,12 @@ __pycache__/
 *.pyc
 .DS_Store
 results/
+# A negation cannot re-include a file whose parent directory is excluded, so the
+# results dir under experiments/ must be un-excluded first, then its contents
+# re-excluded except the JSON. Without this, new experiment output is silently
+# dropped from commits and has to be force-added.
+!experiments/*/results/
+experiments/*/results/*
 !experiments/*/results/*.json
 data/
 !hft_market_maker/data/

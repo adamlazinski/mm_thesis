@@ -187,7 +187,8 @@ five assets and two full days:
   shuffled, class sizes and trade counts preserved — the real split lands at the **100th
   percentile on all five assets, on both days**.
 
-And the benign pocket that all of this buys is **+0.0 ± 0.3 bps**. Perfect sorting lifts the
+And the benign pocket that all of this buys is **+0.15 ± 0.20 bps** across the ten asset-days —
+against a cheapest available maker fee of 1.0 bps, an order of magnitude more. Perfect sorting lifts the
 maker from the pooled −0.4 bps to *zero*, and no further.
 
 That is the sharpest statement in the thesis, because the instrument is maximal. There is no
@@ -203,7 +204,7 @@ maker to the equilibrium and stops there.
 | model-free markout (C59) | nothing — the tape alone | half-spread eaten within 100 ms on every book |
 | speed (C60) | the leader venue, 1 ms sooner | 1 ms ≈ 10 ms; nothing left to catch inside an 80 ms lead |
 | observable state (C61) | flow, imbalance, volatility, intensity | toxicity rankable; cleanest 20% still negative at zero fee |
-| counterparty identity (C62) | exactly who is trading | 100th-percentile placebo separation; pocket = +0.0 ± 0.3 bps |
+| counterparty identity (C62) | exactly who is trading | 100th-percentile placebo separation; pocket = +0.15 ± 0.20 bps, vs a 1.0 bps fee |
 
 Four mutually independent instruments, applied to books on three venues, all terminate at the
 same place. The striking feature is not that each fails but that each fails *at exactly zero*

@@ -1,0 +1,43 @@
+{
+  "asset": "HL_HMSTR",
+  "date": "2026-07-19",
+  "mode": "inventory",
+  "qf": 0.5,
+  "fill_cap_usd": 500.0,
+  "max_inv_usd": 2000.0,
+  "day_h": 23.999271666672495,
+  "configs": {
+    "none": {
+      "gross_pnl": 91.52081862565751,
+      "maker_notional": 45513.00494200003,
+      "weighted_fills": 790.0,
+      "max_abs_inv_usd": 2232.678547984598,
+      "end_inv_usd": 1920.0001646256653,
+      "min_equity": -1.4817132499998706,
+      "max_equity": 112.25897990527983,
+      "gross_pnl_day": 91.52,
+      "net_pnl_day": {
+        "fee_1.5": 84.7,
+        "fee_0": 91.52,
+        "fee_-0.3": 92.89
+      },
+      "rt_bps_gross": 20.109
+    },
+    "A+W": {
+      "gross_pnl": 80.24564966637536,
+      "maker_notional": 40920.51299950003,
+      "weighted_fills": 690.0,
+      "max_abs_inv_usd": 2205.823195002873,
+      "end_inv_usd": 2002.3417281663792,
+      "min_equity": -1.4817132499998706,
+      "max_equity": 100.71357857348653,
+      "gross_pnl_day": 80.25,
+      "net_pnl_day": {
+        "fee_1.5": 74.11,
+        "fee_0": 80.25,
+        "fee_-0.3": 81.48
+      },
+      "rt_bps_gross": 19.61
+    }
+  }
+}

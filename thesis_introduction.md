@@ -147,7 +147,7 @@ to a class of information a maker might bring:
 | model-free markout (C59) | nothing — the tape alone | the half-spread is eaten within 100 ms on every book |
 | speed (C60) | the leading venue, 1 ms sooner | 1 ms performs as 10 ms; nothing remains inside an 80 ms lead |
 | observable state (C61) | flow, imbalance, volatility, intensity | toxicity is rankable; the cleanest 20% is still negative at a *zero* fee |
-| counterparty identity (C62) | exactly who is trading | separation at the 100th percentile against a wallet-shuffle placebo — and the benign pocket is **+0.0 ± 0.3 bps** |
+| counterparty identity (C62) | exactly who is trading | separation at the 100th percentile against a wallet-shuffle placebo — and the benign pocket is **+0.15 ± 0.20 bps**, against a 1.0 bps fee |
 
 Three of the four detect genuine, placebo-validated structure. All four terminate at zero rather
 than below it, which is what an enforced equilibrium looks like from the inside: the predictable
@@ -171,8 +171,8 @@ occupying a seam rather than for knowing something:
   samples, with a pre-registered replication on disjoint instruments. The organising law of
   Part II emerges here — **the adverse-selection horizon is the venue's repricing clock**, from
   about 15 ms on Binance to beyond 5 s in the tail — and a bridge control prices the premium's
-  dependence on competition exactly: the same instrument decayed from +40 bps to +0.39 bps in two
-  months as the tail tightened.
+  dependence on competition directly: the same instrument decayed from +23.5 bps to approximately
+  zero in two months as the tail tightened.
 - **Being paid to carry a basis** (Chapter 9). Hyperliquid's perpetual runs persistently rich, so
   shorts are contractually compensated; net of Binance's funding the differential is 5 to 8%
   annualised, and a delta-neutral book returned +8.4%/yr at a gross Sharpe near 1.26 on BTC. The
