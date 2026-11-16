@@ -70,10 +70,9 @@ REGIME = [  # label, fills/day, PnL/day, 1s markout bps, fill model honest?
 ]
 # C30, at-touch rerun under the L2 queue model (Ch5 section 2).
 QUEUE = [(9, 11.8), (86, 2.8), (431, 0.4), (863, 0.9), (4313, 1.0)]
-# C33 synthetic breakeven sweep (Ch5 section 7). delta_be floored at the 2-tick quote.
-BREAKEVEN = [(0.02, 2.0, True), (0.05, 3.9, False), (0.10, 7.6, False), (0.20, 15.2, False)]
-# C34 honest residue and perfect-foresight ceiling, $/day, by evaluation horizon.
-RESIDUE, CEILING = (0.60, 4.06), (19.76, 30.03)
+# (C33's breakeven sweep is read straight from exp 59 in f3_breakeven; the
+#  earlier transcription rounded delta_be to 3.9 and so printed a ratio of 78.0
+#  where the source and Ch5's table both carry 77.5.)
 # C60 co-location addendum: whole latency stack 10 ms -> 1 ms, $/day.
 SPEED = [("2026-07-10", -2.04, -1.94), ("2026-07-12", 1.91, 0.54)]
 # Ch8 section 3: horizons that ran off the end of the 5 s measurement window.
@@ -148,10 +147,14 @@ def f2_queue():
 
 # ---------------------------------------------------------------- F3
 def f3_breakeven():
+    eq = json.load(open(os.path.join(
+        ROOT, "experiments/59_synthetic_engine_validation/results/equilibrium_pinning.json")))["equilibrium"]
+    eq.sort(key=lambda r: r["sigma"])
     fig, (a, b) = plt.subplots(1, 2, figsize=(10.0, 3.8), gridspec_kw={"width_ratios": [1.25, 1]})
-    s = np.array([r[0] for r in BREAKEVEN]); dbe = np.array([r[1] for r in BREAKEVEN])
-    free = np.array([not r[2] for r in BREAKEVEN])
-    ratio = dbe / s
+    s     = np.array([r["sigma"] for r in eq])
+    dbe   = np.array([r["delta_be_ticks"] for r in eq])
+    ratio = np.array([r["delta_be_over_sigma"] for r in eq])
+    free  = dbe > 2.0      # the sigma=0.02 cell is floored at the quoter's own 2-tick quote
 
     k = float(np.mean(ratio[free]))
     xs = np.linspace(0, 0.215, 50)
@@ -325,9 +328,10 @@ def f5_venue_clock():
     ax.grid(axis="y", visible=False)
     from matplotlib.lines import Line2D
     ax.legend(handles=[Line2D([], [], marker="o", ls="", color=GCOL[g], label=GNAME[g])
-                       for g in (0, 1, 2, 3)], loc="upper left", fontsize=7.5,
-              bbox_to_anchor=(0.012, 0.985))
-    ax.set_title("Figure 5   Part II's organising law: the adverse-selection horizon is the venue's repricing clock")
+                       for g in (0, 1, 2, 3)], loc="lower left", fontsize=7.5,
+              bbox_to_anchor=(0.0, 1.005), ncol=4, columnspacing=1.6, handletextpad=0.4)
+    ax.set_title("Figure 5   Part II's organising law: the adverse-selection horizon is the venue's repricing clock",
+                 pad=24)
     src(ax, "C59 (Binance books, 3 days) and C66 (Hyperliquid, 2026-07-16/18), identical model-free markout. "
             "Three orders of magnitude. EIGEN is the tail's tightest, most-competed book and behaves like the majors.")
     save(fig, "f5_venue_clock_law")
@@ -345,8 +349,6 @@ def f6_dislocation():
             continue
         (recv if path.endswith("_recv.json") else base)[(d["leader"], d["date"])] = d
     base = {k: v for k, v in base.items() if not k[1].endswith("_x")}
-    for path, d in list(allr.items()):          # keep one row per leader-date
-        pass
     keys = sorted(base)
     thrs = [2, 5, 10]
     fees = [("fee_4.5", "4.5 bps  (base taker)", BAD),
@@ -383,19 +385,22 @@ def f6_dislocation():
     b.barh(yb, [r[1] for r in rows], color=ACCENT, height=0.58, zorder=2)
     b.axvline(2.8, color=BAD, ls="--", lw=1.2, zorder=3)
     b.text(2.68, -0.92, "round-trip toll\nat the good tier", fontsize=7, color=BAD, ha="right")
-    for i_, (k, g, n, h) in enumerate(rows):
-        b.text(g + 0.14, i_, f"{g:.2f} bps    n={n}, {h:.0%} hit", va="center", fontsize=7.4)
     rk = ("BTC_PERP", "2026-07-16")
-    if rk in recv:
-        rt = recv[rk]["thresholds"]["5"]["h5s"]
-        yi = [i_ for i_, (k, *_ ) in enumerate(rows) if k == rk]
-        if yi:
-            b.scatter([rt["gross_rt_bps"]], [yi[0]], marker="D", s=46, color=GOOD, zorder=4)
-            b.annotate(f"common-clock rerun: {rt['gross_rt_bps']:.2f} bps,\n"
-                       f"{rt['hit_rate_rt']:.0%} hit — survives by improving",
-                       xy=(rt["gross_rt_bps"], yi[0]), xytext=(0.06, 0.60),
-                       textcoords="axes fraction", fontsize=7, color=GOOD, fontweight="bold",
-                       arrowprops=dict(arrowstyle="->", lw=0.8, color=GOOD))
+    rt = recv[rk]["thresholds"]["5"]["h5s"] if rk in recv else None
+    ri = next((i_ for i_, (k, *_) in enumerate(rows) if k == rk), None)
+    for i_, (k, g, n, h) in enumerate(rows):
+        # on the row carrying the common-clock diamond, start the label past it
+        x = g + 0.14 if (rt is None or i_ != ri) else max(g + 0.14, rt["gross_rt_bps"] + 0.30)
+        b.text(x, i_, f"{g:.2f} bps    n={n}, {h:.0%} hit", va="center", fontsize=7.4)
+    if rt is not None and ri is not None:
+        b.scatter([rt["gross_rt_bps"]], [ri], marker="D", s=46, color=GOOD, zorder=4)
+        b.annotate(f"common-clock rerun: {rt['gross_rt_bps']:.2f} bps,\n"
+                   f"{rt['hit_rate_rt']:.0%} hit — survives by improving",
+                   xy=(rt["gross_rt_bps"], ri), xytext=(4.1, -1.05),
+                   textcoords="data", fontsize=7, color=GOOD, fontweight="bold",
+                   va="center", ha="left",
+                   arrowprops=dict(arrowstyle="->", lw=0.8, color=GOOD,
+                                   connectionstyle="arc3,rad=-0.25"))
     b.set_yticks(yb); b.set_yticklabels(lab, fontsize=7.4)
     b.set_xlabel("gross round trip @ 5 s  (bps)"); b.set_xlim(0, 9.6)
     b.set_ylim(-1.4, len(rows) - 0.4)
@@ -442,17 +447,17 @@ def f7_immediacy():
     cols = [GOOD if m > BASE_FEE else (NEUTRAL if m > 0 else BAD) for m in means]
     a.bar(xs, means, color=cols, width=0.6, zorder=2)
     for x, n, m, k in zip(xs, names, means, npos):
-        a.text(x, m + 0.55 if m >= 0 else m - 1.15, f"{m:+.2f}", ha="center",
+        a.text(x, m + 0.55 if m >= 0 else m - 0.30, f"{m:+.2f}", ha="center",
                fontsize=8.5, fontweight="bold",
                va="bottom" if m >= 0 else "top")
-        a.text(x, -3.6, f"{k}/5 days\n{np.mean(spread[n]):.0f} bps spread", ha="center",
-               fontsize=6.6, color=MUTED)
+        a.text(x, -2.7, f"{k}/5 days\n{np.mean(spread[n]):.0f} bps spread", ha="center",
+               va="top", fontsize=6.6, color=MUTED)
     a.axhline(0, color=INK, lw=1.0, zorder=3)
     a.axhline(BASE_FEE, color=BAD, ls="--", lw=1.1, zorder=3)
     a.text(len(names) - 0.52, BASE_FEE + 0.4, "1.5 bps base maker fee",
            fontsize=7, color=BAD, ha="right", fontweight="bold")
     a.set_xticks(xs); a.set_xticklabels(names, fontsize=8.5, fontweight="bold")
-    a.set_ylim(-4.6, 17.5)
+    a.set_ylim(-5.2, 17.5)
     a.set_ylabel("gross round trip  (bps of notional)")
     a.set_title("a.  Four of six clear the base fee")
     src(a, "C66 / exp 103, config \"none\", qf=0.5, all 30 coin-days 2026-07-17..21. Bars ordered by measured "

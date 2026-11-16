@@ -124,8 +124,8 @@ profit were placed at prices the exchange's tick grid would have rejected.
 Four further accounting errors, each biasing in the same direction, complete the catalogue
 (Chapter 5): mark-to-mid valuation, at the level of a single fill and again more severely at the
 level of a position; fee tiers a strategy's own volume cannot earn; and the winner's curse in
-maker fill selection. Once all five are removed, the honest quoter earns roughly **a dollar a
-approximately zero**, and in fact *negative* before fees at the horizons that matter — −$9.78/day
+maker fill selection. Once all five are removed, the honest quoter earns **approximately
+zero**, and in fact *negative* before fees at the horizons that matter — −$9.78/day
 measured at one second, −$2.87 at ten, and +$1.35 only at thirty — with a negative mean markout
 throughout and fewer than half of its fills profitable.
 

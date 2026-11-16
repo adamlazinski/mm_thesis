@@ -7,7 +7,7 @@ Each figure writes a `.png` at 150 dpi for slides and a vector `.pdf` for the th
 |---|---|---|---|
 | 1 | `f1_quote_regime_decomposition` | Part I's central result: profit sits only where the fill model is dishonest, and the markout inverts where it is honest | C30 table (Ch5 §2) |
 | 2 | `f2_queue_position_collapse` | the mechanism — P&L decays to a sub-$1/day floor by ~5% of visible depth | C30 table (Ch5 §2) |
-| 3 | `f3_breakeven_equilibrium` | why the zero is *derived*: δ_be/σ_$ constant at ≈77 across a tenfold volatility range | C33 table (Ch5 §7) |
+| 3 | `f3_breakeven_equilibrium` | why the zero is *derived*: δ_be/σ_$ constant at ≈76 across a tenfold volatility range | exp 59 `equilibrium_pinning.json` |
 | 4 | `f4_four_instruments` | Ch6 in one figure: markout / speed / observable state / counterparty identity, all terminating at zero | exps 93, 96, 97 + C60 |
 | 5 | `f5_venue_clock_law` | Part II's organising law: the adverse-selection horizon spans three orders of magnitude and tracks the venue's clock | exp 93 (all dates) |
 | 6 | `f6_dislocation` | the surviving alpha and its two gates, plus the common-clock robustness check | exp 99 (HL_BTC only) |
@@ -15,9 +15,15 @@ Each figure writes a `.png` at 150 dpi for slides and a vector `.pdf` for the th
 | 8 | `f8_fill_curve` | the exponential-intensity premise A-S and GLFT share, against BTC's momentum floor and LINK's step function | `analysis/fill_intensity_calibration.json`, exp 44 |
 | 9 | `f9_carry` | funding is contractual and positive on all four majors; the basis, not the funding, decides the outcome | exps 107, 108 |
 
-Figures 4–9 read committed experiment JSONs directly. Figures 1–3 carry values in
-`TABLE_*` constants, but those are no longer unverified transcriptions: each was
-checked against its source data on 2026-11-16 (see below).
+Figures 3–9 read committed experiment JSONs directly. Figures 1 and 2 carry
+values in `TABLE_*` constants, but those are no longer unverified transcriptions:
+each was checked against its source data on 2026-11-16 (see below).
+
+Figure 3 was converted to a direct read of exp 59 on 2026-11-16. The transcribed
+version had rounded δ_be to 3.9 at σ_$ = 0.05 and then recomputed the ratio from
+the rounded value, printing 78.0 where both the source and Ch5's table carry
+77.5; the fitted constant moves from 76.7 to 76.5, i.e. the "about 76" the
+chapters quote.
 
 ## Resolved: the C66 reproducibility gap (2026-11-16)
 

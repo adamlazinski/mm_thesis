@@ -5,9 +5,10 @@
 ## 1. The Question This Chapter Answers
 
 Chapter 5 left the thesis with a specific, well-posed problem. Once the five accounting
-mirages are removed, an honest quoter earns about a dollar a day with a negative markout —
-but a perfect-foresight oracle on the same book earns $29–47/day, so the dispersion in fill
-quality is real and large. The constraint is therefore informational: the maker's problem is
+mirages are removed, an honest quoter *loses* money at the horizons on which a maker turns
+inventory — −$9.78/day at one second, −$2.87 at ten, and +$1.35 only at thirty — with a
+negative markout throughout. But a perfect-foresight oracle on the same book earns $29–47/day,
+so the dispersion in fill quality is real and large. The constraint is therefore informational: the maker's problem is
 not that good fills do not exist, but that they cannot be identified in advance.
 
 That framing makes the remaining question sharp. There are only so many kinds of information
