@@ -499,10 +499,135 @@ def f7_immediacy():
     save(fig, "f7_immediacy_premium")
 
 
+# ---------------------------------------------------------------- F8
+def f8_fill_curve():
+    """The premise A-S and GLFT share -- lambda(delta) = A exp(-kappa delta) --
+    against what the two books actually do. BTC from the May 2025 calibration,
+    LINK from exp 44's L2 fill curve."""
+    btc = json.load(open(os.path.join(ROOT, "analysis/fill_intensity_calibration.json")))
+    link = json.load(open(os.path.join(ROOT, "experiments/44_fill_curve_l2/results/fill_curve_summary.json")))
+
+    fig, (a, b) = plt.subplots(1, 2, figsize=(10.6, 4.0))
+
+    days = sorted(btc["per_day"])
+    cur = {}
+    for d in days:
+        for pt in btc["per_day"][d]["curve"]:
+            cur.setdefault(pt["delta"], []).append(pt["fill_prob"])
+    dl = sorted(cur)
+    md = np.array([np.mean(cur[x]) for x in dl])
+    dl = np.array(dl, float)
+    keep = dl <= 8
+    a.plot(dl[keep], md[keep], "-o", color=ACCENT, lw=1.6, ms=5, zorder=3,
+           label=f"measured ({len(days)} days)")
+    sm = btc["summary"]
+    A, k = sm["A_liq"]["median"], sm["kappa"]["median"]
+    xs = np.linspace(0.5, 8, 200)
+    a.plot(xs, A * np.exp(-k * xs), "--", color=BAD, lw=1.3, zorder=2,
+           label=f"pure exponential  $A e^{{-\\kappa\\delta}}$  (A={A:.1f}, $\\kappa$={k:.2f})")
+    floor = float(np.mean(md[(dl >= 1.5) & (dl <= 5.5)]))
+    a.axhline(floor, color=GOOD, lw=1.1, ls="-", zorder=2)
+    a.text(8.0, floor * 1.5, f"momentum floor  $A_{{mom}}$ \u2248 {floor:.2f} fills/s\n"
+           "\u2014 fills that do not care how far out you quote",
+           fontsize=7.4, color=GOOD, fontweight="bold", ha="right", va="bottom")
+    a.set_yscale("log"); a.set_xlabel("half-spread $\\delta$  (ticks from mid)")
+    a.set_ylabel("fill intensity  (fills/s, log)")
+    a.set_xlim(0, 8.4); a.set_ylim(2e-3, 6)
+    a.annotate("the exponential keeps falling;\nthe real book does not",
+               xy=(5.2, A * np.exp(-k * 5.2)), xytext=(4.2, 6e-3),
+               fontsize=7.2, color=BAD, fontweight="bold", ha="center",
+               arrowprops=dict(arrowstyle="->", lw=0.8, color=BAD))
+    a.legend(fontsize=7.2, loc="lower left", bbox_to_anchor=(0.0, 0.08))
+    a.set_title("a.  BTC: a two-component curve, not an exponential")
+    src(a, "C6 — BTC/USDT, May 2025. The exponential fits the touch and then runs out underneath the data: "
+           "beyond ~1.5 ticks the intensity is flat, so quoting further out buys no protection.")
+
+    fp = link["fill_curve_price"]; fq = link["fill_curve_queue"]
+    ks = sorted(fp, key=int)
+    x = np.array([int(v) for v in ks]) * 0.1          # $0.001 grid -> true $0.01 ticks
+    yp = np.array([fp[v] for v in ks]) * 100
+    yq = np.array([fq[v] for v in ks]) * 100
+    b.step(x, yp, where="mid", color=BAD, lw=1.8, label="price-only fill model", zorder=3)
+    b.step(x, yq, where="mid", color=ACCENT, lw=1.8, label="queue-aware (L2)", zorder=3)
+    b.axvline(0.5, color=INK, ls=":", lw=1.1, zorder=1)
+    b.text(0.52, 0.0022, "the natural bid\n(0.5 true ticks)", fontsize=7.2, color=INK)
+    b.annotate("", xy=(0.5, yq[4]), xytext=(0.5, yp[4]),
+               arrowprops=dict(arrowstyle="<->", lw=1.2, color=GOOD))
+    b.text(0.58, 0.35, f"41\u00d7", fontsize=12, color=GOOD, fontweight="bold")
+    b.set_yscale("log"); b.set_xlabel("distance from mid  (true $0.01 ticks)")
+    b.set_ylabel("fill probability per quote  (%, log)")
+    b.legend(fontsize=7.2, loc="lower left")
+    b.set_title("b.  LINK: a step function, and where the model breaks")
+    src(b, "C20 / exp 44 — LINK/USDT, April 2026, 30 days. The two models agree exactly inside the spread, "
+           "where no queue exists, and differ by 41x at the touch, which is the whole of Chapter 5.")
+
+    fig.suptitle("Figure 8   The fill-intensity premise both models share, against what the books actually do",
+                 fontsize=10.5, fontweight="bold", x=0.008, ha="left")
+    save(fig, "f8_fill_curve")
+
+
+# ---------------------------------------------------------------- F9
+def f9_carry():
+    """Funding is a contractual cash flow; the basis is the risk. Both panels
+    from exps 107 and 108."""
+    fc = json.load(open(os.path.join(ROOT, "experiments/107_funding_carry/results/funding_carry.json")))
+    books = {}
+    for f in __import__("glob").glob(os.path.join(ROOT, "experiments/108_funding_book/results/*.json")):
+        d = json.load(open(f)); books[d["hl"].replace("HL_", "")] = d
+
+    fig, (a, b) = plt.subplots(1, 2, figsize=(10.8, 4.0), gridspec_kw={"width_ratios": [1, 1.12]})
+
+    rows = [(k.replace("HL_", ""), v) for k, v in fc["rows"].items()]
+    rows.sort(key=lambda r: -r[1]["net_carry_ann_pct"])
+    xs = np.arange(len(rows)); w = 0.36
+    a.bar(xs - w/2, [r[1]["hl_ann_pct"] for r in rows], w, color=ACCENT, label="Hyperliquid funding (received)")
+    a.bar(xs + w/2, [r[1]["binance_ann_pct"] for r in rows], w, color=NEUTRAL, label="Binance funding (paid)")
+    for i, (n, v) in enumerate(rows):
+        a.text(i, max(v["hl_ann_pct"], v["binance_ann_pct"]) + 0.5,
+               f"net {v['net_carry_ann_pct']:+.1f}%", ha="center", fontsize=8, fontweight="bold", color=GOOD)
+    a.axhline(0, color=INK, lw=1.0)
+    a.set_xticks(xs); a.set_xticklabels([r[0] for r in rows], fontsize=8.5, fontweight="bold")
+    a.set_ylabel("annualised funding  (%)"); a.set_ylim(-3, 14.5)
+    a.legend(fontsize=7.2, loc="lower left")
+    a.set_title("a.  The differential is contractual, and positive on all four")
+    src(a, "C67 / exp 107, 2026-07-19. Hyperliquid funding ran 92\u2013100% positive over the window. "
+           "This is a settled cash flow, not an estimated edge.")
+
+    names = [n for n in ("BTC", "LINK") if n in books]
+    xs = np.arange(len(names)); w = 0.3
+    fund = [books[n]["funding_ann_pct"] for n in names]
+    basis = [books[n]["basis_ann_pct"] for n in names]
+    carry = [books[n]["carry_ann_pct"] for n in names]
+    b.bar(xs - w, fund, w, color=GOOD, label="funding leg")
+    b.bar(xs, basis, w, color=[GOOD if v >= 0 else BAD for v in basis], alpha=0.55, label="basis drift")
+    b.bar(xs + w, carry, w, color=ACCENT, label="realised carry")
+    b.axhline(0, color=INK, lw=1.0)
+    for i, n in enumerate(names):
+        bk = books[n]
+        b.errorbar([i + w], [bk["carry_ann_pct"]], yerr=[bk["basis_vol_ann_pct"]],
+                   fmt="none", ecolor=INK, elinewidth=1.0, capsize=3, zorder=4)
+        b.text(i + w, bk["carry_ann_pct"] + bk["basis_vol_ann_pct"] + 0.7,
+               f"Sharpe {bk['gross_sharpe']:.2f}", ha="center", fontsize=7.6, fontweight="bold")
+    b.set_xticks(xs); b.set_xticklabels([f"{n}\n{books[n]['hours']:.0f} h" for n in names],
+                                        fontsize=8.5, fontweight="bold")
+    b.set_ylabel("annualised  (%)"); b.set_ylim(-13, 19)
+    b.legend(fontsize=7.2, loc="lower left", ncol=1)
+    b.set_title("b.  The basis, not the funding, decides the outcome")
+    src(b, "C67 / exp 108. Error bar = basis volatility, 7\u201312%/yr against a ~7% funding signal, so a short "
+           "window measures the basis rather than the carry. Same strategy, same window: on BTC the basis helped, "
+           "on LINK it consumed the whole funding leg. Round-trip cost inverts the usual logic \u2014 0.68%/yr "
+           "rebalanced monthly, 20.4%/yr daily.")
+
+    fig.suptitle("Figure 9   Carry: paid to hold a basis, and exposed to it",
+                 fontsize=10.5, fontweight="bold", x=0.008, ha="left")
+    save(fig, "f9_carry")
+
+
+
 if __name__ == "__main__":
     print("building figures ->", OUT)
     for fn in (f1_regime, f2_queue, f3_breakeven, f4_instruments,
-               f5_venue_clock, f6_dislocation, f7_immediacy):
+               f5_venue_clock, f6_dislocation, f7_immediacy, f8_fill_curve, f9_carry):
         print(f"{fn.__name__}:")
         fn()
     print("\ndone.")

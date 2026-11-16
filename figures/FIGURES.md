@@ -12,10 +12,12 @@ Each figure writes a `.png` at 150 dpi for slides and a vector `.pdf` for the th
 | 5 | `f5_venue_clock_law` | Part II's organising law: the adverse-selection horizon spans three orders of magnitude and tracks the venue's clock | exp 93 (all dates) |
 | 6 | `f6_dislocation` | the surviving alpha and its two gates, plus the common-clock robustness check | exp 99 (HL_BTC only) |
 | 7 | `f7_immediacy_premium` | four of six tail books clear the base fee; the bridge control prices the premium by competition | exps 103, 111 |
+| 8 | `f8_fill_curve` | the exponential-intensity premise A-S and GLFT share, against BTC's momentum floor and LINK's step function | `analysis/fill_intensity_calibration.json`, exp 44 |
+| 9 | `f9_carry` | funding is contractual and positive on all four majors; the basis, not the funding, decides the outcome | exps 107, 108 |
 
-Figures 4–7 read committed experiment JSONs directly. Figures 1–3 carry values in
-`TABLE_*` constants transcribed from the contribution each cites, because those
-experiments predate the current results layout.
+Figures 4–9 read committed experiment JSONs directly. Figures 1–3 carry values in
+`TABLE_*` constants, but those are no longer unverified transcriptions: each was
+checked against its source data on 2026-11-16 (see below).
 
 ## Resolved: the C66 reproducibility gap (2026-11-16)
 
@@ -61,3 +63,42 @@ the round trip to the measured spread, which is contemporaneous with the P&L.
 **Verified unchanged.** The exp 111 basket figures (+$243/day mid-anchored,
 +$291 micro-anchored, micro ≥ mid on 4 of 5 days) reproduce exactly, as does the
 basket being positive on all five days.
+
+
+## Verification status (2026-11-16)
+
+Part I's claims were checked against their committed data. Four reproduce exactly:
+
+| claim | figure | source | result |
+|---|---|---|---|
+| C30 quote-regime decomposition | F1 | exp 53 spread sweep | **exact** — +$35.37/7,673, +$94.13/7,288, +$33.23/2,502, +$2.52/216 |
+| C30 queue-position collapse | F2 | exp 53 queue sweep | **exact** — +$11.8, +$2.8, +$0.4, +$0.9, +$1.0 |
+| C33 breakeven law | F3 | exp 59 | **exact** — ratios 100 / 77.5 / 76.0 / 75.9 |
+| C20 fill-model gap | F8b | exp 44 | **exact** — 2.97% vs 0.073% at the touch (40.5×) |
+| C29/C30 corrected engine | — | exp 62 | **exact** — −$7.93/day, 0/30 days positive |
+| C67 carry | F9 | exps 107, 108 | **exact** — 6.74 / 1.65 / 8.39, Sharpe 1.26 |
+
+One did not. **C34's foresight oracle**: the chapters quoted the pre-engine-fix
+table (+$0.60 to +$4.06/day honest, $19.76–$30.03 oracle, 39.7–48.9% of fills
+positive). C34 itself carries a corrected-engine update from exp 62 that the
+chapters never picked up, and the committed JSON is the corrected run:
+
+| horizon | causal $/day | oracle $/day | fraction positive |
+|---|---|---|---|
+| 1 s | **−9.78** | 28.62 | 0.359 |
+| 10 s | −2.87 | 37.24 | 0.444 |
+| 30 s | +1.35 | 47.24 | 0.482 |
+
+The honest residue is not a small positive — it is negative before fees at the
+horizons on which a maker turns inventory. This sharpens Part I: the
+causal-versus-foresight gap widens. Corrected in Ch1, Ch5, Ch6, Ch10 and
+`hypotheses.md`.
+
+A related **unit error** surfaced during the check. Exp 53's configs are
+half-spreads in basis points; Ch5 labelled them "2/4/5/8 ticks", which is the
+invalid $0.001 grid of Contribution 54. On the true $0.01 tick at LINK's ~$9,
+11.1 bps *is* one tick — which is why that row is "at touch". Ch4's and Ch5's
+tables now quote basis points with true-tick equivalents.
+
+Still unverified: the contributions outside Part I and C66/C67, which have not
+been checked against their data in this way.

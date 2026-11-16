@@ -255,8 +255,17 @@ credited in full to a five-LINK order that had no claim on it.
 
 ## 8. Synthesis
 
-Five distinct errors, each biasing the same way: absolute queue priority, an invalid price
-grid, mark-to-mid accounting, unearnable fee tiers, and the winner's curse in fill selection.
+Five distinct errors, each biasing the same way:
+
+| # | mirage | what the simulator grants | how it was caught | what it was worth |
+|---|---|---|---|---|
+| 1 | **queue priority** | front-of-queue on every fill, regardless of arrival time | L2 queue-clearing model against the price-only rule | 41× the touch fill rate; the whole of +$94/day |
+| 2 | **prices that do not exist** | a $0.001 grid where the exchange runs $0.01 | live-feed validation of the tick against `exchangeInfo` | +$56/day → +$0.36/day |
+| 3 | **mark-to-mid** | exit at a mid no counterparty offered | inventory-aware round trip at executable touches | +1.01 bps/fill → negative |
+| 4 | **unearnable fee tiers** | a tier the strategy's own volume cannot reach | reporting every tier rather than the favourable one | sign flip between 4.5 and 1.4 bps |
+| 5 | **fill selection** | fill quality measured on realised fills alone | markout conditioned on the flow that selected them | the winner's curse, unquantified |
+
+Each was found by looking for it, and each had survived robustness testing before it was found.
 Removing them takes Chapter 4's +$154/day to approximately zero — negative before fees at short
 horizons, +$1.35/day at thirty seconds — with a negative markout throughout, and the
 synthetic control shows this is the correct answer rather than a broken one — the breakeven

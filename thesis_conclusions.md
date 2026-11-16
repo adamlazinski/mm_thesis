@@ -164,6 +164,18 @@ adverse drift of −8.6%/yr consumed the entire funding leg and the book returne
 zero. With basis volatility of 7-12% against a funding signal of about 7%, any short window
 measures the basis rather than the carry.
 
+Set side by side, the three have the same shape and differ only in which bound binds:
+
+| | **dislocation taker** (Ch 7) | **immediacy premium** (Ch 8) | **funding carry** (Ch 9) |
+|---|---|---|---|
+| what is paid for | being fast against a slow venue | warehousing inventory nobody else will | holding a basis someone wants shed |
+| size | +4.8 to +5.8 bps / event | +0.96 to +14.4 bps / round trip | +5.4% to +7.8% annualised |
+| evidence | 2 days × 2 independent leaders | 5 days + pre-registered 4-day replication | 2 windows, 4 majors |
+| what bounds it | **capacity** — $1.4–8k at the touch | **competition** — decays as the tail tightens | **the basis** — 7–12%/yr vol on a ~7% signal |
+| fee sensitivity | negative at 4.5 bps, positive at 1.4 | clears base fees on 4 of 6 books | one-time 5.6 bps; 0.68%/yr monthly, 20%/yr daily |
+| principal unknown | behaviour at size | whether any tail stays wide | the cascade tail |
+| is it a forecast? | no — a measured deviation | no — a quoted spread | no — a contractual cash flow |
+
 **The law that unifies them.** Chapter 8's central measurement is not the P&L but the ordering
 of adverse-selection horizons across venues:
 

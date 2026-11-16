@@ -304,7 +304,21 @@ honest edge is, in expectation, zero or negative by construction."
 **Glosten & Milgrom (1985).** In a market with a competitive (zero-expected-profit) dealer
 and a mix of informed and uninformed order flow, the bid-ask spread is set exactly wide
 enough that the dealer's expected loss to informed traders is offset by the spread captured
-from uninformed traders. The spread is therefore not a source of dealer profit; it is a
+from uninformed traders. Writing `pi` for the probability that an arriving order is informed
+and `E[|V - m|]` for the expected mispricing such an order exploits, the zero-profit half-spread
+solves
+
+```
+(1 - pi) * delta        =        pi * E[ |V - m| ]
+ \______________/                 \_________________/
+  spread captured from             expected loss to
+  uninformed flow                  informed flow
+
+    =>   delta* = ( pi / (1 - pi) ) * E[ |V - m| ]
+```
+
+The quantity on the right is not under the dealer's control: it is a property of the information
+environment. The spread is therefore not a source of dealer profit; it is a
 transfer from uninformed to informed traders that *passes through* the dealer, sized by the
 market's information asymmetry. A dealer who is too aggressive on the size of this transfer
 attracts more uninformed flow but loses more to informed flow, and competition drives the
@@ -317,8 +331,16 @@ consecutive trades, new limit orders can profitably queue in front of the existi
 and tighten the spread; if it is narrower, existing limit orders are picked off by the price
 moves between trades faster than they are compensated by spread capture, and the spread
 widens. The equilibrium spread is therefore pinned to the *volatility realized over the
-timescale of one trade* — equivalently, for a market with trade arrival rate A and price
-volatility σ, to `σ/√A`. This is a spread-level restatement of the same zero-profit logic:
+timescale of one trade*:
+
+```
+delta*  ~  sigma_trade  =  sigma / sqrt(A)        (A = trade arrival rate)
+```
+
+equivalently `delta* = c * sigma / sqrt(A)` for a market-dependent constant `c`. Chapter 5
+measures that constant directly on synthetic data with known ground truth and finds it stable at
+`delta_be / sigma_$ ~ 76` across a tenfold range of volatility (Contribution 33), which is the
+empirical content of this relation in this thesis. This is a spread-level restatement of the same zero-profit logic:
 competitive liquidity provision earns the volatility it bears, not more.
 
 **Grossman & Miller (1988).** Both results above explain the spread as a *cost* being
@@ -329,8 +351,18 @@ providing liquidity. Their market has a liquidity demander who must trade *now* 
 number `M` of market makers willing to take the other side and hold the position until the
 natural counterparty arrives. Because those `M` suppliers are risk-averse and few, the demander
 pays a price concession — the **immediacy premium** — that compensates them for the inventory
-risk borne over the waiting interval. The premium scales with the risk held and, critically,
-falls as `1/M`: it vanishes only in the limit of infinitely many competing suppliers.
+risk borne over the waiting interval. For CARA preferences with risk aversion `a`, a position of
+size `Q` shared among `M` suppliers over a holding interval of variance `sigma^2`, the concession
+per unit is
+
+```
+premium  =  ( a * sigma^2 * Q ) / ( M + 1 )        ~  1/M  for large M
+```
+
+Three readings matter here. It **scales with the risk borne** (`sigma^2 Q`), so it is
+compensation rather than an edge. It **falls as 1/M**, so it is a function of how many
+competitors arrived, not of how well anyone quotes. And it **vanishes only as M → ∞**: at finite
+competition the competitive spread is strictly above the adverse-selection cost.
 
 This reframes what the zero-profit results actually assert. Glosten-Milgrom's condition is zero
 *economic* profit — a dealer compensated exactly for the risk and adverse selection they bear,
