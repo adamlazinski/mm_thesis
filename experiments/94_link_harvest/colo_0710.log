@@ -1,0 +1,31 @@
+=== LINK 2026-07-10 CO-LOCATED  gate=5e-05 mode=gate
+   (latency = order/cancel wire time = signal lag = requote cadence)
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  baseline 10ms/qf0.5        pnl=   -2.035  fills=  1441  gated%= 94.4  be_rebate=0.622bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  1ms cancel/qf0.5           pnl=   -1.944  fills=  1310  gated%= 94.5  be_rebate=0.640bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  1ms all/qf0.5              pnl=   -2.394  fills=  1379  gated%= 94.5  be_rebate=0.737bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  1ms all/qf1.0(front)       pnl=   -5.976  fills=   487  gated%= 94.5  be_rebate=3.668bps
+Saved -> /Users/adamlazinski/Desktop/master2/experiments/94_link_harvest/results/link_harvest_colo_2026-07-10.json

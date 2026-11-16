@@ -1,0 +1,20 @@
+[
+  {
+    "timestamp": 1747215279.645,
+    "gap_seconds": 2516.930999994278,
+    "inventory_closed": 0.017139999999999704,
+    "close_price": 103573.405,
+    "pnl_realised": 0.0,
+    "pnl_before": -63.475252700034844,
+    "pnl_after": -63.475252700034844
+  },
+  {
+    "timestamp": 1747234040.0140002,
+    "gap_seconds": 2870.475000143051,
+    "inventory_closed": -0.019960000000000064,
+    "close_price": 103960.08499999999,
+    "pnl_realised": 0.0,
+    "pnl_before": -108.94491680001806,
+    "pnl_after": -108.94491680001806
+  }
+]

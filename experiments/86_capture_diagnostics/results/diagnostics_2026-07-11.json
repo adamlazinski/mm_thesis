@@ -1,0 +1,74 @@
+{
+  "LINKUSDT": {
+    "n_episodes": 4225,
+    "outcomes": {
+      "price_up_stale": 2201,
+      "became_front": 1590,
+      "timeout": 35,
+      "cleared": 399
+    },
+    "n_cleared_prorata": 1519,
+    "spread_ticks_mean": 1.0002638721351067,
+    "spread_ticks_p90": 1.0000000000012221,
+    "qf_trades": {
+      "n": 399,
+      "p25": 1.0,
+      "p50": 1.0297514806871175,
+      "p75": 1.3030301372518673,
+      "mean": 1.7022710498968672
+    },
+    "qf_prorata": {
+      "n": 1519,
+      "p25": 0.02430556348905033,
+      "p50": 0.1358315807363032,
+      "p75": 0.5347537983563093,
+      "mean": 0.3862041409388686
+    },
+    "level_events": {
+      "n": 40,
+      "outcomes": {
+        "overtaken": 9,
+        "gone": 8,
+        "joined": 23
+      },
+      "alone_s_p50": 0.3500000238418579,
+      "alone_s_joined_p50": 0.6000001430511475
+    }
+  },
+  "BTCUSDT": {
+    "n_episodes": 4238,
+    "outcomes": {
+      "price_up_stale": 2410,
+      "became_front": 919,
+      "timeout": 69,
+      "cleared": 840
+    },
+    "n_cleared_prorata": 1647,
+    "spread_ticks_mean": 1.0152259100757808,
+    "spread_ticks_p90": 1.0000000002037268,
+    "qf_trades": {
+      "n": 840,
+      "p25": 1.0006538509383625,
+      "p50": 1.0193704762053564,
+      "p75": 1.1094390588160878,
+      "mean": 1.2860085506561298
+    },
+    "qf_prorata": {
+      "n": 1647,
+      "p25": 0.12856181271705236,
+      "p50": 0.37458295172052847,
+      "p75": 0.9482582776444015,
+      "mean": 0.5908668974953218
+    },
+    "level_events": {
+      "n": 36,
+      "outcomes": {
+        "overtaken": 27,
+        "gone": 3,
+        "joined": 6
+      },
+      "alone_s_p50": 0.2999999523162842,
+      "alone_s_joined_p50": 1.1500000953674316
+    }
+  }
+}

@@ -1,0 +1,10 @@
+=== LINKUSDT 2026-07-11
+  spread p50=1.00t  touch=$2,257  cancel:trade=9.4  gone-by-cancel=55%  widenings=53  repair p50=100ms  rel_tick=1.25bps  kurth_rho=0.0070
+=== BTCUSDT 2026-07-11
+  spread p50=1.00t  touch=$180,346  cancel:trade=19.9  gone-by-cancel=51%  widenings=120  repair p50=100ms  rel_tick=0.00bps  kurth_rho=0.0000
+=== LINKUSDT_PERP 2026-07-11
+  spread p50=1.00t  touch=$14,056  cancel:trade=9.0  gone-by-cancel=60%  widenings=42  repair p50=102ms  rel_tick=1.25bps  kurth_rho=0.0072
+=== BTCUSDT_PERP 2026-07-11
+  spread p50=1.00t  touch=$320,235  cancel:trade=9.3  gone-by-cancel=56%  widenings=286  repair p50=102ms  rel_tick=0.02bps  kurth_rho=0.0002
+
+Saved -> /Users/adamlazinski/Desktop/master2/experiments/92_book_geometry/results/book_geometry_2026-07-11.json

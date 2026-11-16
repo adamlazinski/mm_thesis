@@ -1,0 +1,110 @@
+[
+  {
+    "regime": "constant",
+    "gamma": 0.05,
+    "n_fills": 7049,
+    "total_pnl": 281.52,
+    "avg_half_spread_ticks": 4.0,
+    "final_inventory": -33.0,
+    "max_abs_inv": 50.0
+  },
+  {
+    "regime": "constant",
+    "gamma": 0.1,
+    "n_fills": 7049,
+    "total_pnl": 281.52,
+    "avg_half_spread_ticks": 4.0,
+    "final_inventory": -33.0,
+    "max_abs_inv": 50.0
+  },
+  {
+    "regime": "constant",
+    "gamma": 0.5,
+    "n_fills": 7049,
+    "total_pnl": 281.52,
+    "avg_half_spread_ticks": 4.0,
+    "final_inventory": -33.0,
+    "max_abs_inv": 50.0
+  },
+  {
+    "regime": "constant",
+    "gamma": 1.0,
+    "n_fills": 7049,
+    "total_pnl": 281.52,
+    "avg_half_spread_ticks": 4.0,
+    "final_inventory": -33.0,
+    "max_abs_inv": 50.0
+  },
+  {
+    "regime": "brownian",
+    "gamma": 0.05,
+    "n_fills": 6861,
+    "total_pnl": 296.1,
+    "avg_half_spread_ticks": 4.25,
+    "final_inventory": -47.0,
+    "max_abs_inv": 49.0
+  },
+  {
+    "regime": "brownian",
+    "gamma": 0.1,
+    "n_fills": 6861,
+    "total_pnl": 296.21,
+    "avg_half_spread_ticks": 4.25,
+    "final_inventory": -47.0,
+    "max_abs_inv": 49.0
+  },
+  {
+    "regime": "brownian",
+    "gamma": 0.5,
+    "n_fills": 6875,
+    "total_pnl": 296.84,
+    "avg_half_spread_ticks": 4.25,
+    "final_inventory": -43.0,
+    "max_abs_inv": 45.0
+  },
+  {
+    "regime": "brownian",
+    "gamma": 1.0,
+    "n_fills": 6890,
+    "total_pnl": 297.22,
+    "avg_half_spread_ticks": 4.24,
+    "final_inventory": -30.0,
+    "max_abs_inv": 50.0
+  },
+  {
+    "regime": "brownian_highvol",
+    "gamma": 0.05,
+    "n_fills": 19200,
+    "total_pnl": -158.59,
+    "avg_half_spread_ticks": 4.43,
+    "final_inventory": -22.0,
+    "max_abs_inv": 50.0
+  },
+  {
+    "regime": "brownian_highvol",
+    "gamma": 0.1,
+    "n_fills": 19199,
+    "total_pnl": -149.06,
+    "avg_half_spread_ticks": 4.44,
+    "final_inventory": -13.0,
+    "max_abs_inv": 50.0
+  },
+  {
+    "regime": "brownian_highvol",
+    "gamma": 0.5,
+    "n_fills": 18985,
+    "total_pnl": -165.48,
+    "avg_half_spread_ticks": 4.53,
+    "final_inventory": -3.0,
+    "max_abs_inv": 41.0
+  },
+  {
+    "regime": "brownian_highvol",
+    "gamma": 1.0,
+    "n_fills": 18886,
+    "total_pnl": -248.98,
+    "avg_half_spread_ticks": 4.56,
+    "final_inventory": -4.0,
+    "max_abs_inv": 27.0
+  }
+]

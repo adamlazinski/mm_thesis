@@ -987,7 +987,9 @@ the touch, queue_fraction=1.0 would mean 8,600 LINK must trade before we fill â€
 never in a 0.5s window (median trade = 2 LINK, ~1 trade/window). `queue_fraction=0.001` models
 ~1 competing MM of our size: 8.6 LINK ahead, still at the conservative end.
 
-**Results (A-S flat + L2 queue, queue_fraction=0.001 vs no queue):**
+**Results (A-S flat + L2 queue, queue_fraction=0.001 vs no queue).** Source:
+`experiments/52_link_classical_mm/` â€” `results_as_flat` for the no-queue column and
+`results_as_flat_queue` for the L2 column, both 30 days, verified 2026-11-16.
 
 | Metric | No queue | L2 queue | Change |
 |---|---|---|---|

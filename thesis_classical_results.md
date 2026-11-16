@@ -11,7 +11,7 @@ suit a discontinuous trade series. This chapter runs strategies against that eng
 reports what they earn.
 
 The results are, on their face, good. On LINK/USDT a constrained market maker earns
-+$154/day over thirty consecutive days with a 100% win rate and a daily Sharpe of 56.5;
++$154/day over thirty consecutive days with a 100% win rate and an annualised Sharpe of 56.5;
 the same parameters, applied nine months later with no recalibration, earn +$43.78/day
 with a 100% win rate; a tabular reinforcement learner trained on seventeen days beats the
 classical baseline and transfers ten months forward. Reported at this level of detail —
@@ -50,9 +50,15 @@ The performance of this degenerate configuration on LINK, 11 June – 10 July 20
 |---|---|
 | mean P&L | +$154/day (total +$4,633) |
 | win rate | 30/30 days (100%) |
-| daily Sharpe (√365) | 56.5 |
+| annualised Sharpe (√252) | 56.5 |
 | average markout | +1.2 to +2.5 bps (positive) |
 | adverse fills | 17–35% (against 60–100% on BTC) |
+
+All Sharpe ratios in this thesis are annualised from daily P&L by the factor √252. A figure of
+56.5 should be read as a warning rather than an achievement: it arises because the strategy wins
+on every single day, so the denominator is near zero. No liquidity-provision strategy facing real
+adverse selection produces a variance that small, and §7 and Chapter 5 identify what is
+suppressing it.
 
 The stated mechanism is inventory cycling. The inside-spread floor makes the strategy the
 best bid and offer, which guarantees taker flow; the tight inventory cap means that when

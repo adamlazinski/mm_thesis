@@ -1,0 +1,60 @@
+{
+  "n_days": 30,
+  "n_rows": 2592000,
+  "horizons": {
+    "1s": {
+      "spot_obi_vs_spot_fwd": 0.20699381209533405,
+      "spot_ofi_vs_spot_fwd": 0.043952295735836616,
+      "perp_obi_vs_perp_fwd": 0.20406214613635631,
+      "perp_ofi_vs_perp_fwd": 0.06203407577621073,
+      "perp_obi_vs_spot_fwd": 0.043955562882930406,
+      "perp_ofi_vs_spot_fwd": 0.032267224552783455,
+      "resid_perp_obi_vs_spot_fwd": 0.03655122260295186,
+      "resid_perp_ofi_vs_spot_fwd": 0.021650175132380402
+    },
+    "5s": {
+      "spot_obi_vs_spot_fwd": 0.32305437218779476,
+      "spot_ofi_vs_spot_fwd": 0.006648913482037638,
+      "perp_obi_vs_perp_fwd": 0.19210935002316604,
+      "perp_ofi_vs_perp_fwd": 0.05470642660837221,
+      "perp_obi_vs_spot_fwd": 0.06128303526367984,
+      "perp_ofi_vs_spot_fwd": 0.030704997032507432,
+      "resid_perp_obi_vs_spot_fwd": 0.049722348978093495,
+      "resid_perp_ofi_vs_spot_fwd": 0.030005700441208316
+    },
+    "10s": {
+      "spot_obi_vs_spot_fwd": 0.36119024566654495,
+      "spot_ofi_vs_spot_fwd": -0.005139831839949372,
+      "perp_obi_vs_perp_fwd": 0.1613088310300316,
+      "perp_ofi_vs_perp_fwd": 0.04109792719801622,
+      "perp_obi_vs_spot_fwd": 0.06302450685818593,
+      "perp_ofi_vs_spot_fwd": 0.03045745601419766,
+      "resid_perp_obi_vs_spot_fwd": 0.05009555834427677,
+      "resid_perp_ofi_vs_spot_fwd": 0.03290099042369156
+    },
+    "30s": {
+      "spot_obi_vs_spot_fwd": 0.3606685582874269,
+      "spot_ofi_vs_spot_fwd": -0.012838948717311602,
+      "perp_obi_vs_perp_fwd": 0.1016821754588522,
+      "perp_ofi_vs_perp_fwd": 0.025308157435895894,
+      "perp_obi_vs_spot_fwd": 0.05532733372153582,
+      "perp_ofi_vs_spot_fwd": 0.03102930736414491,
+      "resid_perp_obi_vs_spot_fwd": 0.042412153313331716,
+      "resid_perp_ofi_vs_spot_fwd": 0.03555158276355397
+    },
+    "60s": {
+      "spot_obi_vs_spot_fwd": 0.3100586778670487,
+      "spot_ofi_vs_spot_fwd": -0.011510661547624342,
+      "perp_obi_vs_perp_fwd": 0.07353242289017502,
+      "perp_ofi_vs_perp_fwd": 0.01426582254669916,
+      "perp_obi_vs_spot_fwd": 0.0471713759612769,
+      "perp_ofi_vs_spot_fwd": 0.026620880834416254,
+      "resid_perp_obi_vs_spot_fwd": 0.036068167536055254,
+      "resid_perp_ofi_vs_spot_fwd": 0.030633491694381725
+    }
+  },
+  "redundancy": {
+    "obi": 0.03588452734685597,
+    "ofi": 0.25827029425031783
+  }
+}

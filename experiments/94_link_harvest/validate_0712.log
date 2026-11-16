@@ -1,0 +1,31 @@
+=== LINK 2026-07-12 VALIDATE  gate=5e-05 sig_lat=30ms mode=gate qf=0.5
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-12.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-12.parquet
+Loaded 53,920 trades and 107,349 quotes.
+  Trades: 1783814400.173 to 1783896748.223
+  Quotes: 1783814574.146 to 1783895998.747
+  Price range: 7.86 to 8.10
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-12.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-12.parquet
+Loaded 53,920 trades and 107,349 quotes.
+  Trades: 1783814400.173 to 1783896748.223
+  Quotes: 1783814574.146 to 1783895998.747
+  Price range: 7.86 to 8.10
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-12.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-12.parquet
+Loaded 53,920 trades and 107,349 quotes.
+  Trades: 1783814400.173 to 1783896748.223
+  Quotes: 1783814574.146 to 1783895998.747
+  Price range: 7.86 to 8.10
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-12.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-12.parquet
+Loaded 53,920 trades and 107,349 quotes.
+  Trades: 1783814400.173 to 1783896748.223
+  Quotes: 1783814574.146 to 1783895998.747
+  Price range: 7.86 to 8.10
+  real_signal                pnl=   +3.033  fills=  1486  gated%= 92.6  be_rebate=-0.944bps
+  placebo_shift              pnl=   -7.240  fills=  3499  gated%= 92.8  be_rebate=1.180bps
+  anti_signal                pnl=  -18.061  fills=  5587  gated%= 92.8  be_rebate=2.032bps
+  no_signal                  pnl=  -21.764  fills=  6728  gated%=  0.0  be_rebate=1.862bps
+    signal edge vs placebo = +10.272/day (real signal helps beyond suppression)
+Saved -> /Users/adamlazinski/Desktop/master2/experiments/94_link_harvest/results/link_harvest_validate_2026-07-12.json

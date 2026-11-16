@@ -1,0 +1,63 @@
+=== LINK 2026-07-10 VALIDATE  gate=5e-05 sig_lat=30ms mode=gate qf=0.5
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  real_signal                pnl=   -0.481  fills=  1560  gated%= 94.4  be_rebate=0.142bps
+  placebo_shift              pnl=   -6.865  fills=  3682  gated%= 94.4  be_rebate=1.099bps
+  anti_signal                pnl=  -20.514  fills=  6063  gated%= 94.5  be_rebate=2.115bps
+  no_signal                  pnl=  -23.544  fills=  7345  gated%=  0.0  be_rebate=1.853bps
+    signal edge vs placebo = -6.384/day (no signal — pure suppression)
+Saved -> /Users/adamlazinski/Desktop/master2/experiments/94_link_harvest/results/link_harvest_validate_2026-07-10.json
+########## OOS DAY ##########
+=== LINK 2026-07-11 VALIDATE  gate=5e-05 sig_lat=30ms mode=gate qf=0.5
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-11.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-11.parquet
+Loaded 50,466 trades and 107,476 quotes.
+  Trades: 1783728000.005 to 1783814400.007
+  Quotes: 1783728030.746 to 1783814399.446
+  Price range: 7.91 to 8.12
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-11.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-11.parquet
+Loaded 50,466 trades and 107,476 quotes.
+  Trades: 1783728000.005 to 1783814400.007
+  Quotes: 1783728030.746 to 1783814399.446
+  Price range: 7.91 to 8.12
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-11.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-11.parquet
+Loaded 50,466 trades and 107,476 quotes.
+  Trades: 1783728000.005 to 1783814400.007
+  Quotes: 1783728030.746 to 1783814399.446
+  Price range: 7.91 to 8.12
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-11.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-11.parquet
+Loaded 50,466 trades and 107,476 quotes.
+  Trades: 1783728000.005 to 1783814400.007
+  Quotes: 1783728030.746 to 1783814399.446
+  Price range: 7.91 to 8.12
+  real_signal                pnl=   -2.154  fills=  1379  gated%= 90.5  be_rebate=0.640bps
+  placebo_shift              pnl=   -6.028  fills=  3046  gated%= 90.0  be_rebate=0.974bps
+  anti_signal                pnl=   -9.842  fills=  4254  gated%= 90.7  be_rebate=1.185bps
+  no_signal                  pnl=  -16.685  fills=  5426  gated%=  0.0  be_rebate=1.480bps
+    signal edge vs placebo = -3.874/day (no signal — pure suppression)
+Saved -> /Users/adamlazinski/Desktop/master2/experiments/94_link_harvest/results/link_harvest_validate_2026-07-11.json

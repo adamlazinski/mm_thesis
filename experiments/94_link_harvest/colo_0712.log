@@ -1,0 +1,31 @@
+=== LINK 2026-07-12 CO-LOCATED  gate=5e-05 mode=gate
+   (latency = order/cancel wire time = signal lag = requote cadence)
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-12.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-12.parquet
+Loaded 53,920 trades and 107,349 quotes.
+  Trades: 1783814400.173 to 1783896748.223
+  Quotes: 1783814574.146 to 1783895998.747
+  Price range: 7.86 to 8.10
+  baseline 10ms/qf0.5        pnl=   +1.908  fills=  1405  gated%= 92.7  be_rebate=-0.606bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-12.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-12.parquet
+Loaded 53,920 trades and 107,349 quotes.
+  Trades: 1783814400.173 to 1783896748.223
+  Quotes: 1783814574.146 to 1783895998.747
+  Price range: 7.86 to 8.10
+  1ms cancel/qf0.5           pnl=   +1.445  fills=  1325  gated%= 92.8  be_rebate=-0.475bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-12.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-12.parquet
+Loaded 53,920 trades and 107,349 quotes.
+  Trades: 1783814400.173 to 1783896748.223
+  Quotes: 1783814574.146 to 1783895998.747
+  Price range: 7.86 to 8.10
+  1ms all/qf0.5              pnl=   +0.540  fills=  1378  gated%= 92.7  be_rebate=-0.169bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-12.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-12.parquet
+Loaded 53,920 trades and 107,349 quotes.
+  Trades: 1783814400.173 to 1783896748.223
+  Quotes: 1783814574.146 to 1783895998.747
+  Price range: 7.86 to 8.10
+  1ms all/qf1.0(front)       pnl=   +3.339  fills=   502  gated%= 92.8  be_rebate=-1.986bps
+Saved -> /Users/adamlazinski/Desktop/master2/experiments/94_link_harvest/results/link_harvest_colo_2026-07-12.json

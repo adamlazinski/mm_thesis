@@ -1,0 +1,128 @@
+=== LINK 2026-07-10  (honest: real L2, post_only, qf=0.5, 10ms lat)
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  baseline(no signal)      pnl=  -23.544  fills=  7345  gated%=  0.0  be_rebate=1.853bps
+--- LEVER 1: gate threshold (sig_lat=15ms, mode=gate)
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  gate=5e-05               pnl=   -2.035  fills=  1441  gated%= 94.4  be_rebate=0.622bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  gate=0.0001              pnl=   -5.679  fills=  1603  gated%= 88.7  be_rebate=1.578bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  gate=0.0002              pnl=   -7.387  fills=  2054  gated%= 77.6  be_rebate=1.712bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  gate=0.0003              pnl=  -11.736  fills=  2425  gated%= 65.7  be_rebate=2.320bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  gate=0.0005              pnl=  -16.951  fills=  3329  gated%= 42.6  be_rebate=2.557bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  gate=0.001               pnl=  -18.586  fills=  5666  gated%= 11.3  be_rebate=1.790bps
+    -> best gate = 5e-05  (pnl=-2.035)
+--- LEVER 2: signal latency (gate=5e-05, mode=gate)
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  sig_lat=5ms              pnl=   -1.029  fills=  1338  gated%= 94.5  be_rebate=0.326bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  sig_lat=10ms             pnl=   -1.756  fills=  1414  gated%= 94.4  be_rebate=0.539bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  sig_lat=15ms             pnl=   -2.035  fills=  1441  gated%= 94.4  be_rebate=0.622bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  sig_lat=30ms             pnl=   -0.481  fills=  1560  gated%= 94.4  be_rebate=0.142bps
+--- LEVER 3: response mode (gate=5e-05, sig_lat=30ms)
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  mode=gate                pnl=   -0.481  fills=  1560  gated%= 94.4  be_rebate=0.142bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  mode=widen               pnl=   -5.480  fills=  1733  gated%= 94.4  be_rebate=1.287bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  mode=lean                pnl=   -4.599  fills=  1485  gated%= 94.4  be_rebate=0.873bps
+--- LEVER 4: queue fraction (gate=5e-05, sig_lat=30ms, mode=gate)
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  qf=0                     pnl=   -1.672  fills=  5701  gated%= 94.3  be_rebate=0.177bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  qf=0.5                   pnl=   -0.481  fills=  1560  gated%= 94.4  be_rebate=0.142bps
+Loading trades from: /Users/adamlazinski/Desktop/master2/data/live/processed/trades_LINK_2026-07-10.parquet
+Loading quotes from: /Users/adamlazinski/Desktop/master2/data/live/processed/quotes_LINK_2026-07-10.parquet
+Loaded 48,684 trades and 104,901 quotes.
+  Trades: 1783666803.129 to 1783727990.622
+  Quotes: 1783666985.746 to 1783727999.546
+  Price range: 7.85 to 8.02
+  qf=1                     pnl=   -3.868  fills=   528  gated%= 94.4  be_rebate=2.275bps
+
+WINNER: gate=5e-05 sig_lat=30ms mode=gate -> pnl=-0.481/day, breakeven rebate=0.142bps
+Saved -> /Users/adamlazinski/Desktop/master2/experiments/94_link_harvest/results/link_harvest_2026-07-10.json
