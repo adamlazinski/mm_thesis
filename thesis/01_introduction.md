@@ -27,10 +27,13 @@ fees, it should appear in the numbers.
 
 It does appear, and this thesis is largely an account of why that appearance is misleading and
 what remains once it is removed. The investigation proceeds in two movements. The first
-establishes that liquidity provision at the competitive margin earns **exactly zero** for a
-retail-accessible participant, that every apparently profitable backtest produced here
-decomposes into one of five accounting errors, and that four mutually independent classes of
-information fail to change this. The second asks what, if anything, does earn a positive
+establishes that liquidity provision at the competitive margin returns a quantity
+**indistinguishable from zero** for a retail-accessible participant across every book and
+sample tested, that every apparently profitable backtest produced here was traced to an
+execution-accounting error, and that four distinct classes of information fail to change it.
+That the zero is an *enforced equilibrium* rather than an unlucky sample is the reading this
+thesis argues for and does not claim to have proved; Chapter 10 §1 separates the two and
+states what the design can and cannot support. The second asks what, if anything, does earn a positive
 return once that is accepted, and finds three answers — none of which is a signal.
 
 The work also outgrew its data. It begins with purchased tick history for two Binance pairs and
@@ -111,15 +114,18 @@ results (Contributions 64 and 66), both reported in full.
 Stated early, because it organises everything that follows.
 
 **The profitability that classical and RL-based market making appear to show in a standard
-event-driven backtest is not a strategy edge.** Contribution 30 shows it directly: the entire
-LINK profit of Contributions 16–24 is a consequence of one unmodelled assumption — that a
-resting limit order has absolute priority in the queue regardless of when it was placed. The
-decomposition is exact. Profitability is confined to the quote regimes where that assumption is
-false, and in the one regime where the price-only fill model is physically honest — outside the
-natural spread, where a fill genuinely requires the market to trade through the level — the
-result falls to a few dollars a day and the average markout *inverts* from positive to negative.
-Contribution 54 then removes the mechanism entirely: the inside-spread quotes that generated the
-profit were placed at prices the exchange's tick grid would have rejected.
+event-driven backtest is not a strategy edge.** Contribution 30 shows it directly, by
+partitioning the P&L by quote regime: every profitable regime is one in which the simulated
+fill could not have happened, and the two regimes fail for two different reasons. *Inside* the
+spread — which is where the optimiser puts the strategy, and where +$129 of the +$154/day sits
+— the orders were placed at prices the exchange's $0.01 tick grid does not contain, and would
+have been rejected on submission (Contribution 54). *At the touch*, where the price is real,
+the price-only fill model grants the order absolute queue priority it has not earned,
+overstating the fill rate by a factor of 41 against an L2 queue-clearing model (Contribution
+20). In the one regime where the fill model is physically honest — outside the natural spread,
+where a fill genuinely requires the market to trade through the level — the result falls to a
+few dollars a day and the average markout *inverts* from positive to negative. Nothing is left
+standing, and the decomposition is exact.
 
 Four further accounting errors, each biasing in the same direction, complete the catalogue
 (Chapter 5): mark-to-mid valuation, at the level of a single fill and again more severely at the
@@ -176,7 +182,9 @@ occupying a seam rather than for knowing something:
   zero in two months as the tail tightened.
 - **Being paid to carry a basis** (Chapter 9). Hyperliquid's perpetual runs persistently rich, so
   shorts are contractually compensated; net of Binance's funding the differential is 5 to 8%
-  annualised, and a delta-neutral book returned +8.4%/yr at a gross Sharpe near 1.26 on BTC. The
+  annualised, and a delta-neutral book returned +8.4%/yr annualised on BTC — though over the
+  thirty-six hours actually observed that is 3.45 bps against a 5.6 bps round trip, so what is
+  established is that the cash flow is collectible, not that the window paid. The
   basis, not the funding, is the risk, and the cascade tail that ends such books is the one
   quantity a benign sample could not measure.
 
@@ -223,7 +231,7 @@ relative tick size as the organising axis of the thesis.
 
 **The queue-priority decomposition and the five mirages** (C29–C32, C46–C54). C29 quantifies the
 optimism of a price-only fill model against L2 queue clearing (a 41-fold overstatement of touch
-fills); C30 shows the entire LINK profit is that artefact, and that RL leans into it harder than
+fills); C30 shows the entire LINK profit sits in regimes the fill model misprices, and that RL leans into them harder than
 hand-tuned baselines; C32 closes two plausible escapes at the same sub-dollar noise floor; C54
 retracts the mechanism itself on tick-grid grounds; C46–C53 establish the fee gate and the
 spread-width gate.

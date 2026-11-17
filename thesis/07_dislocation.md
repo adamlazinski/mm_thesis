@@ -86,6 +86,15 @@ matters more here than anywhere else in the thesis: a mark-to-mid version of thi
 would report a materially larger number, and Chapter 5 §5 catalogues what that error has cost
 elsewhere.
 
+One asymmetry in that accounting should be stated, because it runs in the strategy's favour.
+*Price* is executable on both legs, but *size* is capped only on entry: the simulation limits
+the clip to the depth resting at the laggard's touch when the event fires, and then exits the
+whole clip at the touch five seconds later without checking what is resting there. Since §5
+shows the touch is thin precisely because Hyperliquid's makers withdraw on the same signal, the
+exit is the leg most likely to be depth-constrained, and it is the leg not constrained here.
+The capacity figures below are therefore entry-side bounds, and the true round-trip capacity is
+no larger and may be smaller.
+
 Across two days and two independent leaders, at the 5 bps threshold:
 
 | leader → HL_BTC | events | gross round trip @5 s | hit rate | depth-capped P&L/day |

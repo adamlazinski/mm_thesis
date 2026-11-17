@@ -24,15 +24,23 @@ on the perpetual funding basis.
 
 Cointegration is the canonical statistical arbitrage: if two non-stationary prices admit a
 stationary linear combination, the spread mean-reverts and is tradeable. Contribution 67 tests
-it on the five Hyperliquid majors — Engle-Granger and Johansen on log-mids, 2,164 aligned
+it on the five Hyperliquid majors — Engle-Granger on log-mids (the implementation uses
+`statsmodels`' `coint` and `adfuller`; Johansen was planned and not run), 2,164 aligned
 sixty-second bars, Ornstein-Uhlenbeck half-lives from an AR(1) fit, and an in-sample /
 out-of-sample z-score backtest carrying real per-leg costs.
 
 The econometrics cooperate and the economics do not. **Five of ten pairs "pass" cointegration at
-p < 0.05** — ETH/LINK at 0.006, LINK/HYPE at 0.004 — and that is the first finding rather than
-the result: ten pairs tested on a short intraday sample is a multiple-testing exercise, and half
-of them clearing a 5% threshold is close to what chance produces. Half-lives run 45 to 140
-minutes, so the reversion is slow relative to the horizon on which costs accrue.
+p < 0.05** — ETH/LINK at 0.006, LINK/HYPE at 0.004. Under ten *independent* nulls the expected
+number of passes at a 5% threshold is 0.5, so five is an order of magnitude more than chance,
+and these p-values are not evidence against the relationships being real. The reason to
+discount them is different and has to be argued rather than asserted: the ten pairs are drawn
+from five assets that share a dominant market factor, so the tests are strongly dependent
+rather than independent; the sample is a short intraday window, where Engle-Granger is known to
+over-reject on persistent series; and no multiplicity adjustment was applied. The honest
+statement is that this design cannot distinguish genuine intraday cointegration from size
+distortion under dependence — which is why §2's verdict rests on the *trading* result below
+rather than on the test statistics. Half-lives run 45 to 140 minutes, so the reversion is slow
+relative to the horizon on which costs accrue.
 
 Net P&L per trade is negative essentially everywhere, at −6 to −12 bps in sample. The reversion
 does not cover the roughly 8.6 bps round trip a two-legged position pays. The marginally positive
@@ -55,9 +63,11 @@ positive and shorts are paid to hold the position that pulls it back. This is no
 is a contractual cash flow, and collecting it is the purest available form of being paid to bear
 a risk.
 
-Over the captured window Hyperliquid's funding ran **92 to 100% positive**, at roughly 11%
-annualised. Taken alone that number is not a strategy, because a short perpetual position is
-directionally exposed. The delta-neutral expression is to short the high-funding venue's
+Over the captured window Hyperliquid's funding was positive on **72 to 100%** of settlements
+depending on the asset — 99.9–100% on BTC, ETH and LINK at roughly 11% annualised, but only
+71.9% on SOL at 3.7% — so the "persistently rich" description fits three of the four majors
+and not the fourth. Taken alone that number is not a strategy, because a short perpetual
+position is directionally exposed. The delta-neutral expression is to short the high-funding venue's
 perpetual and go long the low-funding venue's, leaving the price legs to cancel and the funding
 differential to accrue. Against Binance the net differential is:
 
@@ -83,13 +93,28 @@ rather than reporting the first:
 
 | short HL / long Binance | funding leg | basis drift | gross carry | basis vol | Sharpe |
 |---|---|---|---|---|---|
-| BTC, 36 h | +6.7%/yr | **+1.7%/yr** (aligned) | **+8.4%/yr** | 6.6%/yr | ~1.26 |
+| BTC, 36 h | +6.7%/yr | **+1.7%/yr** (aligned) | **+8.4%/yr** (= 3.45 bps over the window, vs a 5.6 bps round trip) | 6.6%/yr | 1.26 — see below |
 | LINK, 12 h | +8.3%/yr | **−8.6%/yr** (adverse) | ~0 | 11.9%/yr | ~0 |
 
 On BTC the basis *helped*: the short leg profited as the rich perpetual converged, partly
 self-hedging the funding it was collecting, and the combination returned +8.4%/yr against 6.6%
-of basis volatility — a gross Sharpe of about 1.26. On LINK an adverse basis drift consumed the
-entire funding leg and the book returned approximately zero.
+of basis volatility. The ratio of those two is 1.26, which the simulation labels a gross
+Sharpe; it is reported here only because it is what the experiment emits, and it should not be
+read as one. A Sharpe estimated from thirty-six hours has on the order of one independent
+observation of the quantity that actually drives it — the basis — and its sampling error
+dwarfs its value. On LINK an adverse basis drift consumed the entire funding leg and the book
+returned approximately zero.
+
+**And neither window clears its own round trip.** This is the sharpest limitation of the
+chapter and it is arithmetic, not interpretation. The annualised figures above are annualised
+from 36 hours and 12 hours respectively. Expressed as what the book actually earned over the
+window it was measured on, BTC's +8.4%/yr is **3.45 bps** of notional (the net funding
+collected was 2.8 bps: 0.047% from Hyperliquid against 0.019% paid to Binance), and LINK's is
+approximately zero. Against the 5.6 bps round trip required to put the two-legged position on
+and take it off, **both windows are net negative**. A carry book becomes profitable only by
+holding far longer than anything observed here — which is the same point the cost table makes
+from the other side, and it means the figures in this section establish that the cash flow
+exists and is collectible, not that a tradeable strategy has been demonstrated.
 
 The generalisation is the important part. Basis volatility runs 7 to 12% annualised against a
 funding signal of roughly 7%, so over any short window **the realized P&L is basis-dominated,
@@ -119,8 +144,8 @@ before the convergence it was correct about arrives. Chapter 7 §5 measured the 
 touch emptying during dislocations, which is the microstructural signature of exactly that event.
 
 No such episode occurred in the capture. The honest statement is therefore that carry returned a
-gross Sharpe of about 1.26 on BTC *conditional on no cascade*, and that the unconditional number
-is unknown and lower. This is the standard shape of a negative-skew risk premium: many small
+ratio of 1.26 on BTC *conditional on no cascade*, and that the unconditional number is unknown
+and lower — on top of the window being too short for that ratio to be an estimate of anything. This is the standard shape of a negative-skew risk premium: many small
 gains, and the distribution's information concentrated in the rare loss that the sample does not
 contain. It is also why the funding differential being a contractual cash flow does not make the
 strategy safe — the cash flow is certain and the basis is not.
@@ -143,8 +168,11 @@ that configuration.
 The positive half pays, and pays for a reason that can be stated in a sentence: Hyperliquid's
 perpetual runs persistently rich, shorts are contractually compensated for holding the position
 that corrects it, and the compensation net of Binance's funding is 5 to 8% annualised. The book
-returned +8.4%/yr on BTC at a gross Sharpe near 1.26 and approximately zero on LINK, the
-difference being which way the basis happened to drift over a short window.
+returned +8.4%/yr annualised on BTC and approximately zero on LINK, the difference being which
+way the basis happened to drift over a short window. Annualised is the operative word: over the
+thirty-six hours actually observed, the BTC book earned 3.45 bps against the 5.6 bps it costs
+to open and close, so what this chapter establishes is that the cash flow is real and
+collectible, not that the strategy was profitable as run.
 
 And its shape is by now familiar. It is not a signal — nothing is being predicted. It is
 compensation for bearing a specific risk, the cross-venue basis; it is unstable per unit and per

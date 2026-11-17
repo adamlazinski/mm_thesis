@@ -141,9 +141,17 @@ failure here is decisive in one direction only.
 
 It fails. On a losing day the result moves from −$2.04 to −$1.94; on a winning day it moves
 from +$1.91 to **+$0.54** — slightly *worse*, because at a 1 ms requote cadence the quotes
-churn and shed queue position while toxic-avoidance was already saturated. Front-of-queue
-positioning (queue_fraction = 1.0), the actual prize of co-location, is worse still on one day
-and high-variance on the other.
+churn and shed queue position while toxic-avoidance was already saturated.
+
+The experiment is **incomplete in one respect, and it is the respect that matters most**. The
+engine computes the depth ahead of an order as `visible_queue × queue_fraction`, so
+`queue_fraction = 0` is the front of the queue and `1.0` is behind the whole visible book.
+Experiment 94's sweep labels these the other way round, and an earlier draft of this chapter
+reported the `queue_fraction = 1.0` arm as "front-of-queue positioning, the actual prize of
+co-location". It is the opposite — the deepest position tested. **The true front-of-queue
+configuration was therefore never run against the 1 ms latency arm**, and this chapter makes
+no claim about it. What the experiment does establish is the latency half: collapsing the wire
+and requote stack from 10 ms to 1 ms, at a fixed mid-queue position, changes nothing.
 
 The reason is Contribution 59. The perp leads by 40–100 ms; a 15 ms gate already fires *inside*
 that window, so there is nothing left for 1 ms to catch. Speed saturated long before the
@@ -208,8 +216,9 @@ maker to the equilibrium and stops there.
 | counterparty identity (C62) | exactly who is trading | 100th-percentile placebo separation; pocket = +0.15 ± 0.20 bps, vs a 1.0 bps fee |
 
 Four mutually independent instruments, applied to books on three venues, all terminate at the
-same place. The striking feature is not that each fails but that each fails *at exactly zero*
-rather than below it. That is not a coincidence of four unlucky experiments; it is what an
+same place. The striking feature is not that each fails but that each lands *at* zero rather
+than well below it — close enough that, at the precision these samples support, none of them
+is distinguishable from it. That is not a coincidence of four unlucky experiments; it is what an
 enforced equilibrium looks like from the inside. A market in which liquidity provision paid a
 positive risk-adjusted return would attract quoting until the spread compressed or the queue
 lengthened; a market in which it paid a negative one would lose quoters until the spread

@@ -26,11 +26,11 @@ where q is current inventory.
 
 The optimal symmetric half-spread around r:
 
-    δ* = (1/κ) × ln(1 + κ/γ)                     ... (2a)  [adverse selection term]
+    δ* = (1/γ) × ln(1 + γ/κ)                     ... (2a)  [adverse selection term]
        + (1/2) × θ                                 ... (2b)  [inventory risk term]
 
 where:
-    θ = sqrt(σ²γ / (2Aκ) × (1 + κ/γ)^(1 + κ/γ))
+    θ = sqrt(σ²γ / (2Aκ) × (1 + γ/κ)^(1 + κ/γ))
 
 This gives:
     bid = r - δ*
@@ -50,7 +50,7 @@ Key differences from Avellaneda-Stoikov
    than approximated, and scales as 1/(A×κ) rather than σ²×T.
 
 4. The spread formula (2) has two interpretable components:
-   - (1/κ) × ln(1 + κ/γ): adverse selection compensation — depends only on
+   - (1/γ) × ln(1 + γ/κ): adverse selection compensation — depends only on
      the fill probability structure and risk aversion
    - θ/2: inventory risk compensation — depends on volatility, arrival rate,
      and risk aversion
@@ -93,7 +93,7 @@ class QuoteDecision:
     ask_size:       float
     reservation:    float   # indifference price r
     half_spread:    float   # δ* — optimal half-spread
-    adverse_term:   float   # (1/κ) × ln(1 + κ/γ)
+    adverse_term:   float   # (1/γ) × ln(1 + γ/κ)
     inventory_term: float   # θ/2
     skew:           float   # inventory skew applied to reservation price
     should_quote_bid: bool = True

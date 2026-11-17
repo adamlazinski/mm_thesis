@@ -20,16 +20,35 @@ method, what it cannot support, and what should be done next.
 The thesis makes a two-part claim, and the parts are not independent — the second is the first
 read at its boundary.
 
-**Part one.** For a participant without co-location or a negotiated fee schedule, competitive
-liquidity provision on a lit crypto book earns **exactly zero**. Not approximately zero, and
-not zero in this sample: zero as the enforced outcome of a competitive equilibrium that
-microstructure theory specified before any of this was measured. Every apparently profitable
-backtest produced in the course of this project — classical, signal-overlaid, or
-reinforcement-learned — decomposes into one of five accounting errors, and the residue that
-survives their removal is the equilibrium itself.
+**Part one — the measurement.** Across the books, samples and configurations tested here,
+competitive liquidity provision by a participant without co-location or a negotiated fee
+schedule returns a quantity **indistinguishable from zero at the precision these samples
+support**, and negative before fees at the horizons on which a maker turns inventory. Every
+apparently profitable backtest produced in the course of this project — classical,
+signal-overlaid, or reinforcement-learned — was traced to an execution-accounting error, and
+no class of information brought to bear on the residue moved it into profit.
 
-**Part two.** Positive expected returns are nevertheless available at the boundary of that
-equilibrium, and three were found and hardened here. None of them is a forecast. Each is
+**Part one — the interpretation.** The reading this thesis offers is that the residue is an
+enforced competitive equilibrium rather than a run of bad luck: it is what Glosten-Milgrom and
+Wyart-Bouchaud predict, it reproduces on synthetic data where the breakeven spread is pinned
+to volatility by construction, and four differently-constructed measurements land in the same
+place rather than scattering. That is an interpretation, and it should be held to a different
+standard than the measurement. **It is not established that the true value is literally
+zero**, and the design here could not establish it: the thesis specifies no equivalence
+interval around zero, reports point estimates without dependence-aware intervals, carries no
+power calculation, and applies no multiplicity adjustment across more than a hundred
+experiments. The four instruments share data, markout definitions, code paths and a market
+regime, so they are four *probes* rather than four independent replications. Failing to find a
+positive result is not the same as demonstrating equality to zero, and competitive-equilibrium
+reasoning about the marginal efficient provider does not by itself imply that every
+technologically disadvantaged participant earns raw P&L of exactly zero. The strong form of
+the claim, used in earlier drafts of this chapter, outran its evidence and is withdrawn.
+
+**Part two.** Positive expected returns appear to be available at the boundary of that
+equilibrium, and three candidates were found and stress-tested here. All three rest on short
+windows — two days, five days, thirty-six hours — and each is qualified in its own chapter by
+a specific accounting or sampling limitation that is not yet closed. They are best read as
+**exploratory existence evidence that locates the boundary**, not as established strategies. None of them is a forecast. Each is
 compensation for bearing a risk or for occupying a structural position that someone must
 occupy: trading against a venue whose makers reprice on a slower clock, providing immediacy on
 a book where two or three participants are willing to, and being paid to carry a cross-venue
@@ -108,7 +127,7 @@ independent classes of it were, on books from three venues:
 | counterparty identity (C62) | exactly who is trading | placebo separation at the 100th percentile; benign pocket +0.15 ± 0.20 bps, against a 1.0 bps fee |
 
 Three of the four detect genuine, placebo-validated structure. The decisive feature is not that
-each fails but that **each fails at exactly zero rather than below it**. Contribution 60 is the
+each fails but that **each lands at zero rather than well below it**. Contribution 60 is the
 sharpest form: a true, placebo-proof, out-of-sample-robust signal — the 40-100 ms perpetual
 lead — whose optimal use nets **+$0.13/day** against a spread of about $5. Acting correctly on
 real information forfeits exactly the spread revenue it saves, because the market has already
@@ -154,12 +173,14 @@ in the screen whose competition has already arrived. Per-coin P&L is sign-unstab
 five days of the original sample and on 4 of 4 days of a pre-registered replication on disjoint
 coins, with the micro-price anchor beating the mid on 4 of 4.
 
-**Being paid to carry a basis** (Chapter 9, Contribution 67). Hyperliquid's funding ran 92-100%
+**Being paid to carry a basis** (Chapter 9, Contribution 67). Hyperliquid's funding ran 72-100%
 positive over the captured window at roughly 11% annualised; net of Binance's funding the
 delta-neutral differential is **+5.4% to +7.8%** on all four majors — a contractual cash flow
 rather than an estimated edge. But the differential is what the book collects, not what it
 earns: the two price legs do not cancel, and the basis moves. On BTC the basis happened to help
-(+1.7%/yr on top of +6.7% of funding) for a gross **+8.4%/yr at a Sharpe near 1.26**; on LINK an
+(+1.7%/yr on top of +6.7% of funding) for a gross **+8.4%/yr annualised** — which over the
+thirty-six hours observed is 3.45 bps against a 5.6 bps round trip, so the window does not pay
+for itself and the annualisation is the whole of the headline; on LINK an
 adverse drift of −8.6%/yr consumed the entire funding leg and the book returned approximately
 zero. With basis volatility of 7-12% against a funding signal of about 7%, any short window
 measures the basis rather than the carry.
@@ -362,7 +383,7 @@ manufactures large negative autocorrelation that vanishes per instrument.
   long-run Sharpe.
 - **The cascade tail is unmeasured.** Both carry windows had drawdown under 20 bps. A
   negative-skew premium's information is concentrated in the rare loss the sample does not
-  contain, so the +8.4%/yr and Sharpe 1.26 on BTC are *conditional on no cascade*, and the
+  contain, so the +8.4%/yr on BTC is *conditional on no cascade*, and the
   unconditional figures are unknown and lower. The same caveat applies to the thin-book premium,
   where the frozen tape cannot show a maker being run over during a volume explosion — which is
   exactly when the July-to-August decay of the bridge control originated.

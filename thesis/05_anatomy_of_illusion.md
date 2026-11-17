@@ -36,32 +36,50 @@ correct. On a real book it grants **absolute queue priority** — the simulated 
 at the front, ahead of everything already resting there.
 
 On LINK the consequence is severe and precisely identifiable. The natural spread is exactly
-one tick for 99.9% of April 2026 — $0.01 on a price near $9, or 22.2 bps, with median, mean,
-p10 and p90 all identical. (On the $0.001 grid the experiments were originally parameterised
-with, the same observation reads as a constant ten ticks; Contribution 54 is the correction,
-and this chapter quotes basis points throughout to avoid inheriting the error.) Ordinary sells
-print at the natural bid, half a tick below the mid. The strategy of Chapter 4 §2 posts its bid
-*inside* that, at `mid − δ` with δ less than half a tick. Since the natural bid is at or below
-the quoted bid, the price-only condition fills the inside quote on **every ordinary sell** —
-crediting it with the entire taker flow that in reality would have to clear against the roughly
-8,600 LINK already resting at the natural bid. A five-LINK order is being handed the fills
-belonging to a queue 1,700 times its size.
+one tick for 99.9% of April 2026 — $0.01 on a price near $9, so **11.1 bps quote to quote**,
+with median, mean, p10 and p90 all identical. (On the $0.001 grid the experiments were
+originally parameterised with, the same observation reads as a constant ten ticks;
+Contribution 54 is the correction, and this chapter quotes basis points throughout to avoid
+inheriting the error.) Ordinary sells print at the natural bid, half a tick — about 5.6 bps —
+below the mid.
+
+The artefact bites **at the touch**, where the quoter shares a price with the depth already
+resting there. A five-LINK order joining a bid that already holds some 8,600 LINK is, under
+the price-only rule, filled on the first trade that reaches that price, as though the queue
+ahead of it did not exist. It is being handed fills that belong to a queue 1,700 times its
+size, and Contribution 20 measures the resulting overstatement directly: a 41-fold gap in
+touch-level fill probability.
+
+**A distinction that matters, and that an earlier draft of this chapter got wrong.** The same
+mechanism does *not* explain the inside-spread regimes. A bid strictly better than the natural
+bid has **price priority**: an incoming market sell executes against it before reaching the
+inferior level, so there is no queue to jump and the price-only rule is, on its own terms,
+correct. Contribution 20 says exactly this — inside the spread the price-only and queue-aware
+models agree to the digit (2.97% against 2.97%), because an order there has nothing in front
+of it. What is wrong with the inside-spread quotes is not their queue treatment but their
+**existence**: on the venue's true $0.01 grid there is no price strictly inside a one-tick
+spread, so those orders would have been rejected on submission. That is the second mirage
+(§3), not the first, and the two should not be conflated. Each regime is destroyed by its own
+error, which is why the decomposition below leaves nothing standing.
 
 **The decomposition.** Contribution 30 partitions the results by quote regime (LINK, April
 2026, thirty days, zero fees, flat A-S):
 
-| regime | half-spread | vs. the one-tick touch | fill model honest? | fills/day | P&L/day | 1s markout |
+| regime | quoted spread | vs. the one-tick touch | why the fill model fails | fills/day | P&L/day | 1s markout |
 |---|---|---|---|---|---|---|
-| deep inside | 4.5 bps (0.4 ticks) | 0.6 ticks inside | **no** | 7,673 | +$35.37 | +0.98 bps |
-| inside (optimum) | 8.9 bps (0.8 ticks) | 0.2 ticks inside | **no** | 7,288 | **+$94.13** | +2.80 bps |
-| at touch | 11.1 bps (1.0 tick) | at the touch | partial | 2,502 | +$33.23 | −0.41 bps |
-| outside | 17.8 bps (1.6 ticks) | 0.6 ticks outside | **yes** | 216 | **+$2.52** | −0.65 bps |
+| deep inside | 4.5 bps (0.4 ticks) | 0.6 ticks inside | **price does not exist** (§3) | 7,673 | +$35.37 | +0.98 bps |
+| inside (optimum) | 8.9 bps (0.8 ticks) | 0.2 ticks inside | **price does not exist** (§3) | 7,288 | **+$94.13** | +2.80 bps |
+| at touch | 11.1 bps (1.0 tick) | at the touch | **queue priority** (§2) | 2,502 | +$33.23 | −0.41 bps |
+| outside | 17.8 bps (1.6 ticks) | 0.6 ticks outside | — honest | 216 | **+$2.52** | −0.65 bps |
 
-Half-spreads are quoted in basis points because that is the unit the sweep was configured in and
-the only one that is unambiguous here: LINK traded near $9 against a true $0.01 tick, so one tick
-is 11.1 bps, and the "at touch" row sits at exactly one tick by construction. Earlier drafts
-labelled these rows 2/4/5/8 ticks, which is the invalid $0.001 grid of Contribution 54; the
-regimes themselves are unaffected, since they are defined by position relative to the touch.
+The spread column is the **full quote-to-quote width**, which is how the sweep was
+parameterised (`min_spread_bps`, applied as `mid × bps / 20000` per side). LINK traded near $9
+against a true $0.01 tick, so one tick is 11.1 bps and the "at touch" row sits at exactly one
+tick by construction. Earlier drafts labelled this column "half-spread" and quoted the tick as
+22.2 bps, both of which are the same factor-of-two error; the tick multiples, the regime
+boundaries and every P&L figure are unaffected, since the regimes are defined by position
+relative to the touch. Earlier drafts also labelled these rows 2/4/5/8 ticks, which is the
+invalid $0.001 grid of Contribution 54.
 
 The only regime in which the price-only rule is physically honest is *outside* the natural
 spread: there a fill genuinely requires the market to trade through the level, so there is no
@@ -75,7 +93,7 @@ appears only in the regimes where the fill model is dishonest, and inverts to ne
 one regime where it is not. It was never a property of the flow; it was a property of the
 simulator.
 
-**Queue position is the whole story.** Re-running at the touch under an L2 queue model,
+**At the touch, queue position is the whole story.** Re-running at the touch under an L2 queue model,
 parameterised by the share of visible depth resting ahead of the order:
 
 | position | depth ahead | P&L/day | markout |
@@ -259,8 +277,8 @@ Five distinct errors, each biasing the same way:
 
 | # | mirage | what the simulator grants | how it was caught | what it was worth |
 |---|---|---|---|---|
-| 1 | **queue priority** | front-of-queue on every fill, regardless of arrival time | L2 queue-clearing model against the price-only rule | 41× the touch fill rate; the whole of +$94/day |
-| 2 | **prices that do not exist** | a $0.001 grid where the exchange runs $0.01 | live-feed validation of the tick against `exchangeInfo` | +$56/day → +$0.36/day |
+| 1 | **queue priority** | front-of-queue on every fill, regardless of arrival time | L2 queue-clearing model against the price-only rule | 41× the touch fill rate; +$33/day at the touch → ~$1 |
+| 2 | **prices that do not exist** | a $0.001 grid where the exchange runs $0.01 | live-feed validation of the tick against `exchangeInfo` | the inside regimes outright, +$129/day |
 | 3 | **mark-to-mid** | exit at a mid no counterparty offered | inventory-aware round trip at executable touches | +1.01 bps/fill → negative |
 | 4 | **unearnable fee tiers** | a tier the strategy's own volume cannot reach | reporting every tier rather than the favourable one | sign flip between 4.5 and 1.4 bps |
 | 5 | **fill selection** | fill quality measured on realised fills alone | markout conditioned on the flow that selected them | the winner's curse, unquantified |

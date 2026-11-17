@@ -76,8 +76,12 @@ BTC/USDT and LINK/USDT; Chapter 5 shows (iii) is the assumption that matters mos
 
 ## 3. The GLFT Ergodic Refinement
 
-The A-S spread term `γσ²(T−t)` grows linearly as `t→T`: an MM with a fixed terminal time
-becomes increasingly risk-averse about inventory as liquidation approaches. This is the
+The A-S spread term `γσ²(T−t)` is proportional to the variance still to be borne before
+liquidation, so it *shrinks* to zero as `t→T`: an MM with a fixed terminal time becomes
+progressively less concerned about inventory as the close approaches, because there is less
+remaining time over which the price can move against the position. The dependence on calendar
+time is the awkward part — the same inventory is quoted differently at 09:00 and at 16:00 for
+reasons that have nothing to do with the market. This is the
 right model for a single trading session with a hard close, but an MM that runs
 indefinitely — quoting continuously, day after day — has no terminal time to liquidate
 into. Guéant, Lehalle & Fernández-Tapia (2013) take the `T→∞` ("ergodic") limit of the same
@@ -89,7 +93,7 @@ dollar of inventory, not per unit of the underlying):
 ```
 r = mid − q · γ · σ_$² / (2 · A · κ)
 
-δ = (1/κ) · ln(1 + κ/γ)  +  (1/2) · √( σ_$²·γ/(2Aκ) · (1 + κ/γ)^(1+κ/γ) )
+δ = (1/γ) · ln(1 + γ/κ)  +  (1/2) · √( σ_$²·γ/(2Aκ) · (1 + γ/κ)^(1+κ/γ) )
 
 bid = r − δ          ask = r + δ
 ```
@@ -97,11 +101,23 @@ bid = r − δ          ask = r + δ
 The reservation-price term has the same qualitative role as in A-S — it skews quotes against
 inventory — but is now scaled by `1/(Aκ)` rather than `(T−t)`: a more liquid market (higher
 A) or a more locally competitive one (higher κ) requires *less* skew to manage a given
-inventory, because positions can be unwound faster. The spread term's second piece — the
-`(1+κ/γ)^{(1+κ/γ)}` factor — is the model's central nonlinearity: it is well-behaved near
-`κ/γ ≈ 1` but explodes as κ and γ diverge from each other, a property that becomes diagnostic
-once §4's exponential-intensity assumption is tested against LINK's actual fill curve
-(Chapter 3; Contributions 17, 27–28).
+inventory, because positions can be unwound faster. The first piece, `(1/γ)·ln(1 + γ/κ)`, is
+the adverse-selection compensation: it depends only on how fast fills decay with distance (κ)
+and on risk aversion (γ), and it survives at zero inventory. The second piece carries the
+inventory risk, and its `(1 + γ/κ)^{(1+κ/γ)}` factor is the model's central nonlinearity —
+mild when γ and κ are of comparable size, and growing rapidly when risk aversion is large
+relative to fill sensitivity. Both pieces depend on A only through the `1/(2Aκ)` scaling, so a
+poorly-estimated arrival rate moves the whole inventory term at once, which is the instability
+Chapter 4 §3 observes on LINK's sparse flow.
+
+> **Implementation note.** Earlier drafts of this chapter, and the GLFT strategy's own
+> docstring, transcribed this closed form with γ and κ exchanged — `(1/κ)·ln(1 + κ/γ)` and a
+> `(1 + κ/γ)` base in the nonlinear factor. The error was in the implementation as well as in
+> the prose until it was corrected on 2026-06-16, and **every GLFT experiment in this thesis
+> was run before that date**. The GLFT results of Chapter 4 are therefore results about the
+> mis-transcribed policy, and are reported there with that scope stated. No other strategy is
+> affected: the A-S path, including the γ ≈ 0 configuration that produces Chapter 4's headline
+> and the whole of the Part I argument, does not evaluate this expression.
 
 GLFT and A-S therefore make the *same* three assumptions listed at the end of §2 — they
 differ only in how the inventory-risk horizon is parameterized (`T−t` vs. `1/(Aκ)`).

@@ -318,7 +318,8 @@ several ways to sit outside the equilibrium rather than the thing that defines i
 zero. The current claim is in two parts:
 
 > **1.** For a participant without co-location or a negotiated fee schedule, competitive liquidity provision
-> on a lit crypto book earns **exactly zero** — as the enforced outcome of a zero-profit equilibrium, not as
+> on a lit crypto book earns a return **indistinguishable from zero** — argued, not proved, to be the enforced
+> outcome of a zero-profit equilibrium rather than
 > an accident of sample. Every apparently profitable backtest decomposes into one of five accounting errors
 > (§I), and no class of information opens the gate: not speed, not observable state, not counterparty
 > identity, not regime, and not the sharpest causal signal in the data (§J).

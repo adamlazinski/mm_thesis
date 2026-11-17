@@ -10,7 +10,7 @@ TABLE_* constant transcribed from the contribution it cites. Nothing is
 estimated, smoothed or interpolated; where a quantity was not measured the
 figure leaves a gap rather than filling one.
 """
-import json, glob, os
+import json, glob, os, textwrap
 from collections import defaultdict
 import numpy as np
 import matplotlib
@@ -53,7 +53,13 @@ def _emit_caption(fig):
     notes = _CAPS.pop(fig, [])
     if not notes:
         return
-    fig.text(0.008, -0.012, "\n".join(notes), fontsize=6.6, color=MUTED,
+    # wrap to the figure's own width so a long note cannot stretch the saved bbox
+    width = max(90, int(fig.get_size_inches()[0] * 20))
+    lines = []
+    for n in notes:
+        for para in n.split("\n"):
+            lines.extend(textwrap.wrap(para, width=width) or [""])
+    fig.text(0.008, -0.012, "\n".join(lines), fontsize=6.6, color=MUTED,
              va="top", ha="left", linespacing=1.5)
 
 def load(pattern):
@@ -67,6 +73,9 @@ REGIME = [  # label, fills/day, PnL/day, 1s markout bps, fill model honest?
     ("inside (optimum)\n8.9 bps (0.8t)", 7288, 94.13,  2.80, False),
     ("at touch\n11.1 bps (1.0t)",        2502, 33.23, -0.41, None),
     ("outside\n17.8 bps (1.6t)",          216,  2.52, -0.65, True),
+    # NOTE: the bps are FULL quote-to-quote spreads (min_spread_bps, applied as
+    # mid*bps/20000 per side), not half-spreads. One true $0.01 tick at LINK's
+    # ~$9 is 11.1 bps, which is why the "at touch" row sits at 1.0t.
 ]
 # C30, at-touch rerun under the L2 queue model (Ch5 section 2).
 QUEUE = [(9, 11.8), (86, 2.8), (431, 0.4), (863, 0.9), (4313, 1.0)]
@@ -95,7 +104,7 @@ def f1_regime():
                va="center" if inside else "bottom")
     a.set_ylim(0, 132); a.set_xticks(x); a.set_xticklabels(lab, fontsize=7.5)
     a.set_ylabel("P&L  ($/day)")
-    a.set_title("a.  Profit sits only where the fill model is dishonest")
+    a.set_title("a.  Profit sits only where the fill could not have happened")
     a.axhline(0, color=INK, lw=0.8)
 
     b.bar(x, [r[3] for r in REGIME], color=colors, width=0.62)
@@ -109,13 +118,13 @@ def f1_regime():
     b.set_ylim(-1.15, 3.35)
 
     from matplotlib.patches import Patch
-    a.legend(handles=[Patch(fc=BAD, label="fill model dishonest (no queue to jump)"),
-                      Patch(fc=NEUTRAL, label="partial"),
-                      Patch(fc=GOOD, label="fill model honest (trades through)")],
-             loc="upper center", fontsize=7.2, ncol=1, bbox_to_anchor=(0.5, 1.0))
-    src(a, "C30 — LINK, April 2026, 30 days, zero fees, flat A-S. Price-only fill model.")
-    src(b, "Positive markout appears only in the dishonest regimes: it was a property of the simulator, not the flow.")
-    fig.suptitle("Figure 1   The quote-regime decomposition: the entire profit is a queue-priority artefact",
+    a.legend(handles=[Patch(fc=BAD, label="price not on the $0.01 grid (C54)"),
+                      Patch(fc=NEUTRAL, label="real price, unearned queue priority (C20)"),
+                      Patch(fc=GOOD, label="honest — trades through the level")],
+             loc="upper center", fontsize=7.0, ncol=1, bbox_to_anchor=(0.5, 1.0))
+    src(a, "C30 \u2014 LINK, April 2026, 30 days, zero fees, flat A-S. Price-only fill model. Spreads are FULL quote-to-quote widths; one true 0.01 USD tick at ~9 USD is 11.1 bps.")
+    src(b, "The two profitable regimes fail for different reasons \u2014 inside, the price does not exist; at the touch, the queue is not earned. Positive markout appears only where the fill model is wrong.")
+    fig.suptitle("Figure 1   The quote-regime decomposition: every profitable regime is one the fill model misprices",
                  fontsize=10.5, fontweight="bold", x=0.008, ha="left")
     save(fig, "f1_quote_regime_decomposition")
 
@@ -182,8 +191,9 @@ def f3_breakeven():
     b.set_title("b.  …at a constant ratio")
 
     src(a, "C33 — synthetic data, known ground truth. Open marker: the quoter cannot tighten below its 2-tick quote,")
-    src(b, "so that point sits above the line by construction. This is why the honest residue is an equilibrium, not a shortfall.")
-    fig.suptitle("Figure 3   Why the zero is derived, not merely observed (Wyart–Bouchaud, on synthetic ground truth)",
+    src(b, "so that point sits above the line by construction. This is a scaling property of the simulated market, "
+           "not a measurement of a real competitive equilibrium: fill intensity is held fixed across the sweep.")
+    fig.suptitle("Figure 3   The breakeven spread scales with volatility (synthetic engine check)",
                  fontsize=10.5, fontweight="bold", x=0.009, ha="left")
     save(fig, "f3_breakeven_equilibrium")
 
@@ -330,10 +340,10 @@ def f5_venue_clock():
     ax.legend(handles=[Line2D([], [], marker="o", ls="", color=GCOL[g], label=GNAME[g])
                        for g in (0, 1, 2, 3)], loc="lower left", fontsize=7.5,
               bbox_to_anchor=(0.0, 1.005), ncol=4, columnspacing=1.6, handletextpad=0.4)
-    ax.set_title("Figure 5   Part II's organising law: the adverse-selection horizon is the venue's repricing clock",
+    ax.set_title("Figure 5   Part II's organising hypothesis: the adverse-selection horizon tracks the venue's clock",
                  pad=24)
     src(ax, "C59 (Binance books, 3 days) and C66 (Hyperliquid, 2026-07-16/18), identical model-free markout. "
-            "Three orders of magnitude. EIGEN is the tail's tightest, most-competed book and behaves like the majors.")
+            "Three orders of magnitude. EIGEN is the tail's tightest, most-competed book and behaves like the majors. CAVEAT: each horizon drops trades with no quote update inside its tolerance, so longer horizons are measured on smaller, differently-selected populations \u2014 worst on the thin books. Retention is not yet reported.")
     save(fig, "f5_venue_clock_law")
 
 
@@ -595,7 +605,7 @@ def f9_carry():
     a.set_ylabel("annualised funding  (%)"); a.set_ylim(-3, 14.5)
     a.legend(fontsize=7.2, loc="lower left")
     a.set_title("a.  The differential is contractual, and positive on all four")
-    src(a, "C67 / exp 107, 2026-07-19. Hyperliquid funding ran 92\u2013100% positive over the window. "
+    src(a, "C67 / exp 107, 2026-07-19. Hyperliquid funding was positive on 72-100% of settlements (99.9-100% on BTC/ETH/LINK, 71.9% on SOL). "
            "This is a settled cash flow, not an estimated edge.")
 
     names = [n for n in ("BTC", "LINK") if n in books]
@@ -611,19 +621,22 @@ def f9_carry():
         bk = books[n]
         b.errorbar([i + w], [bk["carry_ann_pct"]], yerr=[bk["basis_vol_ann_pct"]],
                    fmt="none", ecolor=INK, elinewidth=1.0, capsize=3, zorder=4)
+        win_bps = 1e4 * bk["carry_ann_pct"] / 100.0 * bk["hours"] / 8760.0
         b.text(i + w, bk["carry_ann_pct"] + bk["basis_vol_ann_pct"] + 0.7,
-               f"Sharpe {bk['gross_sharpe']:.2f}", ha="center", fontsize=7.6, fontweight="bold")
+               f"{win_bps:+.1f} bps over the window\nvs a {bk['roundtrip_cost_bps']:.1f} bps round trip",
+               ha="center", fontsize=7.0, fontweight="bold", color=BAD)
     b.set_xticks(xs); b.set_xticklabels([f"{n}\n{books[n]['hours']:.0f} h" for n in names],
                                         fontsize=8.5, fontweight="bold")
     b.set_ylabel("annualised  (%)"); b.set_ylim(-13, 19)
     b.legend(fontsize=7.2, loc="lower left", ncol=1)
     b.set_title("b.  The basis, not the funding, decides the outcome")
-    src(b, "C67 / exp 108. Error bar = basis volatility, 7\u201312%/yr against a ~7% funding signal, so a short "
-           "window measures the basis rather than the carry. Same strategy, same window: on BTC the basis helped, "
-           "on LINK it consumed the whole funding leg. Round-trip cost inverts the usual logic \u2014 0.68%/yr "
-           "rebalanced monthly, 20.4%/yr daily.")
+    src(b, "C67 / exp 108. Bars are ANNUALISED from 36 h and 12 h. Error bar = basis volatility, 7-12%/yr "
+           "against a ~7% funding signal, so a short window measures the basis rather than the carry. Expressed as "
+           "what was actually earned over each window, NEITHER clears the 5.6 bps round trip - the cash flow is "
+           "real and collectible, but no window here paid for itself. Round-trip cost inverts the usual logic: "
+           "0.68%/yr rebalanced monthly, 20.4%/yr daily.")
 
-    fig.suptitle("Figure 9   Carry: paid to hold a basis, and exposed to it",
+    fig.suptitle("Figure 9   Carry: the cash flow is contractual; the window is too short to pay for itself",
                  fontsize=10.5, fontweight="bold", x=0.008, ha="left")
     save(fig, "f9_carry")
 

@@ -87,15 +87,33 @@ out-of-sample period.
 | average spread | 11.9 bps | **7.4 bps** |
 | fills/day | 8,812 | **11,060** |
 
-The flat control beats the fitted GLFT model by 69%. The mechanism is identifiable: GLFT's
-spread formula widens to 10–18 bps whenever the rolling arrival-rate estimate Â is low,
+The flat control beats the fitted GLFT model by 69%.
+
+**A scope note that applies to every GLFT number in this chapter.** The GLFT closed form was
+transcribed into the strategy with γ and κ exchanged — `(1/κ)·ln(1 + κ/γ)` where the paper has
+`(1/γ)·ln(1 + γ/κ)` — and the error was in the implementation, not only in the comment. It was
+corrected on 2026-06-16, and every GLFT experiment in this thesis was generated before that
+date (the latest, experiment 64, on 2026-06-13). The results in this section are therefore
+results about a *mis-transcribed* GLFT policy, and the claim they support is the narrow one:
+that this configuration, as implemented, was beaten by a flat spread floor. They are not
+evidence about the Guéant–Lehalle–Fernández-Tapia policy as published, and Chapter 2 §3's
+corrected statement of it should be read as the authoritative formula. Rerunning the GLFT arm
+on the fixed implementation is the first item of further work in Chapter 10 §8.
+
+Nothing else in the thesis depends on it. The A-S path is a separate implementation that never
+evaluates this expression, and the γ ≈ 0 configuration that produces this chapter's +$154/day
+headline — and with it the whole of Part I — reduces to a constant spread floor in which no
+model formula of either kind is active.
+
+The mechanism of the observed gap is identifiable within that scope: the implemented spread
+formula widens to 10–18 bps whenever the rolling arrival-rate estimate Â is low,
 which happens in about a third of quoting steps on LINK's sparse flow, and each widening
 episode costs roughly 2,250 fills a day. The formula's theoretical advantages — infinite
 horizon, inventory-proportional skew — are outweighed by the instability of estimating Â on
 this asset.
 
-So the risk management is doing the work and the model is a liability. This is a real
-result about GLFT under sparse flow, and it survives Chapter 5. But it also means that by
+So the risk management is doing the work and the formula, as implemented, is a liability.
+Whether that survives on the corrected formula is untested. But it also means that by
 this point in the thesis the "market-making model" has been reduced to a spread floor and a
 position cap, and any explanation of the P&L must come from the interaction of those two
 rules with the market's microstructure rather than from optimal-control theory.

@@ -67,8 +67,20 @@ Set against the earlier measurements, a single ordering emerges:
 | Hyperliquid LINK | 3.4 s |
 | **Hyperliquid tail (5 of 6)** | **> 5 s** |
 
-This is the organising fact of Part II, and it is worth stating as a law rather than a list:
-**the adverse-selection horizon is the venue's repricing clock.** A maker's edge survives for
+Before reading anything into that ordering, one feature of how it is measured has to be
+declared, because it cuts in the direction of the result. Each horizon's markout requires a
+quote observed within a tolerance of that horizon; where the book has not updated, the trade is
+dropped. The mask is recomputed per horizon, so **the long horizons are evaluated on a
+different and smaller population than the short ones**, and the attrition is worst on exactly
+the thin books that produce the "> 5 s" readings — an unchanged but perfectly valid BBO is
+discarded as stale. Part of the apparent lengthening of the horizon across venues is therefore
+a sampling effect rather than a property of the book, and the ordering below should be read as
+a **hypothesis supported by a suggestive measurement**, not as an established law. Re-running
+it with a carry-forward quote rule and reporting retention at every horizon is the test it has
+not yet had.
+
+With that caveat, the ordering is the organising idea of Part II:
+**the adverse-selection horizon tracks the venue's repricing clock.** A maker's edge survives for
 as long as it takes the rest of the market to notice the price is wrong. On Binance that is
 tens of milliseconds; on Hyperliquid's majors, seconds; on a book with three makers, longer
 than five seconds. Chapter 7's dislocation alpha and this chapter's premium are the same
@@ -99,7 +111,29 @@ found it at the level of a single fill, and Contribution 64 found it again, wors
 of a position.
 
 Two consequences follow. First, every number in the rest of this chapter is produced by the
-inventory-aware round trip, and mark-to-mid is not reported as a headline anywhere. Second,
+inventory-aware round trip rather than by per-fill accounting, and no per-fill realized
+half-spread is reported as a headline.
+
+That correction is **partial, and the residue is large enough to qualify everything that
+follows**. The simulator caps inventory and tracks it continuously, but it closes each day by
+valuing whatever position remains at the final mid (`defended_maker.py`, the `final = cash +
+inv * mid` line) rather than liquidating it across the spread. On these books the remaining
+position is rarely small: it sits at or near the ±$2,000 cap on most coin-days, and expressed
+in the same units as the headline it is **between roughly 100 and 1,000 bps of the day's
+notional, against round trips reported in single or low double digits**. USUAL on 17 July is
+the extreme case — a $1,624 residual on $15,871 of notional, 1,023 bps of unrealised mark
+carrying a +22.04 bps result.
+
+The consequence is that a day's reported P&L is not cleanly separable into spread earned and
+inventory risk borne: a material and sometimes dominant part of it is an unhedged directional
+position marked at a mid. This chapter reads the resulting day-to-day sign instability as
+compensation for warehousing idiosyncratic risk, which is one consistent interpretation. It is
+not the only one — the same instability is what a terminal mark on a near-capped position
+would produce by itself — and **the present simulation cannot distinguish them**. Closing each
+day by crossing the spread, and reporting the realised and unrealised components separately,
+is the first thing that should be done to this chapter; until it is, the per-coin figures
+below should be read as upper bounds and the basket result as suggestive rather than
+established. Second,
 the gates themselves are suspect: they made the round trip *worse* on two of the three days,
 which is Chapter 6 §3's pairing-breakage reappearing — suppressing predicted-adverse fills
 removes their losses and their exit fills together.
