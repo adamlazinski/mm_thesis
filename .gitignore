@@ -14,3 +14,6 @@ experiments/*/results/*
 !experiments/*/results/*.json
 data/
 !hft_market_maker/data/
+
+# the pre-submission review (kept out of the repo)
+thesis/comments.md

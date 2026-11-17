@@ -62,8 +62,12 @@ spread, so those orders would have been rejected on submission. That is the seco
 (§3), not the first, and the two should not be conflated. Each regime is destroyed by its own
 error, which is why the decomposition below leaves nothing standing.
 
-**The decomposition.** Contribution 30 partitions the results by quote regime (LINK, April
-2026, thirty days, zero fees, flat A-S):
+**The decomposition.** Contribution 30 sweeps the quoted width and reports the result at each
+setting (LINK, April 2026, thirty days, zero fees, flat A-S). The rows are four separate runs
+rather than four components of one P&L, so they do not sum to anything; what they show is where
+along the axis the money appears. Note also that this sweep is on April 2026, whereas Chapter
+4's +$154/day headline is the June–July 2025 window — the two are the same strategy on the same
+book nine months apart, and Contribution 19 establishes that the shape transfers:
 
 | regime | quoted spread | vs. the one-tick touch | why the fill model fails | fills/day | P&L/day | 1s markout |
 |---|---|---|---|---|---|---|

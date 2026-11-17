@@ -4089,8 +4089,12 @@ finding rather than dropped — some still test it directly, others are supersed
 
 ## References
 
-Cited in the "Corroborating literature" notes above. Verify exact page numbers against the
-originals before final thesis submission.
+Cited in the "Corroborating literature" notes above. Page numbers have not been checked
+against the originals, and one entry (Albers et al.) is an incomplete placeholder; both must be
+resolved before submission. Conspicuous absences for a microstructure thesis — Kyle (1985),
+Easley & O'Hara on PIN, Hasbrouck on information shares — are not cited anywhere in the
+chapters either, and Chapter 6 §7's counterparty-identity result in particular should be
+positioned against the PIN literature rather than against Glosten-Milgrom alone.
 
 - Avellaneda, M. & Stoikov, S. (2008). High-frequency trading in a limit order book.
   *Quantitative Finance*, 8(3), 217–224.
@@ -4111,8 +4115,12 @@ originals before final thesis submission.
 - Bouchaud, J.-P., Bonart, J., Donier, J. & Gould, M. (2018). *Trades, Quotes and Prices:
   Financial Markets Under the Microscope*. Cambridge University Press. (Maker P&L, short-vol
   framing, spread–volatility relation.)
+- Cartea, Á., Jaimungal, S. & Penalva, J. (2015). *Algorithmic and High-Frequency Trading*.
+  Cambridge University Press. (Exposition of the A-S HJB solution used in Chapter 2 §2.)
 - Cont, R., Kukanov, A. & Stoikov, S. (2014). The price impact of order book events.
   *Journal of Financial Econometrics*, 12(1), 47–88.
+- Guilbaud, F. & Pham, H. (2013). Optimal high-frequency trading with limit and market orders.
+  *Quantitative Finance*, 13(1), 79–94. (Spread as a discrete control; cited in Chapter 2 §5.)
 - Copeland, T. E. & Galai, D. (1983). Information effects on the bid–ask spread.
   *Journal of Finance*, 38(5), 1457–1469. (Dealer quotes as a written put + call; spread as
   option premium — the foundational "limit order = short option.")

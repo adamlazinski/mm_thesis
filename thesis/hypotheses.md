@@ -50,9 +50,10 @@ in sample and failed out of sample (C66).
   monotonically worse with depth, with an explosive left tail (LINK p5: −20t→−2,611t). BTC negative at all
   depths. Mechanism: *adverse selection by selection* — a move large enough to reach a deep limit is
   selectively informed, so it continues. Robust to fill-time censoring. *(C32, exp 57)*
-- `✗` **Backtested MM profit is retail-accessible.** No — every profitable MM run is an inside-spread
-  artifact of the no-queue fill model, which grants absolute queue priority over the ~8,600-LINK
-  natural-bid queue. *(C30)*
+- `✗` **Backtested MM profit is retail-accessible.** No — every profitable MM run sits in a quote regime
+  the fill model misprices. Inside the spread the orders were placed off the venue's $0.01 grid and would
+  have been rejected (C54); at the touch the price-only rule grants priority over the ~8,600-LINK natural-bid
+  queue that the order has not earned (41×, C20). *(C20, C30, C54)*
 - `✗` **Some regime/parameter makes honest MM positive.** No — regime-conditional honest markout found
   only one positive cell (high-vol overshoot-catch, +0.38 bps, ~$0.01/day), economically negligible. *(C30 addendum)*
 - `◐` **Honest MM (outside-spread / L2-queue-modeled) is viable.** Breakeven — the price-only model
@@ -203,8 +204,10 @@ because the seduction and the retraction are both evidence.
 
 ## I. Accounting: the five mirages → Ch5
 
-- `✓` **Mirage 1 — queue priority.** A price-only fill model grants absolute priority; profit is confined to
-  the regime where that is accidentally true. *(C20, C29, C30)*
+- `✓` **Mirage 1 — queue priority.** A price-only fill model grants absolute priority at a *shared* price,
+  overstating touch fills 41-fold and collapsing +$33/day to ~$1 under L2 clearing. It does **not** explain the
+  inside-spread regimes, where a better price carries genuine priority and the two fill models agree exactly —
+  those are Mirage 2. *(C20, C29, C30)*
 - `✓` **Mirage 2 — prices that do not exist.** A mis-specified tick grid manufactures room inside the
   spread. *(C54)*
 - `✓` **Mirage 3 — mark-to-mid.** Overstates at the level of a single fill, and more severely at the level
@@ -226,8 +229,10 @@ rather than below it, which is the register's single most important pattern.
   books and ≤15–20 ms on small-tick ones, and it coincides with the perp-lead clock. *(C59)*
 - `✗` **Instrument 1 — being faster opens the gate.** Collapsing the whole latency stack from 10 ms to the
   co-located 1 ms limit changes essentially nothing (−$2.04→−$1.94; +$1.91→+$0.54, slightly *worse* from
-  quote churn), and front-of-queue positioning is worse still. A 15 ms gate already fires inside a 40–100 ms
-  lead. *(C60 colo addendum)*
+  quote churn). A 15 ms gate already fires inside a 40–100 ms lead. **Scope:** the `queue_fraction` arms in
+  exp 94 are labelled inverted — the engine computes `queue_ahead × fraction`, so qf=1.0 is the *back* of the
+  queue — so true front-of-queue was never run against the 1 ms arm and no claim is made about it.
+  *(C60 colo addendum)*
 - `✗` **Instrument 2 — observable state isolates benign flow.** Toxicity is genuinely rankable by flow,
   imbalance, volatility and intensity, and the cleanest quintile is still negative at a **zero** fee. *(C61)*
 - `✗` **Instrument 3 — counterparty identity isolates benign flow.** The strongest sorting instrument that

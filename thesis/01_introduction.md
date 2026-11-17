@@ -115,11 +115,12 @@ Stated early, because it organises everything that follows.
 
 **The profitability that classical and RL-based market making appear to show in a standard
 event-driven backtest is not a strategy edge.** Contribution 30 shows it directly, by
-partitioning the P&L by quote regime: every profitable regime is one in which the simulated
-fill could not have happened, and the two regimes fail for two different reasons. *Inside* the
-spread — which is where the optimiser puts the strategy, and where +$129 of the +$154/day sits
-— the orders were placed at prices the exchange's $0.01 tick grid does not contain, and would
-have been rejected on submission (Contribution 54). *At the touch*, where the price is real,
+sweeping the quote distance and measuring the P&L at each: every profitable setting is one in
+which the simulated fill could not have happened, and the settings fail for two different
+reasons. *Inside* the spread — where the optimiser places the strategy, and where the sweep
+peaks at +$94/day — the orders sit at prices the exchange's $0.01 tick grid does not contain,
+and would have been rejected on submission (Contribution 54). *At the touch*, where the price
+is real,
 the price-only fill model grants the order absolute queue priority it has not earned,
 overstating the fill rate by a factor of 41 against an L2 queue-clearing model (Contribution
 20). In the one regime where the fill model is physically honest — outside the natural spread,

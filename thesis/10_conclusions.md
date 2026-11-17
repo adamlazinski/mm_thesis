@@ -82,13 +82,17 @@ make it worse, reinforcement learning improves on it by about 5%, and the identi
 configuration yields −$2.10/day on BTC with no learning signal at all. A P&L that survives the
 deletion of the entire theoretical apparatus is not being produced by that apparatus.
 
-**Step 3 — five accounting errors, all biasing the same way** (Chapter 5). *Queue priority*: a
-price-only fill model grants a resting order absolute priority, overstating fill probability at
-the touch by a factor of 41, and the profit is confined precisely to the quote regime where
-that model is accidentally correct (Contributions 20, 29, 30). *Prices that do not exist*:
-LINK's exchange tick was 0.01, not the 0.001 assumed throughout, so the inside-spread
-placements the mechanism required were on a grid the venue would have rejected (Contribution
-54). *Mark-to-mid accounting*, at the level of a single fill and again more severely at the
+**Step 3 — five accounting errors, all biasing the same way** (Chapter 5). Sweeping the quote
+distance shows the P&L concentrated in the settings where the fill model is wrong, and the two
+profitable settings are wrong in different ways. *Prices that do not exist*: LINK's exchange
+tick was 0.01, not the 0.001 assumed throughout, so the inside-spread placements — where the
+optimiser puts the strategy, and where the sweep peaks at +$94/day — were on a grid the venue
+would have rejected outright (Contribution 54). *Queue priority*: at the touch, where the price is real, a price-only fill
+model grants a resting order absolute priority it has not earned, overstating fill probability
+by a factor of 41 against L2 queue clearing and collapsing +$33/day to about a dollar
+(Contributions 20, 29, 30). The two are distinct and were conflated in an earlier draft: a
+quote strictly inside the spread has price priority and no queue to jump, which is why
+Contribution 20 finds the two fill models agreeing exactly there. *Mark-to-mid accounting*, at the level of a single fill and again more severely at the
 level of a position. *Fee tiers a strategy's own volume cannot earn.* *The winner's curse in
 maker fill selection.* Each was found by looking for it, and each had survived robustness
 testing before it was found.
