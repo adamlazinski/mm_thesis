@@ -79,44 +79,64 @@ work. Contribution 17 answers it with a direct control: pure A-S with γ ≈ 0, 
 inventory cap, loss limit and spread floor as the GLFT search winner, over the same
 out-of-sample period.
 
-| metric | GLFT search-optimum | A-S γ≈0 control |
-|---|---|---|
-| mean P&L/day | +$88.56 | **+$149.45** |
-| win rate | 13/13 | 13/13 |
-| Sharpe | 27.4 | **57.7** |
-| average spread | 11.9 bps | **7.4 bps** |
-| fills/day | 8,812 | **11,060** |
+**A note on the formula, which has to come before the table.** The GLFT closed form was
+originally transcribed into the strategy with γ and κ exchanged — `(1/κ)·ln(1 + κ/γ)` where the
+paper has `(1/γ)·ln(1 + γ/κ)` — and the error was in the implementation, not only in the
+comment. It was corrected on 2026-06-16, after every GLFT experiment in this thesis had been
+generated (the latest, experiment 64, on 2026-06-13). Rather than scope the section to "GLFT as
+mis-implemented", the search winner was **rerun verbatim on the corrected formula**: same
+thirteen out-of-sample days, same γ, κ, spread floor, inventory cap and loss limit, same tick,
+nothing varied but the expression (experiment 117). All three arms:
 
-The flat control beats the fitted GLFT model by 69%.
+| metric | GLFT, as mis-transcribed | GLFT, corrected formula | A-S γ≈0 control |
+|---|---|---|---|
+| mean P&L/day | +$88.56 | +$25.44 | **+$149.45** |
+| win rate | 13/13 | 13/13 | 13/13 |
+| Sharpe (daily, annualised) | 21.9 | 38.1 | **46.0** |
+| average spread | 11.90 bps | 9.14 bps | **7.41 bps** |
+| fills/day | 8,812 | 9,410 | **11,060** |
+| adverse fills | 0.27% | 0.43% | **0.25%** |
+| mean markout per fill | +1.270 bps | **+0.055 bps** | +1.977 bps |
 
-**A scope note that applies to every GLFT number in this chapter.** The GLFT closed form was
-transcribed into the strategy with γ and κ exchanged — `(1/κ)·ln(1 + κ/γ)` where the paper has
-`(1/γ)·ln(1 + γ/κ)` — and the error was in the implementation, not only in the comment. It was
-corrected on 2026-06-16, and every GLFT experiment in this thesis was generated before that
-date (the latest, experiment 64, on 2026-06-13). The results in this section are therefore
-results about a *mis-transcribed* GLFT policy, and the claim they support is the narrow one:
-that this configuration, as implemented, was beaten by a flat spread floor. They are not
-evidence about the Guéant–Lehalle–Fernández-Tapia policy as published, and Chapter 2 §3's
-corrected statement of it should be read as the authoritative formula. Rerunning the GLFT arm
-on the fixed implementation is the first item of further work in Chapter 10 §8.
+The conclusion survives the correction and is sharpened by it. The flat control beats the
+*correctly implemented* GLFT policy by a factor of **5.9**, where it beat the mis-transcribed one
+by 69%, and the corrected formula is worse than the error it replaced on eleven of the thirteen
+days (−$63/day paired). Fixing the formula did not rescue the model; it removed an accident that
+had been flattering it.
 
-Nothing else in the thesis depends on it. The A-S path is a separate implementation that never
-evaluates this expression, and the γ ≈ 0 configuration that produces this chapter's +$154/day
-headline — and with it the whole of Part I — reduces to a constant spread floor in which no
-model formula of either kind is active.
+The mechanism is in the last row, and it is the thesis's own argument arriving early. The
+corrected policy quotes **tighter** than the mis-transcribed one (9.14 against 11.90 bps) and
+gets more fills for it, but its mean markout per fill collapses from +1.27 bps to **+0.055 bps** —
+indistinguishable from zero. Correctly implemented on this book, the GLFT half-spread lands
+almost exactly where a fill earns nothing after adverse selection, which is what Chapter 6 will
+measure four separate ways and Chapter 2 §7 derives from Glosten–Milgrom. The model is not broken.
+It is solving the problem it was posed, and the solution to that problem, on a competitive book,
+is zero. The mis-transcribed version was accidentally too wide and therefore accidentally paid.
 
-The mechanism of the observed gap is identifiable within that scope: the implemented spread
-formula widens to 10–18 bps whenever the rolling arrival-rate estimate Â is low,
-which happens in about a third of quoting steps on LINK's sparse flow, and each widening
-episode costs roughly 2,250 fills a day. The formula's theoretical advantages — infinite
-horizon, inventory-proportional skew — are outweighed by the instability of estimating Â on
-this asset.
+Two limits on how far that reads. The A-S control is *tightest* of the three and has the *best*
+markout, so this is not a monotone "wider quoting earns more" result — the control is quoting
+inside the spread at its floor and collecting mean reversion, which is precisely the mirage
+Chapter 5 §2 dismantles. And all three arms sit inside the tick mis-specification of Contribution
+54, so the absolute levels are not claims about anything. What the comparison establishes is the
+*ranking*, which is what Contribution 17 asserts, and which the correction does not disturb.
 
-So the risk management is doing the work and the formula, as implemented, is a liability.
-Whether that survives on the corrected formula is untested. But it also means that by
-this point in the thesis the "market-making model" has been reduced to a spread floor and a
-position cap, and any explanation of the P&L must come from the interaction of those two
-rules with the market's microstructure rather than from optimal-control theory.
+Nothing else in the thesis depends on the formula either way. The A-S path is a separate
+implementation that never evaluates this expression, and the γ ≈ 0 configuration that produces
+this chapter's +$154/day headline — and with it the whole of Part I — reduces to a constant
+spread floor in which no model formula of either kind is active.
+
+A second mechanism operates in the mis-transcribed arm specifically: that spread formula widens
+to 10–18 bps whenever the rolling arrival-rate estimate Â is low, which happens in about a third
+of quoting steps on LINK's sparse flow, and each widening episode costs roughly 2,250 fills a
+day. The corrected formula is less exposed to this — it quotes 2.8 bps tighter on average and
+takes 600 more fills a day — and still loses, which locates the problem in the half-spread the
+policy targets rather than in the volatility of Â.
+
+So the risk management is doing the work and the formula is a liability on both specifications.
+By this point in the thesis the "market-making model" has been reduced to a spread floor and a
+position cap, and any explanation of the P&L must come from the interaction of those two rules
+with the market's microstructure rather than from optimal-control theory. That is the finding
+Chapter 5 takes apart and Chapter 6 replaces.
 
 ## 4. Signal Overlays Make It Worse
 

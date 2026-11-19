@@ -27,8 +27,16 @@ in sample and failed out of sample (C66).
   calibration bug (catastrophic on LINK, whose σ² is ~40,000× BTC's). *(C3, C26)*
 - `✗` **The fill curve is exponential (the GLFT premise).** No — BTC has a two-component structure with a
   momentum floor `A_mom`; LINK is a step function (flat inside the spread, flat outside). *(C6, C15)*
-- `✗` **GLFT's ergodic inventory management beats A-S.** No — on LINK, flat A-S beats GLFT ~2×, and the
-  GLFT spread formula `(1+κ/γ)^(1+κ/γ)` blows up at LINK's low κ. *(C17, C27, C28)*
+- `✗` **GLFT's ergodic inventory management beats A-S.** No — on LINK, flat A-S beats GLFT, and more
+  decisively once the closed form is implemented as published: the search winner rerun on the
+  corrected formula earns +$25.44/day against the mis-transcribed +$88.56 and the flat control's
+  +$149.45, so the control wins by 5.9× rather than 69%. The formula also blows up at LINK's low
+  κ via `(1+κ/γ)^(1+κ/γ)`. *(C17 + 2026-11-19 addendum, C27, C28)*
+- `✓` **The correctly specified GLFT half-spread prices itself to the competitive zero.** Mean markout
+  per fill falls from +1.270 bps (mis-transcribed) to **+0.055 bps** (corrected) — the policy,
+  solved properly, quotes where a fill earns nothing after adverse selection. The error had been
+  flattering the model by making it accidentally too wide. This is Ch6's conclusion arriving in
+  Ch4 by a different route. *(C17 addendum)*
 - `◐` **The A-S optimal spread is derivable from κ.** Yes — and for LINK it collapses to touch-posting
   (`2/κ ≈ 1 tick`); the "flat MM" is the formula's own recommendation, not a simplification. *(C25, C28)*
 - `✗` **Inventory skew adds value.** No on LINK — fills are sweep-driven, uncorrelated with inventory

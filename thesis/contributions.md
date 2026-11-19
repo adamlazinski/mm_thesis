@@ -433,6 +433,42 @@ theoretical advantage (no finite horizon, inventory-proportional skew) is outwei
 instability in A_hat estimation during sparse periods. The inventory constraint, not the
 formula, is the primary risk management mechanism.
 
+**Addendum, 2026-11-19 — rerun on the corrected closed form (exp 117).** The GLFT closed form was
+transcribed with gamma and kappa exchanged -- `(1/kappa)*ln(1 + kappa/gamma)` where the paper has
+`(1/gamma)*ln(1 + gamma/kappa)` -- in the *implementation*, not only the comment; corrected
+2026-06-16 (commit 8a3d8e7), after every GLFT experiment above had been generated (latest exp 64,
+2026-06-13). Exp 34's OOS search winner was therefore rerun verbatim on the corrected expression:
+same 13 days, same gamma/kappa/floor/cap/loss-limit, same tick, nothing varied but the formula.
+
+| Metric | GLFT mis-transcribed | GLFT corrected | A-S gamma~0 control |
+|---|---|---|---|
+| Mean PnL/day | +$88.56 | **+$25.44** | +$149.45 |
+| Win rate | 13/13 | 13/13 | 13/13 |
+| Sharpe (daily, ann.) | 21.9 | 38.1 | 46.0 |
+| Avg spread | 11.90 bps | 9.14 bps | 7.41 bps |
+| Avg fills/day | 8,812 | 9,410 | 11,060 |
+| Adverse fills | 0.27% | 0.43% | 0.25% |
+| Mean markout/fill | +1.270 bps | **+0.055 bps** | +1.977 bps |
+
+C17 **survives and strengthens**: the flat control beats the correctly implemented policy by
+5.9x where it beat the mis-transcribed one by 69%, and the corrected formula is worse than the
+error it replaced on 11 of 13 days (-$63.11/day paired, median -$61.24). Fixing the formula
+removed an accident that had been flattering the model.
+
+The mechanism is the markout row, and it is this thesis's own thesis arriving in Ch4. The
+corrected policy quotes *tighter* (9.14 vs 11.90 bps) and takes more fills, but mean markout per
+fill collapses from +1.27 bps to **+0.055 bps** -- indistinguishable from zero. Correctly
+implemented on this book, the GLFT half-spread lands essentially exactly where a fill earns
+nothing after adverse selection: the optimal-control solution, solved properly, *is* the
+Glosten-Milgrom zero (C59-C62 measure the same quantity four other ways). The mis-transcribed
+version was accidentally too wide and therefore accidentally paid.
+
+Two scope limits. The A-S control is tightest of the three AND has the best markout, so this is
+not a monotone "wider earns more" result -- the control quotes inside the spread at its floor and
+collects mean reversion, i.e. the C29/C30 queue-rent mirage. And all three arms sit inside the
+C54 tick mis-specification, so no absolute level here is a claim about anything; what the
+experiment establishes is the *ranking*, which is what C17 asserts.
+
 ---
 
 ## 18. OFI and Momentum Overlays Degrade Performance

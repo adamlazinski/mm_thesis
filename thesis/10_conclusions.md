@@ -291,7 +291,9 @@ survivors are compensation for bearing a basis, for warehousing inventory where 
 will, and for being the fast side of a slow venue — each bounded by capacity, competition, or an
 unmeasured tail. The corollary is the thesis's answer to its own opening question: the
 A-S/GLFT apparatus is not what makes any of them work, and in Chapter 4 it was measurably a
-liability.
+liability — on the corrected closed form more so than on the mis-transcribed one, because
+correctly specified it quotes to a markout of +0.055 bps per fill, which is the competitive zero
+reached by optimal control instead of by measurement.
 
 ---
 
@@ -369,6 +371,15 @@ documented in the log rather than silently corrected: a sign inversion in a plac
 a one-time cost annualised as recurring, a pooled-series composition artefact that manufactured
 autocorrelation where per-instrument series show none, and a forward-versus-spot repricing error
 worth 5.21% until Black-76 was inverted on the venue's own marks.
+
+**A fifth, which cut the other way.** The GLFT closed form had been transcribed into the strategy
+with γ and κ exchanged. The honest response was not to scope Chapter 4 §3 to "GLFT as
+implemented" but to rerun it, and the rerun made the chapter's conclusion stronger rather than
+weaker: correctly implemented, the policy earns +$25.44/day against the error's +$88.56 and the
+flat control's +$149.45, and its mean markout per fill falls to +0.055 bps. The mistake had been
+flattering the model. It is worth recording that a bug can hide a result as easily as
+manufacture one, and that scoping a claim around an error is a weaker move than fixing it when
+the data to fix it is already on disk.
 
 **A negative result of independent interest.** Options market making on Deribit fails even at a
 hypothetical zero maker fee, so no fee schedule rescues it. Reaching that conclusion required
