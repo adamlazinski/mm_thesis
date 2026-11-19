@@ -7,7 +7,7 @@ This is the thesis's organizing skeleton — update the status markers as result
 `⊘` **retracted or superseded by a later contribution**
 
 Cross-references point to numbered entries in [contributions.md](contributions.md)
-(C1–C67) and to experiment folders. The `→` marker on each section head gives the chapter that
+(C1–C68) and to experiment folders. The `→` marker on each section head gives the chapter that
 now carries it.
 
 **Reading the `⊘` entries.** Four entries below — plus the meta-hypothesis itself — were

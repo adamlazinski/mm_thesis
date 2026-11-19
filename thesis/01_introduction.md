@@ -210,9 +210,33 @@ equilibrium itself, and infrastructure is one of several ways to sit outside it.
 
 ## 5. Summary of Contributions
 
-The thesis makes 67 numbered contributions, logged in full in `contributions.md`. The
-seven groups below summarise them by theme rather than enumerate them; the log is the exhaustive
-record.
+Four substantive contributions, in the order the thesis establishes them.
+
+1. **A decomposition of apparent market-making profit into five accounting illusions**, each
+   identified by a mechanism rather than a correction factor, and each shown to account for a
+   specific published-looking result in this project. The decomposition is exhaustive on the
+   data tested: nothing survives all five.
+2. **A measurement of the competitive zero by four mutually independent instruments** — the
+   tape alone, speed, observable state, and counterparty identity resolved to the wallet — which
+   agree that the residue is zero rather than negative, together with a derivation of that zero
+   from a breakeven ratio that is constant across a tenfold range of volatility.
+3. **Three structural positions that survive the decomposition**, with a law relating them: the
+   adverse-selection horizon tracks the venue's repricing clock across nearly three orders of
+   magnitude, and the surviving returns are compensation for bearing a risk on that clock rather
+   than rewards for prediction. A pre-registered replication and a within-instrument bridge
+   control establish that the magnitude is priced by competition.
+4. **A ten-rule honest-accounting discipline for backtesting**, each rule motivated by the false
+   positive its absence produced here, and demonstrated by the results it removed — including
+   two of the author's own, in full.
+
+A fifth is methodological and negative: the thesis reports the strategies that *failed*, at the
+same level of detail as those that worked, because the asymmetry between the two is the finding.
+
+These rest on **68 numbered contributions** logged in `contributions.md`, which is the
+exhaustive record and the source of truth for every number in these chapters. Most of the 68 are
+calibrations, controls, retractions and bounding negatives rather than claims in their own
+right; the count is a measure of the work, not of the result. The seven groups below summarise
+them by theme.
 
 **Empirical microstructure characterisation** (C1, C5, C6, C12, C13, C15, C25–28, C58). BTC
 return autocorrelation of about 0.15–0.18 at the 300 ms–1 s horizon decaying to zero by 20 s; a
@@ -248,11 +272,13 @@ premises (C55, C58); the perpetual lead and the wall it fails to clear (C56, C57
 instruments — model-free markout (C59), speed and co-location (C60), observable state (C61), and
 counterparty identity (C62).
 
-**The three structural positions, and the negatives that bound them** (C63–C67). The cross-venue
+**The three structural positions, and the negatives that bound them** (C63–C68). The cross-venue
 dislocation taker (C63); maker withdrawal as a real but sub-toll signal, together with the
 defended-maker retraction (C64); the closure of the flow-analysis family, including meta-order
 drift priced to 0.06 bps of the wall (C65); the immediacy premium and its regime dependence
-(C66); and the cointegration null with the funding-carry book that replaces it (C67).
+(C66); the cointegration null with the funding-carry book that replaces it (C67); and the
+extension of the central result to a second asset class, where Deribit options market making
+fails at a hypothetical *zero* maker fee (C68).
 
 **Methodological contribution.** The honest-accounting discipline of Chapter 3 §7, its ten rules
 each traced to a specific failure, and the two self-retractions (C64, C66) that demonstrate the

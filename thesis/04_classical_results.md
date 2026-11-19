@@ -92,7 +92,7 @@ nothing varied but the expression (experiment 117). All three arms:
 |---|---|---|---|
 | mean P&L/day | +$88.56 | +$25.44 | **+$149.45** |
 | win rate | 13/13 | 13/13 | 13/13 |
-| Sharpe (daily, annualised) | 21.9 | 38.1 | **46.0** |
+| Sharpe (daily, √365) | 27.4 | 47.7 | **57.7** |
 | average spread | 11.90 bps | 9.14 bps | **7.41 bps** |
 | fills/day | 8,812 | 9,410 | **11,060** |
 | adverse fills | 0.27% | 0.43% | **0.25%** |

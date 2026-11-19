@@ -411,6 +411,9 @@ spread-capture in the traditional sense.
 
 **Experiment:** Ran pure A-S (γ≈0) with identical inventory/limit/spread parameters as the
 GLFT search winner on the same OOS period (Jun 28 – Jul 10 2025, 13 days).
+Sources: exp 34 (GLFT search winner OOS), exp 37 (A-S γ≈0 control), exp 117 (the same winner on
+the corrected closed form; see the addendum below). Sharpe is the project convention throughout:
+√365 on the daily series with the population standard deviation.
 
 **Result:**
 
@@ -444,7 +447,7 @@ same 13 days, same gamma/kappa/floor/cap/loss-limit, same tick, nothing varied b
 |---|---|---|---|
 | Mean PnL/day | +$88.56 | **+$25.44** | +$149.45 |
 | Win rate | 13/13 | 13/13 | 13/13 |
-| Sharpe (daily, ann.) | 21.9 | 38.1 | 46.0 |
+| Sharpe (daily, √365) | 27.4 | 47.7 | 57.7 |
 | Avg spread | 11.90 bps | 9.14 bps | 7.41 bps |
 | Avg fills/day | 8,812 | 9,410 | 11,060 |
 | Adverse fills | 0.27% | 0.43% | 0.25% |
@@ -1083,6 +1086,9 @@ are this project's own instances of exactly that correction.
 ---
 
 ## 30. The Queue-Priority Decomposition: All Profitable Results Are Inside-Spread Artifacts
+
+Sources: exp 53 (the quoted-width and queue-fraction sweeps), exp 58, exp 62 (the corrected
+engine). Interval estimates for the sweep are in `thesis/intervals.md`.
 
 **Motivation:** Across the entire project, every profitable backtest (classical A-S/GLFT and RL,
 on LINK) shares one structural feature: it quotes *inside* the natural bid-ask spread. The
@@ -4128,6 +4134,51 @@ python experiments/108_funding_book/funding_book.py --dates 2026-07-15,2026-07-1
 
 ---
 
+## C68 — Options Market Making on Deribit Fails at a Hypothetical Zero Fee (exp 112)
+
+**Experiment:** Eight days of hourly Deribit BTC and ETH options-chain snapshots (2026-08-18..25,
+captured for this thesis), decomposing every market trade from the resting maker's side into
+entry edge and subsequent gamma-theta and vega P&L, at horizons 60s / 300s / 1800s / 7200s, in
+basis points of *underlying* notional. Maker fee set to **zero** — an upper bound, so a negative
+result here cannot be rescued by any fee schedule. Deribit's fee cap (12.5% of premium) is
+applied. Black-76 is inverted on the venue's own marks rather than on spot.
+
+**Result.** The entry edge is real and small: **+0.9 to +1.9bps** of underlying across the six
+runs. It does not survive the hedge. Net of gamma-theta and vega, at zero fees:
+
+| run | span | trades | instruments | entry | 60s | 300s | 1800s | 7200s |
+|---|---|---|---|---|---|---|---|---|
+| BTC capture | 38.0h | 29,647 | 678 | +1.07 | −1.16 | +0.17 | −2.94 | −3.29 |
+| BTC 24h | 23.9h | 4,790 | 347 | +0.91 | −4.18 | −1.72 | −1.20 | −0.86 |
+| ETH capture | 37.9h | 15,274 | 654 | +1.85 | +0.56 | −1.62 | −0.77 | −5.34 |
+| ETH 24h | 23.7h | 1,520 | 214 | +1.14 | +0.76 | +1.04 | +1.73 | −1.27 |
+
+Signs are unstable across horizon and run, hit rates sit at 0.46–0.50, and the longest horizon —
+where a real options maker's inventory actually lives — is negative in every run. Sliced by
+moneyness at 300s the picture is the same: ATM −0.00bps on 11,388 trades, OTM put-side −0.20,
+OTM call-side −0.04. There is no pocket. **This is the same zero as Part I, reached on a
+different asset class and at a fee of zero.**
+
+**Two corrections recorded as method**, both of which flipped a sign before being caught:
+
+1. **Deribit's REST trade history silently truncates.** It returns roughly a quarter of the
+   tape, keeping the *most recent* slice — a biased subsample, not a random one, and biased
+   toward whatever regime ended the window. The capture runs (29,647 and 15,274 trades) come
+   from the websocket feed; the 24h/120h runs from REST are the truncated ones, which is why
+   they disagree. Any options study built on that endpoint is studying the last quarter of its
+   own window.
+2. **Pooling "ATM implied volatility" across strikes and expiries manufactures
+   autocorrelation.** The pooled series showed large negative autocorrelation that vanishes
+   entirely when computed per instrument: it was a composition artefact of the changing strike
+   mix, not a property of volatility (exp 113).
+
+**Contribution:** Extends the thesis's central result to a second asset class and a second
+venue type, at the strongest possible fee assumption. Also documents two data-handling traps
+specific to options microstructure, either of which is severe enough to produce a false
+positive on its own.
+
+---
+
 ## Future Work
 
 The items below were drafted before the queue-priority verdict (C30) and the zero-profit
@@ -4184,91 +4235,14 @@ finding rather than dropped — some still test it directly, others are supersed
 
 ## References
 
-Cited in the "Corroborating literature" notes above. Page numbers have not been checked
-against the originals, and one entry (Albers et al.) is an incomplete placeholder; both must be
-resolved before submission. Conspicuous absences for a microstructure thesis — Kyle (1985),
-Easley & O'Hara on PIN, Hasbrouck on information shares — are not cited anywhere in the
-chapters either, and Chapter 6 §7's counterparty-identity result in particular should be
-positioned against the PIN literature rather than against Glosten-Milgrom alone.
+The bibliography lives in **`thesis/references.md`**, grouped by theme, with page numbers
+checked against the originals on 2026-11-19. The "Corroborating literature" notes above cite
+it by author and year.
 
-- Avellaneda, M. & Stoikov, S. (2008). High-frequency trading in a limit order book.
-  *Quantitative Finance*, 8(3), 217–224.
-- Albers, J. et al. (2025). [Markout / OBI methodology — complete citation from the copy used
-  for the markout horizon choice.]
-- Barucci, E., Mathieu, A. & Sánchez-Betancourt, L. (2025). Market making with fads, informed,
-  and uninformed traders. arXiv:2501.03658.
-- Barzykin, A., Bergault, P., Guéant, O. & Lemmel, F. (2025). Optimal quoting under adverse
-  selection and price reading. arXiv:2508.20225.
-- Kurth, J. G. et al. (2026). Is trend still your friend? A microstructural account of the
-  demise of short-term trend-following. arXiv:2607.01550. [Volatility-normalised tick size as
-  the cross-sectional survival variable; cited in C52 addendum and Future Work.]
-- Baron, M., Brogaard, J., Hagströmer, B. & Kirilenko, A. (2019). Risk and return in
-  high-frequency trading. *Journal of Financial and Quantitative Analysis*, 54(3), 993–1024.
-- Budish, E., Cramton, P. & Shim, J. (2015). The high-frequency trading arms race: frequent
-  batch auctions as a market design response. *Quarterly Journal of Economics*, 130(4),
-  1547–1621.
-- Bouchaud, J.-P., Bonart, J., Donier, J. & Gould, M. (2018). *Trades, Quotes and Prices:
-  Financial Markets Under the Microscope*. Cambridge University Press. (Maker P&L, short-vol
-  framing, spread–volatility relation.)
-- Cartea, Á., Jaimungal, S. & Penalva, J. (2015). *Algorithmic and High-Frequency Trading*.
-  Cambridge University Press. (Exposition of the A-S HJB solution used in Chapter 2 §2.)
-- Cont, R., Kukanov, A. & Stoikov, S. (2014). The price impact of order book events.
-  *Journal of Financial Econometrics*, 12(1), 47–88.
-- Guilbaud, F. & Pham, H. (2013). Optimal high-frequency trading with limit and market orders.
-  *Quantitative Finance*, 13(1), 79–94. (Spread as a discrete control; cited in Chapter 2 §5.)
-- Copeland, T. E. & Galai, D. (1983). Information effects on the bid–ask spread.
-  *Journal of Finance*, 38(5), 1457–1469. (Dealer quotes as a written put + call; spread as
-  option premium — the foundational "limit order = short option.")
-- Foucault, T., Pagano, M. & Röell, A. (2013). *Market Liquidity: Theory, Evidence, and Policy*.
-  Oxford University Press. (The limit order as a free option.)
-- Grossman, S. J. & Miller, M. H. (1988). Liquidity and market structure. *Journal of Finance*,
-  43(3), 617–633.
-- Ho, T. & Stoll, H. R. (1981). Optimal dealer pricing under transactions and return uncertainty.
-  *Journal of Financial Economics*, 9(1), 47–73. (Dealer inventory-risk model.)
-- Sinclair, E. (2013). *Volatility Trading* (2nd ed.). Wiley. (Short-gamma P&L: theta vs gamma,
-  realised vs implied.)
-- Stoll, H. R. (1978). The supply of dealer services in securities markets. *Journal of Finance*,
-  33(4), 1133–1151.
-- Taleb, N. N. (1997). *Dynamic Hedging: Managing Vanilla and Exotic Options*. Wiley.
-- Treynor, J. L. (as W. Bagehot) (1971). The only game in town. *Financial Analysts Journal*,
-  27(2), 12–14. (Dealer vs informed trader — adverse selection.)
-- Dayri, K. & Rosenbaum, M. (2015). Large tick assets: implicit spread and optimal tick size.
-  *Market Microstructure and Liquidity*, 1(1).
-- Glosten, L. R. & Milgrom, P. R. (1985). Bid, ask and transaction prices in a specialist
-  market with heterogeneously informed traders. *Journal of Financial Economics*, 14(1),
-  71–100.
-- Guéant, O. (2017). Optimal market making. *Applied Mathematical Finance*, 24(2), 112–154.
-  (arXiv:1605.01862)
-- Guéant, O., Lehalle, C.-A. & Fernandez-Tapia, J. (2013). Dealing with the inventory risk:
-  a solution to the market making problem. *Mathematics and Financial Economics*, 7(4),
-  477–507.
-- Handa, P. & Schwartz, R. A. (1996). Limit order trading. *Journal of Finance*, 51(5),
-  1835–1861.
-- Hollifield, B., Miller, R. A. & Sandås, P. (2004). Empirical analysis of limit order
-  markets. *Review of Economic Studies*, 71(4), 1027–1063.
-- Kearns, M. & Nevmyvaka, Y. (2013). Machine learning for market microstructure and high
-  frequency trading. In *High Frequency Trading: New Realities for Traders, Markets and
-  Regulators*. Risk Books.
-- Lalor, J. & Swishchuk, A. (2024). Market simulation under adverse selection. arXiv:2409.12721.
-- Lehalle, C.-A. & Mounjid, O. (2017). Limit order strategic placement with adverse selection
-  risk and the role of latency. *Market Microstructure and Liquidity*, 3(1).
-  (arXiv:1610.00261)
-- Lo, A. W., MacKinlay, A. C. & Zhang, J. (2002). Econometric models of limit-order
-  executions. *Journal of Financial Economics*, 65(1), 31–71.
-- Menkveld, A. J. (2013). High frequency trading and the new market makers. *Journal of
-  Financial Markets*, 16(4), 712–740.
-- Moallemi, C. C. & Yuan, K. (2017). A model for queue position valuation in a limit order
-  book. Working paper, Columbia Business School.
-- Silantyev, E. (2019). Order flow analysis of cryptocurrency markets. *Digital Finance*,
-  1(1), 191–218.
-- Smith, E., Farmer, J. D., Gillemot, L. & Krishnamurthy, S. (2003). Statistical theory of the
-  continuous double auction. *Quantitative Finance*, 3(6), 481–514.
-- Wyart, M., Bouchaud, J.-P., Kockelkoren, J., Potters, M. & Vettorazzo, M. (2008). Relation
-  between bid–ask spread, impact and volatility in order-driven markets. *Quantitative Finance*,
-  8(1), 41–57.
-- Stoikov, S. (2018). The micro-price: a high-frequency estimator of future prices.
-  *Quantitative Finance*, 18(12), 1959–1966.
-- Zhang, Z., Zohren, S. & Roberts, S. (2019). DeepLOB: deep convolutional neural networks
-  for limit order books. *IEEE Transactions on Signal Processing*, 67(11), 3001–3012.
-- *Explainable Patterns in Cryptocurrency Microstructure* (2026). arXiv:2602.00776 —
-  crypto-specific confirmation that imbalance predictability does not beat transaction costs.
+Three gaps flagged in an earlier draft are closed there. The incomplete Albers et al.
+placeholder resolves to Albers, Cucuringu, Howison & Shestopaloff (2025), arXiv:2502.18625 — a
+live trading experiment on the Binance BTC perpetual, the same venue and instrument class as
+Part I. Kyle (1985), Easley-Kiefer-O'Hara-Paperman (1996) on PIN, Easley-Lopez de
+Prado-O'Hara (2012) on VPIN and Hasbrouck (1995) on information shares are now cited, each
+positioned against the result it bears on: C62's wallet-identity estimate against PIN, C63's
+lead-lag matrix against information shares, and C33's breakeven ratio against Kyle's lambda.

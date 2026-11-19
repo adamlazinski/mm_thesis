@@ -119,7 +119,15 @@ def effective_n(x, max_lag=None):
 
 
 def sharpe_with_ci(x, periods=365, B=20000, block=None, alpha=0.05, rng=RNG):
-    """Annualised Sharpe of a daily series, with a block-bootstrap interval."""
+    """
+    Annualised Sharpe of a daily series, with a block-bootstrap interval.
+
+    Project convention, which every Sharpe quoted in the thesis follows:
+    sqrt(365) — crypto trades every day — and the *population* standard
+    deviation (ddof=0). Both choices flatter the number slightly and both are
+    held fixed so that figures are comparable across chapters; the interval is
+    what the reader should weigh, not the point estimate.
+    """
     x = np.asarray(x, float)
     n = len(x)
     if block is None:
@@ -129,11 +137,11 @@ def sharpe_with_ci(x, periods=365, B=20000, block=None, alpha=0.05, rng=RNG):
     starts = rng.integers(0, n - block + 1, size=(B, k))
     idx = (starts[:, :, None] + np.arange(block)[None, None, :]).reshape(B, -1)[:, :n]
     s = x[idx]
-    sd = s.std(axis=1, ddof=1)
+    sd = s.std(axis=1, ddof=0)
     with np.errstate(divide="ignore", invalid="ignore"):
         draws = np.where(sd > 0, s.mean(axis=1) / sd * np.sqrt(periods), np.nan)
     draws = draws[np.isfinite(draws)]
-    pt = x.mean() / x.std(ddof=1) * np.sqrt(periods)
+    pt = x.mean() / x.std(ddof=0) * np.sqrt(periods)
     return {"sharpe": float(pt), "n": n, "block": block, "ci": _ci(draws, alpha)}
 
 
