@@ -3781,12 +3781,12 @@ holds, capped per event. Two days, two independent leaders (Binance perp, Coinba
 **Result.** Hyperliquid trails the CEX consensus, and the tail of that distribution clears its
 costs.
 
-| leader → HL_BTC | events (thr=5bps) | gross round trip @5s | hit | depth-capped P&L/day |
+| leader → HL_BTC | events (thr=5bps) | gross round trip @5s | hit | P&L/day, both legs capped |
 |---|---|---|---|---|
-| Binance perp, 07-15 | 91 | +4.83bps | 87% | +$231 |
+| Binance perp, 07-15 | 91 | +4.83bps | 87% | +$235 |
 | Coinbase, 07-15 | 90 | +4.91bps | 89% | +$168 |
 | Binance perp, 07-16 | 55 | +4.79bps | 85% | +$73 |
-| Coinbase, 07-16 | 49 | +5.77bps | 96% | +$112 |
+| Coinbase, 07-16 | 49 | +5.77bps | 96% | +$104 |
 
 Median ≈ mean (not outlier-driven), and the result is *leader-agnostic* — the signal is "HL is
 stretched from consensus", not any one venue's feed. Three structural gates bound it: the 2bps
@@ -3794,6 +3794,21 @@ threshold population is decisively **negative** (~1,300 events/day under the wal
 discipline *is* the strategy); it is negative at the 4.5bps base taker tier; and the HL touch
 holds only $1.4–8k at event times, because HL's own makers pull on the same signal. **Capacity
 is the reason the edge is not competed away.**
+
+**Exit-side depth cap, 2026-11-19.** The clip was originally capped by the depth at the laggard's
+touch *on entry* only, then unwound in full at the touch 5s later without checking what was
+resting there — and since the touch is thin precisely because HL's makers withdraw on the same
+signal, the exit looked like the leg most likely to bind. `oracle_lag.py` now caps both legs at
+`min(entry touch, exit touch, cap)` and reports which constraint binds. The correction is small
+and the reason is instructive: the exit is 5 seconds after the event, by which time the book has
+repaired, so the median **exit** touch holds **$0.2-0.7M** against an entry touch of $1.3-8.5k.
+The withdrawal is a tens-of-milliseconds reaction and the hold is two orders of magnitude longer.
+Exit binds on 6-16% of BTC events, costing at most 7% of the $10k-cap P&L. Capacity on the BTC
+pairs is set by the *entry*, which is C63's claim, now measured rather than asserted. Two
+cautions: a tighter cap shrinks P&L in both directions, so on a losing configuration the
+both-legs figure looks *better* (honesty, not edge); and the HL_LINK pairs are where the exit
+genuinely binds (21-43% of events, that touch holding ~$500 on both sides), but every LINK row is
+negative at these thresholds so no positive claim rested on the unconstrained leg.
 
 Two further tests bound the interpretation. **Exp 109** conditioned the trade on HL's own premium
 (perp vs oracle) and found a clean null — the premium is ≈ −dev, a slower redundant read of the

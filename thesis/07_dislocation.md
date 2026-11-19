@@ -86,23 +86,37 @@ matters more here than anywhere else in the thesis: a mark-to-mid version of thi
 would report a materially larger number, and Chapter 5 §5 catalogues what that error has cost
 elsewhere.
 
-One asymmetry in that accounting should be stated, because it runs in the strategy's favour.
-*Price* is executable on both legs, but *size* is capped only on entry: the simulation limits
-the clip to the depth resting at the laggard's touch when the event fires, and then exits the
-whole clip at the touch five seconds later without checking what is resting there. Since §5
-shows the touch is thin precisely because Hyperliquid's makers withdraw on the same signal, the
-exit is the leg most likely to be depth-constrained, and it is the leg not constrained here.
-The capacity figures below are therefore entry-side bounds, and the true round-trip capacity is
-no larger and may be smaller.
+One asymmetry in that accounting ran in the strategy's favour and has been closed. *Price* was
+executable on both legs, but *size* was capped only on entry: the simulation limited the clip to
+the depth resting at the laggard's touch when the event fired, then exited the whole clip at the
+touch five seconds later without checking what was resting there. Since §5 shows the touch is
+thin precisely because Hyperliquid's makers withdraw on the same signal, the exit looked like the
+leg most likely to be constrained — and it was the leg not constrained. The simulation now caps
+both legs, at `min(entry touch, exit touch, cap)`.
 
-Across two days and two independent leaders, at the 5 bps threshold:
+The correction is small, and *why* it is small is the interesting part. The exit comes five
+seconds after the event, by which time the book has repaired: the median exit touch holds
+**$0.2–0.7 million** against an entry touch of $1.3–8.5k. The withdrawal that thins the touch is
+a reaction measured in tens of milliseconds, and the position is held two orders of magnitude
+longer than that. The exit constraint therefore binds on only 6–16% of BTC events and costs at
+most 7% of the P&L at the $10k cap on the configurations below. Capacity on these pairs is set
+by the entry, which is Chapter 7's claim, and it is now measured rather than assumed.
 
-| leader → HL_BTC | events | gross round trip @5 s | hit rate | depth-capped P&L/day |
+Across two days and two independent leaders, at the 5 bps threshold, with both legs capped:
+
+| leader → HL_BTC | events | gross round trip @5 s | hit rate | P&L/day, both legs capped |
 |---|---|---|---|---|
-| Binance perp, 15 Jul | 91 | +4.83 bps | 87% | +$231 |
+| Binance perp, 15 Jul | 91 | +4.83 bps | 87% | +$235 |
 | Coinbase, 15 Jul | 90 | +4.91 bps | 89% | +$168 |
 | Binance perp, 16 Jul | 55 | +4.79 bps | 85% | +$73 |
-| Coinbase, 16 Jul | 49 | +5.77 bps | 96% | +$112 |
+| Coinbase, 16 Jul | 49 | +5.77 bps | 96% | +$104 |
+
+Two qualifications on reading those capacity figures. First, a tighter cap shrinks P&L in *both*
+directions, so on a losing configuration the both-legs number looks better than the entry-only
+one; it is an improvement in honesty, not in the strategy. Second, the HL_LINK pairs are the
+case where the exit genuinely binds — 21–43% of events, because that book's touch holds about
+$500 on *both* sides — but every LINK row is negative at these thresholds, so no positive claim
+in this chapter rests on the leg that was unconstrained.
 
 Median approximately equals mean, so the result is not carried by a handful of outliers. It is
 also **leader-agnostic**: Coinbase and Binance produce the same answer, which identifies the

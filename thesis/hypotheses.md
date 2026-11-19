@@ -266,6 +266,12 @@ rather than below it, which is the register's single most important pattern.
   decisively negative; it is negative at the 4.5 bps base taker fee; and the touch holds only $1.4k–$8k at
   event times because Hyperliquid's own makers withdraw on the same signal. The capacity bound is the
   *answer* to why a public-data edge persists. *(C63)*
+- `✗` **The exit leg is the binding capacity constraint.** It looked like it should be — the touch is thin
+  because makers withdraw on the same signal — but no. Capping both legs at `min(entry, exit, cap)`
+  changes the BTC result by at most 7%, because the exit is five seconds after the event and the
+  median exit touch holds $0.2–0.7M against an entry touch of $1.3–8.5k. The withdrawal is a
+  tens-of-milliseconds reaction; the hold is two orders of magnitude longer. Capacity is set on
+  entry. *(C63 addendum, 2026-11-19)*
 - `✓` **The immediacy premium exists where competition is thin.** Four of six tail books clear **base** fees
   on an inventory-aware round trip over five days, residual liquidated across the closing spread
   (HMSTR +13.36 bps, USUAL +12.65, ZORA +7.42, CELO +3.33; VINE +0.63 and EIGEN −1.16 do not).

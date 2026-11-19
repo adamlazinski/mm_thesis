@@ -10,10 +10,20 @@
       "n_events": 1336,
       "depth": {
         "touch_usd_p50": 1270.44435,
+        "exit_touch_usd_p50": 477797.25813,
         "fee_bps_used": 1.4,
         "pnl_per_day_capped": {
           "cap_1000": -64.29,
           "cap_10000": -464.93
+        },
+        "pnl_per_day_capped_roundtrip": {
+          "cap_1000": -56.0,
+          "cap_10000": -380.21
+        },
+        "binding_constraint": {
+          "entry": 857,
+          "exit": 85,
+          "cap": 394
         }
       },
       "h1s": {
@@ -69,10 +79,20 @@
       "n_events": 55,
       "depth": {
         "touch_usd_p50": 1942.77692,
+        "exit_touch_usd_p50": 346539.5481,
         "fee_bps_used": 1.4,
         "pnl_per_day_capped": {
           "cap_1000": 8.94,
           "cap_10000": 72.85
+        },
+        "pnl_per_day_capped_roundtrip": {
+          "cap_1000": 8.73,
+          "cap_10000": 73.09
+        },
+        "binding_constraint": {
+          "entry": 30,
+          "exit": 6,
+          "cap": 19
         }
       },
       "h1s": {
@@ -128,10 +148,20 @@
       "n_events": 9,
       "depth": {
         "touch_usd_p50": 8301.94848,
+        "exit_touch_usd_p50": 440133.61777,
         "fee_bps_used": 1.4,
         "pnl_per_day_capped": {
           "cap_1000": 1.11,
           "cap_10000": 5.12
+        },
+        "pnl_per_day_capped_roundtrip": {
+          "cap_1000": 1.11,
+          "cap_10000": 5.12
+        },
+        "binding_constraint": {
+          "entry": 6,
+          "exit": 0,
+          "cap": 3
         }
       },
       "h1s": {
