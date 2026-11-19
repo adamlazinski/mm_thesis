@@ -4,6 +4,36 @@ Empirical and methodological contributions from the implementation and analysis 
 Avellaneda-Stoikov and GLFT market making on BTC/USDT and LINK/USDT tick data (CoinAPI,
 Binance Spot, May–Jun 2025, Jun–Jul 2025, and April 2026).
 
+> **Verification status (2026-11-19).** `scripts/verify_contributions.py` pools every number
+> in the experiment JSONs each entry names and checks the entry's table cells and bold figures
+> against that pool at 1.2% tolerance. Of the 68 entries, **46 name at least one experiment and
+> are machine-checked**: 34 match every claim, 11 carry a small number of unmatched values, and
+> one (C60) is flagged outright. The flags are legitimate in every case inspected — derived
+> quantities the pool cannot contain (C60's "edge" column is real minus placebo, e.g.
+> −$0.48 − (−$6.87) = +$6.4) and date fragments parsed as negative numbers. The screen is a
+> screen, not a proof; its value is that a *large* unmatched count on an entry whose numbers
+> should all be primary is visible, which is how C34 was caught quoting a superseded
+> pre-engine-fix table.
+>
+> **The remaining 22 cannot be reached by that check**: C1–C14, C16, C18, C19, C21, C24, C26,
+> C27 and C31. These are the oldest work in the project — the microstructure characterisation behind
+> Chapter 3 and the first classical results behind Chapter 4 — and they predate the
+> `experiments/NN_*` convention. Their source material is in `analysis/` notebooks and in
+> figures committed alongside them, not in a results JSON a script can pool. Where a committed
+> artefact does back an entry it is now named in the entry (C6 and C15 point at
+> `analysis/fill_intensity_calibration.json`, C20 and C25 at exps 44 and 51). For the rest the
+> honest statement is that **they are reproducible from the notebooks and are not
+> machine-verified**, and no attempt has been made to retro-fit pointers that would make the
+> screen pass without adding evidence.
+>
+> What this does and does not threaten: the unverified set is characterisation and early
+> strategy results, both of which are *superseded* where they matter. C6's and C15's fill-curve
+> shapes are re-measured on L2 data in C20 and C44; C16's +$154/day is re-derived from exp 37
+> in Chapter 4 and then dismantled in Chapter 5; C26's and C27's calibration findings are
+> re-established on the corrected formula in C17's addendum. No claim in Part II depends on any
+> of the 22. Closing the gap properly means re-running the notebook analyses as numbered
+> experiments, which is listed in Chapter 10 §8.
+
 > **Metric note (2026-06-10) — "Sharpe" figures below are deprecated.** Entries written
 > before this date quote "Sharpe" numbers of two kinds, neither of which should survive into
 > the thesis: (a) √365-annualized daily Sharpe over ≤30-day windows (values like 38–58),
@@ -138,6 +168,8 @@ execution.
 ---
 
 ## 6. Two-Component Fill Probability Model
+
+Source: `analysis/fill_intensity_calibration.json` (per-day and per-window fits; the same file Figure 8 is drawn from). This entry predates the `experiments/NN_*` convention and is not reachable by `scripts/verify_contributions.py`.
 
 **Finding:** Empirical fill probability on BTC/USDT does not follow the pure exponential
 decay assumed by GLFT:
@@ -346,6 +378,8 @@ LOB depth data not available in trade/quote tick feeds.
 
 ## 15. Step-Function Fill Curve on LINK/USDT
 
+Source: `analysis/fill_intensity_calibration.json` and exp 44. Predates the `experiments/NN_*` convention.
+
 **Finding:** LINK/USDT (Binance Spot) exhibits a qualitatively different fill curve from BTC.
 The market maintains a permanent 10-tick ($0.010) bid-ask spread essentially 100% of the time.
 This produces a step-function fill probability rather than the smooth exponential assumed by GLFT:
@@ -412,8 +446,11 @@ spread-capture in the traditional sense.
 **Experiment:** Ran pure A-S (γ≈0) with identical inventory/limit/spread parameters as the
 GLFT search winner on the same OOS period (Jun 28 – Jul 10 2025, 13 days).
 Sources: exp 34 (GLFT search winner OOS), exp 37 (A-S γ≈0 control), exp 117 (the same winner on
-the corrected closed form; see the addendum below). Sharpe is the project convention throughout:
-√365 on the daily series with the population standard deviation.
+the corrected closed form; see the addendum below). Per the metric note at the head of this file, the
+comparison is reported as mean ± std of daily PnL with a bootstrap interval, not as an
+annualized Sharpe. (The original C17 table's "27.4 / 57.7" were √365 daily Sharpe with the
+population standard deviation, which is the deprecated convention; they are retained in the
+original table above for the record and should not be carried into the thesis.)
 
 **Result:**
 
@@ -446,8 +483,10 @@ same 13 days, same gamma/kappa/floor/cap/loss-limit, same tick, nothing varied b
 | Metric | GLFT mis-transcribed | GLFT corrected | A-S gamma~0 control |
 |---|---|---|---|
 | Mean PnL/day | +$88.56 | **+$25.44** | +$149.45 |
+| 95% CI (block bootstrap) | [+47, +120] | [+20, +30] | [+118, +177] |
+| Std of daily PnL | $64.32 | $10.61 | $51.53 |
+| Daily mean/std (unannualized) | 1.38 | 2.40 | 2.90 |
 | Win rate | 13/13 | 13/13 | 13/13 |
-| Sharpe (daily, √365) | 27.4 | 47.7 | 57.7 |
 | Avg spread | 11.90 bps | 9.14 bps | 7.41 bps |
 | Avg fills/day | 8,812 | 9,410 | 11,060 |
 | Adverse fills | 0.27% | 0.43% | 0.25% |
@@ -532,6 +571,8 @@ is the persistent feature that enables the strategy, not the specific 2025 marke
 
 > **ℹ POST-HOC NOTE (2026-07-10 — see C54).** The geometry documented here is now explained rather than invalidated: LINK's exchange tick in this data was 0.01, and measuring a 0.01-grid book at 0.001 resolution makes nine of ten fine-grid price levels structurally empty. The observations are real; their interpretation changes.
 
+
+Source: exp 44 (`experiments/44_fill_curve_l2`), the L2 queue-clearing fill curve.
 
 **Experiment:** Computed the empirical fill probability curve P(fill | δ, T=0.5s) for LINK/USDT
 over 30 days of April 2026 using CoinAPI L2 orderbook snapshots and trade data. Two models were
@@ -813,6 +854,8 @@ sizes to generate economically meaningful spread capture relative to BTC's price
 ---
 
 ## 25. Approach C: Model-Free Crossing Intensity Kappa Estimation (LINK)
+
+Source: exp 51 (`experiments/51_crossing_intensity`), the model-free crossing-intensity fit.
 
 **Motivation:** Approaches A and B to kappa estimation both rely on fitting an exponential
 fill curve to empirical data, which is unreliable when the underlying curve is not exponential.

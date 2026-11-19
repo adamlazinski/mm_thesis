@@ -447,6 +447,18 @@ manufactures large negative autocorrelation that vanishes per instrument.
 - **Options.** The Deribit conclusion rests on a capture of limited duration and on a zero-fee
   upper bound, which is the right shape for a negative result but not for any positive claim
   about the asset class.
+- **Twenty-two contributions are not machine-verified.** `scripts/verify_contributions.py`
+  checks each entry's figures against the experiment JSONs it names; 46 of the 68 entries can
+  be reached that way. The other 22 — C1–C14, C16, C18, C19, C21, C24, C26, C27 and C31 — are
+  the project's oldest work and predate the `experiments/NN_*` convention, so their source
+  material sits in `analysis/` notebooks rather than in a results file a script can pool. They
+  are reproducible from those notebooks and no attempt was made to retro-fit pointers that
+  would make the screen pass without adding evidence. The exposure is bounded: all 22 are
+  microstructure characterisation or early strategy results, every one of which is superseded
+  where it matters (C6 and C15's fill curves by C20's L2 measurement, C16's headline by its
+  re-derivation in Chapter 4 and dismantling in Chapter 5, C26 and C27's calibration findings
+  by Contribution 17's corrected-formula rerun), and **no claim in Part II depends on any of
+  them**.
 
 ---
 
@@ -459,6 +471,11 @@ manufactures large negative autocorrelation that vanishes per instrument.
   collector already runs, and a three-month capture would narrow Chapter 8's round trip from
   [+1.7, +10.6] bps to something that could support a sizing decision rather than an existence
   claim.
+- **Re-run the notebook analyses as numbered experiments.** The twenty-two unverified
+  contributions are a bookkeeping debt rather than a doubt: the analyses exist and the data is
+  committed, but they were done before the project adopted the convention that every number
+  lives in a results JSON a script can check. Porting them would close the verification gap
+  listed in §7 and is the cheapest remaining item on this list.
 - **Measure the cascade tail.** This is the single most valuable missing quantity, and it is a
   data-collection problem rather than an analytical one: run the Chapter 9 book's reconstruction
   through a stressed window and size the carry position against the tail rather than the

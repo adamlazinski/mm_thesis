@@ -48,17 +48,23 @@ The performance of this degenerate configuration on LINK, 11 June – 10 July 20
 
 | metric | value |
 |---|---|
-| mean P&L | +$154/day (total +$4,633) |
+| mean P&L | +$154.44/day (total +$4,633) |
+| 95% CI, moving-block bootstrap | [+$129, +$170] |
+| std of daily P&L | $53.14 |
 | win rate | 30/30 days (100%) |
-| annualised Sharpe (√252) | 56.5 |
+| annualised Sharpe | 56.5 |
 | average markout | +1.2 to +2.5 bps (positive) |
 | adverse fills | 17–35% (against 60–100% on BTC) |
 
-All Sharpe ratios in this thesis are annualised from daily P&L by the factor √252. A figure of
-56.5 should be read as a warning rather than an achievement: it arises because the strategy wins
-on every single day, so the denominator is near zero. No liquidity-provision strategy facing real
-adverse selection produces a variance that small, and §7 and Chapter 5 identify what is
-suppressing it.
+Two notes on that Sharpe, because it is the most misleading number in the thesis. It is
+annualised by **√365** — crypto trades every day — from the *population* standard deviation,
+which is the convention every Sharpe quoted in this project follows and which flatters the
+figure slightly. More importantly, 56.5 should be read as a warning rather than an achievement:
+it arises because the strategy wins on every single day, so the denominator is near zero. No
+liquidity-provision strategy facing real adverse selection produces a variance that small, and
+§7 and Chapter 5 identify what is suppressing it. For that reason the tables in the rest of this
+thesis report the daily mean with a bootstrap interval and the win rate, not an annualised
+ratio; this one is kept because the implausibility of the ratio is itself the evidence.
 
 The stated mechanism is inventory cycling. The inside-spread floor makes the strategy the
 best bid and offer, which guarantees taker flow; the tight inventory cap means that when
@@ -91,8 +97,10 @@ nothing varied but the expression (experiment 117). All three arms:
 | metric | GLFT, as mis-transcribed | GLFT, corrected formula | A-S γ≈0 control |
 |---|---|---|---|
 | mean P&L/day | +$88.56 | +$25.44 | **+$149.45** |
+| 95% CI (block bootstrap) | [+47, +120] | [+20, +30] | **[+118, +177]** |
+| std of daily P&L | $64.32 | $10.61 | $51.53 |
+| daily mean / std | 1.38 | 2.40 | **2.90** |
 | win rate | 13/13 | 13/13 | 13/13 |
-| Sharpe (daily, √365) | 27.4 | 47.7 | **57.7** |
 | average spread | 11.90 bps | 9.14 bps | **7.41 bps** |
 | fills/day | 8,812 | 9,410 | **11,060** |
 | adverse fills | 0.27% | 0.43% | **0.25%** |

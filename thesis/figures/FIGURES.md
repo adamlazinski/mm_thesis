@@ -149,10 +149,11 @@ invalid $0.001 grid of Contribution 54. On the true $0.01 tick at LINK's ~$9,
 11.1 bps *is* one tick — which is why that row is "at touch". Ch4's and Ch5's
 tables now quote basis points with true-tick equivalents.
 
-Still unverified: the contributions outside Part I and C66/C67 — principally
-C1–C15 and C25–C28, the microstructure characterisation behind Chapter 3, for
-which no experiment pointers exist in the log. They are the remaining gap in the
-verification sweep.
+Still unverified: 22 of the 68 entries — C1–C14, C16, C18, C19, C21, C24, C26,
+C27 and C31 — which predate the `experiments/NN_*` convention and whose source
+material is in `analysis/` notebooks. The full status, including why the
+exposure is bounded, is in the header of `contributions.md`. C6, C15, C20 and
+C25 were in this set and now name their committed artefacts.
 
 ## Interval estimates (2026-11-19)
 

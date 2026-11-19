@@ -73,7 +73,7 @@ def matches(v,pool):
 targets=[int(a) for a in sys.argv[1:]]
 for n in targets:
     t=ent.get(n,'')
-    exps=sorted(set(re.findall(r'exps?\s+(\d+)',t))|set(re.findall(r'experiments/(\d+)_',t)),key=int)
+    exps=sorted(set(re.findall(r'exps?\s+(\d+)',t,re.I))|set(re.findall(r'experiments/(\d+)_',t)),key=int)
     pool=data_nums(exps)
     if not pool:
         print(f"C{n}: NO DATA ({exps})"); continue
