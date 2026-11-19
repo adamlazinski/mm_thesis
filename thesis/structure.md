@@ -1,142 +1,48 @@
-# Thesis Structure and Writing Plan
+# Thesis Structure
 
-Supersedes the provisional 7-chapter plan drafted 2026-06-16, which predates the
-live multi-venue capture (C55+), the tick-misspecification correction (C54), and
-the three affirmative results. That plan's central narrative — queue-priority
-verdict with OBI-skew as the exception — is obsolete: C54 removed the exception,
-and the capture arc replaced it with a stronger and differently shaped argument.
+The reading order, what each chapter carries, and where its numbers come from. This file is an index, not a plan; the writing schedule it used to hold is complete and lives in the git history.
 
----
+**Central claim.** Competitive, retail-accessible market making on lit crypto venues earns **exactly zero** — not approximately, not negative-after-costs, but pinned to the competitive equilibrium, measured live with four mutually independent instruments. Every apparently profitable backtest in this project decomposes into one of five accounting illusions. What survives honest accounting is never a *signal*; it is compensation for bearing a structural risk. *Markets pay for risk-bearing and structural position, not for prediction a single participant can compute.*
 
-## 1. Central claim
+**Research questions.** RQ1 — can a retail-accessible market maker earn positive risk-adjusted P&L on lit crypto books, once fills, queue position, ticks and fees are modelled honestly? RQ2 — if not, is the constraint signal quality, speed, or structure? RQ3 — what distinguishes the strategies that appear profitable in backtest from those that survive honest accounting? RQ4 — what, if anything, survives, and what is it compensation *for*? All four are answered explicitly in Chapter 10 §4.
 
-Competitive, retail-accessible market making on lit crypto venues earns **exactly
-zero** — not approximately, not negative-after-costs, but pinned to the
-competitive equilibrium. This is the Glosten–Milgrom zero-profit condition,
-measured live with four mutually independent instruments. Every apparently
-profitable backtest in this project decomposed into one of five accounting
-illusions. What survives honest accounting is never a *signal*: it is
-compensation for bearing a **structural risk** — latency exposure, inventory and
-jump risk in thin books, or basis risk across venues.
 
-**One sentence:** *markets pay for risk-bearing and structural position, not for
-prediction a single participant can compute.*
+## Reading order
 
-## 2. Research questions
+| file | chapter | words | §§ | figs | carries |
+|---|---|---|---|---|---|
+| `01_introduction.md` | Introduction | 3,120 | 6 | — | the two-part claim, the contribution roadmap (C1–C67 in seven groups), and the chapter map |
+| `02_theory.md` | Theoretical Background | 6,041 | 9 | — | A-S and GLFT derivations, the fill-intensity premise, queue priority, the fair-value anchor, and the Glosten–Milgrom / Wyart–Bouchaud / Grossman–Miller equilibrium that Parts I and II both test |
+| `03_data_methodology.md` | Data, Microstructure & Methodology | 4,635 | 9 | 1 | data, calibration, the engine and its fill-model audit, the 2026 four-venue capture, the ten-rule honest-accounting discipline, and the inference method |
+| `04_classical_results.md` | Classical and Machine-Learning Strategy Results | 3,037 | 7 | — | **Part I opens.** The apparent profit, the degenerate optimum, GLFT against a flat control on both the mis-transcribed and corrected formula, and the three things that do not fit |
+| `05_anatomy_of_illusion.md` | The Anatomy of Illusory Profit | 3,788 | 8 | 3 | the five mirages, what survives their removal, and the synthetic control that shows the residue is a *derived* zero |
+| `06_the_zero.md` | The Zero, Measured Four Ways | 2,680 | 8 | 1 | **the central chapter.** Four independent instruments — markout, speed, observable state, counterparty identity — all terminating at zero rather than below it |
+| `07_dislocation.md` | Cross-Venue Dislocation: Renting a Slow Venue's Clock | 2,278 | 7 | 1 | **Part II opens.** The cross-venue dislocation taker: the clock problem, the honestly priced trade, and the three gates that bound it |
+| `08_immediacy_premium.md` | The Immediacy Premium in Thin Books | 4,054 | 8 | 2 | the venue-clock law, why the round trip comes first, the thin-book round trip, fair-value anchoring, and the pre-registered replication with its bridge control |
+| `09_carry.md` | Carry and the Funding Basis | 2,110 | 6 | 1 | funding carry and the basis: cointegration priced out, funding as a contractual cash flow, the basis as the actual risk, and the cascade tail this thesis could not measure |
+| `10_conclusions.md` | Conclusions | 6,048 | 8 | — | the argument rather than a re-narration: Part I's six-step chain, Part II's three positions and five properties, explicit RQ answers, method, limitations, further work |
 
-- **RQ1** Can a retail-accessible market maker earn positive risk-adjusted P&L on
-  lit crypto books, once fills, queue position, ticks, and fees are modelled
-  honestly?
-- **RQ2** If not, *why* — is the constraint signal quality, speed, or structure?
-- **RQ3** What distinguishes the strategies that appear profitable in backtest
-  from those that survive honest accounting?
-- **RQ4** What, if anything, does survive — and what is it compensation *for*?
+**37,791 words** across ten chapters, nine figures.
 
-## 3. Chapter structure
 
-### Foundations
+## Supporting files
 
-**Ch1 — Introduction.** `01_introduction.md` — DRAFTED (1,917w).
-*Revision needed:* headline result and contribution roadmap now cover both halves;
-§6 structure section must be rewritten to this plan.
+| file | what it is |
+|---|---|
+| `contributions.md` | the C1–C67 log — the **source of truth** for every number. Each contribution states its experiment, its result and its scope; corrections and addenda are appended in place and dated rather than overwritten. |
+| `hypotheses.md` | the hypothesis register: what was predicted, what the data said, and what was retracted. `⊘` marks a superseded entry, kept rather than deleted. |
+| `intervals.md` | 95% bootstrap intervals for every headline quantity, generated by `scripts/make_intervals.py`. Method in Chapter 3 §8. |
+| `figures/` | nine figures plus `FIGURES.md`, which records what each one carries and the verification status of the claims behind it. Built by `scripts/make_figures.py`. |
 
-**Ch2 — Theoretical Background.** `02_theory.md` — DRAFTED (3,999w).
-*Additions needed:* Grossman–Miller (immediacy premium — the theory behind Part II
-Ch8); Stoikov micro-price (the fair-value anchor, exp 111); Bergault–Guéant
-multi-asset closed forms (§, with the measured 0.04-tick cross-asset skew showing
-it quantizes away on one-tick books).
+## Conventions
 
-**Ch3 — Data, Venues and Methodology.** `03_data_methodology.md` — DRAFTED
-(2,662w) but covers only CoinAPI 2025.
-*Major addition:* the 2026 live capture — four venues (Binance spot+perp,
-Coinbase spot+perp, Hyperliquid majors + tail), collectors, raw-first design,
-reconstruction and integrity checks (C55). Plus a new section stating the
-**honest-accounting discipline** as method: exchange-valid ticks, real L2,
-post-only, round-trip pricing at executable touches (never mark-to-mid), placebo
-and anti-signal controls, OOS replication, depth-capped capacity, common-clock
-validation.
+- Markdown per chapter, one top-level file, `## N. Section Title` headers with no "Chapter N" prefix.
+- Plain-ASCII formulas with unicode Greek. Latency default **10 ms**.
+- Every number traceable to a committed experiment JSON; `scripts/verify_contributions.py` checks the log against the repo.
+- Figures are referenced in text as **Figure N** and embedded at the point of use.
 
-### Part I — The Competitive Zero
 
-**Ch4 — Apparent Profits: Classical and ML Strategies.** C16–C24.
-Sets the puzzle: A-S/GLFT variants, OFI/momentum extensions, RL — all apparently
-profitable. Ends by stating the puzzle rather than resolving it.
+## A note on the two LINK datasets
 
-**Ch5 — The Anatomy of Illusory Profit.** C29–C35, C46–C54.
-The five mirages, each dissected with the experiment that exposed it:
-queue-priority artifacts (C30); tick mis-specification (C54); mark-to-mid
-accounting (C60, and again in the exp-103 retraction); fee-tier fantasy
-(C47/C53); maker fill-selection / winner's curse (exp 100). Includes the
-corrected-engine work (C29/C32) and the foresight oracle (C34).
+LINK's tick **differs between the two datasets and both are correct for their period.** The purchased history is $0.01 at ~$9 (~11 bps/tick, Contribution 54); Binance cut it to $0.001 between April and July 2026 as the price fell to ~$8, so the captured data is $0.001 (~1.25 bps/tick). This is why Chapter 6 labels LINK "0.001, ~1.25 bps/tick" while Chapter 5 says the 0.001 assumption was the error. No tick-denominated quantity may cross that boundary, and Chapter 3 §6 states the reconciliation.
 
-**Ch6 — The Zero, Measured Four Ways.** C55–C62.
-The central chapter. Four independent instruments, one answer:
-model-free Glosten–Milgrom markout (C59); speed/co-location (C60 + exp 95);
-anonymous state (C61); counterparty identity (C62). Book geometry (C58) hardens
-the premises; C56/C57 supply the sharpest signal and its failure to cross.
-
-### Part II — The Boundary
-
-**Ch7 — Cross-Venue Dislocation: Renting a Slow Venue's Clock.** C63.
-Exps 89/90/99/109/110. The lead-lag hierarchy, the surviving taker alpha, its
-capacity and fee gates, the premium-gate null (exp 109), and the clock-artifact
-validation — the check that made the result stronger.
-
-**Ch8 — The Immediacy Premium in Thin Books.** C66.
-Exps 93/103/111 + the route-5 screen. Adverse-selection horizon by venue clock;
-the defended-maker retraction; fair-value (micro-price) anchoring and quote
-distance; the pre-registered fresh-sample replication and the bridge control that
-showed the premium is priced by spread width (Grossman–Miller).
-
-**Ch9 — Carry and the Funding Basis.** C67.
-Exps 106/107/108. The intraday cointegration null; the cross-venue funding
-differential; the delta-neutral book with basis mark-to-market; why realized
-short-window carry is basis-dominated; the unmeasured cascade tail.
-
-### Synthesis
-
-**Ch10 — Conclusions.** `10_conclusions.md` — EXISTS (5,853w) but predates the
-capture arc; needs substantial rewrite, not a light pass. Sections: headline
-result; the evidentiary chain across both parts; why the zero is necessary rather
-than contingent; the methodological contribution (including the two
-self-retractions as evidence the discipline has teeth); limitations; further work.
-
-## 4. Source of truth
-
-`contributions.md` (36,983w, C1–C61) is the lab notebook and every chapter
-is drafted from it. **C62–C67 must be written first** — they are the raw material
-for Ch6–Ch9:
-
-| entry | content | experiments |
-|---|---|---|
-| C62 | Wallet identity reaches the equilibrium exactly | 97 |
-| C63 | The cross-venue dislocation taker, clock-validated | 99, 109, 110 |
-| C64 | Maker withdrawal leads price; the defended-maker retraction | 102, 103 |
-| C65 | Meta-order drift priced to the wall; flow-family closure | 98, 101, 104, 105 |
-| C66 | Route 5: the immediacy premium and fair-value anchoring | 93, 103, 111 |
-| C67 | Cointegration null and the funding-carry book | 106, 107, 108 |
-
-## 5. Schedule (5 weeks)
-
-- **Week 1** — C62–C67 into `contributions.md`; Ch3 capture + discipline sections.
-- **Week 2** — Ch4, Ch5.
-- **Week 3** — Ch6, Ch7.
-- **Week 4** — Ch8, Ch9.
-- **Week 5** — Ch1/Ch2 revisions; Ch10 conclusions rewrite; cross-reference and
-  consistency pass; figures.
-
-## 6. Conventions
-
-Markdown per chapter, one top-level file, `## N. Section Title` headers, no
-"Chapter N" prefix, plain-ASCII formulas with unicode Greek. Latency default 10ms.
-Every number traceable to a committed experiment JSON.
-
-## 7. Open items
-
-- Length target not yet fixed; if the draft runs long, Ch8+Ch9 can merge into a
-  single "Two Risk Premia" chapter.
-- Figures not yet planned; candidates: the four-instrument zero, the
-  adverse-selection horizon by venue clock, the lead-lag matrix, the route-5
-  basket equity curve.
-- Ch3 loose ends carried from June: survival-analysis vs two-component fill-rate
-  framing; LINK tick $0.001 vs $0.01 in older derivations (C15/C25/C27).

@@ -213,6 +213,10 @@ pooling in Glosten-Milgrom is not an artefact of anonymity: the toxicity that is
 is already priced into who trades, when, and at what spread, so perfect sorting recovers the
 maker to the equilibrium and stops there.
 
+![Figure 4](figures/f4_four_instruments.png)
+
+**Figure 4** is the chapter in one panel each. Four classes of information — the tape alone, speed, observable state, counterparty identity — measured independently, and all four terminating at zero rather than below it. A market that was merely hard to trade would show losses; one that is in equilibrium shows exactly this.
+
 ## 8. Four Instruments, One Number
 
 | instrument | what it knows | result |

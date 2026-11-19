@@ -131,6 +131,10 @@ if it is churned daily**. This is a hold-and-collect position that is destroyed 
 which inverts the usual relationship between activity and edge and is worth stating plainly for
 a reader whose instinct is that more rebalancing means tighter hedging.
 
+![Figure 9](figures/f9_carry.png)
+
+**Figure 9** separates the two components the chapter insists on separating: funding, which is contractual and positive on all four majors, and the basis, which is the actual risk and which decides the outcome.
+
 ## 5. The Tail This Thesis Could Not Measure
 
 One quantity is missing, and its absence is the chapter's principal limitation rather than a

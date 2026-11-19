@@ -95,6 +95,10 @@ is a vanishingly small fraction of the queue at any price level on LINK.
 
 ---
 
+![Figure 8](figures/f8_fill_curve.png)
+
+**Figure 8** sets the exponential fill intensity that Avellaneda–Stoikov and GLFT both assume against what the two books actually do: BTC has a two-component shape with a momentum floor, and LINK is a step function — flat inside the spread, flat outside, with the discontinuity exactly at the touch. The premise is violated on every book tested, which is the first reason Chapter 4's models underperform a spread floor.
+
 ## 3. Calibration Methodology
 
 **Disentangling A and κ (Contribution 4).** The A-S/GLFT literature typically proxies κ with

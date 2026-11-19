@@ -85,7 +85,7 @@ QUEUE = [(9, 11.8), (86, 2.8), (431, 0.4), (863, 0.9), (4313, 1.0)]
 # C60 co-location addendum: whole latency stack 10 ms -> 1 ms, $/day.
 SPEED = [("2026-07-10", -2.04, -1.94), ("2026-07-12", 1.91, 0.54)]
 # Ch8 section 3: horizons that ran off the end of the 5 s measurement window.
-TAIL_CENSORED = 5.0
+TAIL_CENSORED = 10.0
 
 
 # ---------------------------------------------------------------- F1
@@ -212,13 +212,14 @@ def f4_instruments():
     hz = np.array(one["horizons"], float)
     for book, col, ls in (("LINK", ACCENT, "-"), ("LINK_PERP", "#67a9cf", "-"),
                           ("BTC", BAD, "-"), ("BTC_PERP", "#e08b7d", "-")):
-        r = one["results"][book]["realized_half"]
+        r = one["results"][book]["sample_rules"]["carry"]["realized_half"]
         a.plot(hz, [r[str(h)]["bps"] for h in hz], ls, color=col, lw=1.4, label=book, ms=3, marker="o")
     a.axhline(0, color=INK, lw=1.0); a.set_xscale("log")
     a.set_xlabel("horizon after the fill  (s)"); a.set_ylabel("realized half-spread  (bps)")
     a.set_ylim(-3.2, 1.6); a.legend(fontsize=6.6, loc="lower left")
     a.set_title("1.  Markout: the tape alone")
-    src(a, "C59, 2026-07-10. Gross edge gone within 100 ms on every book.")
+    src(a, "C59, 2026-07-10, carry-forward quote rule (Ch3 \u00a78). "
+        "Gross edge gone within 100 ms on every book.")
 
     # 2. speed
     xs = np.arange(len(SPEED)); w = 0.34
@@ -326,7 +327,7 @@ def f5_venue_clock():
         else:
             ax.plot([0.008, TAIL_CENSORED], [y, y], color=GCOL[g], lw=1.2, alpha=0.5, zorder=1)
             ax.scatter([TAIL_CENSORED], [y], s=52, color=GCOL[g], marker=">", zorder=3)
-            ax.text(TAIL_CENSORED * 1.3, y, "> 5 s  (never crossed)", va="center",
+            ax.text(TAIL_CENSORED * 1.3, y, "> 10 s  (never crossed)", va="center",
                     fontsize=7.5, color=GOOD, style="italic")
         ax.text(0.0072, y, label, ha="right", va="center", fontsize=8)
 
@@ -340,10 +341,14 @@ def f5_venue_clock():
     ax.legend(handles=[Line2D([], [], marker="o", ls="", color=GCOL[g], label=GNAME[g])
                        for g in (0, 1, 2, 3)], loc="lower left", fontsize=7.5,
               bbox_to_anchor=(0.0, 1.005), ncol=4, columnspacing=1.6, handletextpad=0.4)
-    ax.set_title("Figure 5   Part II's organising hypothesis: the adverse-selection horizon tracks the venue's clock",
+    ax.set_title("Figure 5   Part II's organising law: the adverse-selection horizon tracks the venue's clock",
                  pad=24)
-    src(ax, "C59 (Binance books, 3 days) and C66 (Hyperliquid, 2026-07-16/18), identical model-free markout. "
-            "Three orders of magnitude. EIGEN is the tail's tightest, most-competed book and behaves like the majors. CAVEAT: each horizon drops trades with no quote update inside its tolerance, so longer horizons are measured on smaller, differently-selected populations \u2014 worst on the thin books. Retention is not yet reported.")
+    src(ax, "C59 (Binance books, 3 days) and C66 (Hyperliquid, 2026-07-16/18), identical model-free markout, "
+            "carry-forward quote rule (Ch3 \u00a78). Nearly three orders of magnitude. EIGEN is the tail's tightest, "
+            "most-competed book and behaves like the majors. The earlier freshness-gated rule retained as little as "
+            "26% of the thin books' trades at 10 s and biased the slow books toward looking fast; redone with "
+            "carry-forward quotes and 100% retention, every crossing moves later and none earlier, which widens the "
+            "span rather than narrowing it.")
     save(fig, "f5_venue_clock_law")
 
 
@@ -439,7 +444,7 @@ def f7_immediacy():
         a = j_["asset"].replace("HL_", "")
         if a == "LINK" or not j_["date"].startswith("2026-07"):
             continue
-        v = j_["configs"]["none"].get("rt_bps_gross")
+        v = j_["configs"]["none"].get("rt_bps_liq")   # residual liquidated (Ch8 §4)
         if v is not None:
             rt[a].append(v)
     for f in _g.glob(os.path.join(ROOT, "experiments/111_fair_value_wide/results/*.json")):
@@ -470,7 +475,9 @@ def f7_immediacy():
     a.set_ylim(-5.2, 17.5)
     a.set_ylabel("gross round trip  (bps of notional)")
     a.set_title("a.  Four of six clear the base fee")
-    src(a, "C66 / exp 103, config \"none\", qf=0.5, all 30 coin-days 2026-07-17..21. Bars ordered by measured "
+    src(a, "C66 / exp 103, config \"none\", qf=0.5, all 30 coin-days 2026-07-17..21, each day's residual "
+           "liquidated across the closing spread rather than marked at the mid (Ch8 \u00a74; mid-marked bars "
+           "average 0.3 bps higher and change no sign). Bars ordered by measured "
            "spread, widest left. ZORA is the tightest book in the screen and the third most profitable, so the "
            "six-point cross-section supports the spread-width reading only weakly (Spearman \u03c1 = 0.60).")
 
@@ -478,7 +485,7 @@ def f7_immediacy():
     for f in _g.glob(os.path.join(ROOT, "experiments/111_fair_value_wide/results/*USUAL*.json")):
         j_ = json.load(open(f))
         for k, r in j_["runs"].items():
-            runs[k][j_["date"]] = r["bps_of_notional"]
+            runs[k][j_["date"]] = r["rt_bps_liq"]     # residual liquidated (Ch8 §4)
     pairs = []
     for k, byd in runs.items():
         ju = [v for d, v in byd.items() if d.startswith("2026-07")]
@@ -506,7 +513,9 @@ def f7_immediacy():
     b.legend(fontsize=7, loc="upper right")
     b.set_title("b.  The bridge control: USUAL, every configuration")
     src(b, f"C66 / exp 111 \u2014 all {len(pairs)} anchor \u00d7 distance configurations, same coin, two months "
-           f"apart. {fell} of {len(pairs)} fall, median {np.median([ju - au for _, ju, au in pairs]):.0f} bps. "
+           f"apart, residual liquidated. {fell} of {len(pairs)} fall, median "
+           f"{np.median([ju - au for _, ju, au in pairs]):.0f} bps; the decay on the micro-price anchor is "
+           "+23.4 bps, 95% CI [+7.2, +39.0] \u2014 the Part II quantity with the most room from zero. "
            "The within-instrument comparison, not the cross-section, is what prices the premium by competition.")
 
     fig.suptitle("Figure 7   The immediacy premium: paid where competition is thin, and only while it stays thin",

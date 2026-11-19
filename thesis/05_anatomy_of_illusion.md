@@ -76,6 +76,10 @@ book nine months apart, and Contribution 19 establishes that the shape transfers
 | at touch | 11.1 bps (1.0 tick) | at the touch | **queue priority** (§2) | 2,502 | +$33.23 | [+10, +56] | −0.41 bps |
 | outside | 17.8 bps (1.6 ticks) | 0.6 ticks outside | — honest | 216 | **+$2.52** | [−0.9, +5.7] | −0.65 bps |
 
+![Figure 1](figures/f1_quote_regime_decomposition.png)
+
+**Figure 1** puts the same four rows side by side with their one-second markouts: the money and the positive markout sit together, in the two regimes whose price could not have existed, and both invert in the one regime that could.
+
 Intervals are 95% moving-block bootstraps over the thirty daily P&L figures (Chapter 3 §8). Two
 features of the column matter. The first is that the **honest row is the only one whose interval
 contains zero** — which is the chapter's thesis stated as an inference rather than a point
@@ -155,6 +159,10 @@ spread is already at its one-tick minimum: there is no inside-spread region to q
 the artefact is unavailable and the strategy is left with the honest result. The
 asset-specificity of Chapter 4 was never about LINK being a better market. It was about LINK
 having a spread wide enough for the simulator to be wrong inside it.
+
+![Figure 2](figures/f2_queue_position_collapse.png)
+
+**Figure 2** is the same result along the other axis. P&L does not decline gracefully with queue position; it falls to a sub-dollar floor once the order sits behind about five per cent of the visible depth, which is to say that the entire result lives in the assumption that nobody is in front. That is not a parameter the strategy controls.
 
 ## 3. The Second Mirage: Prices That Do Not Exist
 
@@ -284,6 +292,10 @@ at the front. One zero-profit law, enforced through whichever variable happens t
 
 Chapter 4's results were, in this light, an accurate measurement of the queue rent on LINK —
 credited in full to a five-LINK order that had no claim on it.
+
+![Figure 3](figures/f3_breakeven_equilibrium.png)
+
+**Figure 3** is why the residue is zero rather than merely small. The breakeven half-spread and the dollar volatility move together across a tenfold range of σ, holding their ratio at about 76 — a *derived* zero, not a measured one, and the same constant the spread-axis and queue-axis regimes both land on.
 
 ## 8. Synthesis
 

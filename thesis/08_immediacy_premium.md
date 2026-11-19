@@ -95,6 +95,10 @@ the periods with more information arrival and therefore faster repricing, so the
 *flattered the slow books by making them look fast*. The span of the law is consequently not
 15 ms to 3.4 s but **15 ms to beyond 10 s** — closer to three orders of magnitude than two.
 
+![Figure 5](figures/f5_venue_clock_law.png)
+
+**Figure 5** is the ordering on a log axis, with the censored tail books marked as the bounds they are.
+
 The ordering is the organising idea of Part II:
 **the adverse-selection horizon tracks the venue's repricing clock.** A maker's edge survives for
 as long as it takes the rest of the market to notice the price is wrong. On Binance that is
@@ -234,6 +238,10 @@ anchor-and-distance sweep of Contribution 66, which quotes at a chosen anchor ra
 running the inventory-capped round trip used here. The two are not comparable, and only the
 round trip is treated as a headline, for the reason §4 gives.) The premium is a portfolio property, not a per-instrument one, which is
 exactly what compensation for bearing idiosyncratic inventory risk should look like.
+
+![Figure 7](figures/f7_immediacy_premium.png)
+
+**Figure 7** carries both halves of the chapter's claim: the cross-section on the left, where four of six books clear the base fee, and the bridge control on the right, where the same coin on every one of sixteen configurations falls to approximately zero as the tail tightens. The right panel is the one that does the work.
 
 ## 6. Fair Value and Distance
 

@@ -128,6 +128,10 @@ carried by a handful of outliers. It is also **leader-agnostic**: Coinbase and B
 signal as "Hyperliquid is stretched from consensus" rather than anything about a particular
 venue's feed.
 
+![Figure 6](figures/f6_dislocation.png)
+
+**Figure 6** shows the surviving alpha against the two gates that bound it — the threshold below which the population turns negative, and the fee tier at which it does — together with the common-clock recomputation that the signal had to survive and did.
+
 ## 5. Three Gates, and Why They Are the Point
 
 The strategy is bounded on three sides, and each bound is informative rather than incidental.

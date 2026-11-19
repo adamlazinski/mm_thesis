@@ -36,14 +36,14 @@ corrected against it.
 
 **What changed.** The per-coin table was wrong in both magnitude and membership:
 
-| coin | measured spread | C66 (old) | verified 5-day | days positive |
-|---|---|---|---|---|
-| HMSTR | 56 bps | +20.6 | **+14.40** | 5/5 |
-| USUAL | 16 bps | +16.4 | **+12.91** | 4/5 |
-| ZORA | 6 bps | *negative* | **+7.51** | 4/5 |
-| CELO | 8 bps | +8 to +9 | **+3.49** | 4/5 |
-| VINE | 15 bps | +8 to +9 | **+0.96** | 4/5 |
-| EIGEN | 8 bps | negative | **−1.12** | 2/5 |
+| coin | measured spread | C66 (old) | 5-day, mid-marked | 5-day, **liquidated** | days positive |
+|---|---|---|---|---|---|
+| HMSTR | 56 bps | +20.6 | +14.40 | **+13.36** | 4/5 |
+| USUAL | 16 bps | +16.4 | +12.91 | **+12.65** | 4/5 |
+| ZORA | 6 bps | *negative* | +7.51 | **+7.42** | 4/5 |
+| CELO | 8 bps | +8 to +9 | +3.49 | **+3.33** | 4/5 |
+| VINE | 15 bps | +8 to +9 | +0.96 | **+0.63** | 4/5 |
+| EIGEN | 8 bps | negative | −1.12 | **−1.16** | 2/5 |
 
 The count of four-of-six clearing the 1.5 bps base fee survives; the identity of
 the four does not — ZORA clears and VINE does not. C66's interpretation that "the
@@ -68,7 +68,50 @@ the round trip to the measured spread, which is contemporaneous with the P&L.
 
 **Verified unchanged.** The exp 111 basket figures (+$243/day mid-anchored,
 +$291 micro-anchored, micro ≥ mid on 4 of 5 days) reproduce exactly, as does the
-basket being positive on all five days.
+basket being positive on all five days. Under the liquidated terminal treatment
+(below) they are +$230 and +$278, with the comparison unaffected.
+
+## The terminal-mark and sample-rule audits (2026-11-19)
+
+Four reruns closed the four open methodological gaps the chapters had declared.
+Figures 4, 5 and 7 are rebuilt against them; 1, 2, 3, 6, 8 and 9 are unaffected.
+
+**Terminal mark (exps 103, 111 → F7).** Both round-trip simulators valued the
+position left open at the end of a day at the final *mid*. They now book P&L on
+matched volume by average cost and report the residual twice — marked at the mid,
+and crossed out at the closing touch (`hft_market_maker/terminal_accounting.py`).
+The two sum back to the old figure by construction, so every previously reported
+number reproduces exactly. Pooled over the thirty coin-days: **+6.36 bps
+mid-marked, +6.04 liquidated, +6.05 on matched volume only.** The mark carried
+about five per cent, not the result. F7's bars are now the liquidated figures.
+One reclassification: VINE's +0.96 was entirely terminal mark (−0.13 on matched
+volume). An exp-111 configuration at k = 2.5 reported the sweep's highest margin
+on 4.7 fills/day with *exactly zero* matched-volume P&L — it opens positions and
+never closes one.
+
+**Sample rule for the horizon curve (exp 93 → F4, F5).** Each horizon's markout
+required a quote within 0.5 s of *t + h* and dropped the trade otherwise, with
+the mask recomputed per horizon — a selection on the outcome, worst exactly where
+the long readings came from (26% of VINE's and ZORA's trades retained at 10 s,
+against 97–100% on Binance BTC). Redone with carry-forward quotes, right-censored
+only past the last observed quote, with retention reported at every horizon under
+three sample rules. **Every crossing moves later and none earlier:** HL_LINK
+3.41 → 4.16 s and 0.94 → 1.35 s, HL_EIGEN 3.31 → 6.23 s, while Binance BTC holds
+at 15 ms and Binance LINK at 73–79 ms to four decimals. The gate had been
+flattering the slow books by keeping their busy-period trades. F5's caveat is
+withdrawn and its censored tail now reads "> 10 s".
+
+**Exit-side depth (exp 99 → F6).** The clip was capped by entry-side touch depth
+and then unwound in full regardless of what rested on the exit. Now capped at
+`min(entry, exit, cap)`. The correction is small — 6–16% of BTC events bind, at
+most 7% of P&L — because the exit is five seconds after the event and the median
+exit touch holds $0.2–0.7M against an entry touch of $1.3–8.5k. F6 is unchanged
+in shape.
+
+**GLFT on the corrected formula (exp 117).** Not a figure, but it closes the
+scope note in Ch4 §3: the search winner rerun on the published closed form earns
++$25.44/day against the mis-transcribed +$88.56 and the flat control's +$149.45,
+with mean markout per fill falling to +0.055 bps. C17 strengthens.
 
 
 ## Verification status (2026-11-16)
@@ -106,5 +149,17 @@ invalid $0.001 grid of Contribution 54. On the true $0.01 tick at LINK's ~$9,
 11.1 bps *is* one tick — which is why that row is "at touch". Ch4's and Ch5's
 tables now quote basis points with true-tick equivalents.
 
-Still unverified: the contributions outside Part I and C66/C67, which have not
-been checked against their data in this way.
+Still unverified: the contributions outside Part I and C66/C67 — principally
+C1–C15 and C25–C28, the microstructure characterisation behind Chapter 3, for
+which no experiment pointers exist in the log. They are the remaining gap in the
+verification sweep.
+
+## Interval estimates (2026-11-19)
+
+`thesis/intervals.md` now carries a 95% bootstrap interval for every headline
+quantity, generated by `scripts/make_intervals.py` from the committed JSONs with
+a fixed seed. Method in Chapter 3 §8: moving-block bootstrap for daily series,
+cluster bootstrap on the coin for Chapter 8's thirty coin-days, effective sample
+size for overlapping markout and event series, and an explicit multiplicity note
+at each arg-max site. The figures do not yet plot intervals; the table is the
+reference.
