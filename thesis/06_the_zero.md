@@ -119,7 +119,14 @@ consumed almost immediately. Below 100 ms the picture splits cleanly by relative
 | BTC (0.01, ~0.0006 bps/tick) | 0.70 t | −22 t (−0.1 bps) | −80 t | ≤ 20 / ≤ 15 / ≤ 15 ms |
 | BTC perp | 0.72 t | −1.5 t | −6.2 t | ≤ 20 / ≤ 15 / ≤ 15 ms |
 
-(three columns of horizons are three consecutive days). On the large-relative-tick books the
+(three columns of horizons are three consecutive days.) These are the horizons where the
+measurement is least exposed to the sample-rule question Chapter 8 §3 takes up: retention is
+100% at every horizon below a second on all four books, and recomputing the whole curve with a
+carry-forward quote rule reproduces every figure in this table — 75.0 / 78.5 / 78.7 ms on LINK
+against 74.7 / 78.4 / 78.6 gated, and 15.0 ms on both BTC books to four decimals. The correction
+that matters there does not reach here, because these books never stop quoting.
+
+On the large-relative-tick books the
 maker holds a genuine ~1 bps edge that survives about **80 ms** — stable to the millisecond
 across three days, and landing squarely on the 40–100 ms perp-lead clock of §3, which is to
 say the informed flow that eats the maker's edge is the same flow that moves the perpetual

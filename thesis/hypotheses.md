@@ -292,9 +292,17 @@ rather than below it, which is the register's single most important pattern.
 - `✓` **…and its magnitude is priced by competition, not by technique.** The bridge control is the cleanest
   evidence in the thesis: USUAL, same coin and same strategy, fell from **+23.5 bps in July to
   −0.3 bps in August** (15 of 16 configurations fall; median 24 bps) as the tail's widest spread compressed from 56 to 14 bps. *(C66)*
-- `✓` **The adverse-selection horizon is the venue's repricing clock.** ≤15–20 ms (Binance small-tick) →
-  75–87 ms (large-tick) → seconds (HL majors) → 3.4 s (HL LINK) → >5 s (HL tail). Part II's organising law,
-  and the reason Ch7 and Ch8 are one observation from two sides. *(C59, C66)*
+- `✓` **The adverse-selection horizon is the venue's repricing clock.** 15 ms (Binance BTC) → 75–88 ms
+  (large relative tick) → 0.46 s (CB LINK perp) → 1.3–4.2 s (HL LINK) → 6.2 s (HL EIGEN) → >10 s,
+  never crossing (HL tail). Part II's organising law, and the reason Ch7 and Ch8 are one
+  observation from two sides. *(C59, C66)*
+- `✗` **The ordering is a sampling artefact of the freshness gate.** It was the obvious objection — the old
+  rule dropped a trade when no quote arrived within 0.5 s of *t + h*, keeping as little as **26%**
+  of the thin books' trades at ten seconds, and the attrition was worst exactly where the long
+  readings came from. Redone with carry-forward quotes and retention reported per horizon, every
+  crossing moves **later and none earlier**, because the trades the gate kept were those in busy
+  periods and so repriced faster: the gate had been flattering the slow books. The law's span
+  widens from ~2 orders of magnitude to nearly 3. *(C59/C66 addendum, 2026-11-19)*
 - `✓` **Cross-venue funding carry pays, and the basis is the actual risk.** +8.4%/yr at a gross Sharpe ≈1.26
   on BTC where the basis happened to help, ≈0 on LINK where it did not; basis volatility 7–12%/yr against a
   ~7% funding signal, so any short window measures the basis. Costs invert: 5.6 bps round trip amortises to

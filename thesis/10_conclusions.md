@@ -170,7 +170,7 @@ edge visible in public data has not been competed away.
 
 **Providing immediacy where nobody else will** (Chapter 8, Contribution 66). On Hyperliquid tail
 books with two or three makers at the touch, the maker's realized half-spread never goes
-negative within five seconds. Four of six books clear **base** fees on an inventory-aware round
+negative within ten seconds. Four of six books clear **base** fees on an inventory-aware round
 trip over five days, each day's residual position liquidated across the closing spread rather
 than marked at the mid — HMSTR +13.36 bps of notional, USUAL +12.65, ZORA +7.42, CELO +3.33 —
 while VINE at +0.63 does not clear and EIGEN at −1.16 is persistently negative. That terminal
@@ -211,11 +211,18 @@ of adverse-selection horizons across venues:
 
 | book | adverse-selection horizon |
 |---|---|
-| Binance spot / perp (small relative tick) | ≤ 15-20 ms |
-| Binance / Hyperliquid LINK (large relative tick) | 75-87 ms |
-| Hyperliquid BTC | seconds |
-| Hyperliquid LINK | 3.4 s |
-| Hyperliquid tail (5 of 6 books) | > 5 s |
+| Binance BTC spot / perp (small relative tick) | 15 ms |
+| Binance / Hyperliquid LINK (large relative tick) | 75-88 ms |
+| Coinbase LINK perp | 0.46 s |
+| Hyperliquid LINK | 1.3 s and 4.2 s (two days) |
+| Hyperliquid EIGEN | 6.2 s |
+| Hyperliquid tail (5 of 6 books) | > 10 s, never crosses |
+
+These are measured under a carry-forward quote rule, with retention reported at every horizon.
+The original freshness-gated rule kept as little as 26% of the trades at ten seconds on the
+thinnest books, and it biased the slow books toward looking *fast*, because the trades it kept
+were those in busy periods. Correcting it moved every crossing later and none earlier, widening
+the law's span from roughly two orders of magnitude to nearly three.
 
 **The adverse-selection horizon is the venue's repricing clock.** A maker's edge survives for
 as long as it takes the rest of the market to notice the price is wrong, and that interval

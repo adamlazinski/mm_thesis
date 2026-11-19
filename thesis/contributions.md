@@ -3969,9 +3969,29 @@ quote at `anchor ± k·(rolling median half-spread)` with anchors mid / micro-pr
 imbalance-weighted) / trade-EWMA, sweeping k.
 
 **Result.** The tail is a different regime. On five of six books the realized half-spread never
-goes negative within 5s — the adverse-selection horizon is off the end of the measurement window,
-against ~80ms on Binance and 3.4s on HL_LINK. Competition is directly observable as thin:
-**13–101 unique makers/day** against thousands on the majors.
+goes negative within **10s** — the adverse-selection horizon runs off the end of the measurement
+window, against 15ms on Binance BTC, 75–88ms on large-relative-tick books and 1.3–4.2s on
+HL_LINK. Competition is directly observable as thin: **13–101 unique makers/day** against
+thousands on the majors.
+
+**Sample-rule audit of the horizon curve, 2026-11-19 (exp 93 rerun).** Each horizon's markout
+needs a mid at `t+h`; the original rule required a quote within `QUOTE_TOL=0.5s` and dropped the
+trade otherwise, recomputing the mask per horizon. That is a selection on the outcome, and it bit
+hardest where the long readings came from: at h=10s the gate retained **26%** of VINE's and
+ZORA's clean trades, 28% of HMSTR's, against 97–100% on Binance BTC. `_asof_mid` now takes
+`carry=True` for the future mid (an unchanged BBO *is* the prevailing mid; right-censor only past
+the last observed quote), and the JSON carries all three sample rules — `gated` (original,
+retained for reproducibility), `carry` (headline) and `common` (carry restricted to the trades
+surviving the longest horizon, so every point is the same set) — with per-horizon retention for
+each.
+
+Carry retention is 100% at every horizon on every book and `common` equals `carry` to three
+decimals, so right-censoring is negligible against 10–22h sessions. **Every crossing moves later
+and none earlier:** HL_LINK 3.41→4.16s (07-16) and 0.94→1.35s (07-17), HL_EIGEN 3.31→6.23s,
+CB_LINK_PERP 0.446→0.459s, while Binance BTC holds at 0.015s and Binance LINK at 0.0734–0.0786s
+to four decimals. The direction is what the mechanism predicts — the gate kept the trades in busy
+periods, which reprice faster, so it was **flattering the slow books by making them look fast**.
+The law's span widens from 15ms–3.4s to 15ms–beyond 10s.
 
 The round trip clears the 1.5bps **base fee** on four of six coins. Over all five captured days
 (2026-07-17..21, exp 103 config `none`, qf=0.5, residual liquidated across the closing spread),

@@ -54,36 +54,53 @@ gate of Chapter 5 §4 is not the binding constraint.
 ## 3. The Adverse-Selection Horizon Is a Property of the Venue
 
 The first test is the Chapter 6 §4 markout, unchanged, applied to the tail. On five of the six
-books the maker's realized half-spread **never goes negative within five seconds** — the
+books the maker's realized half-spread **never goes negative within ten seconds** — the
 adverse-selection horizon runs off the end of the measurement window.
 
 Set against the earlier measurements, a single ordering emerges:
 
-| book | adverse-selection horizon |
-|---|---|
-| Binance spot / perp (small relative tick) | ≤ 15–20 ms |
-| Binance / Hyperliquid LINK (large relative tick) | 75–87 ms |
-| Hyperliquid BTC | seconds |
-| Hyperliquid LINK | 3.4 s |
-| **Hyperliquid tail (5 of 6)** | **> 5 s** |
+| book | adverse-selection horizon | retention at 10 s, old rule |
+|---|---|---|
+| Binance BTC spot / perp (small relative tick) | **15 ms** | 97–100% |
+| Binance / Hyperliquid LINK (large relative tick) | **75–88 ms** | 62–82% |
+| Coinbase LINK perp | **0.46 s** | 51% |
+| Hyperliquid LINK | **1.3 s and 4.2 s** (two days) | 72% |
+| Hyperliquid EIGEN | **6.2 s** | 62% |
+| **Hyperliquid tail (5 of 6)** | **> 10 s, never crosses** | 26–67% |
 
-Before reading anything into that ordering, one feature of how it is measured has to be
-declared, because it cuts in the direction of the result. Each horizon's markout requires a
-quote observed within a tolerance of that horizon; where the book has not updated, the trade is
-dropped. The mask is recomputed per horizon, so **the long horizons are evaluated on a
-different and smaller population than the short ones**, and the attrition is worst on exactly
-the thin books that produce the "> 5 s" readings — an unchanged but perfectly valid BBO is
-discarded as stale. Part of the apparent lengthening of the horizon across venues is therefore
-a sampling effect rather than a property of the book, and the ordering below should be read as
-a **hypothesis supported by a suggestive measurement**, not as an established law. Re-running
-it with a carry-forward quote rule and reporting retention at every horizon is the test it has
-not yet had.
+The third column is there because the way this is measured could have produced the ordering by
+itself, and that had to be ruled out before anything was read into it. Each horizon's markout
+needs a quote observed at *t + h*; the original rule required one within half a second and
+dropped the trade otherwise. The mask was recomputed per horizon, so long horizons were
+evaluated on a smaller population than short ones — and, as the third column shows, the
+attrition was worst on exactly the thin books producing the long readings. At ten seconds the
+rule was keeping **26%** of VINE's and ZORA's trades and 28% of HMSTR's. A book that has not
+updated in half a second was being treated as unobserved, when in fact an unchanged BBO *is* the
+prevailing mid.
 
-With that caveat, the ordering is the organising idea of Part II:
+The measurement was redone with a carry-forward rule — the last quote stands until replaced,
+censored only where *t + h* runs past the end of the session — and with retention reported at
+every horizon under both rules, plus a third pass restricted to the trades surviving the longest
+horizon so that every point on the curve is the same set of trades (experiment 93). Retention
+under carry-forward is 100% at every horizon on every book, and the common-sample pass is
+identical to the carry pass to three decimals, so right-censoring is negligible at these
+horizons against sessions of ten to twenty-two hours.
+
+**The ordering survives, and the correction widens it.** Every crossing moves in one direction
+only — later, never earlier — and it moves most where retention was worst: HL_LINK from 3.41 s
+to 4.16 s on 16 July and 0.94 s to 1.35 s on 17 July, HL_EIGEN from 3.31 s to 6.23 s, while
+Binance BTC stays at 15 ms and Binance LINK at 75–79 ms to three decimal places. The direction is
+exactly what the mechanism predicts: the retained trades were those in busy periods, which are
+the periods with more information arrival and therefore faster repricing, so the old rule
+*flattered the slow books by making them look fast*. The span of the law is consequently not
+15 ms to 3.4 s but **15 ms to beyond 10 s** — closer to three orders of magnitude than two.
+
+The ordering is the organising idea of Part II:
 **the adverse-selection horizon tracks the venue's repricing clock.** A maker's edge survives for
 as long as it takes the rest of the market to notice the price is wrong. On Binance that is
 tens of milliseconds; on Hyperliquid's majors, seconds; on a book with three makers, longer
-than five seconds. Chapter 7's dislocation alpha and this chapter's premium are the same
+than ten seconds — which is as far as the measurement window reaches, so the tail's horizon is
+bounded below rather than estimated. Chapter 7's dislocation alpha and this chapter's premium are the same
 observation read from the two sides of the trade: Chapter 7 profits by *being* the fast
 participant against a slow venue, and this chapter asks whether being the slow venue's maker
 is itself paid.
