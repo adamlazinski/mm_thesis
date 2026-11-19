@@ -69,12 +69,22 @@ along the axis the money appears. Note also that this sweep is on April 2026, wh
 4's +$154/day headline is the June–July 2025 window — the two are the same strategy on the same
 book nine months apart, and Contribution 19 establishes that the shape transfers:
 
-| regime | quoted spread | vs. the one-tick touch | why the fill model fails | fills/day | P&L/day | 1s markout |
-|---|---|---|---|---|---|---|
-| deep inside | 4.5 bps (0.4 ticks) | 0.6 ticks inside | **price does not exist** (§3) | 7,673 | +$35.37 | +0.98 bps |
-| inside (optimum) | 8.9 bps (0.8 ticks) | 0.2 ticks inside | **price does not exist** (§3) | 7,288 | **+$94.13** | +2.80 bps |
-| at touch | 11.1 bps (1.0 tick) | at the touch | **queue priority** (§2) | 2,502 | +$33.23 | −0.41 bps |
-| outside | 17.8 bps (1.6 ticks) | 0.6 ticks outside | — honest | 216 | **+$2.52** | −0.65 bps |
+| regime | quoted spread | vs. the one-tick touch | why the fill model fails | fills/day | P&L/day | 95% CI | 1s markout |
+|---|---|---|---|---|---|---|---|
+| deep inside | 4.5 bps (0.4 ticks) | 0.6 ticks inside | **price does not exist** (§3) | 7,673 | +$35.37 | [+31, +39] | +0.98 bps |
+| inside (optimum) | 8.9 bps (0.8 ticks) | 0.2 ticks inside | **price does not exist** (§3) | 7,288 | **+$94.13** | [+79, +109] | +2.80 bps |
+| at touch | 11.1 bps (1.0 tick) | at the touch | **queue priority** (§2) | 2,502 | +$33.23 | [+10, +56] | −0.41 bps |
+| outside | 17.8 bps (1.6 ticks) | 0.6 ticks outside | — honest | 216 | **+$2.52** | [−0.9, +5.7] | −0.65 bps |
+
+Intervals are 95% moving-block bootstraps over the thirty daily P&L figures (Chapter 3 §8). Two
+features of the column matter. The first is that the **honest row is the only one whose interval
+contains zero** — which is the chapter's thesis stated as an inference rather than a point
+estimate: once the quote is where it could actually have rested, thirty days of data cannot
+distinguish the strategy from nothing. The second is a multiplicity caveat that cuts against the
+sweep's winner: five widths were tried, including a 6.44 bps setting omitted from the table,
+so the +$94 cell is an arg-max over five and its interval is the interval a *pre-specified* cell
+would have had. The monotone story — money appears where the price could not exist, and vanishes
+where it could — does not depend on which inside-spread cell is largest.
 
 The spread column is the **full quote-to-quote width**, which is how the sweep was
 parameterised (`min_spread_bps`, applied as `mid × bps / 20000` per side). LINK traded near $9

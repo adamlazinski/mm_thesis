@@ -118,8 +118,13 @@ case where the exit genuinely binds — 21–43% of events, because that book's 
 $500 on *both* sides — but every LINK row is negative at these thresholds, so no positive claim
 in this chapter rests on the leg that was unconstrained.
 
-Median approximately equals mean, so the result is not carried by a handful of outliers. It is
-also **leader-agnostic**: Coinbase and Binance produce the same answer, which identifies the
+Every one of those four rows excludes zero at 95% on a block bootstrap over the event series —
+the narrowest is [+3.35, +6.31] bps and the widest [+3.67, +6.10] — and at this threshold the
+events are sparse enough that the effective sample size after their own serial correlation is
+essentially the nominal count (35 to 85 of 49 to 91). The 2 bps population behaves the other way
+on both counts: its nominal thousands of events are worth 765 to 1,560 independent ones, and on
+the LINK pairs its interval spans zero. Median approximately equals mean, so the result is not
+carried by a handful of outliers. It is also **leader-agnostic**: Coinbase and Binance produce the same answer, which identifies the
 signal as "Hyperliquid is stretched from consensus" rather than anything about a particular
 venue's feed.
 

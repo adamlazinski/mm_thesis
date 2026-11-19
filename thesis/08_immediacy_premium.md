@@ -150,6 +150,12 @@ same thirty coin-days:
 | residual liquidated across the spread | **+6.04** | 22 / 30 |
 | matched volume only, no terminal mark at all | +6.05 | 23 / 30 |
 
+On a cluster bootstrap that resamples *coins* rather than coin-days — six coins is the
+replication count, not thirty — the liquidated round trip's 95% interval is **[+1.68, +10.58]
+bps**. It excludes zero, and it excludes the 1.5 bps base fee, but only just at the lower end;
+the matched-volume figure is [+1.53, +10.70]. Treating the thirty coin-days as independent would
+report [+2.58, +9.56] and overstate the precision by about a fifth.
+
 **The terminal mark was not carrying the result.** Liquidating the residual costs 0.32 bps of a
 6.36 bps round trip — about five per cent — and the matched-volume-only figure, which credits no
 terminal mark whatever, is +6.05 bps. All three treatments agree, and the reason is an arithmetic
@@ -222,7 +228,8 @@ on every day except the widest, and the outcome on any given day is dominated by
 day's flow happened to be one-sided. What is stable is the **basket**: equal-weighted across the
 six coins, gross P&L is positive on **all five days** — +$83, +$111, +$355, +$194 and +$20,
 averaging +$153/day after liquidating each day's residual (+$101, +$118, +$363, +$202, +$39 and
-+$164/day when it is marked at the mid instead; positive five of five either way). (The +$243 and +$291/day figures in §6 are a different simulator: the
++$164/day when it is marked at the mid instead; positive five of five either way, 95% CI on the
+liquidated basket [+$133, +$461] from five days). (The +$243 and +$291/day figures in §6 are a different simulator: the
 anchor-and-distance sweep of Contribution 66, which quotes at a chosen anchor rather than
 running the inventory-capped round trip used here. The two are not comparable, and only the
 round trip is treated as a headline, for the reason §4 gives.) The premium is a portfolio property, not a per-instrument one, which is
@@ -292,8 +299,11 @@ August**, while the tail's widest available spread compressed from 56 bps (HMSTR
 sixteen anchor-and-distance configurations swept fall over the same two months, by a median of
 24 bps. Nor is it an artefact of the terminal mark — under liquidation the same coin falls from
 +22.9 to −0.5 bps, and on matched volume alone from +20.3 to −3.1 bps, with fifteen of sixteen
-configurations still falling by a median of 24.0 and 22.8 bps respectively. Nothing about the
-technique changed. What changed was the regime.
+configurations still falling by a median of 24.0 and 22.8 bps respectively. The fall itself is
+the one Part II quantity whose interval is comfortably clear of zero: **+23.4 bps, 95% CI
+[+7.2, +39.0]**, against a July level of +22.9 [+7.6, +38.2] and an August level of −0.5
+[−3.2, +1.6], which spans zero exactly as a decayed premium should. Nothing about the technique
+changed. What changed was the regime.
 
 That single comparison converts the chapter's result from a claim about a strategy into a claim
 about a price. The immediacy premium is **priced by spread width**: it is large when the tail is

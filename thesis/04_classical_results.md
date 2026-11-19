@@ -101,7 +101,8 @@ nothing varied but the expression (experiment 117). All three arms:
 The conclusion survives the correction and is sharpened by it. The flat control beats the
 *correctly implemented* GLFT policy by a factor of **5.9**, where it beat the mis-transcribed one
 by 69%, and the corrected formula is worse than the error it replaced on eleven of the thirteen
-days (−$63/day paired). Fixing the formula did not rescue the model; it removed an accident that
+days (−$63/day paired, 95% block-bootstrap interval [−$92, −$25], so the ordering is not a
+small-sample accident). Fixing the formula did not rescue the model; it removed an accident that
 had been flattering it.
 
 The mechanism is in the last row, and it is the thesis's own argument arriving early. The

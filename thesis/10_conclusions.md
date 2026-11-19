@@ -415,7 +415,19 @@ manufactures large negative autocorrelation that vanishes per instrument.
 - **Part II rests on short windows.** Chapter 7's alpha is two days and two leaders; Chapter 8's
   premium is five days plus a four-day replication; Chapter 9's carry is two windows. These are
   adequate to establish existence and to price the bounds, and inadequate to estimate a
-  long-run Sharpe.
+  long-run Sharpe. The intervals are reported rather than left implicit
+  (`thesis/intervals.md`, method in Chapter 3 §8): clustering on the coin rather than the
+  coin-day, Chapter 8's round trip is +6.04 bps with a 95% interval of [+1.68, +10.58] — clear of
+  zero and of the 1.5 bps base fee, but only just at the lower end. Chapter 7's 5 bps rows all
+  exclude zero; its 2 bps rows do not, on the pairs where the chapter says they should not.
+  Chapter 8's bridge-control decay, +23.4 bps [+7.2, +39.0], is the Part II quantity with the
+  most room between its interval and zero, which is why the chapter leans on it.
+- **The precision of Part I is not the issue, and should not be mistaken for the claim.** The
+  thirty-day +$154/day has a 95% interval of [+$129, +$170]. It is a real, tightly estimated,
+  reproducible number, and that is precisely why it was worth eighty pages to take apart. The
+  argument against it is structural — the price could not have existed, the queue could not have
+  been joined — and no amount of additional data would have found it. A wider interval would have
+  made the thesis easier and less interesting.
 - **The cascade tail is unmeasured.** Both carry windows had drawdown under 20 bps. A
   negative-skew premium's information is concentrated in the rare loss the sample does not
   contain, so the +8.4%/yr on BTC is *conditional on no cascade*, and the
@@ -440,6 +452,13 @@ manufactures large negative autocorrelation that vanishes per instrument.
 
 ## 8. Suggested Further Work
 
+- **Lengthen the windows until the intervals bite.** The inference apparatus is now in place
+  (Chapter 3 §8) and it says the same thing about every Part II result: the point estimates are
+  clear of zero and the intervals are wide, because the unit of replication is six coins, two
+  days or two windows. Nothing analytical is missing here; what is missing is tape. The
+  collector already runs, and a three-month capture would narrow Chapter 8's round trip from
+  [+1.7, +10.6] bps to something that could support a sizing decision rather than an existence
+  claim.
 - **Measure the cascade tail.** This is the single most valuable missing quantity, and it is a
   data-collection problem rather than an analytical one: run the Chapter 9 book's reconstruction
   through a stressed window and size the carry position against the tail rather than the

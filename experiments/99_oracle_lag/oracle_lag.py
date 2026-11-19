@@ -186,7 +186,12 @@ def markouts(ev, lag_q, fees, mid0, overlap_h):
             "p50_rt_bps": float(np.median(gr)),
             "hit_rate_rt": float((gr > 0).mean()),
             "net_rt_bps": {f"fee_{f}": round(float(gr.mean()) - 2 * f, 3)
-                           for f in fees}}
+                           for f in fees},
+            # the per-event series itself, so an interval can be put on the
+            # mean without re-running the experiment. Events are ordered in
+            # time, so a block bootstrap on this array is the right tool and
+            # the clustering of events within an episode is visible in it.
+            "rt_bps_series": [round(float(x), 4) for x in gr]}
     return res
 
 
