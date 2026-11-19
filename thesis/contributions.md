@@ -3923,9 +3923,9 @@ against ~80ms on Binance and 3.4s on HL_LINK. Competition is directly observable
 **13–101 unique makers/day** against thousands on the majors.
 
 The round trip clears the 1.5bps **base fee** on four of six coins. Over all five captured days
-(2026-07-17..21, exp 103 config `none`, qf=0.5), the gross round trip is HMSTR **+14.40**bps of
-notional (5/5 days positive), USUAL **+12.91** (4/5), ZORA **+7.51** (4/5), CELO **+3.49** (4/5),
-VINE **+0.96** (4/5) and EIGEN **−1.12** (2/5) — only EIGEN is persistently negative, and it is
+(2026-07-17..21, exp 103 config `none`, qf=0.5, residual liquidated across the closing spread),
+the gross round trip is HMSTR **+13.36**bps of notional (4/5 days positive), USUAL **+12.65**
+(4/5), ZORA **+7.42** (4/5), CELO **+3.33** (4/5), VINE **+0.63** (4/5) and EIGEN **−1.16** (2/5) — only EIGEN is persistently negative, and it is
 the one book in the screen whose competition has already arrived (~8bps on $3.3M/day, the majors'
 regime in miniature). Per-coin P&L is **sign-unstable day to day**, but the equal-weight basket is
 positive on **all five days** (+$101/+$118/+$363/+$202/+$39, mean **+$164**/day gross).
@@ -3941,8 +3941,13 @@ aggregating a two-day subset in which 2026-07-17 is a partial 10.3h session; the
 above is computed from all thirty committed coin-days.
 
 Fair-value anchoring improves it further. The micro-price anchor beats the mid anchor on the
-basket on 4 of 5 days (+$291 vs +$243/day), and wider quoting raises margin per unit: on HMSTR,
-k = 0.5/1.0/1.5 gives **44.9 / 55.2 / 88.1 bps of notional** on 887/563/266 fills/day. The
+basket on 4 of 5 days (+$278 vs +$230/day liquidated; +$291 vs +$243 mid-marked), and wider
+quoting raises margin per unit: on HMSTR,
+k = 0.5/1.0/1.5 gives **+35.5 / +42.2 / +61.8 bps of notional** liquidated (+34.9 / +42.0 /
++55.8 on matched volume alone) on 937/635/297 fills/day, averaged over all five captured days.
+A fourth setting k = 2.5 reports the highest headline in the sweep, 82bps, on 4.7 fills/day and
+**exactly zero** matched-volume P&L — at that distance the strategy opens positions and never
+closes one, so the whole margin is a terminal mark. The
 mechanism is the one that killed C64 — a mid anchor lags and keeps buying into a downtrend; a
 leading anchor skews away from it. A *depth-conditioned* refinement of the anchor choice was
 fitted and then **failed out of sample** (+$228/day vs +$218 for using micro everywhere) and is
@@ -3956,9 +3961,28 @@ not a selection artifact. But the **bridge control** carries the real finding: U
 coin, same micro-price anchor (k=1) — fell from **+23.5bps** of notional in July to **−0.3bps**
 in August while the tail's widest spread compressed from 56bps (HMSTR, July) to 14bps (SAGA,
 August). The decay holds in **15 of the 16** anchor x distance configurations swept, median fall
-24bps, so it is not an artefact of the configuration chosen. The magnitude is **regime**, not
-technique. *(Corrected 2026-11-16: previously quoted as +40 -> +0.39bps, which no committed run
-reproduces; the spread compression 56 -> 14bps is confirmed exactly.)*
+24bps, so it is not an artefact of the configuration chosen. Nor of the terminal mark: liquidated,
+USUAL falls +22.9 -> −0.5bps, and on matched volume alone +20.3 -> −3.1bps, with 15/16
+configurations still falling by a median 24.0 and 22.8bps. Both pre-registered checks also pass
+under liquidation (4/4 and 4/4). The magnitude is **regime**, not technique. *(Corrected
+2026-11-16: previously quoted as +40 -> +0.39bps, which no committed run reproduces; the spread
+compression 56 -> 14bps is confirmed exactly.)*
+
+**Terminal-mark audit (2026-11-19).** The round-trip simulators of exps 103 and 111 originally
+closed each day by valuing the open position at the final *mid* — the third mirage applied to a
+position rather than a fill, and material here because the residual sits at or near the ±$2,000
+cap on most coin-days. Both now book P&L on matched volume by average cost and report the
+residual twice, marked at the mid and crossed out at the closing touch
+(`hft_market_maker/terminal_accounting.py`; the two sum back to the old figure by construction,
+and every previously reported mid-marked number reproduces to the last digit). Pooled over the
+thirty coin-days: **+6.36bps mid-marked, +6.04bps liquidated, +6.05bps on matched volume only**
+(23/30, 22/30, 23/30 days positive). The terminal mark was carrying ~5% of the result, not the
+result. The arithmetic worth stating: the residual's *size* is 100-1,000bps of a day's notional,
+but the *marking error* on it is only half a spread — USUAL on 07-17, the worst-looking case at
+$1,624 residual on $15,871 notional, differs by $1.07 between treatments, 0.07bps against a
++22.04bps result. One reclassification follows: VINE's +0.96bps was entirely terminal mark
+(−0.13bps on matched volume) and no longer counts as nearly clearing fees. HMSTR takes the
+largest haircut, 1.04bps, and drops 5/5 -> 4/5 days positive. No other sign or rank changes.
 
 **Synthesis.** This is the affirmative half of the zero-profit law and its cleanest confirmation.
 Where competition is thin, the spread genuinely exceeds adverse selection and a maker is paid —

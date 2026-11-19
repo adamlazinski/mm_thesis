@@ -27,6 +27,8 @@ spread). k swept; k=1 is roughly "at the touch", k>1 is wider.
 Accounting: the exp-103 round-trip inventory sim — position tracking, cash +
 inv*mid, per-fill notional cap, inventory cap, fills from the tape with the
 project-standard price-only + qf weight at price. NO mark-to-mid headline.
+Terminal residual is reported three ways (mid-marked / liquidated across the
+spread / matched-volume only) via hft_market_maker.terminal_accounting.
 
 Run: python experiments/111_fair_value_wide/fair_value_wide.py \
         --date 2026-07-18 --asset HL_HMSTR
@@ -39,6 +41,10 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from hft_market_maker import terminal_accounting as ta
 
 ROOT = Path(__file__).resolve().parents[2]
 PROC = ROOT / "data" / "live" / "processed"
@@ -105,6 +111,7 @@ def simulate(q, tr, anchor_px, k, half_ref):
     iq = np.searchsorted(qt, tts, side="right") - 1
 
     cash = 0.0; inv = 0.0; notional = 0.0; nf = 0.0
+    avg_px = 0.0; realized = 0.0        # average-cost basis, matched-volume P&L
     max_inv = 0.0; min_eq = np.inf
     for kk in range(len(tts)):
         i = iq[kk]
@@ -130,7 +137,8 @@ def simulate(q, tr, anchor_px, k, half_ref):
             else:
                 continue
             fill = min(tusd[kk], FILL_CAP_USD) * w
-            inv -= fill / tpx[kk]; cash += fill
+            inv, avg_px, dr = ta.book(inv, avg_px, -fill / tpx[kk], tpx[kk])
+            realized += dr; cash += fill
         else:
             if inv_usd >= MAX_INV_USD:
                 continue
@@ -141,16 +149,17 @@ def simulate(q, tr, anchor_px, k, half_ref):
             else:
                 continue
             fill = min(tusd[kk], FILL_CAP_USD) * w
-            inv += fill / tpx[kk]; cash -= fill
+            inv, avg_px, dr = ta.book(inv, avg_px, fill / tpx[kk], tpx[kk])
+            realized += dr; cash -= fill
         notional += fill; nf += w
         eq = cash + inv * mid
         min_eq = min(min_eq, eq)
         max_inv = max(max_inv, abs(inv * mid))
-    final = cash + inv * qm[-1]
-    return {"gross_pnl": final, "notional": notional, "wfills": nf,
-            "max_abs_inv_usd": max_inv,
-            "min_equity": float(min_eq) if np.isfinite(min_eq) else None,
-            "end_inv_usd": inv * qm[-1]}
+    out = {"notional": notional, "wfills": nf, "max_abs_inv_usd": max_inv,
+           "min_equity": float(min_eq) if np.isfinite(min_eq) else None}
+    qb = q["bid_price"].to_numpy(); qa = q["ask_price"].to_numpy()
+    out.update(ta.terminal(cash, inv, avg_px, realized, qb[-1], qa[-1]))
+    return out
 
 
 def main():
@@ -174,7 +183,8 @@ def main():
     print(f"=== {args.asset} {args.date}  {hours:.1f}h  spread p50={spread_bps:.1f}bps  "
           f"trades={len(tr):,}")
     print(f"{'anchor':7s} {'k':>4s} {'fills/d':>8s} {'notional':>10s} "
-          f"{'gross/day':>10s} {'bps':>7s} {'net@base':>9s} {'net@reb':>8s} {'max|inv|':>9s}")
+          f"{'gross/day':>10s} {'bps_mid':>7s} {'bps_liq':>7s} {'bps_real':>8s} "
+          f"{'net@base':>9s} {'netliq@b':>9s} {'max|inv|':>9s}")
     out = {"asset": args.asset, "date": args.date, "hours": round(hours, 2),
            "spread_bps": round(spread_bps, 2), "runs": {}}
     for name in ANCHORS:
@@ -187,16 +197,27 @@ def main():
             gd = r["gross_pnl"] * scale
             nets = {f"fee_{f:g}": (r["gross_pnl"] - f * 1e-4 * r["notional"]) * scale
                     for f in MAKER_FEES_BPS}
-            out["runs"][f"{name}_k{k:g}"] = {
+            nets_liq = {f"fee_{f:g}": (r["gross_pnl_liq"] - f * 1e-4 * r["notional"]) * scale
+                        for f in MAKER_FEES_BPS}
+            rec = {
                 "fills_per_day": round(r["wfills"] * scale, 1),
                 "notional": round(r["notional"], 1),
                 "gross_pnl_day": round(gd, 2), "bps_of_notional": round(bps, 2),
                 "net_day": {kk: round(v, 2) for kk, v in nets.items()},
                 "max_abs_inv_usd": round(r["max_abs_inv_usd"], 1),
-                "end_inv_usd": round(r["end_inv_usd"], 1)}
+                "end_inv_usd": round(r["end_inv_usd"], 1),
+                # honest terminal treatment (hft_market_maker.terminal_accounting)
+                "gross_pnl_liq_day": round(r["gross_pnl_liq"] * scale, 2),
+                "net_day_liq": {kk: round(v, 2) for kk, v in nets_liq.items()},
+                "liq_haircut_usd": round(r["liq_haircut_usd"], 2),
+                "final_spread_bps": (round(r["final_spread_bps"], 2)
+                                     if r["final_spread_bps"] else None)}
+            rec.update(ta.bps_split(r, r["notional"]))
+            out["runs"][f"{name}_k{k:g}"] = rec
             print(f"{name:7s} {k:>4g} {r['wfills']*scale:>8.1f} {r['notional']:>10,.0f} "
-                  f"{gd:>+10.2f} {bps:>+7.2f} {nets['fee_1.5']:>+9.2f} "
-                  f"{nets['fee_-0.3']:>+8.2f} {r['max_abs_inv_usd']:>9,.0f}")
+                  f"{gd:>+10.2f} {bps:>+7.2f} {rec['rt_bps_liq']:>+7.2f} "
+                  f"{rec['rt_bps_realized']:>+8.2f} {nets['fee_1.5']:>+9.2f} "
+                  f"{nets_liq['fee_1.5']:>+9.2f} {r['max_abs_inv_usd']:>9,.0f}")
 
     with open(OUT / f"fair_value_{args.asset}_{args.date}.json", "w") as fh:
         json.dump(out, fh, indent=2)

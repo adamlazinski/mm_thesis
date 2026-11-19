@@ -171,8 +171,13 @@ edge visible in public data has not been competed away.
 **Providing immediacy where nobody else will** (Chapter 8, Contribution 66). On Hyperliquid tail
 books with two or three makers at the touch, the maker's realized half-spread never goes
 negative within five seconds. Four of six books clear **base** fees on an inventory-aware round
-trip over five days — HMSTR +14.40 bps of notional, USUAL +12.91, ZORA +7.51, CELO +3.49 — while
-VINE at +0.96 does not clear and EIGEN at −1.12 is persistently negative. EIGEN is the one book
+trip over five days, each day's residual position liquidated across the closing spread rather
+than marked at the mid — HMSTR +13.36 bps of notional, USUAL +12.65, ZORA +7.42, CELO +3.33 —
+while VINE at +0.63 does not clear and EIGEN at −1.16 is persistently negative. That terminal
+treatment matters less than it looks: pooled over the thirty coin-days the liquidated round trip
+is +6.04 bps against +6.36 mid-marked and +6.05 on matched volume alone, so the premium is not an
+artefact of how the open position is valued. It was the live alternative explanation and it is
+excluded. EIGEN is the one book
 in the screen whose competition has already arrived. Per-coin P&L is sign-unstable day to day; the equal-weighted **basket** is positive on all
 five days of the original sample and on 4 of 4 days of a pre-registered replication on disjoint
 coins, with the micro-price anchor beating the mid on 4 of 4.
@@ -341,14 +346,22 @@ apparently robust results to learn.
 queue clearing, taker-on-arrival treatment, round-trip pricing at executable touches rather
 than mark-to-mid, inventory-aware simulation, placebo and anti-signal controls, out-of-sample
 and pre-registered replication, depth-capped capacity, common-clock validation, and explicit
-fee tiers. Each rule exists because its absence produced a false positive here.
+fee tiers. Each rule exists because its absence produced a false positive here. The fourth rule
+is stated at two levels, because it was violated at both: a *fill* priced at the mid and a
+terminal *position* valued at the mid are the same error, and the second survived the correction
+of the first for three chapters.
 
 **The evidence that the discipline has teeth is that it removed the author's own results.** The
 directional-skew arc survived robustness sweeps, a 182-day fresh out-of-sample window at +$80/day,
 markout analysis and an RL variant, and fell to a validation channel outside the backtest
 entirely (Contribution 54). The defended maker's +1.01 bps per-fill mark-to-mid reversed to
 negative under an inventory-aware round trip (Contribution 64). A depth-conditioned anchor rule
-that improved in sample failed out of sample and is reported as a negative. Contribution 36
+that improved in sample failed out of sample and is reported as a negative. The same
+mark-to-mid rule was then found to have survived *inside* the corrected simulator, at the level
+of the terminal position rather than the fill, and was audited rather than argued away
+(Contribution 66): the result held, but a wide-quoting configuration that had reported the
+highest margin in its sweep turned out to have closed no position at all, and one book's positive
+figure turned out to be terminal mark in its entirety. Contribution 36
 closed the cross-venue question on contemporaneous integration, and Contribution 56 showed that
 θ = 0 was a resolution artefact of a 100 ms grid — the perpetual leads by 40-100 ms — which
 reopened the question Chapter 7 eventually answers. Four further errors of my own analysis are

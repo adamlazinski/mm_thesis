@@ -114,26 +114,47 @@ Two consequences follow. First, every number in the rest of this chapter is prod
 inventory-aware round trip rather than by per-fill accounting, and no per-fill realized
 half-spread is reported as a headline.
 
-That correction is **partial, and the residue is large enough to qualify everything that
-follows**. The simulator caps inventory and tracks it continuously, but it closes each day by
-valuing whatever position remains at the final mid (`defended_maker.py`, the `final = cash +
-inv * mid` line) rather than liquidating it across the spread. On these books the remaining
-position is rarely small: it sits at or near the ±$2,000 cap on most coin-days, and expressed
-in the same units as the headline it is **between roughly 100 and 1,000 bps of the day's
-notional, against round trips reported in single or low double digits**. USUAL on 17 July is
-the extreme case — a $1,624 residual on $15,871 of notional, 1,023 bps of unrealised mark
-carrying a +22.04 bps result.
+That correction raised a second question, and because the answer decides whether this chapter
+has a result at all, it was run rather than assumed. The simulator caps inventory and tracks it
+continuously, but it originally closed each day by valuing whatever position remained at the
+final *mid* rather than liquidating it across the spread. That is the third mirage applied to a
+position instead of a fill, and on these books the residual is not small: it sits at or near the
+±$2,000 cap on most coin-days.
 
-The consequence is that a day's reported P&L is not cleanly separable into spread earned and
-inventory risk borne: a material and sometimes dominant part of it is an unhedged directional
-position marked at a mid. This chapter reads the resulting day-to-day sign instability as
-compensation for warehousing idiosyncratic risk, which is one consistent interpretation. It is
-not the only one — the same instability is what a terminal mark on a near-capped position
-would produce by itself — and **the present simulation cannot distinguish them**. Closing each
-day by crossing the spread, and reporting the realised and unrealised components separately,
-is the first thing that should be done to this chapter; until it is, the per-coin figures
-below should be read as upper bounds and the basket result as suggestive rather than
-established. Second,
+The simulator now books P&L on matched volume only, by average cost, and reports the residual
+twice — marked at the final mid, and crossed out at the final touch, a long exiting at the bid
+and a short at the ask (`hft_market_maker/terminal_accounting.py`; the two sum back to the old
+figure by construction, so the optimistic number stays visible beside the honest one). Over the
+same thirty coin-days:
+
+| terminal treatment | round trip, bps of notional | days positive |
+|---|---|---|
+| residual marked at the final mid (as previously reported) | +6.36 | 23 / 30 |
+| residual liquidated across the spread | **+6.04** | 22 / 30 |
+| matched volume only, no terminal mark at all | +6.05 | 23 / 30 |
+
+**The terminal mark was not carrying the result.** Liquidating the residual costs 0.32 bps of a
+6.36 bps round trip — about five per cent — and the matched-volume-only figure, which credits no
+terminal mark whatever, is +6.05 bps. All three treatments agree, and the reason is an arithmetic
+point worth stating because the opposite intuition is natural: the residual's *size* relative to
+the day's notional is indeed large, between roughly 100 and 1,000 bps, but the *marking error* on
+it is only half a spread. USUAL on 17 July is the case that looks worst — a $1,624 residual on
+$15,871 of notional — and at a 10.7 bps closing spread the entire difference between the two
+treatments is $1.07, which is 0.07 bps of notional against a +22.04 bps result. A large position
+marked slightly wrong is not the same thing as a large error.
+
+What the split does change is the reading of the thinnest result. VINE's +0.96 bps is **entirely**
+terminal mark: on matched volume alone it is −0.13 bps, and it is reclassified below from a book
+that nearly clears fees to one that does not earn anything. HMSTR, the widest book, takes the
+largest haircut in absolute terms — 1.04 bps, because a 56 bps spread is expensive to cross — and
+drops from five days positive to four. No other coin changes sign, and the ranking is unchanged.
+
+So the day-to-day sign instability this chapter reads as compensation for warehousing
+idiosyncratic risk is **not** an artefact of the terminal mark; that alternative explanation was
+the live one and it has now been excluded. The residual remains unhedged directional risk, which
+is a statement about the *risk* the premium compensates rather than about the premium's
+measurement, and the figures below are reported under the liquidated treatment throughout.
+Second,
 the gates themselves are suspect: they made the round trip *worse* on two of the three days,
 which is Chapter 6 §3's pairing-breakage reappearing — suppressing predicted-adverse fills
 removes their losses and their exit fills together.
@@ -150,16 +171,23 @@ of using it: Chapter 6's pattern on a third venue.
 ## 5. The Round Trip on Thin Books
 
 With that accounting, the tail books pay. Averaged over the five captured days, the gross round
-trip clears the 1.5 bps **base fee** — no rebate assumed — on four of the six:
+trip clears the 1.5 bps **base fee** — no rebate assumed, residual liquidated across the spread —
+on four of the six:
 
-| book | median quoted spread | gross round trip | days positive | clears base fees? |
-|---|---|---|---|---|
-| HMSTR | 56 bps | +14.40 bps | 5 / 5 | yes |
-| USUAL | 16 bps | +12.91 bps | 4 / 5 | yes |
-| ZORA | 6 bps | +7.51 bps | 4 / 5 | yes |
-| CELO | 8 bps | +3.49 bps | 4 / 5 | yes |
-| VINE | 15 bps | +0.96 bps | 4 / 5 | no |
-| EIGEN | 8 bps | −1.12 bps | 2 / 5 | no |
+| book | median quoted spread | round trip, liquidated | matched volume only | days positive | clears base fees? |
+|---|---|---|---|---|---|
+| HMSTR | 56 bps | **+13.36 bps** | +14.29 bps | 4 / 5 | yes |
+| USUAL | 16 bps | **+12.65 bps** | +12.60 bps | 4 / 5 | yes |
+| ZORA | 6 bps | **+7.42 bps** | +6.52 bps | 4 / 5 | yes |
+| CELO | 8 bps | **+3.33 bps** | +3.53 bps | 4 / 5 | yes |
+| VINE | 15 bps | **+0.63 bps** | −0.13 bps | 4 / 5 | no |
+| EIGEN | 8 bps | **−1.16 bps** | −0.49 bps | 2 / 5 | no |
+
+The two P&L columns are the honest bracket around each book: the first liquidates the day's
+residual at the closing touch, the second refuses to value it at all. Which four books clear the
+base fee does not depend on the choice, and neither does the ordering. VINE is the one book whose
+sign does — it earns nothing on matched volume and only reaches +0.63 bps once the residual is
+valued at a price it could actually have exited at.
 
 Only one book is persistently negative. EIGEN quotes about 8 bps on $3.3M a day, which is the
 majors' regime in miniature, and it behaves accordingly — it is the one instrument in the screen
@@ -175,8 +203,9 @@ it rests on the within-instrument comparison of §7, where the same coin is obse
 The second caveat is that **per-coin P&L is sign-unstable from day to day**. No book is positive
 on every day except the widest, and the outcome on any given day is dominated by whether that
 day's flow happened to be one-sided. What is stable is the **basket**: equal-weighted across the
-six coins, gross P&L is positive on **all five days** — +$101, +$118, +$363, +$202 and +$39 —
-averaging +$164/day. (The +$243 and +$291/day figures in §6 are a different simulator: the
+six coins, gross P&L is positive on **all five days** — +$83, +$111, +$355, +$194 and +$20,
+averaging +$153/day after liquidating each day's residual (+$101, +$118, +$363, +$202, +$39 and
++$164/day when it is marked at the mid instead; positive five of five either way). (The +$243 and +$291/day figures in §6 are a different simulator: the
 anchor-and-distance sweep of Contribution 66, which quotes at a chosen anchor rather than
 running the inventory-capped round trip used here. The two are not comparable, and only the
 round trip is treated as a headline, for the reason §4 gives.) The premium is a portfolio property, not a per-instrument one, which is
@@ -189,21 +218,35 @@ Two refinements improve it, and both follow from Contribution 64's failure mecha
 If a mid anchor lags and therefore keeps buying into a downtrend, an anchor that *leads* the mid
 should skew away from the trend. Replacing the mid with Stoikov's imbalance-weighted
 **micro-price** does exactly that: the micro anchor beats the mid anchor on the basket on four
-of five days, +$291/day against +$243/day.
+of five days, +$278/day against +$230/day liquidated (+$291 against +$243 mid-marked; the
+comparison is unaffected).
 
 And if the spread genuinely exceeds the adverse-selection cost, quoting further from fair value
 should raise the margin on each fill. It does, monotonically. On HMSTR, quoting at fair value
-± k × (rolling median half-spread):
+± k × (rolling median half-spread), averaged over all five captured days:
 
-| k | bps of notional | fills/day |
-|---|---|---|
-| 0.5 | 44.9 | 887 |
-| 1.0 | 55.2 | 563 |
-| 1.5 | **88.1** | 266 |
+| k | bps of notional, liquidated | matched volume only | fills/day |
+|---|---|---|---|
+| 0.5 | +35.5 | +34.9 | 937 |
+| 1.0 | +42.2 | +42.0 | 635 |
+| 1.5 | **+61.8** | +55.8 | 297 |
 
 This is the trade-off in its cleanest form — better price per fill against fewer fills — and it
 is available only because the book is wide enough to have somewhere to stand. On a one-tick
 book, "wider" means behind the touch, where the order does not fill at all.
+
+The monotonicity does not extend indefinitely, and the reason is instructive. A fourth setting,
+k = 2.5, reports the highest headline of all — 82 bps of notional on HMSTR's widest day — on
+**4.7 fills a day**, and its matched-volume P&L is exactly zero, because at that distance the
+strategy accumulates a position and never closes one. The entire apparent margin is a terminal
+mark on inventory. Reporting the two columns above side by side is what makes that visible; a
+single mid-marked column would have ranked k = 2.5 best in the sweep.
+
+*(An earlier draft of this table reported 44.9 / 55.2 / 88.1 bps on 887 / 563 / 266 fills, which
+is 18 July alone rather than the five-day average. The monotonicity is unaffected, the levels are
+lower. This is the second instance in Contribution 66 of a single- or two-day subset being quoted
+as if it were the full sample; both are now corrected and the five-day figures computed from all
+thirty committed coin-days.)*
 
 One refinement failed and is reported as a negative. A depth-conditioned rule for choosing the
 anchor per coin — micro where the touch has depth, mid where it is thin — was fitted on two days
@@ -222,14 +265,18 @@ the basket is positive and micro ≥ mid on the majority of days.
 Six new coins were captured, none in the original set, plus one **bridge control** — USUAL, which
 was in the original six and remained wide. Both pre-registered checks pass: the basket is
 positive on **4 of 4 days**, including with the single outlier coin removed, and micro ≥ mid on
-**4 of 4 days**. The effect is not an artifact of coin selection.
+**4 of 4 days**. Both hold under the liquidated terminal treatment as well. The effect is not an
+artifact of coin selection.
 
 The bridge control, however, carries the more important finding. USUAL — the *same coin*, same
 strategy, same micro-price anchor — fell from **+23.5 bps of notional in July to −0.3 bps in
 August**, while the tail's widest available spread compressed from 56 bps (HMSTR in July) to
 14 bps (SAGA in August). The decay is not an artefact of the anchor chosen: fifteen of the
 sixteen anchor-and-distance configurations swept fall over the same two months, by a median of
-24 bps. Nothing about the technique changed. What changed was the regime.
+24 bps. Nor is it an artefact of the terminal mark — under liquidation the same coin falls from
++22.9 to −0.5 bps, and on matched volume alone from +20.3 to −3.1 bps, with fifteen of sixteen
+configurations still falling by a median of 24.0 and 22.8 bps respectively. Nothing about the
+technique changed. What changed was the regime.
 
 That single comparison converts the chapter's result from a claim about a strategy into a claim
 about a price. The immediacy premium is **priced by spread width**: it is large when the tail is

@@ -326,11 +326,18 @@ uniformly, and because the discipline is itself a contribution.
    crosses immediately, bypasses the queue, and pays the taker fee (C30 addendum).
 4. **Round-trip pricing at executable touches.** Entry and exit are both priced where a
    transaction could actually occur — crossing the touch to take, joining it to make — never
-   at the mid. Mark-to-mid overstates edge at the level of a single fill (C60) and again, more
-   severely, at the level of a position (C64).
+   at the mid. Mark-to-mid overstates edge at the level of a single fill (C60), again more
+   severely at the level of a position (C64), and a third time at the level of the *terminal*
+   position a simulated day ends with (C66 addendum): a residual valued at the closing mid
+   credits half a spread that was never earned on a position that was never closed. The rule
+   applies at all three levels, and the third was the last to be enforced.
 5. **Inventory-aware simulation.** A per-fill number is a diagnostic, not a P&L. Positions are
    tracked with explicit caps, because one-sided flow fills a maker *to* its cap and the
-   apparently positive unrealised mark never realises (C64, C66).
+   apparently positive unrealised mark never realises (C64, C66). Any day that ends with an
+   open position reports it twice — marked at the closing mid and crossed out at the closing
+   touch — together with the P&L on matched volume alone, which values no residual at all
+   (`hft_market_maker/terminal_accounting.py`). A configuration whose margin lives entirely in
+   the third column has not traded; it has accumulated.
 6. **Placebo and anti-signal controls.** A signal is compared against its own structure
    destroyed — timing scrambled, labels shuffled — preserving event counts and magnitudes, and
    must beat that distribution; where a direction exists, the inverted signal is a second

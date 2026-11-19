@@ -8,36 +8,70 @@
   "day_h": 13.73196944448683,
   "configs": {
     "none": {
-      "gross_pnl": 47.8726082915814,
       "maker_notional": 43364.56462649995,
       "weighted_fills": 547.0,
       "max_abs_inv_usd": 2182.0034414758225,
-      "end_inv_usd": -2095.6456322084186,
       "min_equity": -7.01849750781912,
       "max_equity": 60.087526718574736,
+      "pnl_realized": 51.73149297705622,
+      "unrealized_mid": -3.858884685475063,
+      "unrealized_liq": -9.898209273972094,
+      "gross_pnl": 47.8726082915814,
+      "gross_pnl_liq": 41.83328370308413,
+      "liq_haircut_usd": 6.039324588497031,
+      "end_inv_usd": -2095.6456322084186,
+      "final_spread_bps": 57.63688760806901,
+      "mid_mark_identity_err": 2.4158453015843406e-13,
       "gross_pnl_day": 83.67,
+      "gross_pnl_liq_day": 73.11,
       "net_pnl_day": {
         "fee_1.5": 72.3,
         "fee_0": 83.67,
         "fee_-0.3": 85.94
       },
-      "rt_bps_gross": 11.04
+      "net_pnl_liq_day": {
+        "fee_1.5": 61.75,
+        "fee_0": 73.11,
+        "fee_-0.3": 75.39
+      },
+      "rt_bps_gross": 11.04,
+      "rt_bps_liq": 9.647,
+      "rt_bps_realized": 11.929,
+      "rt_bps_unrealized_mid": -0.89,
+      "rt_bps_unrealized_liq": -2.283
     },
     "A+W": {
-      "gross_pnl": 52.121026676125894,
       "maker_notional": 36512.59889649994,
       "weighted_fills": 509.0,
       "max_abs_inv_usd": 2163.0433600000006,
-      "end_inv_usd": -1979.2372128238726,
       "min_equity": 0.17351700000000392,
       "max_equity": 63.665003204649565,
+      "pnl_realized": 57.514561655215125,
+      "unrealized_mid": -5.393534979087122,
+      "unrealized_liq": -11.097388618349141,
+      "gross_pnl": 52.121026676125894,
+      "gross_pnl_liq": 46.41717303686598,
+      "liq_haircut_usd": 5.703853639262019,
+      "end_inv_usd": -1979.2372128238726,
+      "final_spread_bps": 57.63688760806901,
+      "mid_mark_identity_err": 2.1103119252074976e-12,
       "gross_pnl_day": 91.09,
+      "gross_pnl_liq_day": 81.13,
       "net_pnl_day": {
         "fee_1.5": 81.52,
         "fee_0": 91.09,
         "fee_-0.3": 93.01
       },
-      "rt_bps_gross": 14.275
+      "net_pnl_liq_day": {
+        "fee_1.5": 71.55,
+        "fee_0": 81.13,
+        "fee_-0.3": 83.04
+      },
+      "rt_bps_gross": 14.275,
+      "rt_bps_liq": 12.713,
+      "rt_bps_realized": 15.752,
+      "rt_bps_unrealized_mid": -1.477,
+      "rt_bps_unrealized_liq": -3.039
     }
   }
 }

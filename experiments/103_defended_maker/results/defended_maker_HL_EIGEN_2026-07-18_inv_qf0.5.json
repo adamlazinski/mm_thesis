@@ -15,13 +15,30 @@
       "end_inv_usd": -1853.9876970848613,
       "min_equity": -85.70057272468853,
       "max_equity": 33.13741196412843,
+      "pnl_realized": -71.08414879826893,
+      "unrealized_mid": -2.194117286587769,
+      "unrealized_liq": -3.0144658251210306,
+      "gross_pnl_liq": -74.09861462338996,
+      "liq_haircut_usd": 0.8203485385332616,
+      "final_spread_bps": 8.849557522124147,
+      "mid_mark_identity_err": 1.9184653865522705e-12,
       "gross_pnl_day": -91.32,
+      "gross_pnl_liq_day": -92.34,
       "net_pnl_day": {
         "fee_1.5": -117.31,
         "fee_0": -91.32,
         "fee_-0.3": -86.12
       },
-      "rt_bps_gross": -5.27
+      "net_pnl_liq_day": {
+        "fee_1.5": -118.33,
+        "fee_0": -92.34,
+        "fee_-0.3": -87.14
+      },
+      "rt_bps_gross": -5.27,
+      "rt_bps_liq": -5.329,
+      "rt_bps_realized": -5.113,
+      "rt_bps_unrealized_mid": -0.158,
+      "rt_bps_unrealized_liq": -0.217
     },
     "A+W": {
       "gross_pnl": -79.82185494314672,
@@ -31,13 +48,30 @@
       "end_inv_usd": -1843.551462443151,
       "min_equity": -84.89240558902429,
       "max_equity": 37.025089447855635,
+      "pnl_realized": -78.10280390651505,
+      "unrealized_mid": -1.7190510366285106,
+      "unrealized_liq": -2.5347817722229617,
+      "gross_pnl_liq": -80.637585678738,
+      "liq_haircut_usd": 0.8157307355944512,
+      "final_spread_bps": 8.849557522124147,
+      "mid_mark_identity_err": 3.154809746774845e-12,
       "gross_pnl_day": -99.47,
+      "gross_pnl_liq_day": -100.49,
       "net_pnl_day": {
         "fee_1.5": -116.16,
         "fee_0": -99.47,
         "fee_-0.3": -96.13
       },
-      "rt_bps_gross": -8.94
+      "net_pnl_liq_day": {
+        "fee_1.5": -117.18,
+        "fee_0": -100.49,
+        "fee_-0.3": -97.15
+      },
+      "rt_bps_gross": -8.94,
+      "rt_bps_liq": -9.031,
+      "rt_bps_realized": -8.747,
+      "rt_bps_unrealized_mid": -0.193,
+      "rt_bps_unrealized_liq": -0.284
     }
   }
 }

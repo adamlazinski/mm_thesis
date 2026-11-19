@@ -15,7 +15,20 @@
         "fee_-0.3": 2.44
       },
       "max_abs_inv_usd": 2497.4,
-      "end_inv_usd": 634.5
+      "end_inv_usd": 634.5,
+      "gross_pnl_liq_day": 0.39,
+      "net_day_liq": {
+        "fee_1.5": -6.73,
+        "fee_0": 0.39,
+        "fee_-0.3": 1.81
+      },
+      "liq_haircut_usd": 0.51,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": 0.215,
+      "rt_bps_liq": 0.082,
+      "rt_bps_realized": -0.145,
+      "rt_bps_unrealized_mid": 0.361,
+      "rt_bps_unrealized_liq": 0.227
     },
     "mid_k1": {
       "fills_per_day": 448.4,
@@ -28,7 +41,20 @@
         "fee_-0.3": -13.53
       },
       "max_abs_inv_usd": 2464.0,
-      "end_inv_usd": -1018.4
+      "end_inv_usd": -1018.4,
+      "gross_pnl_liq_day": -15.53,
+      "net_day_liq": {
+        "fee_1.5": -20.44,
+        "fee_0": -15.53,
+        "fee_-0.3": -14.55
+      },
+      "liq_haircut_usd": 0.82,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": -4.437,
+      "rt_bps_liq": -4.748,
+      "rt_bps_realized": -0.63,
+      "rt_bps_unrealized_mid": -3.807,
+      "rt_bps_unrealized_liq": -4.118
     },
     "mid_k1.5": {
       "fills_per_day": 121.6,
@@ -41,7 +67,20 @@
         "fee_-0.3": 3.69
       },
       "max_abs_inv_usd": 2447.9,
-      "end_inv_usd": -1438.8
+      "end_inv_usd": -1438.8,
+      "gross_pnl_liq_day": 1.9,
+      "net_day_liq": {
+        "fee_1.5": 0.13,
+        "fee_0": 1.9,
+        "fee_-0.3": 2.25
+      },
+      "liq_haircut_usd": 1.15,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": 2.833,
+      "rt_bps_liq": 1.613,
+      "rt_bps_realized": 12.752,
+      "rt_bps_unrealized_mid": -9.919,
+      "rt_bps_unrealized_liq": -11.139
     },
     "mid_k2.5": {
       "fills_per_day": 24.9,
@@ -54,7 +93,20 @@
         "fee_-0.3": -10.95
       },
       "max_abs_inv_usd": 2388.6,
-      "end_inv_usd": -2122.9
+      "end_inv_usd": -2122.9,
+      "gross_pnl_liq_day": -13.23,
+      "net_day_liq": {
+        "fee_1.5": -14.04,
+        "fee_0": -13.23,
+        "fee_-0.3": -13.07
+      },
+      "liq_haircut_usd": 1.7,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": -20.762,
+      "rt_bps_liq": -24.721,
+      "rt_bps_realized": 10.539,
+      "rt_bps_unrealized_mid": -31.3,
+      "rt_bps_unrealized_liq": -35.259
     },
     "micro_k0.5": {
       "fills_per_day": 490.2,
@@ -67,7 +119,20 @@
         "fee_-0.3": -8.77
       },
       "max_abs_inv_usd": 2495.9,
-      "end_inv_usd": 78.8
+      "end_inv_usd": 78.8,
+      "gross_pnl_liq_day": -9.92,
+      "net_day_liq": {
+        "fee_1.5": -15.29,
+        "fee_0": -9.92,
+        "fee_-0.3": -8.85
+      },
+      "liq_haircut_usd": 0.06,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": -2.749,
+      "rt_bps_liq": -2.771,
+      "rt_bps_realized": -2.806,
+      "rt_bps_unrealized_mid": 0.056,
+      "rt_bps_unrealized_liq": 0.035
     },
     "micro_k1": {
       "fills_per_day": 329.3,
@@ -80,7 +145,20 @@
         "fee_-0.3": -18.76
       },
       "max_abs_inv_usd": 2498.6,
-      "end_inv_usd": -953.7
+      "end_inv_usd": -953.7,
+      "gross_pnl_liq_day": -20.55,
+      "net_day_liq": {
+        "fee_1.5": -24.78,
+        "fee_0": -20.55,
+        "fee_-0.3": -19.71
+      },
+      "liq_haircut_usd": 0.76,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": -6.952,
+      "rt_bps_liq": -7.29,
+      "rt_bps_realized": -3.163,
+      "rt_bps_unrealized_mid": -3.789,
+      "rt_bps_unrealized_liq": -4.127
     },
     "micro_k1.5": {
       "fills_per_day": 157.2,
@@ -93,7 +171,20 @@
         "fee_-0.3": -5.38
       },
       "max_abs_inv_usd": 2463.4,
-      "end_inv_usd": -1625.7
+      "end_inv_usd": -1625.7,
+      "gross_pnl_liq_day": -7.44,
+      "net_day_liq": {
+        "fee_1.5": -9.59,
+        "fee_0": -7.44,
+        "fee_-0.3": -7.0
+      },
+      "liq_haircut_usd": 1.3,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": -4.041,
+      "rt_bps_liq": -5.169,
+      "rt_bps_realized": 7.276,
+      "rt_bps_unrealized_mid": -11.317,
+      "rt_bps_unrealized_liq": -12.445
     },
     "micro_k2.5": {
       "fills_per_day": 26.2,
@@ -106,7 +197,20 @@
         "fee_-0.3": -11.9
       },
       "max_abs_inv_usd": 2471.2,
-      "end_inv_usd": -2250.6
+      "end_inv_usd": -2250.6,
+      "gross_pnl_liq_day": -14.28,
+      "net_day_liq": {
+        "fee_1.5": -14.93,
+        "fee_0": -14.28,
+        "fee_-0.3": -14.15
+      },
+      "liq_haircut_usd": 1.8,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": -27.59,
+      "rt_bps_liq": -32.742,
+      "rt_bps_realized": 12.243,
+      "rt_bps_unrealized_mid": -39.833,
+      "rt_bps_unrealized_liq": -44.985
     },
     "ewma_k0.5": {
       "fills_per_day": 291.9,
@@ -119,7 +223,20 @@
         "fee_-0.3": 6.9
       },
       "max_abs_inv_usd": 2496.0,
-      "end_inv_usd": -589.6
+      "end_inv_usd": -589.6,
+      "gross_pnl_liq_day": 5.67,
+      "net_day_liq": {
+        "fee_1.5": 2.44,
+        "fee_0": 5.67,
+        "fee_-0.3": 6.31
+      },
+      "liq_haircut_usd": 0.47,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": 2.909,
+      "rt_bps_liq": 2.636,
+      "rt_bps_realized": 5.951,
+      "rt_bps_unrealized_mid": -3.042,
+      "rt_bps_unrealized_liq": -3.316
     },
     "ewma_k1": {
       "fills_per_day": 164.6,
@@ -132,7 +249,20 @@
         "fee_-0.3": 5.61
       },
       "max_abs_inv_usd": 2491.0,
-      "end_inv_usd": -2002.6
+      "end_inv_usd": -2002.6,
+      "gross_pnl_liq_day": 3.19,
+      "net_day_liq": {
+        "fee_1.5": 1.06,
+        "fee_0": 3.19,
+        "fee_-0.3": 3.61
+      },
+      "liq_haircut_usd": 1.6,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": 3.661,
+      "rt_bps_liq": 2.251,
+      "rt_bps_realized": 17.594,
+      "rt_bps_unrealized_mid": -13.933,
+      "rt_bps_unrealized_liq": -15.344
     },
     "ewma_k1.5": {
       "fills_per_day": 86.1,
@@ -145,7 +275,20 @@
         "fee_-0.3": -3.72
       },
       "max_abs_inv_usd": 2485.0,
-      "end_inv_usd": -2232.2
+      "end_inv_usd": -2232.2,
+      "gross_pnl_liq_day": -6.22,
+      "net_day_liq": {
+        "fee_1.5": -7.6,
+        "fee_0": -6.22,
+        "fee_-0.3": -5.95
+      },
+      "liq_haircut_usd": 1.79,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": -4.362,
+      "rt_bps_liq": -6.796,
+      "rt_bps_realized": 20.467,
+      "rt_bps_unrealized_mid": -24.829,
+      "rt_bps_unrealized_liq": -27.262
     },
     "ewma_k2.5": {
       "fills_per_day": 43.7,
@@ -158,7 +301,20 @@
         "fee_-0.3": -10.03
       },
       "max_abs_inv_usd": 2263.2,
-      "end_inv_usd": -2045.7
+      "end_inv_usd": -2045.7,
+      "gross_pnl_liq_day": -12.26,
+      "net_day_liq": {
+        "fee_1.5": -13.18,
+        "fee_0": -12.26,
+        "fee_-0.3": -12.07
+      },
+      "liq_haircut_usd": 1.64,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": -16.602,
+      "rt_bps_liq": -19.921,
+      "rt_bps_realized": 12.761,
+      "rt_bps_unrealized_mid": -29.362,
+      "rt_bps_unrealized_liq": -32.682
     },
     "blend_k0.5": {
       "fills_per_day": 427.8,
@@ -171,7 +327,20 @@
         "fee_-0.3": -2.35
       },
       "max_abs_inv_usd": 2496.4,
-      "end_inv_usd": -516.9
+      "end_inv_usd": -516.9,
+      "gross_pnl_liq_day": -3.7,
+      "net_day_liq": {
+        "fee_1.5": -7.88,
+        "fee_0": -3.7,
+        "fee_-0.3": -2.86
+      },
+      "liq_haircut_usd": 0.41,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": -1.142,
+      "rt_bps_liq": -1.327,
+      "rt_bps_realized": 0.899,
+      "rt_bps_unrealized_mid": -2.041,
+      "rt_bps_unrealized_liq": -2.226
     },
     "blend_k1": {
       "fills_per_day": 167.1,
@@ -184,7 +353,20 @@
         "fee_-0.3": 4.08
       },
       "max_abs_inv_usd": 2494.4,
-      "end_inv_usd": -1654.3
+      "end_inv_usd": -1654.3,
+      "gross_pnl_liq_day": 2.01,
+      "net_day_liq": {
+        "fee_1.5": -0.09,
+        "fee_0": 2.01,
+        "fee_-0.3": 2.43
+      },
+      "liq_haircut_usd": 1.32,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": 2.612,
+      "rt_bps_liq": 1.433,
+      "rt_bps_realized": 14.277,
+      "rt_bps_unrealized_mid": -11.665,
+      "rt_bps_unrealized_liq": -12.844
     },
     "blend_k1.5": {
       "fills_per_day": 76.1,
@@ -197,7 +379,20 @@
         "fee_-0.3": -3.75
       },
       "max_abs_inv_usd": 2387.1,
-      "end_inv_usd": -2133.6
+      "end_inv_usd": -2133.6,
+      "gross_pnl_liq_day": -6.16,
+      "net_day_liq": {
+        "fee_1.5": -7.58,
+        "fee_0": -6.16,
+        "fee_-0.3": -5.88
+      },
+      "liq_haircut_usd": 1.71,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": -4.279,
+      "rt_bps_liq": -6.539,
+      "rt_bps_realized": 16.933,
+      "rt_bps_unrealized_mid": -21.212,
+      "rt_bps_unrealized_liq": -23.472
     },
     "blend_k2.5": {
       "fills_per_day": 26.2,
@@ -210,7 +405,20 @@
         "fee_-0.3": -18.56
       },
       "max_abs_inv_usd": 2237.5,
-      "end_inv_usd": -2050.0
+      "end_inv_usd": -2050.0,
+      "gross_pnl_liq_day": -20.74,
+      "net_day_liq": {
+        "fee_1.5": -21.4,
+        "fee_0": -20.74,
+        "fee_-0.3": -20.61
+      },
+      "liq_haircut_usd": 1.64,
+      "final_spread_bps": 16.01,
+      "rt_bps_gross": -42.409,
+      "rt_bps_liq": -47.052,
+      "rt_bps_realized": 7.37,
+      "rt_bps_unrealized_mid": -49.779,
+      "rt_bps_unrealized_liq": -54.423
     }
   }
 }

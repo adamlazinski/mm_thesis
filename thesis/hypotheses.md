@@ -259,13 +259,22 @@ rather than below it, which is the register's single most important pattern.
   event times because Hyperliquid's own makers withdraw on the same signal. The capacity bound is the
   *answer* to why a public-data edge persists. *(C63)*
 - `✓` **The immediacy premium exists where competition is thin.** Four of six tail books clear **base** fees
-  on an inventory-aware round trip over five days (HMSTR +14.40 bps, USUAL +12.91, ZORA +7.51,
-  CELO +3.49; VINE +0.96 and EIGEN −1.12 do not). Only EIGEN is persistently negative, and the
-  per-coin cross-section supports the spread-width reading only weakly (ρ = 0.60, n = 6).
-  *(Corrected 2026-11-16; see C66.)* *(C66)*
+  on an inventory-aware round trip over five days, residual liquidated across the closing spread
+  (HMSTR +13.36 bps, USUAL +12.65, ZORA +7.42, CELO +3.33; VINE +0.63 and EIGEN −1.16 do not).
+  Only EIGEN is persistently negative, and the per-coin cross-section supports the spread-width
+  reading only weakly (ρ = 0.60, n = 6). *(Corrected 2026-11-16; terminal-mark audit 2026-11-19;
+  see C66.)* *(C66)*
+- `✓` **…and it is not an artefact of the terminal mark.** This was the live alternative explanation:
+  the residual position sits at the ±$2,000 cap on most coin-days, so a mid mark could have
+  manufactured the whole result. Pooled over thirty coin-days the round trip is +6.36 bps
+  mid-marked, **+6.04 liquidated** and +6.05 on matched volume alone — the mark carries ~5%, not
+  the result, because the residual's *size* is large (100–1,000 bps of notional) while the
+  *marking error* on it is only half a spread. One reclassification: VINE's positive figure was
+  entirely terminal mark. *(C66)*
 - `◐` **…but it is a portfolio property, not a per-instrument one.** Per-coin P&L is sign-unstable day to
   day; the equal-weighted basket is positive on 5/5 days of the original sample and 4/4 of a
-  **pre-registered** replication on disjoint coins, with micro-price ≥ mid on 4/4. *(C66)*
+  **pre-registered** replication on disjoint coins, with micro-price ≥ mid on 4/4 — all four
+  checks holding under liquidation as well. *(C66)*
 - `✓` **…and its magnitude is priced by competition, not by technique.** The bridge control is the cleanest
   evidence in the thesis: USUAL, same coin and same strategy, fell from **+23.5 bps in July to
   −0.3 bps in August** (15 of 16 configurations fall; median 24 bps) as the tail's widest spread compressed from 56 to 14 bps. *(C66)*

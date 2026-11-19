@@ -39,6 +39,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from hft_market_maker import terminal_accounting as ta
+
 ROOT = Path(__file__).resolve().parents[2]
 PROC = ROOT / "data" / "live" / "processed"
 OUT = Path(__file__).resolve().parent / "results"
@@ -108,10 +112,29 @@ def inventory_sim(tt, tpx, tsz, tbuy, tusd, i_q, qt, qb, qa, qm,
     """
     Round-trip P&L: maintain position; join both touches unless gated or
     inventory-capped; fills at qf weight; mark to mid continuously.
-    Returns dict with gross P&L (fee-free), maker notional, inventory stats.
+
+    Three terminal treatments are reported side by side, because the day does
+    not end with a flat book and the choice of terminal mark is worth more than
+    the result on the thinnest days (see Ch8):
+
+      pnl_realized      matched volume only, average-cost basis. No terminal
+                        mark at all: this is the part of the day's P&L that was
+                        actually banked by closing a position.
+      unrealized_mid    the residual marked at the final mid. Adding it to
+                        pnl_realized reproduces `gross_pnl` exactly, which is
+                        the old (optimistic) headline.
+      unrealized_liq    the residual liquidated across the spread at the final
+                        touch — bid if long, ask if short. `gross_pnl_liq` is
+                        pnl_realized + this, and is the bankable number.
+
+    Average-cost accounting: a fill in the direction of the position moves the
+    basis; a fill against it books min(|inv|, units) of realized P&L and, if it
+    flips the sign, re-bases the remainder at the fill price.
     """
     eps = 1e-9
     cash = 0.0; inv = 0.0
+    avg_px = 0.0              # average cost basis of the open position
+    realized = 0.0            # P&L from matched volume only
     notional = 0.0; n_fills = 0.0
     max_abs_inv_usd = 0.0
     min_eq = np.inf; max_eq = -np.inf
@@ -135,7 +158,9 @@ def inventory_sim(tt, tpx, tsz, tbuy, tusd, i_q, qt, qb, qa, qm,
                 if w > 0:
                     fill_usd = min(tusd[k], FILL_CAP_USD) * w
                     units = fill_usd / tpx[k]
-                    inv -= units; cash += fill_usd
+                    inv, avg_px, dr = ta.book(inv, avg_px, -units, tpx[k])
+                    realized += dr
+                    cash += fill_usd
                     notional += fill_usd; n_fills += w
         else:
             if inv_usd >= MAX_INV_USD or any(g(tt[k], -1) for g in gates):
@@ -150,16 +175,18 @@ def inventory_sim(tt, tpx, tsz, tbuy, tusd, i_q, qt, qb, qa, qm,
                 if w > 0:
                     fill_usd = min(tusd[k], FILL_CAP_USD) * w
                     units = fill_usd / tpx[k]
-                    inv += units; cash -= fill_usd
+                    inv, avg_px, dr = ta.book(inv, avg_px, units, tpx[k])
+                    realized += dr
+                    cash -= fill_usd
                     notional += fill_usd; n_fills += w
         eq = cash + inv * qm[iq]
         min_eq = min(min_eq, eq); max_eq = max(max_eq, eq)
         max_abs_inv_usd = max(max_abs_inv_usd, abs(inv * qm[iq]))
-    final = cash + inv * qm[-1]
-    return {"gross_pnl": final, "maker_notional": notional,
-            "weighted_fills": n_fills, "max_abs_inv_usd": max_abs_inv_usd,
-            "end_inv_usd": inv * qm[-1], "min_equity": min_eq,
-            "max_equity": max_eq}
+    out = {"maker_notional": notional, "weighted_fills": n_fills,
+           "max_abs_inv_usd": max_abs_inv_usd,
+           "min_equity": min_eq, "max_equity": max_eq}
+    out.update(ta.terminal(cash, inv, avg_px, realized, qb[-1], qa[-1]))
+    return out
 
 
 def main():
@@ -260,20 +287,33 @@ def main():
             r = inventory_sim(tt, tpx, tsz, tbuy, tusd, i_q, qt, qb, qa, qm,
                               gates, qf=args.qf)
             scale = 24 / day_h
+            notion = r["maker_notional"]
             r["gross_pnl_day"] = round(r["gross_pnl"] * scale, 2)
+            r["gross_pnl_liq_day"] = round(r["gross_pnl_liq"] * scale, 2)
             r["net_pnl_day"] = {
-                f"fee_{f:g}": round((r["gross_pnl"] - f * 1e-4 * r["maker_notional"])
+                f"fee_{f:g}": round((r["gross_pnl"] - f * 1e-4 * notion)
                                     * scale, 2)
                 for f in MAKER_FEES_BPS}
-            r["rt_bps_gross"] = round(1e4 * r["gross_pnl"] / r["maker_notional"], 3) \
-                if r["maker_notional"] else None
+            r["net_pnl_liq_day"] = {
+                f"fee_{f:g}": round((r["gross_pnl_liq"] - f * 1e-4 * notion)
+                                    * scale, 2)
+                for f in MAKER_FEES_BPS}
+            r.update(ta.bps_split(r, notion))
             out["configs"][name] = r
-            print(f"  INV {name:5s} qf={args.qf:g}: gross={r['gross_pnl_day']:+9.2f}/day "
-                  f"({r['rt_bps_gross']:+.2f}bps of ${r['maker_notional']:,.0f}) "
-                  f"net: base={r['net_pnl_day']['fee_1.5']:+8.2f} "
-                  f"zero={r['net_pnl_day']['fee_0']:+8.2f} "
-                  f"rebate={r['net_pnl_day']['fee_-0.3']:+8.2f}  "
-                  f"max|inv|=${r['max_abs_inv_usd']:,.0f} end=${r['end_inv_usd']:+,.0f}")
+            print(f"  INV {name:5s} qf={args.qf:g}: "
+                  f"mid={r['rt_bps_gross']:+8.2f}bps  "
+                  f"= realized {r['rt_bps_realized']:+8.2f} "
+                  f"+ unreal_mid {r['rt_bps_unrealized_mid']:+8.2f}   "
+                  f"|  LIQ={r['rt_bps_liq']:+8.2f}bps "
+                  f"(unreal_liq {r['rt_bps_unrealized_liq']:+8.2f}, "
+                  f"haircut ${r['liq_haircut_usd']:,.0f}) "
+                  f"of ${notion:,.0f}")
+            print(f"        gross/day mid={r['gross_pnl_day']:+9.2f} "
+                  f"liq={r['gross_pnl_liq_day']:+9.2f}  "
+                  f"net@base liq={r['net_pnl_liq_day']['fee_1.5']:+9.2f}  "
+                  f"max|inv|=${r['max_abs_inv_usd']:,.0f} "
+                  f"end=${r['end_inv_usd']:+,.0f} "
+                  f"final_spread={r['final_spread_bps']:.1f}bps")
         tag = f"{args.asset}_{args.date}_inv_qf{args.qf:g}"
         with open(OUT / f"defended_maker_{tag}.json", "w") as fh:
             json.dump(out, fh, indent=2)
