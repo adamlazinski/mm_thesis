@@ -331,7 +331,7 @@ is paid: four of six books clear base fees on an inventory-aware round trip, the
 positive on every day of two independent samples, and a pre-registered replication on disjoint
 coins holds. The per-coin cross-section is noisier than that summary suggests — the tightest book
 in the screen is among the more profitable — and the weight of the spread-width claim therefore
-falls on the within-instrument comparison rather than on the six-point cross-section. The adverse-selection horizon on these books runs beyond five seconds, against
+falls on the within-instrument comparison rather than on the six-point cross-section. The adverse-selection horizon on these books runs beyond ten seconds, against
 tens of milliseconds on Binance — one law, read at four venue clocks.
 
 But what is being paid is a **premium, not an edge**. It is compensation for warehousing

@@ -161,6 +161,16 @@ data-collection problem rather than an analytical one.
 
 ## 6. Synthesis
 
+**What this chapter establishes, and on how much.** The funding differential is a contractual
+cash flow and is measured as such; that part is not in doubt. Everything downstream of it is
+measured on **thirty-six hours for BTC and twelve for the others**, which is why no annualised
+figure here should be read as an estimate of a long-run return, and why the gross-Sharpe
+construction of §4 is labelled as the simulator's own output rather than adopted. Over the
+window actually observed, the BTC book earns less than its round trip. The chapter is
+**exploratory**: it identifies the basis as the risk that matters and sizes the cost structure,
+and it does not establish a profitable carry strategy. The cascade tail of §5 is the quantity
+that would decide the question and it is not in the sample.
+
 Carry is the third survivor and the most explicit about what it is.
 
 The negative half is clean: intraday cointegration between correlated majors is real

@@ -547,7 +547,7 @@ And §7's third result adds a fifth, which is the sharper version of the fourth:
    observable as a time series on a single instrument (Chapter 8's bridge control); and that
    the horizon over which adverse selection is realised should track the venue's own repricing
    speed rather than any universal constant (Part II's organising law, measured from about
-   15 ms on Binance to beyond five seconds in the Hyperliquid tail). §6 adds a rider: on the
+   15 ms on Binance to beyond ten seconds in the Hyperliquid tail). §6 adds a rider: on the
    coarse books where `M` is small, the fair-value anchor matters most, so the micro-price
    should outperform the mid there — which is where Chapter 8 finds it does.
 

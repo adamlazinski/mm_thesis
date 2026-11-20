@@ -9,25 +9,32 @@ whether that apparatus earns anything for a participant without co-location, exc
 membership or a volume-tier fee schedule, on venues where such a participant can actually
 trade: lit cryptocurrency order books.
 
-The answer is that it earns **exactly zero**, and the precision of that word is the thesis's
-central claim. It rests on two tiers of data — 346 days
+The answer is that across every book, sample and configuration tested, it earns a quantity
+**indistinguishable from zero at the precision these samples support**, and negative before
+fees at the horizons on which a maker turns inventory. The thesis rests on two tiers of data —
+346 days
 of purchased Binance tick history and an original four-venue live capture spanning Binance,
 Coinbase, Hyperliquid and Deribit — every apparently profitable configuration decomposes into
 one of five accounting illusions: queue priority the simulator granted but the exchange would
 not, prices strictly inside a one-tick spread that the venue's own grid forbids, valuation at
 the mid rather than at an executable touch, fee tiers unreachable at the strategy's volume, and
 selection on the fills a maker would not have received. What remains after all five are removed
-is measured four mutually independent ways — a model-free markout on the tape, a speed
-experiment at the co-location limit, conditioning on every observable state variable, and
-counterparty identity resolved to the wallet on a transparent venue — and all four terminate at
-zero rather than below it, which is what an enforced equilibrium looks like from the inside
-rather than what a difficult market looks like. The zero is also *derived* rather than merely
-observed: the breakeven half-spread holds a constant ratio of about 76 to dollar volatility
-across a tenfold range of σ, which unifies the spread-axis and queue-axis regimes into one
-Glosten–Milgrom condition.
+is probed four ways — a model-free markout on the tape, a speed experiment at the co-location
+limit, conditioning on every observable state variable, and counterparty identity resolved to
+the wallet on a transparent venue — and all four terminate at zero rather than below it, which
+is what an enforced equilibrium looks like from the inside rather than what a difficult market
+looks like. That the residue is *pinned* rather than merely small is the thesis's
+interpretation, offered with its own evidence — the breakeven half-spread holds a constant
+ratio of about 76 to dollar volatility across a tenfold range of σ, unifying the spread-axis
+and queue-axis regimes into one Glosten–Milgrom condition — and held to a lower standard than
+the measurement. The four probes share data, code paths and a market regime, so they are not
+four independent replications, and no equivalence interval or power calculation is offered:
+failing to find a positive result is not the same as demonstrating equality to zero.
 
 Three structural positions survive that argument, and the second half of the thesis is about
-what distinguishes them from a signal. Each is compensation for bearing a risk rather than a
+what distinguishes them from a signal. All three rest on short windows — two days, five days,
+thirty-six hours — and are offered as **exploratory evidence locating the boundary** of the
+equilibrium rather than as established strategies. Each is compensation for bearing a risk rather than a
 reward for prediction: a cross-venue dislocation taker that rents a slow venue's clock and is
 bounded by threshold, fee tier and the few thousand dollars resting at the touch; an immediacy
 premium in Hyperliquid's tail books, where two or three makers quote and a round trip clears
@@ -63,6 +70,7 @@ Ten chapters in two co-equal parts, with a three-chapter foundation. `structure.
 - **`hypotheses.md`** — what was predicted against what the data said, including the retractions, marked `⊘`.
 - **`intervals.md`** — 95% bootstrap intervals for every headline quantity.
 - **`references.md`** — the bibliography, grouped by theme.
+- **`provenance.md`** — which commit produced each experiment's results, and which engine corrections that commit post-dates.
 
 Every figure is embedded at the point of use and referenced as **Figure N**. Every number is traceable to a committed experiment JSON in `experiments/`, and `scripts/verify_contributions.py` checks the log against the repository.
 

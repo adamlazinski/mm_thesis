@@ -2,33 +2,54 @@
   "date": "2026-07-10",
   "gate": 5e-05,
   "runs": {
-    "baseline 10ms/qf0.5": {
+    "10ms/qf0.0(front)": {
+      "pnl": -1.9243999999999346,
+      "fills": 5496,
+      "gated_pct": 94.3107264053509,
+      "maker_notional": 92569.39313000019,
+      "be_rebate_bps": 0.20788728703205347
+    },
+    "10ms/qf0.5(mid)   [baseline]": {
       "pnl": -2.0345624999999927,
       "fills": 1441,
       "gated_pct": 94.42311921469842,
       "maker_notional": 32692.21102000003,
       "be_rebate_bps": 0.6223386049830993
     },
-    "1ms cancel/qf0.5": {
-      "pnl": -1.9438574999998366,
-      "fills": 1310,
-      "gated_pct": 94.49160176973434,
-      "maker_notional": 30379.58301499999,
-      "be_rebate_bps": 0.6398565441270384
+    "10ms/qf1.0(back)": {
+      "pnl": -5.061984999999707,
+      "fills": 499,
+      "gated_pct": 94.46391804348917,
+      "maker_notional": 16120.023270000002,
+      "be_rebate_bps": 3.140184672946633
     },
-    "1ms all/qf0.5": {
+    "1ms /qf0.0(front)": {
+      "pnl": -0.3943499999996334,
+      "fills": 5306,
+      "gated_pct": 94.36099434629668,
+      "maker_notional": 94236.45021000005,
+      "be_rebate_bps": 0.04184686489366365
+    },
+    "1ms /qf0.5(mid)": {
       "pnl": -2.3942650000008125,
       "fills": 1379,
       "gated_pct": 94.48991814733479,
       "maker_notional": 32486.41373500001,
       "be_rebate_bps": 0.7370050198619782
     },
-    "1ms all/qf1.0(front)": {
+    "1ms /qf1.0(back)": {
       "pnl": -5.976169999999996,
       "fills": 487,
       "gated_pct": 94.53545882282125,
       "maker_notional": 16291.8716,
       "be_rebate_bps": 3.668191197873175
+    },
+    "1ms cancel only/qf0.5": {
+      "pnl": -1.9438574999998366,
+      "fills": 1310,
+      "gated_pct": 94.49160176973434,
+      "maker_notional": 30379.58301499999,
+      "be_rebate_bps": 0.6398565441270384
     }
   }
 }

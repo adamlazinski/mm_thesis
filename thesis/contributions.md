@@ -3697,10 +3697,35 @@ constraint — the equilibrium is.
 objection: our reaction was ~15ms; a co-located maker pulls the toxic order in ~1ms. Collapsing
 cancel + order + signal latency and the requote cadence toward 1ms — an *optimistic* frozen-tape
 bound, since it lets us dodge fills while every competitor stays still — changes essentially
-nothing: 07-10 −$2.04 → −$1.94, 07-12 +$1.91 → +$0.54 (slightly *worse*, from quote churn), and
-front-of-queue (qf=1.0) is worse/high-variance. The reason is C59: the perp leads by 40–100ms, so
-a 15ms gate already fires inside the lead — there is nothing left for 1ms to catch. Even rigged in
-our favour, co-location nets the same ~zero. Latency and queue position were never the constraint.
+nothing. The reason is C59: the perp leads by 40–100ms, so a 15ms gate already fires inside the
+lead — there is nothing left for 1ms to catch.
+
+**Rerun as a matched grid, 2026-11-20.** The original sweep had two defects. It swept latency and
+queue position *separately*, although co-location buys both at once; and its `queue_fraction`
+labels were **inverted** — the engine computes depth ahead as `queue_ahead(price, side) ×
+fraction`, so qf=0.0 is the FRONT of the queue (nothing ahead) and qf=1.0 is behind the whole
+visible book. The entry therefore described "front-of-queue (qf=1.0)" when that arm was the
+deepest position tested, and **true front-of-queue was never run at 1ms at all**. Labels fixed in
+`link_harvest.py`; rerun as a 2 × 3 grid (10ms/1ms × front/mid/back), both days, everything else
+held:
+
+| mean P&L/day | front (qf=0.0) | mid (qf=0.5) | back (qf=1.0) |
+|---|---|---|---|
+| 10ms | −$0.03 | −$0.06 | −$0.57 |
+| 1ms | **+$0.38** | −$0.93 | −$1.32 |
+
+The whole grid spans **$1.70/day**, and the best cell — the full co-location package, 1ms wire at
+the front of the queue, the configuration that had never been run — earns **+$0.38/day**
+(−$0.394 on 07-10, +$1.154 on 07-12). The rebate that would close the gap is **0.042bps** on the
+losing day and none on the other: under a twentieth of a basis point from breakeven either way. Three readings. (i) **1ms is worse than 10ms**, by $0.40/day
+averaged over queue positions: at a 1ms requote cadence the quotes churn and shed the position
+they just bought. (ii) **Queue position orders the result where latency does not** (10ms: front
+−$0.03 → mid −$0.06 → back −$0.57), which is C30 reappearing inside the speed experiment.
+(iii) The ordering **reverses by day** — 07-10 front best and back −$5 to −$6; 07-12 back best at
++$3 to +$4 — because being at the front means taking more of the marginal fill, and on this book
+that fill is sometimes the one you did not want. Even rigged in our favour, co-location nets the
+same ~zero. Latency was never the constraint, and neither is queue position, because the best
+queue position at the best latency is still zero.
 
 Reproduce:
 ```
@@ -4128,23 +4153,34 @@ statistical arbitrage between correlated assets, and carry on the perpetual fund
 are standard answers to "how do market-neutral desks earn". Do they survive the same accounting
 discipline that dissolved the market-making results?
 
-**Method.** (a) **Cointegration (exp 106):** Engle-Granger and Johansen on log-mids of five
-Hyperliquid majors, 2,164 aligned 60s bars, OU half-life from an AR(1) fit, and an in-sample /
+**Method.** (a) **Cointegration (exp 106):** Engle-Granger on log-mids of five
+Hyperliquid majors (`statsmodels` `coint` + `adfuller`; **Johansen was planned and not run** —
+an earlier draft of this entry claimed it), 2,164 aligned 60s bars, OU half-life from an AR(1) fit, and an in-sample /
 out-of-sample z-score backtest with real per-leg costs. (b) **Funding carry (exps 107–108):**
 the delta-neutral book — short the high-funding venue's perp, long the low-funding venue's — where
 P&L is funding collected **plus** the continuous basis mark-to-market, because the two price legs
 do not fully cancel; their difference *is* the basis, and it moves.
 
 **Result (a): the intraday cointegration edge does not exist.** Five of ten pairs "pass"
-cointegration at p<0.05 (ETH/LINK 0.006, LINK/HYPE 0.004) — the multiple-testing trap on a short
-intraday sample. Half-lives run 45–140 minutes, and net P&L per trade is negative essentially
+cointegration at p<0.05 (ETH/LINK 0.006, LINK/HYPE 0.004). *(Corrected 2026-11-19: an earlier
+draft called this "the multiple-testing trap", implying five passes is what chance produces.
+It is not — under ten **independent** nulls the expected count at a 5% threshold is 0.5, so five
+is an order of magnitude more than chance, and the p-values are not evidence against the
+relationships being real.* The reason to discount them has to be argued instead: the ten pairs
+come from five assets sharing a dominant market factor, so the tests are strongly *dependent*;
+the sample is a short intraday window where Engle-Granger over-rejects on persistent series; and
+no multiplicity adjustment was applied. This design cannot separate genuine cointegration from
+size distortion under dependence, which is why the verdict rests on the **trading** result
+below.)* Half-lives run 45–140 minutes, and net P&L per trade is negative essentially
 everywhere (IS −6 to −12bps/trade): the reversion does not cover the ~8.6bps pair round trip. The
 marginally-positive OOS pairs had negative IS — sign-flip noise on small samples. Sound
 econometrics, priced out at retail fees at this frequency; a genuine edge here would need
 months-to-years of daily data, breadth, and dynamic hedging — a different thesis on public bars.
 
 **Result (b): the funding basis pays, and the basis is the risk.** Hyperliquid funding ran
-**92–100% positive** over the captured window (~11% annualised); against Binance the net
+**72–100% positive** over the captured window depending on the asset — 99.9–100% on BTC, ETH and
+LINK at ~11% annualised, but only **71.9% on SOL at 3.7%** *(corrected 2026-11-19 from "92–100%",
+which conflicts with the committed exp 107 SOL result)*; against Binance the net
 differential is **+6.4% BTC / +7.8% ETH / +6.8% LINK / +5.4% SOL** annualised. The book-level
 simulation decomposes it:
 

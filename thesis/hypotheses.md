@@ -235,12 +235,19 @@ rather than below it, which is the register's single most important pattern.
 - `✓` **Adverse selection is measurable model-free from the tape alone.** The maker's realised half-spread
   is negative within 100 ms on all four books; the protective window is 75–87 ms on large-relative-tick
   books and ≤15–20 ms on small-tick ones, and it coincides with the perp-lead clock. *(C59)*
-- `✗` **Instrument 1 — being faster opens the gate.** Collapsing the whole latency stack from 10 ms to the
-  co-located 1 ms limit changes essentially nothing (−$2.04→−$1.94; +$1.91→+$0.54, slightly *worse* from
-  quote churn). A 15 ms gate already fires inside a 40–100 ms lead. **Scope:** the `queue_fraction` arms in
-  exp 94 are labelled inverted — the engine computes `queue_ahead × fraction`, so qf=1.0 is the *back* of the
-  queue — so true front-of-queue was never run against the 1 ms arm and no claim is made about it.
-  *(C60 colo addendum)*
+- `✗` **Instrument 1 — being faster opens the gate.** No. Rerun 2026-11-20 as a matched 2 × 3 grid
+  (10 ms / 1 ms × front / mid / back of queue, both captured days) after the earlier sweep was found
+  to have the queue direction *inverted* — the engine computes `queue_ahead × fraction`, so qf=0.0 is
+  the front — which meant true front-of-queue had never been run at 1 ms. It has now: the full
+  co-location package earns **+$0.38/day**, breakeven rebate 0.04 bps, and the whole grid spans
+  $1.70/day. A 15 ms gate already fires inside a 40–100 ms lead. *(C60 colo addendum, rerun)*
+- `✓` **…and 1 ms is actually *worse* than 10 ms.** Averaged over queue positions, −$0.40/day worse: at a
+  1 ms requote cadence the quotes churn and shed the queue position they just bought. *(C60)*
+- `◐` **Queue position orders the result where latency does not — but not with a stable sign.** At 10 ms:
+  front −$0.03 → mid −$0.06 → back −$0.57. Yet the ordering **reverses by day** (10 Jul front best, back
+  −$5 to −$6; 12 Jul back best at +$3 to +$4): being at the front means taking more of the marginal fill,
+  and on this book that fill is sometimes the one you did not want. The selection mechanism of the broken
+  gates, visible as a sign flip. *(C60)*
 - `✗` **Instrument 2 — observable state isolates benign flow.** Toxicity is genuinely rankable by flow,
   imbalance, volatility and intensity, and the cleanest quintile is still negative at a **zero** fee. *(C61)*
 - `✗` **Instrument 3 — counterparty identity isolates benign flow.** The strongest sorting instrument that

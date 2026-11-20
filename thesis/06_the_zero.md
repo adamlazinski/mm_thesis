@@ -146,23 +146,45 @@ and the requote cadence — from 10 ms to **1 ms**, the co-located limit. This i
 generous: on a frozen tape the strategy dodges fills while every competitor stays still, so a
 failure here is decisive in one direction only.
 
-It fails. On a losing day the result moves from −$2.04 to −$1.94; on a winning day it moves
-from +$1.91 to **+$0.54** — slightly *worse*, because at a 1 ms requote cadence the quotes
-churn and shed queue position while toxic-avoidance was already saturated.
+It fails, and because co-location buys two things at once — a faster wire *and* a better place
+in the queue — the two have to be crossed rather than swept one at a time. An earlier version of
+this experiment did not cross them, and worse, had the queue direction backwards: the engine
+computes depth ahead as `visible_queue × queue_fraction`, so `queue_fraction = 0` is the **front**
+of the queue and `1.0` is behind the whole visible book, while the sweep's labels said the
+opposite. An earlier draft of this chapter consequently reported the `queue_fraction = 1.0` arm
+as "front-of-queue positioning, the actual prize of co-location" when it was the deepest position
+tested, and the true front of queue had never been run at 1 ms at all.
 
-The experiment is **incomplete in one respect, and it is the respect that matters most**. The
-engine computes the depth ahead of an order as `visible_queue × queue_fraction`, so
-`queue_fraction = 0` is the front of the queue and `1.0` is behind the whole visible book.
-Experiment 94's sweep labels these the other way round, and an earlier draft of this chapter
-reported the `queue_fraction = 1.0` arm as "front-of-queue positioning, the actual prize of
-co-location". It is the opposite — the deepest position tested. **The true front-of-queue
-configuration was therefore never run against the 1 ms latency arm**, and this chapter makes
-no claim about it. What the experiment does establish is the latency half: collapsing the wire
-and requote stack from 10 ms to 1 ms, at a fixed mid-queue position, changes nothing.
+It has now been run, as a matched 2 × 3 grid — two latency stacks against three queue positions,
+on both captured days, everything else held (LINK spot, real L2, post-only, gate mode):
 
-The reason is Contribution 59. The perp leads by 40–100 ms; a 15 ms gate already fires *inside*
-that window, so there is nothing left for 1 ms to catch. Speed saturated long before the
-co-located limit, and the binding constraint was never latency.
+| mean P&L/day | front (qf = 0.0) | mid (qf = 0.5) | back (qf = 1.0) |
+|---|---|---|---|
+| **10 ms** | −$0.03 | −$0.06 | −$0.57 |
+| **1 ms** | **+$0.38** | −$0.93 | −$1.32 |
+
+The whole grid spans **$1.70 a day**. The best cell in it is the full co-location package — a
+1 ms wire at the front of the queue, the configuration the previous draft could not speak
+about — and it earns **+$0.38/day**, which is this thesis's zero arriving by yet another route.
+The maker rebate that would close the gap at that cell is **0.042 bps** on the day it loses, and
+none at all on the day it does not: under a twentieth of a basis point separates the fully
+co-located maker from breakeven, in either direction.
+
+Three things in the table are worth separating. First, **1 ms is not better than 10 ms**: averaged
+over queue positions it is $0.40/day *worse*, because at a 1 ms requote cadence the quotes churn
+and shed the queue position they just bought. Second, **queue position orders the result and
+latency does not** — front −$0.03 → mid −$0.06 → back −$0.57 at 10 ms — which is Chapter 5 §2's
+finding reappearing inside the speed experiment. Third, and least expected, **the ordering
+reverses by day**: on 10 July the front is best and the back loses $5–6, while on 12 July the
+back is best and earns $3–4. Being at the front means taking more of the marginal fill, and on
+this book the marginal fill is sometimes the one you did not want. The same selection mechanism
+that breaks the gates in §3 and §6 is visible here as a sign flip.
+
+The reason speed saturates is Contribution 59. The perp leads by 40–100 ms; a 15 ms gate already
+fires *inside* that window, so there is nothing left for 1 ms to catch. Speed saturated long
+before the co-located limit, and the binding constraint was never latency — but neither, this
+grid shows, is it queue position, because the best queue position at the best latency is still
+zero.
 
 ## 6. Instrument Three: Observable State
 

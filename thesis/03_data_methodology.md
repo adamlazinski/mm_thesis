@@ -406,6 +406,15 @@ windows they are very wide — which is the honest content of a five-day sample,
 Chapter 8's argument is carried by the within-instrument bridge control rather than by the
 cross-section of six coins.
 
+**Provenance.** Three engine corrections split this project's results into eras, and which
+side of them a given result falls on decides whether it bears on a claim: taker-on-arrival
+(2026-06-11), the GLFT closed form (2026-06-16, GLFT path only), and terminal accounting
+(2026-11-19, the two Part II round-trip simulators). `thesis/provenance.md`, generated from git
+by `scripts/make_provenance.py`, states for each of the 115 experiment directories which commit
+produced its committed results and which corrections that commit post-dates. Where a chapter
+cites a pre-correction result without a rerun it says so in text; the table exists so that can
+be audited rather than taken on trust.
+
 ---
 
 ## 9. Summary

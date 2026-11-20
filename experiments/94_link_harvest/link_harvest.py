@@ -14,7 +14,13 @@ latency), to find the floor of the loss and the rebate that would close it:
   LEVER 2  signal latency      how fast we see the leader (5/10/15/30ms)
   LEVER 3  response mode        gate (pull side) | widen (1 tick back) |
                                 lean (pull toxic + double favorable side)
-  LEVER 4  queue fraction      qf in {0.0 back, 0.5 mid, 1.0 front} robustness
+  LEVER 4  queue fraction      qf in {0.0 front, 0.5 mid, 1.0 back} robustness.
+                              NOTE the direction: the engine computes depth ahead as
+                              `queue_ahead(price, side) * fraction`, so qf=0.0 is the
+                              FRONT of the queue (nothing ahead, most optimistic) and
+                              qf=1.0 is BEHIND the whole visible book (most pessimistic).
+                              An earlier version of this docstring and of the config
+                              labels below had this inverted; see Ch6 5.
   LEVER 5  breakeven rebate    maker rebate (bps) that lifts best config to 0
 
 Phased so the grid stays ~16 runs: sweep gate at 15ms/gate-mode, take best
@@ -225,11 +231,23 @@ def main():
         print(f"=== LINK {args.date} CO-LOCATED  gate={args.gate:g} mode=gate")
         print("   (latency = order/cancel wire time = signal lag = requote cadence)")
         # (latency, requote, sig_lat, qf, label)
+        #
+        # MATCHED 2x3 GRID (added 2026-11-20). The original set swept qf only at
+        # 1 ms and mislabelled its directions, so the latency arm and the queue
+        # arm were never crossed and the TRUE front of queue (qf=0.0) was never
+        # run at all. Co-location buys two things at once -- a faster wire and a
+        # better queue position -- and separating them needs both axes at both
+        # levels. qf=0.0 is the front (nothing ahead), qf=1.0 the back (behind
+        # the whole visible book).
         configs = [
-            (0.010, 0.010, 0.015, 0.5, "baseline 10ms/qf0.5"),
-            (0.001, 0.010, 0.001, 0.5, "1ms cancel/qf0.5"),
-            (0.001, 0.001, 0.001, 0.5, "1ms all/qf0.5"),
-            (0.001, 0.001, 0.001, 1.0, "1ms all/qf1.0(front)"),
+            (0.010, 0.010, 0.015, 0.0, "10ms/qf0.0(front)"),
+            (0.010, 0.010, 0.015, 0.5, "10ms/qf0.5(mid)   [baseline]"),
+            (0.010, 0.010, 0.015, 1.0, "10ms/qf1.0(back)"),
+            (0.001, 0.001, 0.001, 0.0, "1ms /qf0.0(front)"),
+            (0.001, 0.001, 0.001, 0.5, "1ms /qf0.5(mid)"),
+            (0.001, 0.001, 0.001, 1.0, "1ms /qf1.0(back)"),
+            # kept from the original set: cancel-wire only, mid queue
+            (0.001, 0.010, 0.001, 0.5, "1ms cancel only/qf0.5"),
         ]
         runs = {}
         for lat, rq, sl, qf, label in configs:

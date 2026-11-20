@@ -186,6 +186,16 @@ This is the only strategy in the thesis that survives every test applied to it: 
 independent leaders, executable round-trip pricing on both legs, depth-capped capacity, a
 momentum control, a premium-gating null, and a clock-artifact check that it passed by improving.
 
+**What that does and does not establish.** Two days is two days. Every 5 bps row excludes zero
+on a block bootstrap, but it does so on 49 to 91 events, and the threshold that separates the
+profitable tail from the negative bulk was chosen on the same sample it is evaluated on. The two
+"independent" leaders are correlated proxies for the same market factor, so they are a check on
+feed idiosyncrasy rather than two replications. This chapter is therefore **exploratory evidence
+that locates a boundary** — it establishes that the seam exists and prices its three gates — and
+not a demonstration that the strategy would have paid over any longer period. Converting it would
+mean registering the threshold in advance and capturing a fresh window, which is the apparatus
+Chapter 8 §7 uses and this chapter does not.
+
 It is worth being precise about what has been demonstrated, because the temptation is to read it
 as a counterexample to Part I. It is not. The edge is not a signal the market failed to price —
 the market prices this basis continuously, which is exactly what Chapter 9 measures as funding.

@@ -34,11 +34,15 @@ Wyart-Bouchaud predict, it reproduces on synthetic data where the breakeven spre
 to volatility by construction, and four differently-constructed measurements land in the same
 place rather than scattering. That is an interpretation, and it should be held to a different
 standard than the measurement. **It is not established that the true value is literally
-zero**, and the design here could not establish it: the thesis specifies no equivalence
-interval around zero, reports point estimates without dependence-aware intervals, carries no
-power calculation, and applies no multiplicity adjustment across more than a hundred
-experiments. The four instruments share data, markout definitions, code paths and a market
-regime, so they are four *probes* rather than four independent replications. Failing to find a
+zero**, and the design here could not establish it. Two of the gaps that earlier drafts left
+open have since been closed: headline quantities now carry dependence-aware bootstrap intervals
+with the unit of replication stated (Chapter 3 §8, `thesis/intervals.md`), and the three
+arg-max sites disclose their multiplicity. Three remain, and they are the ones that would be
+needed for an equivalence claim: the thesis specifies **no equivalence interval** around zero,
+carries **no power calculation**, and applies no multiplicity adjustment across the project's
+hundred-odd experiments taken together. The four instruments share data, markout definitions,
+code paths and a market regime, so they are four *probes* rather than four independent
+replications. Failing to find a
 positive result is not the same as demonstrating equality to zero, and competitive-equilibrium
 reasoning about the marginal efficient provider does not by itself imply that every
 technologically disadvantaged participant earns raw P&L of exactly zero. The strong form of
@@ -495,7 +499,7 @@ manufactures large negative autocorrelation that vanishes per instrument.
   strategy acts on — would put an upper bound on how much of Part II's edge survives being
   traded, and Chapter 7's disappearing touch is direct evidence that this channel is active.
 - **Push the venue-clock law past three orders of magnitude.** The adverse-selection horizon
-  spans 15 ms to beyond five seconds across the venues captured here. Testing it on venue classes
+  spans 15 ms to beyond ten seconds across the venues captured here. Testing it on venue classes
   not represented — other decentralised exchanges, regional centralised venues, tokenised
   equities — would establish whether the clock is the right state variable in general or a
   property of this particular set of four.
