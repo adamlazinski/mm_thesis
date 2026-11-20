@@ -24,10 +24,10 @@ limit, conditioning on every observable state variable, and counterparty identit
 the wallet on a transparent venue — and all four terminate at zero rather than below it, which
 is what an enforced equilibrium looks like from the inside rather than what a difficult market
 looks like. That the residue is *pinned* rather than merely small is the thesis's
-interpretation, offered with its own evidence — the breakeven half-spread holds a constant
-ratio of about 76 to dollar volatility across a tenfold range of σ, unifying the spread-axis
-and queue-axis regimes into one Glosten–Milgrom condition — and held to a lower standard than
-the measurement. The four probes share data, code paths and a market regime, so they are not
+interpretation rather than its measurement, and is held to a lower standard: it rests on the
+four probes landing together, on a synthetic control in which the engine reproduces the
+scaling theory predicts where the answer is known, and on a reading that unifies the
+spread-axis and queue-axis regimes into one Glosten–Milgrom condition. The four probes share data, code paths and a market regime, so they are not
 four independent replications, and no equivalence interval or power calculation is offered:
 failing to find a positive result is not the same as demonstrating equality to zero.
 
@@ -73,6 +73,70 @@ Ten chapters in two co-equal parts, with a three-chapter foundation. `structure.
 - **`provenance.md`** — which commit produced each experiment's results, and which engine corrections that commit post-dates.
 
 Every figure is embedded at the point of use and referenced as **Figure N**. Every number is traceable to a committed experiment JSON in `experiments/`, and `scripts/verify_contributions.py` checks the log against the repository.
+
+
+## Reproducibility
+
+Every derived artefact in `thesis/` is generated from the committed experiment results by one
+command:
+
+```
+bash scripts/build_thesis.sh
+```
+
+It rebuilds the nine figures, the interval table and the provenance table, then runs the
+contribution verifier and the cross-reference and figure-embedding checks. The build is
+deterministic — the bootstrap seed is fixed and figure PDFs pin `SOURCE_DATE_EPOCH`, so a clean
+`git status` afterwards is itself the reproducibility check.
+
+What is and is not in the repository: all experiment code, all results JSONs, the processed
+parquet files for the live capture, and the analysis notebooks. The purchased CoinAPI tick
+history (19.75 GB) is licensed and is not redistributed, so Part I's backtests can be inspected
+and audited but not re-run without that data; Part II rests entirely on the original capture,
+which is committed.
+
+A caveat the raw-first capture design does not remove: the collector could still have dropped,
+duplicated, reordered or mis-timestamped messages, and writing raw frames first makes that
+detectable rather than impossible. The integrity table below is what detection looks like — the
+zero crossed books across all 89 instrument-day records is the strongest single check that the
+L2 reconstruction is sound, and the Binance figures show what the reconstruction cost in
+discarded pre-sync messages and re-anchors.
+
+## Notation
+
+Symbols are used consistently across chapters. Where the literature is ambiguous — κ above all —
+this thesis fixes a meaning and says so at the point of first use.
+
+| symbol | meaning | units | fixed where |
+|---|---|---|---|
+| δ | half-spread: distance of a quote from the fair-value anchor | ticks, or $ where stated | Ch2 §2 |
+| δ\* | the model's optimal half-spread | ticks | Ch2 §2–3 |
+| δ_be | breakeven half-spread: the δ at which a fixed quoter earns zero | ticks | Ch5 §7 |
+| κ | decay rate of fill intensity in distance from the touch, `λ(δ) = A·e^(−κδ)` | 1/tick | Ch2 §4, Ch3 §3 |
+| A | fill-intensity scale: arrival rate at δ = 0 | fills/second | Ch2 §4 |
+| A_liq, A_mom | the two components of the measured fill curve — liquidity-driven decay and the momentum floor | fills/second | Ch3 §2, C6 |
+| γ | risk-aversion / inventory-penalty coefficient | 1/$ | Ch2 §2 |
+| σ | volatility of the mid, as a log return | per √second | Ch3 §3 |
+| σ_$ | **dollar** volatility, `σ × mid` — the quantity A-S and GLFT actually require | $/√second | Ch3 §3 |
+| q | inventory, signed | units of base asset | Ch2 §2 |
+| T | terminal time in the finite-horizon A-S formulation | seconds | Ch2 §2 |
+| λ(δ) | fill intensity at half-spread δ | fills/second | Ch2 §4 |
+| M | number of competing liquidity suppliers (Grossman–Miller) | count | Ch2 §7 |
+| qf | `queue_fraction`: the engine multiplies visible depth ahead by this. **qf = 0 is the front of the queue, qf = 1 is behind the whole visible book** | fraction | Ch3 §4, Ch6 §5 |
+| h | markout horizon after a fill | seconds | Ch3 §8, Ch6 §4 |
+
+Three conventions are worth stating once because they cause the most confusion:
+
+- **κ is per tick, not per dollar**, and this thesis separates it from A rather than fitting a
+  single blended decay (Contribution 4). Both are estimated from data, never taken from
+  equity-literature defaults — which, applied to crypto's much smaller σ², are wrong by orders
+  of magnitude (Contribution 26).
+- **Spreads quoted in basis points are full quote-to-quote widths**, not half-spreads. The
+  `min_spread_bps` parameter is applied as `mid × bps / 20000` per side, so 11.1 bps at LINK's
+  ~$9 is one $0.01 tick. Earlier drafts labelled these half-spreads; Chapter 5 §3 records the
+  correction.
+- **Latency is 10 ms by default** throughout, which a standard cloud instance in the venue's
+  region achieves without co-location. Where a result is reported at 1 ms it says so.
 
 
 ## Data Inventory
@@ -127,7 +191,46 @@ Two tiers. **Purchased tick history** from CoinAPI, used for all of Part I's bac
 
 **Clock.** Every row carries both the venue's own exchange timestamp and the local receive time. All cross-venue work uses `time_exchange`; Chapter 7 §3 shows why, and reports the same analysis on the receive clock as a control. The purchased tier's 100 ms resolution is what made Contribution 36's θ = 0 finding a resolution artefact, corrected in Contribution 56 once the capture provided finer stamps.
 
-**Gaps.** Each capture day writes an integrity manifest recording reconnects, sequence gaps and message counts per channel (`data/live/processed/integrity_*.json`). In the backtest, gaps longer than 30 seconds close out inventory at the last mid and reset rolling state; gaps of 2–30 seconds cancel resting orders and pause requoting. Chapter 3 §6 reports the observed statistics.
+### Capture integrity
+
+Each capture day writes a manifest (`data/live/processed/integrity_*.json`). Aggregated over
+the whole capture:
+
+| | Binance | Coinbase | Hyperliquid |
+|---|---|---|---|
+| instrument-day records | 15 | 6 | 68 |
+| crossed books emitted | **0** | **0** | **0** |
+| stream gaps | — | 108 (≤25/day) | 1,180 (≤24/day) |
+| book re-anchors | 47 (≤5/day) | 0 | 0 |
+| sequence-sync violations | 34 (≤4/day) | 0 | 0 |
+| messages dropped pre-sync | 166,373 | 0 | 0 |
+| snapshot best-price mismatches | 183 / 1,941 checks (9.4%) | — | — |
+| receive − exchange, median | **+40.9 ms** | **−14.4 ms** | — |
+| receive − exchange, p99 | +175 ms | — | — |
+
+Four things in that table bear on results and are stated where they do.
+
+**No crossed book was ever emitted**, on any venue, on any day — the single strongest check that
+the L2 reconstruction is sound, since a crossed book is what a mis-ordered or mis-applied diff
+produces.
+
+**Binance's 166,373 pre-sync drops** are messages arriving before the first snapshot anchors the
+diff stream; they are discarded by construction rather than lost, and the re-anchor count (47)
+is the number of times the stream had to be re-seeded. The 9.4% snapshot best-price mismatch
+rate is a bound on reconstruction error at the touch, measured by comparing the reconstructed
+book against an independent REST snapshot every ~10 minutes.
+
+**Coinbase's receive-minus-exchange median is negative (−14.4 ms).** The venue's own timestamps
+run *ahead* of the capture host's clock. This is a venue clock offset, not a measurement of
+latency, and it is the direct reason Chapter 7 §3 treats the cross-venue clock as a problem to
+be solved rather than a given: a lead-lag estimate on raw exchange timestamps inherits every
+venue's offset. Chapter 7 reports its headline on `time_exchange` and repeats it on the receive
+clock as a control.
+
+**Hyperliquid's 1,180 stream gaps** are spread over 68 instrument-days, at most 24 on any one
+day, and the backtest's gap policy (below) governs how each is handled.
+
+**Gap handling.** Each capture day writes an integrity manifest recording reconnects, sequence gaps and message counts per channel (`data/live/processed/integrity_*.json`). In the backtest, gaps longer than 30 seconds close out inventory at the last mid and reset rolling state; gaps of 2–30 seconds cancel resting orders and pause requoting. Chapter 3 §6 reports the observed statistics.
 
 **Ticks.** LINK's tick differs between the tiers and **both are correct for their period**: the purchased history is $0.01 at ~$9 (~11 bps/tick), and Binance cut it to $0.001 between April and July 2026 as the price fell to ~$8 (~1.25 bps/tick). No tick-denominated quantity crosses that boundary. Chapter 3 §6 states the reconciliation; Contribution 54 is the correction that made it necessary.
 

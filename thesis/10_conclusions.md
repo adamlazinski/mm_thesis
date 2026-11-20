@@ -109,12 +109,17 @@ corrected engine). Against that, a perfect-foresight oracle keeping only the fil
 well earns **$28.62 to $47.24/day** on the same book. The dispersion in fill quality is real; what is missing is the information to sort it.
 The constraint is identified as informational at this point, not assumed.
 
-**Step 5 — the residue is derived, not merely observed.** Sweeping dollar volatility on
+**Step 5 — the residue has the shape theory predicts.** Sweeping dollar volatility on
 synthetic data and solving for the half-spread at which a fixed quoter breaks even gives a
 ratio δ_be/σ_$ that is **constant at about 76 across a tenfold range of volatility**
-(Contribution 33). The breakeven spread is not a free parameter to be optimised; it is pinned
-to volatility by the market's own structure, exactly as Wyart-Bouchaud requires and as
-Glosten-Milgrom's zero-expected-profit dealer implies. This step also dissolves Chapter 4's
+(Contribution 33). This is a simulator exercise, and Chapter 5 §7 is explicit that the scaling
+is substantially a property of the construction — fill intensity is held fixed — so it
+establishes that the engine reproduces the scaling theory predicts on a world where the answer
+is known, not that a real market's spread is pinned by it. The structural reading that survives
+is weaker and sufficient: the breakeven spread is not a free parameter a quoter may optimise.
+A narrower quote loses and a wider one does not fill, which is the shape Glosten-Milgrom's
+zero-expected-profit dealer and Wyart-Bouchaud's empirical spread-volatility relation both
+have. This step also dissolves Chapter 4's
 asset-specificity without appealing to anything about LINK's character: where the spread is
 free to move (BTC, small relative tick) competition compresses it to the breakeven width and
 the maker earns zero *on the spread axis*; where the tick floors the spread wider than

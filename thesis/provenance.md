@@ -109,7 +109,7 @@ An experiment's results bear on a claim only if they were generated after the co
 | `91_perp_gate_april` | `ac51452` | 2026-07-11 | yes | yes | **no** |
 | `92_book_geometry` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
 | `93_adverse_selection` | `b868f73` | 2026-11-19 | yes | yes | yes |
-| `94_link_harvest` | `45b7078` | 2026-07-15 | yes | yes | **no** |
+| `94_link_harvest` | `97a7481` | 2026-11-20 | yes | yes | yes |
 | `96_toxicity_heterogeneity` | `45b7078` | 2026-07-15 | yes | yes | **no** |
 | `97_wallet_toxicity` | `b9c24f3` | 2026-07-17 | yes | yes | **no** |
 | `98_wallet_follow` | `db11e0d` | 2026-07-16 | yes | yes | **no** |
@@ -133,7 +133,7 @@ An experiment's results bear on a claim only if they were generated after the co
 | `116_momentum_taker` | `9aec1cb` | 2026-08-23 | yes | yes | **no** |
 | `117_glft_formula_rerun` | `1fb7233` | 2026-11-19 | yes | yes | yes |
 
-**115 experiments.** Counts after / before each correction: taker-on-arrival 79/36; GLFT closed form 75/40; terminal accounting 5/110.
+**115 experiments.** Counts after / before each correction: taker-on-arrival 79/36; GLFT closed form 75/40; terminal accounting 6/109.
 
 
 ## How to read a 'no'

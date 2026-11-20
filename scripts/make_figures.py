@@ -11,6 +11,12 @@ estimated, smoothed or interpolated; where a quantity was not measured the
 figure leaves a gap rather than filling one.
 """
 import json, glob, os, textwrap
+
+# Deterministic PDFs: matplotlib stamps a CreationDate into every PDF unless
+# SOURCE_DATE_EPOCH is set, which would make the build differ on every run and
+# defeat "a clean git status means the build is reproducible". Pin it to the
+# repo epoch; the figures' content depends only on the committed JSONs.
+os.environ.setdefault("SOURCE_DATE_EPOCH", "1700000000")
 from collections import defaultdict
 import numpy as np
 import matplotlib

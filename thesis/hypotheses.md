@@ -387,7 +387,7 @@ information.
 **Part I — the competitive zero.** Classical models fail on their own terms (§A) → but a degenerate flat MM
 looks robustly profitable, and neither the formula nor a directional overlay nor RL improves on it (§C, §D)
 → which turns out to be a queue-priority artifact, one of five accounting mirages all biasing the same way
-(§B, §I) → the residue is derived rather than merely observed, and is the zero-profit equilibrium enforced
+(§B, §I) → the residue has the shape theory predicts, and reads as the zero-profit equilibrium enforced
 on the spread axis where the spread is free and the queue axis where the tick floors it (§G) → the taker
 pivot needs no queue but is capped ~1 bps, sub-fee even with ML and even when fast (§E) → the cross-venue
 lever looked closed on a contemporaneity finding that later proved to be a grid artifact; on captured data

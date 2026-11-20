@@ -276,10 +276,25 @@ half-spread at which a fixed quoter breaks even gives:
 | 0.10 | −$1,436 | 7.6 | 76.0 | 0.132 |
 | 0.20 | −$2,843 | 15.2 | 75.9 | 0.066 |
 
-The ratio δ_be/σ_$ is constant at about 76 across a tenfold range of volatility. The breakeven
-spread is not a free parameter to be optimised; it is pinned to volatility by the market's own
-structure, exactly as Wyart-Bouchaud requires. A quoter narrower than δ_be loses, one wider
-does not fill, and the equality is the zero-profit condition.
+The ratio δ_be/σ_$ is constant at about 76 across a tenfold range of volatility — on the three
+unfloored points; the first row is at the quoter's 2-tick floor and sits above the line by
+construction.
+
+**What this does and does not show.** It is a *simulator* result, and the scaling is
+substantially a property of the construction: fill intensity is held fixed across the sweep, so
+δ_be ∝ σ_$ is close to what Brownian scaling requires once the engine is arithmetically correct.
+Read that way it is a strong sanity check — the engine reproduces the scaling theory predicts,
+on a world where the right answer is known — and it is **not** a derivation of a real-market
+competitive equilibrium, an identification of κ, or a test of Wyart-Bouchaud, whose relation is
+an empirical regularity across real assets rather than an identity in a simulation. The phrase
+"exactly as Wyart-Bouchaud requires" appeared here in earlier drafts and claimed more than the
+exercise supports.
+
+What survives is the structural point, which does not depend on the constant's value: the
+breakeven spread is not a free parameter to be optimised. A quoter narrower than δ_be loses, one
+wider does not fill, and the equality is the zero-profit condition. The empirical content comes
+from Chapter 6's measurements on real books; this section shows the machinery that produced them
+behaves correctly where the answer is known.
 
 **The unification.** This closes the asset-specificity of Chapter 4 §7 without appealing to
 anything about LINK's character. The relation `δ* ≈ σ_$/√A` presumes the spread can move
