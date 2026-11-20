@@ -136,12 +136,16 @@ zero**, and in fact *negative* before fees at the horizons that matter — −$9
 measured at one second, −$2.87 at ten, and +$1.35 only at thirty — with a negative mean markout
 throughout and fewer than half of its fills profitable.
 
-**That residue is not noise; it is an enforced equilibrium.** Contribution 33 derives the same
-result from a zero-profit condition (Glosten & Milgrom, 1985; Wyart, Bouchaud, Kockelkoren,
-Potters & Vettorazzo, 2008) and validates the engine and strategies on synthetic data with known
-ground truth: fed the *true* volatility in a world with no queue and no informed flow, A-S and
-GLFT are robustly profitable, exactly as theory demands. On synthetic data the breakeven
-half-spread is pinned to volatility at a constant ratio across a tenfold range. On a small-tick
+**The reading this thesis offers is that the residue is not noise but an enforced
+equilibrium** — an interpretation of the measurement, held to a lower standard than the
+measurement itself and argued as such in Chapter 10 §1. The zero-profit condition it appeals to
+is Glosten & Milgrom (1985) and Wyart, Bouchaud, Kockelkoren, Potters & Vettorazzo (2008), and
+the supporting evidence is Contribution 33's synthetic control, which validates the engine and
+the strategies against known ground truth: fed the *true* volatility in a world with no queue
+and no informed flow, A-S and GLFT are robustly profitable, exactly as theory demands, and the
+breakeven half-spread scales with volatility at a constant ratio across a tenfold range. That
+last is a property of the simulated market rather than a measurement of a real one, and
+Chapter 5 §7 is explicit about the difference. On a small-tick
 asset (BTC) the equilibrium is enforced through the spread; on a large-tick asset (LINK) the
 spread is floored at one tick, so the same law is enforced through **queue depth** instead. The
 Contribution 30 rent *is* the Wyart-Bouchaud equilibrium, expressed on whichever axis happens to
@@ -296,22 +300,25 @@ The thesis is in two parts, preceded by foundations.
 **Foundations.**
 
 1. **Introduction** (this chapter) — motivation, research questions, headline result,
-   contributions.
+   contributions. The abstract, notation, data inventory and reproducibility statement precede
+   it in `00_front_matter.md`.
 2. **Theoretical Background** — the A-S and GLFT derivations; the fill-intensity assumption;
    price-time priority and queue position; the zero-profit equilibria of Glosten-Milgrom and
    Wyart-Bouchaud; Grossman-Miller's immediacy premium, which Part II tests directly; and the
    dealer lineage these models descend from.
 3. **Data, Venues and Methodology** — the purchased datasets and the stylized facts that motivate
    calibration; the kappa/sigma/A estimation approaches; the engine architecture and the
-   fill-model audit; the 2026 four-venue live capture; and the honest-accounting discipline.
+   fill-model audit; the 2026 four-venue live capture; the honest-accounting discipline; and the
+   inference methods used to put intervals on everything that follows.
 
 **Part I — The Competitive Zero.**
 
 4. **Classical and Machine-Learning Strategy Results** — the apparently profitable results
    (C16–24) that pose the puzzle, and the three findings within them that do not fit.
 5. **The Anatomy of Illusory Profit** — the five accounting errors, the residue that survives
-   their removal, and the synthetic control showing that residue is an equilibrium rather than a
-   failure of implementation.
+   their removal, and the synthetic control establishing that the engine behaves correctly where
+   the answer is known, so that the residue is a measurement rather than an artefact of
+   implementation.
 6. **The Zero, Measured Four Ways** — the central chapter: markout, speed, observable state and
    counterparty identity, all terminating at zero.
 
@@ -326,8 +333,8 @@ The thesis is in two parts, preceded by foundations.
 
 **Synthesis.**
 
-10. **Conclusions** — the evidentiary chain across both parts, why the zero is necessary rather
-    than contingent, the methodological contribution, limitations and scope, and further work.
+10. **Conclusions** — the evidentiary chain across both parts, what the zero does and does not
+    establish, the methodological contribution, limitations and scope, and further work.
 
 The full numbered contribution log is in `contributions.md`, and `hypotheses.md` holds the
 hypothesis register that cross-references it.

@@ -15,125 +15,127 @@ An experiment's results bear on a claim only if they were generated after the co
 
 ## Per experiment
 
-| experiment | results commit | date | after taker-on-arrival? | after GLFT closed form? | after terminal accounting? |
-|---|---|---|---|---|---|
-| `01_baseline_pure_as` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `02_ofi_asymmetric` | `c816ff8` | 2026-05-16 | **no** | **no** | **no** |
-| `07_glft_baseline` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `08_shifted_glft` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `09_shifted_glft_regime` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `10_glft_calibrated` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `11_glft_calibrated_regime` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `12_vol_inventory` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `13_vol_inventory_regime` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `14_vol_inventory_wide` | `c816ff8` | 2026-05-16 | **no** | **no** | **no** |
-| `15_vol_inventory_wide_regime` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `16_ofi_optimized` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `17_ofi_gated_tight` | `7189761` | 2026-05-17 | **no** | **no** | **no** |
-| `18_as_june_search` | `7189761` | 2026-05-17 | **no** | **no** | **no** |
-| `19_ofi_directed` | `7189761` | 2026-05-17 | **no** | **no** | **no** |
-| `20_obi_counter` | `7189761` | 2026-05-17 | **no** | **no** | **no** |
-| `21_as_may_search` | `7189761` | 2026-05-17 | **no** | **no** | **no** |
-| `21_vpin_filter` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `22_hour_filter` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `22_obi_may_search` | `7189761` | 2026-05-17 | **no** | **no** | **no** |
-| `23_trade_spike` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `24_daily_loss_limit` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `25_spike_loss_combined` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `26_classical_search` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `26_kyle_search` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `27_shifted_glft_recal` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `28_supervisor_sweep` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `29_link_baseline` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `30_link_search` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `31_link_spike_loss` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `32_link_liquidation` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `33_link_glft` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `34_link_glft_search` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `35_link_as_oos` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `36_link_rl_dqn` | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
-| `37_link_glft_control` | `31ad56d` | 2026-05-19 | **no** | **no** | **no** |
-| `38_link_ofi_overlay` | `3c504e5` | 2026-06-09 | **no** | **no** | **no** |
-| `39_link_rl` | `3c504e5` | 2026-06-09 | **no** | **no** | **no** |
-| `40_link_apr2026_baseline` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `41_link_apr2026_search` | `099ea0d` | 2026-05-19 | **no** | **no** | **no** |
-| `42_link_glft_proper` | `c745686` | 2026-05-19 | **no** | **no** | **no** |
-| `43_link_oct2025_stress` | `e485ac6` | 2026-05-19 | **no** | **no** | **no** |
-| `44_fill_curve_l2` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `45_obi_adjusted_as` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `46_btc_rl` | `3c504e5` | 2026-06-09 | **no** | **no** | **no** |
-| `47_btc_rl_v2` | `3935353` | 2026-06-09 | **no** | **no** | **no** |
-| `48_adverse_selection` | `3935353` | 2026-06-09 | **no** | **no** | **no** |
-| `49_zero_latency` | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
-| `50_forecast_as` | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
-| `51_crossing_intensity` | `3935353` | 2026-06-09 | **no** | **no** | **no** |
-| `52_link_classical_mm` | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
-| `53_link_spread_sweep` | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
-| `54_link_perp_micro` | `1909e22` | 2026-06-10 | **no** | **no** | **no** |
-| `55_taker_feasibility` | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
-| `56_lowfreq_mm` | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
-| `57_deep_reversion` | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
-| `58_rl_honest_overfit` | `3bee40f` | 2026-06-11 | yes | **no** | **no** |
-| `59_synthetic_engine_validation` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `60_foresight_oracle` | `cafc7ae` | 2026-06-11 | yes | **no** | **no** |
-| `61_link_spot_perp` | `c1eba2f` | 2026-06-11 | yes | **no** | **no** |
-| `62_engine_fix_reruns` | `cafc7ae` | 2026-06-11 | yes | **no** | **no** |
-| `63_shifted_glft_numerical` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `64_glft_calibrated` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `65_spot_perp_signal` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `66_perp_obi_skew` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `67_perp_toxicity_filter` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `68_l2_perp_filter_rerun` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `69_queue_fraction_sweep` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `70_spread_rule_grid` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `71_btc_perp_spread_rule_grid` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `72_queue_fraction_sweep_low` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `73_spot_alpha_sweep_triage` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `74_spot_alpha_sweep_confirm` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `75_markout_analysis` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `76_link_oos_validation` | `b6be8e2` | 2026-06-16 | yes | yes | **no** |
-| `77_fill_realism` | `d859f16` | 2026-07-09 | yes | yes | **no** |
-| `78_asymmetric_skew` | `d859f16` | 2026-07-09 | yes | yes | **no** |
-| `79_one_sided_quoting` | `d859f16` | 2026-07-09 | yes | yes | **no** |
-| `80_link_perp_baseline` | `d859f16` | 2026-07-09 | yes | yes | **no** |
-| `81_smart_requote` | `d859f16` | 2026-07-09 | yes | yes | **no** |
-| `82_fresh_oos` | `d859f16` | 2026-07-09 | yes | yes | **no** |
-| `83_spread_viability` | `d859f16` | 2026-07-09 | yes | yes | **no** |
-| `84_rl_fee_gate` | `d859f16` | 2026-07-09 | yes | yes | **no** |
-| `85_true_tick_rerun` | `28b9ebf` | 2026-07-10 | yes | yes | **no** |
-| `86_capture_diagnostics` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `87_proxy_vs_real` | `129ffc9` | 2026-07-11 | yes | yes | **no** |
-| `88_btc_hy_captured` | `bb5d7c9` | 2026-07-11 | yes | yes | **no** |
-| `89_crossvenue_event_level` | `1057325` | 2026-07-11 | yes | yes | **no** |
-| `90_perp_lead_exploit` | `15b9a8c` | 2026-07-11 | yes | yes | **no** |
-| `91_perp_gate_april` | `ac51452` | 2026-07-11 | yes | yes | **no** |
-| `92_book_geometry` | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
-| `93_adverse_selection` | `b868f73` | 2026-11-19 | yes | yes | yes |
-| `94_link_harvest` | `97a7481` | 2026-11-20 | yes | yes | yes |
-| `96_toxicity_heterogeneity` | `45b7078` | 2026-07-15 | yes | yes | **no** |
-| `97_wallet_toxicity` | `b9c24f3` | 2026-07-17 | yes | yes | **no** |
-| `98_wallet_follow` | `db11e0d` | 2026-07-16 | yes | yes | **no** |
-| `99_oracle_lag` | `ebfdc86` | 2026-11-19 | yes | yes | yes |
-| `100_consensus_maker` | `bbeeaf8` | 2026-07-16 | yes | yes | **no** |
-| `101_toxic_burst` | `b9c24f3` | 2026-07-17 | yes | yes | **no** |
-| `102_withdrawal_lead` | `b9c24f3` | 2026-07-17 | yes | yes | **no** |
-| `103_defended_maker` | `ae928b4` | 2026-11-19 | yes | yes | yes |
-| `104_metaorder_drift` | `12e53f6` | 2026-07-17 | yes | yes | **no** |
-| `105_sweep_fade` | `12e53f6` | 2026-07-17 | yes | yes | **no** |
-| `106_cointegration` | `e546875` | 2026-07-19 | yes | yes | **no** |
-| `107_funding_carry` | `2c080e3` | 2026-07-19 | yes | yes | **no** |
-| `108_funding_book` | `1e3c202` | 2026-07-28 | yes | yes | **no** |
-| `109_premium_gated` | `c6d7068` | 2026-07-28 | yes | yes | **no** |
-| `110_leadlag_matrix` | `533755d` | 2026-07-28 | yes | yes | **no** |
-| `111_fair_value_wide` | `ae928b4` | 2026-11-19 | yes | yes | yes |
-| `112_options_markout` | `505f8fa` | 2026-08-20 | yes | yes | **no** |
-| `113_iv_autocorr` | `6e874a7` | 2026-08-20 | yes | yes | **no** |
-| `114_regime_markout` | `08831a7` | 2026-08-22 | yes | yes | **no** |
-| `115_regime_gated_maker` | `ea0df16` | 2026-08-22 | yes | yes | **no** |
-| `116_momentum_taker` | `9aec1cb` | 2026-08-23 | yes | yes | **no** |
-| `117_glft_formula_rerun` | `1fb7233` | 2026-11-19 | yes | yes | yes |
+`data` is the tier the experiment reads: the purchased CoinAPI history (Part I) or the original live capture (Part II). Together with the commit column this is the experiment-to-data-to-code chain for every result in the thesis.
 
-**115 experiments.** Counts after / before each correction: taker-on-arrival 79/36; GLFT closed form 75/40; terminal accounting 6/109.
+| experiment | data | results commit | date | after taker-on-arrival? | after GLFT closed form? | after terminal accounting? |
+|---|---|---|---|---|---|---|
+| `01_baseline_pure_as` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `02_ofi_asymmetric` | purchased | `c816ff8` | 2026-05-16 | **no** | **no** | **no** |
+| `07_glft_baseline` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `08_shifted_glft` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `09_shifted_glft_regime` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `10_glft_calibrated` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `11_glft_calibrated_regime` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `12_vol_inventory` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `13_vol_inventory_regime` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `14_vol_inventory_wide` | purchased | `c816ff8` | 2026-05-16 | **no** | **no** | **no** |
+| `15_vol_inventory_wide_regime` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `16_ofi_optimized` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `17_ofi_gated_tight` | purchased | `7189761` | 2026-05-17 | **no** | **no** | **no** |
+| `18_as_june_search` | purchased | `7189761` | 2026-05-17 | **no** | **no** | **no** |
+| `19_ofi_directed` | purchased | `7189761` | 2026-05-17 | **no** | **no** | **no** |
+| `20_obi_counter` | purchased | `7189761` | 2026-05-17 | **no** | **no** | **no** |
+| `21_as_may_search` | purchased | `7189761` | 2026-05-17 | **no** | **no** | **no** |
+| `21_vpin_filter` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `22_hour_filter` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `22_obi_may_search` | purchased | `7189761` | 2026-05-17 | **no** | **no** | **no** |
+| `23_trade_spike` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `24_daily_loss_limit` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `25_spike_loss_combined` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `26_classical_search` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `26_kyle_search` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `27_shifted_glft_recal` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `28_supervisor_sweep` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `29_link_baseline` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `30_link_search` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `31_link_spike_loss` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `32_link_liquidation` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `33_link_glft` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `34_link_glft_search` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `35_link_as_oos` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `36_link_rl_dqn` | purchased | `71d6a57` | 2026-05-19 | **no** | **no** | **no** |
+| `37_link_glft_control` | purchased | `31ad56d` | 2026-05-19 | **no** | **no** | **no** |
+| `38_link_ofi_overlay` | purchased | `3c504e5` | 2026-06-09 | **no** | **no** | **no** |
+| `39_link_rl` | purchased | `3c504e5` | 2026-06-09 | **no** | **no** | **no** |
+| `40_link_apr2026_baseline` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `41_link_apr2026_search` | purchased | `099ea0d` | 2026-05-19 | **no** | **no** | **no** |
+| `42_link_glft_proper` | purchased | `c745686` | 2026-05-19 | **no** | **no** | **no** |
+| `43_link_oct2025_stress` | purchased | `e485ac6` | 2026-05-19 | **no** | **no** | **no** |
+| `44_fill_curve_l2` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `45_obi_adjusted_as` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `46_btc_rl` | purchased | `3c504e5` | 2026-06-09 | **no** | **no** | **no** |
+| `47_btc_rl_v2` | purchased | `3935353` | 2026-06-09 | **no** | **no** | **no** |
+| `48_adverse_selection` | purchased | `3935353` | 2026-06-09 | **no** | **no** | **no** |
+| `49_zero_latency` | purchased | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
+| `50_forecast_as` | purchased | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
+| `51_crossing_intensity` | — | `3935353` | 2026-06-09 | **no** | **no** | **no** |
+| `52_link_classical_mm` | purchased | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
+| `53_link_spread_sweep` | purchased | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
+| `54_link_perp_micro` | purchased | `1909e22` | 2026-06-10 | **no** | **no** | **no** |
+| `55_taker_feasibility` | purchased | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
+| `56_lowfreq_mm` | purchased | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
+| `57_deep_reversion` | purchased | `8a3d8e7` | 2026-06-16 | yes | yes | **no** |
+| `58_rl_honest_overfit` | purchased | `3bee40f` | 2026-06-11 | yes | **no** | **no** |
+| `59_synthetic_engine_validation` | — | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `60_foresight_oracle` | purchased | `cafc7ae` | 2026-06-11 | yes | **no** | **no** |
+| `61_link_spot_perp` | purchased | `c1eba2f` | 2026-06-11 | yes | **no** | **no** |
+| `62_engine_fix_reruns` | purchased | `cafc7ae` | 2026-06-11 | yes | **no** | **no** |
+| `63_shifted_glft_numerical` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `64_glft_calibrated` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `65_spot_perp_signal` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `66_perp_obi_skew` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `67_perp_toxicity_filter` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `68_l2_perp_filter_rerun` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `69_queue_fraction_sweep` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `70_spread_rule_grid` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `71_btc_perp_spread_rule_grid` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `72_queue_fraction_sweep_low` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `73_spot_alpha_sweep_triage` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `74_spot_alpha_sweep_confirm` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `75_markout_analysis` | purchased | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `76_link_oos_validation` | purchased | `b6be8e2` | 2026-06-16 | yes | yes | **no** |
+| `77_fill_realism` | purchased | `d859f16` | 2026-07-09 | yes | yes | **no** |
+| `78_asymmetric_skew` | purchased | `d859f16` | 2026-07-09 | yes | yes | **no** |
+| `79_one_sided_quoting` | purchased | `d859f16` | 2026-07-09 | yes | yes | **no** |
+| `80_link_perp_baseline` | purchased | `d859f16` | 2026-07-09 | yes | yes | **no** |
+| `81_smart_requote` | purchased | `d859f16` | 2026-07-09 | yes | yes | **no** |
+| `82_fresh_oos` | purchased | `d859f16` | 2026-07-09 | yes | yes | **no** |
+| `83_spread_viability` | purchased | `d859f16` | 2026-07-09 | yes | yes | **no** |
+| `84_rl_fee_gate` | purchased | `d859f16` | 2026-07-09 | yes | yes | **no** |
+| `85_true_tick_rerun` | purchased | `28b9ebf` | 2026-07-10 | yes | yes | **no** |
+| `86_capture_diagnostics` | — | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `87_proxy_vs_real` | capture + purchased | `129ffc9` | 2026-07-11 | yes | yes | **no** |
+| `88_btc_hy_captured` | capture | `bb5d7c9` | 2026-07-11 | yes | yes | **no** |
+| `89_crossvenue_event_level` | capture | `1057325` | 2026-07-11 | yes | yes | **no** |
+| `90_perp_lead_exploit` | capture | `15b9a8c` | 2026-07-11 | yes | yes | **no** |
+| `91_perp_gate_april` | purchased | `ac51452` | 2026-07-11 | yes | yes | **no** |
+| `92_book_geometry` | — | `74bf4b0` | 2026-11-16 | yes | yes | **no** |
+| `93_adverse_selection` | capture | `b868f73` | 2026-11-19 | yes | yes | yes |
+| `94_link_harvest` | capture | `97a7481` | 2026-11-20 | yes | yes | yes |
+| `96_toxicity_heterogeneity` | capture | `45b7078` | 2026-07-15 | yes | yes | **no** |
+| `97_wallet_toxicity` | capture | `b9c24f3` | 2026-07-17 | yes | yes | **no** |
+| `98_wallet_follow` | capture | `db11e0d` | 2026-07-16 | yes | yes | **no** |
+| `99_oracle_lag` | capture | `ebfdc86` | 2026-11-19 | yes | yes | yes |
+| `100_consensus_maker` | capture | `bbeeaf8` | 2026-07-16 | yes | yes | **no** |
+| `101_toxic_burst` | capture | `b9c24f3` | 2026-07-17 | yes | yes | **no** |
+| `102_withdrawal_lead` | capture + purchased | `b9c24f3` | 2026-07-17 | yes | yes | **no** |
+| `103_defended_maker` | capture | `ae928b4` | 2026-11-19 | yes | yes | yes |
+| `104_metaorder_drift` | capture + purchased | `12e53f6` | 2026-07-17 | yes | yes | **no** |
+| `105_sweep_fade` | capture | `12e53f6` | 2026-07-17 | yes | yes | **no** |
+| `106_cointegration` | capture | `e546875` | 2026-07-19 | yes | yes | **no** |
+| `107_funding_carry` | capture | `2c080e3` | 2026-07-19 | yes | yes | **no** |
+| `108_funding_book` | capture | `1e3c202` | 2026-07-28 | yes | yes | **no** |
+| `109_premium_gated` | capture | `c6d7068` | 2026-07-28 | yes | yes | **no** |
+| `110_leadlag_matrix` | capture | `533755d` | 2026-07-28 | yes | yes | **no** |
+| `111_fair_value_wide` | capture | `ae928b4` | 2026-11-19 | yes | yes | yes |
+| `112_options_markout` | — | `505f8fa` | 2026-08-20 | yes | yes | **no** |
+| `113_iv_autocorr` | — | `6e874a7` | 2026-08-20 | yes | yes | **no** |
+| `114_regime_markout` | capture | `08831a7` | 2026-08-22 | yes | yes | **no** |
+| `115_regime_gated_maker` | capture | `ea0df16` | 2026-08-22 | yes | yes | **no** |
+| `116_momentum_taker` | capture + purchased | `9aec1cb` | 2026-08-23 | yes | yes | **no** |
+| `117_glft_formula_rerun` | purchased | `1fb7233` | 2026-11-19 | yes | yes | yes |
+
+**115 experiments.** Counts after / before each correction: taker-on-arrival 79/36; GLFT closed form 75/40; terminal accounting 6/109. By data tier: capture 21, capture + purchased 4, purchased 84, — 6.
 
 
 ## How to read a 'no'

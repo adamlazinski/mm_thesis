@@ -25,6 +25,7 @@ memory.
 """
 from __future__ import annotations
 
+import glob
 import os
 import re
 import subprocess
@@ -46,6 +47,37 @@ FIXES = [
 
 def sh(*args):
     return subprocess.run(args, cwd=ROOT, capture_output=True, text=True).stdout.strip()
+
+
+def data_tier(expdir):
+    """
+    Which data tier an experiment reads: the purchased CoinAPI history, the
+    original live capture, or both. Read from the experiment's own config
+    (`data_dir`) where it has one, falling back to static inspection of its
+    scripts. An em-dash means neither could be determined, which is true of a
+    handful of pure-analysis experiments that consume another experiment's
+    output rather than raw data.
+    """
+    import json as _json
+    tiers = set()
+    d = os.path.join(ROOT, "experiments", expdir)
+    for cfg in glob.glob(os.path.join(d, "*.json")):
+        if os.sep + "results" in cfg:
+            continue
+        try:
+            j = _json.load(open(cfg))
+        except Exception:
+            continue
+        dd = j.get("data_dir") if isinstance(j, dict) else None
+        if dd:
+            tiers.add("purchased" if "real" in dd else "capture")
+    for py in glob.glob(os.path.join(d, "*.py")):
+        t = open(py, errors="ignore").read()
+        if "live" in t and "processed" in t:
+            tiers.add("capture")
+        if "data/real" in t or '"real"' in t:
+            tiers.add("purchased")
+    return " + ".join(sorted(tiers)) if tiers else "—"
 
 
 def last_commit(path):
@@ -93,20 +125,27 @@ def main():
       "terminal-accounting line affects only the two round-trip simulators of Part II.\n")
 
     W("\n## Per experiment\n")
-    W("| experiment | results commit | date | " +
+    W("`data` is the tier the experiment reads: the purchased CoinAPI history (Part I) or the "
+      "original live capture (Part II). Together with the commit column this is the "
+      "experiment-to-data-to-code chain for every result in the thesis.\n")
+    W("| experiment | data | results commit | date | " +
       " | ".join(f"after {n}?" for _, _, n, _ in FIXES) + " |")
-    W("|---|---|---|" + "---|" * len(FIXES))
+    W("|---|---|---|---|" + "---|" * len(FIXES))
     counts = {n: [0, 0] for _, _, n, _ in FIXES}
+    tiers = {}
     for d, sha, date, subj, cdate in rows:
         cells = []
         for fdate, _, name, _ in FIXES:
             after = date >= fdate
             counts[name][0 if after else 1] += 1
             cells.append("yes" if after else "**no**")
-        W(f"| `{d}` | `{sha}` | {date} | " + " | ".join(cells) + " |")
+        t = data_tier(d)
+        tiers[t] = tiers.get(t, 0) + 1
+        W(f"| `{d}` | {t} | `{sha}` | {date} | " + " | ".join(cells) + " |")
     W("")
     W(f"**{len(rows)} experiments.** Counts after / before each correction: " +
-      "; ".join(f"{n} {v[0]}/{v[1]}" for n, v in counts.items()) + ".\n")
+      "; ".join(f"{n} {v[0]}/{v[1]}" for n, v in counts.items()) + ". "
+      "By data tier: " + ", ".join(f"{k} {v}" for k, v in sorted(tiers.items())) + ".\n")
 
     W("\n## How to read a 'no'\n")
     W("A `no` is not automatically a defect — it means the result predates that correction and "
