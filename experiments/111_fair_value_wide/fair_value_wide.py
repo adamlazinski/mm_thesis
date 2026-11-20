@@ -102,10 +102,49 @@ def trade_ewma(tr, qt, half_life_s):
     return res
 
 
-def simulate(q, tr, anchor_px, k, half_ref):
-    """Round-trip inventory sim with quotes at anchor -/+ k*half_ref."""
+def infer_tick(q):
+    """
+    The venue's price grid, recovered from the day's own quotes as the GCD of
+    the gaps between distinct observed prices.
+
+    This is not cosmetic. Contribution 54 retracted an entire arc of this
+    thesis because a strategy had been quoting at prices the exchange's grid
+    did not contain, and the same error reappears here the moment a continuous
+    fair-value anchor is used without snapping to the grid. On HMSTR the tick
+    is ~56 bps -- the whole quoted spread is ONE tick -- so an unrounded quote
+    at `anchor +/- k*half_spread` sits at a price that cannot be submitted.
+    """
+    from math import gcd
+    px = np.unique(np.round(np.concatenate(
+        [q["bid_price"].to_numpy(float), q["ask_price"].to_numpy(float)]), 12))
+    d = np.diff(px); d = d[d > 0]
+    if len(d) == 0:
+        return None
+    for scale in (10 ** e for e in range(0, 13)):
+        sd = d * scale
+        r = np.round(sd)
+        if np.allclose(sd, r, atol=1e-6) and r.min() >= 1:
+            g = 0
+            for v in np.unique(r).astype(np.int64)[:4000]:
+                g = gcd(g, int(v))
+            return g / scale
+    return None
+
+
+def simulate(q, tr, anchor_px, k, half_ref, tick=None):
+    """
+    Round-trip inventory sim with quotes at anchor -/+ k*half_ref.
+
+    Quotes are SNAPPED TO THE VENUE'S TICK GRID (bid rounded down, ask rounded
+    up -- away from the mid, so the rounding is never optimistic) and are
+    POST-ONLY: a quote that would cross the prevailing touch on arrival would
+    be rejected by the exchange, so it is skipped rather than filled. Both were
+    missing before 2026-11-20 and both are the error class of Contribution 54.
+    """
     qt = q["time_exchange"].astype("int64").to_numpy() / 1e9
     qm = q["mid"].to_numpy()
+    qb = q["bid_price"].to_numpy(); qa = q["ask_price"].to_numpy()
+    n_rejected = 0; n_quoted = 0
     tts = tr["ts"].to_numpy(); tpx = tr["price"].to_numpy()
     tbuy = tr["buy"].to_numpy(); tusd = tr["usd"].to_numpy()
     iq = np.searchsorted(qt, tts, side="right") - 1
@@ -125,10 +164,21 @@ def simulate(q, tr, anchor_px, k, half_ref):
             continue
         bid = fair - k * hs
         ask = fair + k * hs
+        if tick:                       # snap to the grid, away from the mid
+            bid = np.floor(bid / tick + 1e-9) * tick
+            ask = np.ceil(ask / tick - 1e-9) * tick
+        n_quoted += 1
+        # post-only: an order marketable against the prevailing touch is
+        # rejected by the venue, not filled.
+        bid_ok = bid < qa[i]
+        ask_ok = ask > qb[i]
+        if not (bid_ok or ask_ok):
+            n_rejected += 1
+            continue
         mid = qm[i]
         inv_usd = inv * mid
         if tbuy[kk]:
-            if inv_usd <= -MAX_INV_USD:
+            if inv_usd <= -MAX_INV_USD or not ask_ok:
                 continue
             if tpx[kk] > ask:
                 w = 1.0
@@ -140,7 +190,7 @@ def simulate(q, tr, anchor_px, k, half_ref):
             inv, avg_px, dr = ta.book(inv, avg_px, -fill / tpx[kk], tpx[kk])
             realized += dr; cash += fill
         else:
-            if inv_usd >= MAX_INV_USD:
+            if inv_usd >= MAX_INV_USD or not bid_ok:
                 continue
             if tpx[kk] < bid:
                 w = 1.0
@@ -156,7 +206,9 @@ def simulate(q, tr, anchor_px, k, half_ref):
         min_eq = min(min_eq, eq)
         max_inv = max(max_inv, abs(inv * mid))
     out = {"notional": notional, "wfills": nf, "max_abs_inv_usd": max_inv,
-           "min_equity": float(min_eq) if np.isfinite(min_eq) else None}
+           "min_equity": float(min_eq) if np.isfinite(min_eq) else None,
+           "postonly_reject_frac": (n_rejected / n_quoted) if n_quoted else None,
+           "tick": tick}
     qb = q["bid_price"].to_numpy(); qa = q["ask_price"].to_numpy()
     out.update(ta.terminal(cash, inv, avg_px, realized, qb[-1], qa[-1]))
     return out
@@ -180,17 +232,21 @@ def main():
                "blend": 0.5 * micro + 0.5 * np.where(np.isnan(ewma_px), micro, ewma_px)}
 
     spread_bps = float(np.nanmedian(2 * q["half"] / q["mid"]) * 1e4)
+    tick = infer_tick(q)
+    tick_bps = (1e4 * tick / float(np.nanmedian(q["mid"]))) if tick else float("nan")
     print(f"=== {args.asset} {args.date}  {hours:.1f}h  spread p50={spread_bps:.1f}bps  "
+          f"tick={tick:g} ({tick_bps:.2f}bps, spread={spread_bps/tick_bps:.1f} ticks)  "
           f"trades={len(tr):,}")
     print(f"{'anchor':7s} {'k':>4s} {'fills/d':>8s} {'notional':>10s} "
           f"{'gross/day':>10s} {'bps_mid':>7s} {'bps_liq':>7s} {'bps_real':>8s} "
           f"{'net@base':>9s} {'netliq@b':>9s} {'max|inv|':>9s}")
     out = {"asset": args.asset, "date": args.date, "hours": round(hours, 2),
-           "spread_bps": round(spread_bps, 2), "runs": {}}
+           "spread_bps": round(spread_bps, 2), "tick": tick,
+           "tick_bps": round(tick_bps, 3), "runs": {}}
     for name in ANCHORS:
         a = anchors[name]
         for k in KS:
-            r = simulate(q, tr, a, k, half_ref)
+            r = simulate(q, tr, a, k, half_ref, tick=tick)
             if r["notional"] <= 0:
                 continue
             bps = 1e4 * r["gross_pnl"] / r["notional"]
@@ -210,6 +266,8 @@ def main():
                 "gross_pnl_liq_day": round(r["gross_pnl_liq"] * scale, 2),
                 "net_day_liq": {kk: round(v, 2) for kk, v in nets_liq.items()},
                 "liq_haircut_usd": round(r["liq_haircut_usd"], 2),
+                "postonly_reject_frac": (round(r["postonly_reject_frac"], 4)
+                                         if r["postonly_reject_frac"] is not None else None),
                 "final_spread_bps": (round(r["final_spread_bps"], 2)
                                      if r["final_spread_bps"] else None)}
             rec.update(ta.bps_split(r, r["notional"]))

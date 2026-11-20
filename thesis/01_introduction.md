@@ -183,7 +183,7 @@ occupying a seam rather than for knowing something:
   samples, with a pre-registered replication on disjoint instruments. The organising law of
   Part II emerges here — **the adverse-selection horizon is the venue's repricing clock**, from
   about 15 ms on Binance to beyond 10 s in the tail — and a bridge control prices the premium's
-  dependence on competition directly: the same instrument decayed from +23.5 bps to approximately
+  dependence on competition directly: the same instrument decayed from +32.4 bps to approximately
   zero in two months as the tail tightened.
 - **Being paid to carry a basis** (Chapter 9). Hyperliquid's perpetual runs persistently rich, so
   shorts are contractually compensated; net of Binance's funding the differential is 5 to 8%

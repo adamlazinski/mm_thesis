@@ -156,11 +156,25 @@ v, c = exp103("rt_bps_gross")
 r = inf.cluster_bootstrap_mean(v, c)
 W(f"| Ch8 round trip, mid-marked (old headline) | {fmt(r, ' bps')} | coin ({r['n_clusters']}) |")
 
+# the exp-103 touch-joining basket -- this is Ch8 §5's headline, and is on-grid
+# by construction, so the tick correction of §6 does not reach it
+import collections as _c103
+_b = _c103.defaultdict(dict)
+for f in sorted(glob.glob(os.path.join(
+        ROOT, "experiments/103_defended_maker/results/defended_maker_HL_*_inv_qf0.5.json"))):
+    _d = json.load(open(f))
+    if _d["asset"] != "HL_LINK":
+        _b[_d["date"]][_d["asset"]] = _d["configs"]["none"]
+_per = [sum(v[a]["gross_pnl_liq_day"] for a in v) for _, v in sorted(_b.items())]
+if _per:
+    r = inf.block_bootstrap_mean(_per, block=1)
+    W(f"| Ch8 basket $/day, touch-joining round trip (§5 headline) | {fmt(r, ' $/day')} | day |")
+
 for w, lbl in [("2026-07", "July, original 6 coins"), ("2026-08", "August, replication")]:
     x = exp111(w)
     if x:
         r = inf.block_bootstrap_mean(x, block=1)
-        W(f"| Ch8 basket $/day, {lbl} | {fmt(r, ' $/day')} | day |")
+        W(f"| Ch8 basket $/day, fair-value sim, {lbl} | {fmt(r, ' $/day')} | day |")
 # August ex-ACE: the chapter's own honest magnitude
 _vals, _coins = exp111("2026-08", per_day=False)
 if _vals:

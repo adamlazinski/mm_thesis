@@ -294,11 +294,16 @@ rather than below it, which is the register's single most important pattern.
   entirely terminal mark. *(C66)*
 - `◐` **…but it is a portfolio property, not a per-instrument one.** Per-coin P&L is sign-unstable day to
   day; the equal-weighted basket is positive on 5/5 days of the original sample and 4/4 of a
-  **pre-registered** replication on disjoint coins, with micro-price ≥ mid on 4/4 — all four
-  checks holding under liquidation as well. *(C66)*
+  **pre-registered** replication on disjoint coins, with micro-price ≥ mid on 3/4 — a majority,
+  which is what was registered. All hold under liquidation and on the venue's tick grid; micro ≥
+  mid was 4/4 before the grid correction. *(C66)*
 - `✓` **…and its magnitude is priced by competition, not by technique.** The bridge control is the cleanest
-  evidence in the thesis: USUAL, same coin and same strategy, fell from **+23.5 bps in July to
-  −0.3 bps in August** (15 of 16 configurations fall; median 24 bps) as the tail's widest spread compressed from 56 to 14 bps. *(C66)*
+  evidence in the thesis: USUAL, same coin and same strategy, fell from **+32.4 bps in July to
+  −1.0 bps in August** (15 of 16 configurations fall; median 16.6 bps) as the tail's widest spread
+  compressed from 56 to 14 bps. The decay *survived* the tick-grid correction by growing, from a
+  23.4 bps fall off-grid to 33.4 on-grid. **Caveat:** USUAL is a 1.0–1.2 tick book in both
+  windows, so competition arriving and the grid tightening underneath it are not separable here.
+  *(C66)*
 - `✓` **The adverse-selection horizon is the venue's repricing clock.** 15 ms (Binance BTC) → 75–88 ms
   (large relative tick) → 0.46 s (CB LINK perp) → 1.3–4.2 s (HL LINK) → 6.2 s (HL EIGEN) → >10 s,
   never crossing (HL tail). Part II's organising law, and the reason Ch7 and Ch8 are one

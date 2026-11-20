@@ -4086,7 +4086,8 @@ aggregating a two-day subset in which 2026-07-17 is a partial 10.3h session; the
 above is computed from all thirty committed coin-days.
 
 Fair-value anchoring improves it further. The micro-price anchor beats the mid anchor on the
-basket on 4 of 5 days (+$278 vs +$230/day liquidated; +$291 vs +$243 mid-marked), and wider
+basket on 3 of 5 days on the tick grid (+$212 vs +$192/day liquidated; it was 4 of 5 and +$278
+vs +$230 before the grid correction), and wider
 quoting raises margin per unit: on HMSTR,
 k = 0.5/1.0/1.5 gives **+35.5 / +42.2 / +61.8 bps of notional** liquidated (+34.9 / +42.0 /
 +55.8 on matched volume alone) on 937/635/297 fills/day, averaged over all five captured days.
@@ -4102,14 +4103,17 @@ reported as a negative.
 result was re-tested on a disjoint sample (six new coins plus one bridge control), with the
 prediction committed to version control before the data was seen. Both checks pass: the basket is
 positive **4/4 days** (also excluding an outlier coin) and micro ≥ mid **4/4 days**. The effect is
-not a selection artifact. But the **bridge control** carries the real finding: USUAL — the same
-coin, same micro-price anchor (k=1) — fell from **+23.5bps** of notional in July to **−0.3bps**
-in August while the tail's widest spread compressed from 56bps (HMSTR, July) to 14bps (SAGA,
-August). The decay holds in **15 of the 16** anchor x distance configurations swept, median fall
-24bps, so it is not an artefact of the configuration chosen. Nor of the terminal mark: liquidated,
-USUAL falls +22.9 -> −0.5bps, and on matched volume alone +20.3 -> −3.1bps, with 15/16
-configurations still falling by a median 24.0 and 22.8bps. Both pre-registered checks also pass
-under liquidation (4/4 and 4/4). The magnitude is **regime**, not technique. *(Corrected
+not a selection artifact *(on the tick grid: basket 4/4, micro >= mid **3/4** — a majority, which
+is what was registered; it was 4/4 off-grid)*. But the **bridge control** carries the real
+finding: USUAL — the same coin, same micro-price anchor (k=1) — fell from **+32.4bps** of
+notional in July to **−1.0bps** in August while the tail's widest spread compressed from 56bps
+(HMSTR, July) to 14bps (SAGA, August). The decay holds in **15 of the 16** anchor x distance
+configurations swept, median fall 16.6bps, so it is not an artefact of the configuration chosen.
+Nor of the terminal mark: off-grid, liquidated, USUAL fell +22.9 -> −0.5bps and on matched volume
+alone +20.3 -> −3.1bps, 15/16 configurations falling by a median 24.0 and 22.8bps. Nor of the
+price grid — it **survived that correction by growing**, 23.4bps off-grid to 33.4bps on-grid.
+**Caveat:** USUAL is a 1.0–1.2 tick book in both windows, so "competition arrived" and "the grid
+tightened underneath the same competition" are not separable on this sample. The magnitude is **regime**, not technique. *(Corrected
 2026-11-16: previously quoted as +40 -> +0.39bps, which no committed run reproduces; the spread
 compression 56 -> 14bps is confirmed exactly.)*
 
@@ -4128,6 +4132,44 @@ $1,624 residual on $15,871 notional, differs by $1.07 between treatments, 0.07bp
 +22.04bps result. One reclassification follows: VINE's +0.96bps was entirely terminal mark
 (−0.13bps on matched volume) and no longer counts as nearly clearing fees. HMSTR takes the
 largest haircut, 1.04bps, and drops 5/5 -> 4/5 days positive. No other sign or rank changes.
+
+**Tick-grid and post-only audit, 2026-11-20 (exp 111).** The fair-value simulator generated
+continuous quotes at `anchor ± k·half_ref` **without snapping them to the venue's price grid**
+and without a post-only lifecycle — the error class of C54, reappearing inside Part II. Both are
+now enforced: bid rounds down and ask rounds up (away from the mid, never optimistic), and a
+quote that would cross the prevailing touch on arrival is skipped rather than filled. The
+*touch-joining* round trip of exp 103 is unaffected, because it quotes the observed bid and ask,
+which are on-grid by construction.
+
+Post-only does not bind: **0% of quotes rejected** on any book on any day, since a quote half a
+spread from fair value never crosses. The grid binds hard, and recovering it (GCD of the gaps
+between observed prices) produces the more important finding:
+
+| book | tick | tick bps | spread in **ticks** |
+|---|---|---|---|
+| HMSTR | 1e-6 | **55.7** | **1.0** |
+| USUAL (Jul) | 1e-5 | 10.9 | **1.2** |
+| EIGEN | 1e-4 | 4.3 | **1.8** |
+| ZORA | 1e-6 | 1.5 | 4.0 |
+| VINE | 1e-6 | 1.2 | 13.5 |
+| CELO | 1e-6 | 0.14 | 54.6 |
+
+**The route-5 screen ranked on spread in basis points, which conflates a coarse tick with wide
+quoting.** HMSTR's 56bps spread is 56bps because its *tick* is; the book is ONE tick and has no
+price strictly inside it. Same for EIGEN, ACE, TURBO, W; USUAL is 1–2. These are
+large-relative-tick books — C33's queue axis, not a thin-competition spread. Only ZORA, VINE and
+CELO have grids where "quote further out" describes a real choice. Round trip vs spread **in
+ticks** gives Spearman ρ = **−0.60**, the mirror of the +0.60 against spread in bps, same n=6;
+neither is decisive and the premium cannot be cleanly attributed to thin competition rather than
+to a coarse grid.
+
+Effect on the numbers: July basket (micro_k1, liquidated) **+$270 → +$212/day**, one of five days
+turning negative; micro ≥ mid falls 4/5 → 3/5 in July and 4/4 → 3/4 in August (still the
+registered majority); the HMSTR k-sweep rises to +37.6 / +48.8 / +67.1bps on 552 / 361 / 173
+fills, and on that one-tick book k=0.5 and k=1.0 **round to the same grid points and return
+identical results**, so the sweep measures tick distance rather than a continuum. The bridge
+control **strengthened**: 23.4bps fall off-grid → 33.4bps on-grid, 15/16 configurations still
+falling.
 
 **Synthesis.** This is the affirmative half of the zero-profit law and its cleanest confirmation.
 Where competition is thin, the spread genuinely exceeds adverse selection and a maker is paid —

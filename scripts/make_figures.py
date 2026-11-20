@@ -483,7 +483,10 @@ def f7_immediacy():
     a.set_title("a.  Four of six clear the base fee")
     src(a, "C66 / exp 103, config \"none\", qf=0.5, all 30 coin-days 2026-07-17..21, each day's residual "
            "liquidated across the closing spread rather than marked at the mid (Ch8 \u00a74; mid-marked bars "
-           "average 0.3 bps higher and change no sign). Bars ordered by measured "
+           "average 0.3 bps higher and change no sign). This simulator joins the PREVAILING TOUCH, so it is "
+           "on-grid by construction and unaffected by the tick correction of Ch8 \u00a76 \u2014 but note there "
+           "that HMSTR and USUAL, the two best books here, are 1.0 and 1.2 TICK books: their spread is wide in "
+           "bps largely because their tick is. Bars ordered by measured "
            "spread, widest left. ZORA is the tightest book in the screen and the third most profitable, so the "
            "six-point cross-section supports the spread-width reading only weakly (Spearman \u03c1 = 0.60).")
 
@@ -521,7 +524,10 @@ def f7_immediacy():
     src(b, f"C66 / exp 111 \u2014 all {len(pairs)} anchor \u00d7 distance configurations, same coin, two months "
            f"apart, residual liquidated. {fell} of {len(pairs)} fall, median "
            f"{np.median([ju - au for _, ju, au in pairs]):.0f} bps; the decay on the micro-price anchor is "
-           "+23.4 bps, 95% CI [+7.2, +39.0] \u2014 the Part II quantity with the most room from zero. "
+           "+33.4 bps, 95% CI [+12.5, +54.3] \u2014 the Part II quantity with the most room from zero. "
+           "Quotes are snapped to the venue tick grid and post-only; the decay survived that correction by "
+           "growing. CAVEAT: USUAL is a 1.0-1.2 tick book in both windows, so competition arriving and the "
+           "grid tightening under it are not separable here. "
            "The within-instrument comparison, not the cross-section, is what prices the premium by competition.")
 
     fig.suptitle("Figure 7   The immediacy premium: paid where competition is thin, and only while it stays thin",

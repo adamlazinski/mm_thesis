@@ -233,7 +233,7 @@ day's flow happened to be one-sided. What is stable is the **basket**: equal-wei
 six coins, gross P&L is positive on **all five days** — +$83, +$111, +$355, +$194 and +$20,
 averaging +$153/day after liquidating each day's residual (+$101, +$118, +$363, +$202, +$39 and
 +$164/day when it is marked at the mid instead; positive five of five either way, 95% CI on the
-liquidated basket [+$133, +$461] from five days). (The +$243 and +$291/day figures in §6 are a different simulator: the
+liquidated basket **[+$63, +$259]** from five days). (The +$192 and +$212/day figures in §6 are a different simulator: the
 anchor-and-distance sweep of Contribution 66, which quotes at a chosen anchor rather than
 running the inventory-capped round trip used here. The two are not comparable, and only the
 round trip is treated as a headline, for the reason §4 gives.) The premium is a portfolio property, not a per-instrument one, which is
@@ -245,27 +245,72 @@ exactly what compensation for bearing idiosyncratic inventory risk should look l
 
 ## 6. Fair Value and Distance
 
+**First, the price grid.** Everything in this section quotes at a computed fair value rather
+than joining the prevailing touch, which raises the question Contribution 54 retracted an entire
+arc of this thesis over: are those prices ones the exchange would accept? They were not. The
+simulator generated continuous quotes at `anchor ± k × half-spread` without snapping them to the
+venue's tick grid. It now rounds the bid down and the ask up — away from the mid, so the rounding
+is never optimistic — and enforces post-only, skipping any quote that would cross the prevailing
+touch on arrival rather than filling it.
+
+Post-only turns out not to bind: **0% of quotes are rejected** on any book on any day, because a
+quote placed at least half a spread from fair value does not cross. The grid, however, binds hard,
+and recovering it from the data is the more interesting half of the correction. Taking the tick
+as the greatest common divisor of the gaps between observed prices:
+
+| book | tick | tick in bps | **quoted spread, in ticks** |
+|---|---|---|---|
+| HMSTR | 1e-6 | **55.7** | **1.0** |
+| USUAL (July) | 1e-5 | 10.9 | **1.2** |
+| EIGEN | 1e-4 | 4.3 | **1.8** |
+| ZORA | 1e-6 | 1.5 | 4.0 |
+| VINE | 1e-6 | 1.2 | 13.5 |
+| CELO | 1e-6 | 0.14 | 54.6 |
+
+**The screen selected on spread in basis points, and that conflates two different things.**
+HMSTR's spread is 56 bps wide because its *tick* is 56 bps wide — the book is **one tick**, and
+there is no price strictly inside it. The same is true of EIGEN, ACE, TURBO and W, and USUAL is
+one to two ticks. These are large-relative-tick books, which is Chapter 5 §7's queue-axis regime
+rather than a thin-competition spread, and a maker on them has nowhere to stand except the touch.
+Only ZORA, VINE and CELO have grids fine enough for "quote further from fair value" to describe
+a real choice.
+
+That distinction does not dissolve the chapter's result — §5's round trip joins the *prevailing
+touch*, which is on-grid by construction and therefore untouched by this correction — but it
+qualifies the interpretation. Across the six books the round trip correlates with spread measured
+in **ticks** at Spearman ρ = −0.60, the mirror image of the +0.60 it shows against spread in basis
+points, on the same n = 6. With six points neither is decisive and the chapter does not lean on
+either; what it does mean is that the premium cannot be cleanly attributed to thin competition
+rather than to a coarse grid, and the two best books in the screen are the two whose spread is
+mostly tick.
+
 Two refinements improve it, and both follow from Contribution 64's failure mechanism.
 
 If a mid anchor lags and therefore keeps buying into a downtrend, an anchor that *leads* the mid
 should skew away from the trend. Replacing the mid with Stoikov's imbalance-weighted
-**micro-price** does exactly that: the micro anchor beats the mid anchor on the basket on four
-of five days, +$278/day against +$230/day liquidated (+$291 against +$243 mid-marked; the
-comparison is unaffected).
+**micro-price** does exactly that: on the grid, the micro anchor beats the mid anchor on the
+basket on **three of five days**, +$212/day against +$192/day liquidated. Before the grid
+correction it won on four of five at +$278 against +$230; the ordering survives, the margin
+narrows, and the pre-registered form of this check — micro ≥ mid on the *majority* of days —
+still passes.
 
 And if the spread genuinely exceeds the adverse-selection cost, quoting further from fair value
 should raise the margin on each fill. It does, monotonically. On HMSTR, quoting at fair value
-± k × (rolling median half-spread), averaged over all five captured days:
+± k × (rolling median half-spread), snapped to the grid, averaged over all five captured days:
 
 | k | bps of notional, liquidated | matched volume only | fills/day |
 |---|---|---|---|
-| 0.5 | +35.5 | +34.9 | 937 |
-| 1.0 | +42.2 | +42.0 | 635 |
-| 1.5 | **+61.8** | +55.8 | 297 |
+| 0.5 | +37.6 | +35.9 | 552 |
+| 1.0 | +48.8 | +43.6 | 361 |
+| 1.5 | **+67.1** | +47.5 | 173 |
 
-This is the trade-off in its cleanest form — better price per fill against fewer fills — and it
-is available only because the book is wide enough to have somewhere to stand. On a one-tick
-book, "wider" means behind the touch, where the order does not fill at all.
+This is the trade-off in its cleanest form — better price per fill against fewer fills. But HMSTR
+is the one-tick book of the table above, so what the k sweep is really doing there is stepping
+*whole ticks* away from the touch: at k = 0.5 and k = 1.0 the rounded bid and ask land on the
+same grid points, and the two settings return identical results on the mid anchor. The sweep's
+monotonicity is a statement about tick distance, not about a continuum, and on a one-tick book
+"wider" means behind the touch — which is why fills fall by two thirds across the three rows
+rather than smoothly.
 
 The monotonicity does not extend indefinitely, and the reason is instructive. A fourth setting,
 k = 2.5, reports the highest headline of all — 82 bps of notional on HMSTR's widest day — on
@@ -274,11 +319,10 @@ strategy accumulates a position and never closes one. The entire apparent margin
 mark on inventory. Reporting the two columns above side by side is what makes that visible; a
 single mid-marked column would have ranked k = 2.5 best in the sweep.
 
-*(An earlier draft of this table reported 44.9 / 55.2 / 88.1 bps on 887 / 563 / 266 fills, which
-is 18 July alone rather than the five-day average. The monotonicity is unaffected, the levels are
-lower. This is the second instance in Contribution 66 of a single- or two-day subset being quoted
-as if it were the full sample; both are now corrected and the five-day figures computed from all
-thirty committed coin-days.)*
+*(Two earlier versions of this table were wrong in different ways. One reported 44.9 / 55.2 /
+88.1 bps on 887 / 563 / 266 fills, which is 18 July alone rather than the five-day average — the
+second instance in Contribution 66 of a subset quoted as the full sample. The other was computed
+off the tick grid. Both are corrected here; the monotonicity survived both.)*
 
 One refinement failed and is reported as a negative. A depth-conditioned rule for choosing the
 anchor per coin — micro where the touch has depth, mid where it is thin — was fitted on two days
@@ -295,27 +339,37 @@ prediction registered in version control **before the data was examined**: if th
 the basket is positive and micro ≥ mid on the majority of days.
 
 Six new coins were captured, none in the original set, plus one **bridge control** — USUAL, which
-was in the original six and remained wide. Both pre-registered checks pass: the basket is
-positive on **4 of 4 days**, including with the single outlier coin removed, and micro ≥ mid on
-**4 of 4 days**. Both hold under the liquidated terminal treatment as well. The effect is not an
-artifact of coin selection.
+was in the original six and remained wide. Both pre-registered checks pass, on the tick grid and
+under liquidation: the basket is positive on **4 of 4 days**, including with the single outlier
+coin removed (+$144/day ex-ACE), and micro ≥ mid on **3 of 4 days** — a majority, which is what
+was registered, though it was 4 of 4 before the grid correction. The effect is not an artifact of
+coin selection.
 
-The bridge control, however, carries the more important finding. USUAL — the *same coin*, same
-strategy, same micro-price anchor — fell from **+23.5 bps of notional in July to −0.3 bps in
-August**, while the tail's widest available spread compressed from 56 bps (HMSTR in July) to
-14 bps (SAGA in August). The decay is not an artefact of the anchor chosen: fifteen of the
-sixteen anchor-and-distance configurations swept fall over the same two months, by a median of
-24 bps. Nor is it an artefact of the terminal mark — under liquidation the same coin falls from
-+22.9 to −0.5 bps, and on matched volume alone from +20.3 to −3.1 bps, with fifteen of sixteen
-configurations still falling by a median of 24.0 and 22.8 bps respectively. The fall itself is
-the one Part II quantity whose interval is comfortably clear of zero: **+23.4 bps, 95% CI
-[+7.2, +39.0]**, against a July level of +22.9 [+7.6, +38.2] and an August level of −0.5
-[−3.2, +1.6], which spans zero exactly as a decayed premium should. Nothing about the technique
-changed. What changed was the regime.
+The bridge control carries the more important finding. USUAL — the *same coin*, same strategy,
+same micro-price anchor — fell from **+32.4 bps of notional in July to −1.0 bps in August**,
+while the tail's widest available spread compressed from 56 bps (HMSTR in July) to 14 bps (SAGA
+in August). The decay is robust to every accounting choice this chapter has had to make. It is
+not an artefact of the anchor: **fifteen of the sixteen** anchor-and-distance configurations fall
+over the same two months, by a median of 16.6 bps. It is not an artefact of the terminal mark:
+under liquidation the fall is +32.4 → −1.0 bps and on matched volume alone it is of the same
+sign and order. And it is not an artefact of the price grid — it *survived* that correction by
+growing, from a 23.4 bps fall off-grid to a **33.4 bps fall on-grid**. The fall is the one
+Part II quantity whose interval is comfortably clear of zero: off-grid it was +23.4 bps with a
+95% interval of [+7.2, +39.0], against an August level that spans zero exactly as a decayed
+premium should. Nothing about the technique changed. What changed was the regime.
+
+There is one qualification the §6 table forces onto this. USUAL's grid is 1.2 ticks per spread
+in July and **1.0 in August** — it is a one-tick book in both windows, and the compression from
+56 to 14 bps across the tail is a compression of *tick-denominated* spreads as much as of quoted
+ones. The decay is real and is the chapter's strongest evidence; whether the mechanism is
+competition arriving or the venue's grid tightening underneath the same competition is not
+separable on this sample, and the two are in any case the same thing seen from either side —
+Chapter 5 §7's point that the equilibrium is enforced through whichever variable happens to be
+free.
 
 That single comparison converts the chapter's result from a claim about a strategy into a claim
-about a price. The immediacy premium is **priced by spread width**: it is large when the tail is
-wide and approximately zero when the tail tightens, and a practitioner who measured it in July
+about a price. The immediacy premium is **priced by the width available to quote in**: it is
+large when the tail is wide and approximately zero when the tail tightens, and a practitioner who measured it in July
 and sized against it in August would have been sizing against a number that no longer existed.
 
 It also means the honest magnitude is the ex-ACE basket figure rather than the headline that one
@@ -338,7 +392,7 @@ But what is being paid is a **premium, not an edge**. It is compensation for war
 inventory and bearing jump risk in illiquid names; it is sign-unstable per coin and positive
 only as a diversified basket; it shrinks with the spread that defines it; and its magnitude is
 set by how many competitors have arrived, not by anything the quoter knows. The bridge control
-prices that dependence directly: a fall from +23.5 bps to approximately zero in two months, on an
+prices that dependence directly: a fall from +32.4 bps to approximately zero in two months, on an
 unchanged coin, driven by a tightening tail, and reproduced in fifteen of sixteen
 configurations swept.
 

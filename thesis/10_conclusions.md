@@ -250,7 +250,7 @@ distinguishes a risk premium from an information edge:
    idiosyncratic risk borne must look like.
 3. *Each is priced by the competition it faces, not by the skill applied.* The bridge control
    is the cleanest evidence in the thesis: USUAL, the same coin and the same strategy, fell from
-   **+23.5 bps of notional in July to approximately zero in August** while the tail's widest
+   **+32.4 bps of notional in July to approximately zero in August** while the tail's widest
    spread compressed from 56 bps to 14 bps, a decay reproduced in fifteen of the sixteen
    configurations swept. Nothing about the technique changed; the regime did.
 4. *Costs can invert the usual logic.* The carry book's 5.6 bps round trip amortises to

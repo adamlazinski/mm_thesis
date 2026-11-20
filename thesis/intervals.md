@@ -36,38 +36,39 @@ The sweep's best cell is **8.89 bps**. Five configurations were tried, so a one-
 | *same, treating coin-days as independent (wrong)* | +6.04 bps | [+2.58, +9.56] bps | 30 | coin-day |
 | Ch8 round trip, matched volume only | +6.05 bps | [+1.53, +10.70] bps | 30 | coin (6) |
 | Ch8 round trip, mid-marked (old headline) | +6.36 bps | [+1.81, +10.94] bps | 30 | coin (6) |
-| Ch8 basket $/day, July, original 6 coins | +278.09 $/day | [+132.95, +460.93] $/day | 5 | day |
-| Ch8 basket $/day, August, replication | +1377.01 $/day | [+222.56, +2531.46] $/day | 4 | day |
-| Ch8 basket $/day, August **excluding the ACE outlier** | +209.08 $/day | [+95.22, +331.68] $/day | 4 | day |
-| Ch8 bridge control USUAL, July | +22.94 bps | [+7.64, +38.15] bps | 5 | day |
-| Ch8 bridge control USUAL, August | -0.51 bps | [-3.24, +1.62] bps  **spans 0** | 4 | day |
-| **the decay, July − August** | +23.44 bps | [+7.15, +38.98] bps | 5+4 | day |
+| Ch8 basket $/day, touch-joining round trip (§5 headline) | +152.54 $/day | [+63.02, +258.81] $/day | 5 | day |
+| Ch8 basket $/day, fair-value sim, July, original 6 coins | +212.36 $/day | [+57.66, +387.69] $/day | 5 | day |
+| Ch8 basket $/day, fair-value sim, August, replication | +1185.70 $/day | [+181.91, +2189.48] $/day | 4 | day |
+| Ch8 basket $/day, August **excluding the ACE outlier** | +143.92 $/day | [+68.69, +219.14] $/day | 4 | day |
+| Ch8 bridge control USUAL, July | +32.35 bps | [+16.66, +48.04] bps | 5 | day |
+| Ch8 bridge control USUAL, August | -1.04 bps | [-14.78, +12.69] bps  **spans 0** | 4 | day |
+| **the decay, July − August** | +33.39 bps | [+12.49, +54.30] bps | 5+4 | day |
 
 ### Ch7 event markouts — nominal n against effective n
 
 | run | threshold | events | mean round trip | 95% CI | n_eff |
 |---|---|---|---|---|---|
 | BTC_PERP_to_HL_BTC_2026-07-15 | 2 bps | 1085 | +2.16 bps | [+1.99, +2.35] | 862 |
-| BTC_PERP_to_HL_BTC_2026-07-15 | 5 bps | 91 | +4.83 bps | [+3.67, +6.10] | 69 |
-| BTC_PERP_to_HL_BTC_2026-07-15 | 10 bps | 13 | +8.35 bps | [+3.79, +13.42] | 8 |
+| BTC_PERP_to_HL_BTC_2026-07-15 | 5 bps | 91 | +4.83 bps | [+3.68, +6.09] | 69 |
+| BTC_PERP_to_HL_BTC_2026-07-15 | 10 bps | 13 | +8.35 bps | [+3.77, +13.52] | 8 |
 | BTC_PERP_to_HL_BTC_2026-07-16 | 2 bps | 1336 | +2.08 bps | [+1.95, +2.21] | 1137 |
-| BTC_PERP_to_HL_BTC_2026-07-16 | 5 bps | 55 | +4.79 bps | [+3.35, +6.31] | 35 |
-| BTC_PERP_to_HL_BTC_2026-07-16 | 10 bps | 9 | +5.14 bps | [+1.66, +7.42] | 8 |
+| BTC_PERP_to_HL_BTC_2026-07-16 | 5 bps | 55 | +4.79 bps | [+3.32, +6.33] | 35 |
+| BTC_PERP_to_HL_BTC_2026-07-16 | 10 bps | 9 | +5.14 bps | [+1.66, +7.31] | 8 |
 | CB_BTC_to_HL_BTC_2026-07-15 | 2 bps | 1451 | +1.85 bps | [+1.72, +2.00] | 1451 |
-| CB_BTC_to_HL_BTC_2026-07-15 | 5 bps | 90 | +4.91 bps | [+3.88, +5.78] | 85 |
-| CB_BTC_to_HL_BTC_2026-07-15 | 10 bps | 11 | +11.26 bps | [+3.94, +19.42] | 4 |
-| CB_BTC_to_HL_BTC_2026-07-16 | 2 bps | 1530 | +1.85 bps | [+1.74, +1.98] | 1530 |
-| CB_BTC_to_HL_BTC_2026-07-16 | 5 bps | 49 | +5.77 bps | [+4.48, +7.26] | 49 |
+| CB_BTC_to_HL_BTC_2026-07-15 | 5 bps | 90 | +4.91 bps | [+3.87, +5.77] | 85 |
+| CB_BTC_to_HL_BTC_2026-07-15 | 10 bps | 11 | +11.26 bps | [+3.91, +19.56] | 4 |
+| CB_BTC_to_HL_BTC_2026-07-16 | 2 bps | 1530 | +1.85 bps | [+1.73, +1.98] | 1530 |
+| CB_BTC_to_HL_BTC_2026-07-16 | 5 bps | 49 | +5.77 bps | [+4.47, +7.25] | 49 |
 | CB_BTC_to_HL_BTC_2026-07-16 | 10 bps | 7 | +9.67 bps | n too small | — |
 | CB_LINK_to_HL_LINK_2026-07-15 | 2 bps | 3017 | -0.09 bps | [-0.25, +0.07] **spans 0** | 1177 |
-| CB_LINK_to_HL_LINK_2026-07-15 | 5 bps | 220 | +2.52 bps | [+1.62, +3.25] | 220 |
-| CB_LINK_to_HL_LINK_2026-07-15 | 10 bps | 22 | +5.92 bps | [+1.96, +8.79] | 22 |
-| CB_LINK_to_HL_LINK_2026-07-16 | 2 bps | 3696 | +0.25 bps | [+0.13, +0.38] | 1560 |
+| CB_LINK_to_HL_LINK_2026-07-15 | 5 bps | 220 | +2.52 bps | [+1.62, +3.24] | 220 |
+| CB_LINK_to_HL_LINK_2026-07-15 | 10 bps | 22 | +5.92 bps | [+1.97, +8.76] | 22 |
+| CB_LINK_to_HL_LINK_2026-07-16 | 2 bps | 3696 | +0.25 bps | [+0.12, +0.37] | 1560 |
 | CB_LINK_to_HL_LINK_2026-07-16 | 5 bps | 180 | +3.41 bps | [+2.60, +4.26] | 180 |
-| CB_LINK_to_HL_LINK_2026-07-16 | 10 bps | 23 | +8.75 bps | [+6.68, +11.85] | 23 |
+| CB_LINK_to_HL_LINK_2026-07-16 | 10 bps | 23 | +8.75 bps | [+6.65, +11.85] | 23 |
 | LINK_to_HL_LINK_2026-07-15 | 2 bps | 2133 | +0.29 bps | [+0.08, +0.49] | 765 |
-| LINK_to_HL_LINK_2026-07-15 | 5 bps | 215 | +2.49 bps | [+1.61, +3.30] | 215 |
-| LINK_to_HL_LINK_2026-07-15 | 10 bps | 28 | +7.11 bps | [+3.63, +10.52] | 28 |
+| LINK_to_HL_LINK_2026-07-15 | 5 bps | 215 | +2.49 bps | [+1.60, +3.30] | 215 |
+| LINK_to_HL_LINK_2026-07-15 | 10 bps | 28 | +7.11 bps | [+3.60, +10.47] | 28 |
 
 The interval is a block bootstrap over the event series in time order; `n_eff` is the effective sample size after the events' own serial correlation, which matters because dislocation events arrive in episodes rather than independently. Where `n_eff` is close to `n` the events are effectively independent draws; where it is much smaller, the nominal count overstates the evidence. The 5 bps rows — the ones Ch7 §4 reports — rest on 49 to 91 events, and the intervals above are the honest precision of that.
 
