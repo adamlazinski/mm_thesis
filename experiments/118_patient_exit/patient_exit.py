@@ -60,6 +60,7 @@ K_IN = 1.0                     # entry distance, in reference half-spreads
 K_OUTS = (1.0, 2.0, 3.0, 4.0)  # exit distance; 1.0 is the symmetric control
 ANCHORS = ("mid", "micro")
 MODES = ("floating", "anchored")
+STOPS = (60.0, 300.0, 1800.0)   # time-stop horizons, seconds
 MAKER_FEES_BPS = (1.5, 0.0, -0.3)
 
 
@@ -135,7 +136,8 @@ def infer_tick(q):
 
 
 
-def simulate(q, tr, anchor_px, k_in, k_out, half_ref, tick=None, mode="floating"):
+def simulate(q, tr, anchor_px, k_in, k_out, half_ref, tick=None, mode="floating",
+             stop_s=None):
     """
     Round-trip sim with an asymmetric, inventory-state-dependent exit distance.
 
@@ -150,6 +152,13 @@ def simulate(q, tr, anchor_px, k_in, k_out, half_ref, tick=None, mode="floating"
     strategy is genuinely waiting for a price rather than for a spread.
 
     k_out == k_in is the symmetric control.
+
+    `stop_s` adds a time stop, which is the obvious repair to the rule's failure
+    mode: if a position has been open longer than `stop_s` seconds, stop waiting
+    and cross out at the prevailing touch, paying the spread. Without it the
+    exit simply never fills and inventory pins at the cap; the question is
+    whether capping the wait recovers the per-trip margin without giving it all
+    back in crossing costs.
     """
     qt = q["time_exchange"].astype("int64").to_numpy() / 1e9
     qm = q["mid"].to_numpy()
@@ -164,6 +173,7 @@ def simulate(q, tr, anchor_px, k_in, k_out, half_ref, tick=None, mode="floating"
     open_anchor = np.nan          # anchor when the current position was opened
     n_rejected = 0; n_quoted = 0
     hold_s = 0.0; n_holds = 0; t_open = None   # how long positions are carried
+    n_stops = 0                                # positions closed by the time stop
 
     for kk in range(len(tts)):
         i = iq[kk]
@@ -201,6 +211,21 @@ def simulate(q, tr, anchor_px, k_in, k_out, half_ref, tick=None, mode="floating"
 
         mid = qm[i]
         inv_usd = inv * mid
+
+        # time stop: cross out at the touch rather than keep waiting
+        if (stop_s is not None and inv != 0.0 and t_open is not None
+                and (tts[kk] - t_open) > stop_s):
+            exit_px = qb[i] if inv > 0 else qa[i]
+            units = -inv
+            inv, avg_px, dr = ta.book(inv, avg_px, units, exit_px)
+            realized += dr
+            cash += -units * exit_px
+            notional += abs(units) * exit_px
+            n_stops += 1
+            hold_s += tts[kk] - t_open; n_holds += 1
+            open_anchor = np.nan; t_open = None
+            continue
+
         prev_inv = inv
         if tbuy[kk]:
             if inv_usd <= -MAX_INV_USD or not ask_ok:
@@ -247,7 +272,7 @@ def simulate(q, tr, anchor_px, k_in, k_out, half_ref, tick=None, mode="floating"
     out = {"notional": notional, "wfills": nf, "max_abs_inv_usd": max_inv,
            "min_equity": float(min_eq) if np.isfinite(min_eq) else None,
            "postonly_reject_frac": (n_rejected / n_quoted) if n_quoted else None,
-           "tick": tick, "n_round_trips": n_holds,
+           "tick": tick, "n_round_trips": n_holds, "n_time_stops": n_stops,
            "mean_hold_s": (hold_s / n_holds) if n_holds else None}
     out.update(ta.terminal(cash, inv, avg_px, realized, qb[-1], qa[-1]))
     return out
@@ -287,12 +312,16 @@ def main():
            "spread_bps": round(spread_bps, 2), "tick": tick,
            "tick_bps": round(tick_bps, 3), "k_in": K_IN, "runs": {}}
 
-    for aname, apx in anchors.items():
-        for mode in MODES:
-            for ko in K_OUTS:
-                if mode == "anchored" and ko == K_IN:
-                    continue            # identical to floating at k_out == k_in
-                r = simulate(q, tr, apx, K_IN, ko, half_ref, tick=tick, mode=mode)
+    combos = [(a, m, ko, None) for a in anchors for m in MODES for ko in K_OUTS
+              if not (m == "anchored" and ko == K_IN)]
+    # the repair: hold out, but cross out at the touch after STOPS seconds
+    combos += [(a, "floating", ko, st_) for a in anchors for ko in (2.0, 3.0)
+               for st_ in STOPS]
+    for aname, mode, ko, stop in combos:
+            apx = anchors[aname]
+            if True:
+                r = simulate(q, tr, apx, K_IN, ko, half_ref, tick=tick, mode=mode,
+                             stop_s=stop)
                 if r["notional"] <= 0:
                     continue
                 rec = {"fills_per_day": round(r["wfills"] * scale, 1),
@@ -300,6 +329,7 @@ def main():
                        "gross_pnl_liq_day": round(r["gross_pnl_liq"] * scale, 2),
                        "gross_pnl_day": round(r["gross_pnl"] * scale, 2),
                        "n_round_trips": r["n_round_trips"],
+                       "n_time_stops": r["n_time_stops"],
                        "mean_hold_s": (round(r["mean_hold_s"], 1)
                                        if r["mean_hold_s"] else None),
                        "max_abs_inv_usd": round(r["max_abs_inv_usd"], 1),
@@ -307,9 +337,11 @@ def main():
                        "postonly_reject_frac": (round(r["postonly_reject_frac"], 4)
                                                 if r["postonly_reject_frac"] is not None else None)}
                 rec.update(ta.bps_split(r, r["notional"]))
-                key = f"{aname}_{mode}_kout{ko:g}"
+                key = (f"{aname}_{mode}_kout{ko:g}" if stop is None
+                       else f"{aname}_{mode}_kout{ko:g}_stop{stop:g}s")
                 out["runs"][key] = rec
-                print(f"{aname:7s} {mode:9s} {ko:>6g} {rec['fills_per_day']:>8.1f} "
+                tag = mode if stop is None else f"stop{stop:g}s"
+                print(f"{aname:7s} {tag:9s} {ko:>6g} {rec['fills_per_day']:>8.1f} "
                       f"{rec['notional']:>10,.0f} {rec['rt_bps_liq']:>+8.2f} "
                       f"{rec['rt_bps_realized']:>+9.2f} {rec['gross_pnl_liq_day']:>+10.2f} "
                       f"{rec['n_round_trips']:>6d} "

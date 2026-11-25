@@ -6,8 +6,8 @@ Binance Spot, May–Jun 2025, Jun–Jul 2025, and April 2026).
 
 > **Verification status (2026-11-19).** `scripts/verify_contributions.py` pools every number
 > in the experiment JSONs each entry names and checks the entry's table cells and bold figures
-> against that pool at 1.2% tolerance. Of the 69 entries, **47 name at least one experiment and
-> are machine-checked**: 35 match every claim and 12 carry a small number of unmatched values. The flags are legitimate in every case inspected — derived
+> against that pool at 1.2% tolerance. Of the 70 entries, **48 name at least one experiment and
+> are machine-checked**: 36 match every claim and 12 carry a small number of unmatched values. The flags are legitimate in every case inspected — derived
 > quantities the pool cannot contain (C60's "edge" column is real minus placebo, e.g.
 > −$0.48 − (−$6.87) = +$6.4) and date fragments parsed as negative numbers. The screen is a
 > screen, not a proof; its value is that a *large* unmatched count on an entry whose numbers
@@ -4342,12 +4342,74 @@ success**: the symmetric control completes a round trip on 29 of 30 book-days, k
 9. The sixteen-odd book-days where the position never closed contribute no "trip" to the average
 and all of the loss.
 
-**Contribution.** Closes the negative-gamma quadrant the project had never sampled, and supplies
+**The obvious repair fails too.** The rule's failure mode is that the exit never fills, so the
+natural fix is a **time stop**: hold out, but cross out at the touch after N seconds rather than
+wait indefinitely. Swept at 60s / 300s / 1800s, the stop does exactly what it should to the trip
+count and nothing good to the P&L:
+
+| exit, with stop | $/day | bps of notional | round trips/day | of which **time stops** |
+|---|---|---|---|---|
+| symmetric control | **+$35.39** | +14.15 | 8.6 | — |
+| 3x, stop 1800s | +$3.90 | +1.62 | 33.0 | 30.3 |
+| 3x, stop 300s | −$6.96 | −0.17 | 124.6 | 121.5 |
+| 3x, stop 60s | −$12.50 | −0.24 | 257.0 | **254.7** |
+
+The last column is the whole story: at a 60-second stop, **254 of 257 daily exits are crossings
+rather than fills**. The stop restores the trip count by converting the strategy into one that
+pays the spread on 98% of its exits — precisely the cost a maker exists to avoid. Margin per unit
+of notional collapses to approximately zero. Patience fails because the exit does not fill;
+impatience fails because crossing costs the spread; and there is no horizon in between that
+recovers the symmetric control.
+
+**Contribution.** Closes the negative-gamma quadrant the project had never sampled, in both its
+pure and time-stopped forms, and supplies
 the cleanest in-sample instance of the thesis's fifth mirage (C32, maker fill selection) in a new
 guise: *evaluating only the round trips that completed*. A per-trip statistic conditioned on the
 position having closed is a survivorship statistic, and here it points the opposite way to the
 P&L. The user's own description of the rule — that it "slowly stops being market making" — is
 confirmed quantitatively: at k_out = 4 the strategy completes 0.4 round trips a day.
+
+---
+
+## C70 — Ladder Quoting Changes Nothing, and a Budget Bug That Looked Like a Clean Negative (exp 119)
+
+**Motivation.** The hypothesis register carried this as an outstanding gap: every simulation in
+this thesis posts a **single order per side**, and a real maker ladders. The register's prior was
+that it changes nothing, because C29/C30's queue-priority argument applies at each level
+independently — a ladder is N single-level quotes, each with its own queue, not a way around one.
+
+**Experiment (exp 119).** Exp 111's accounting unchanged (venue tick grid, post-only, inventory
+cap, average-cost matched volume, terminal liquidation). N levels per side at `k0, k0+step, ...`
+from the anchor, sized `size_mult^level`; each level snapped to the grid **independently** and
+levels colliding after snapping dropped, since the exchange holds one order per price. Inventory
+capped across the whole ladder, not per level. `n=1` is exp 111 and is the control. Six HL tail
+books x 5 days.
+
+**Result: nothing, and the nothing is well measured.** Pooled over 30 book-days, mid anchor:
+control +$15.81/day, best ladder (5 levels) +$17.86. Micro anchor: control +$16.70, best ladder
++$15.68. Paired by book-day and bootstrapped **clustered on the coin**, *every one of the ten
+ladder configurations' differences from the control spans zero* — widest +$2.05
+[−$6.85, +$10.57], narrowest −$1.35 [−$6.94, +$4.09]. The register's prior is confirmed.
+
+The per-book differences, though not separable from noise at n=5 days, do run in the direction
+the mechanism predicts: a ladder needs a **grid** to stand on. Gains concentrate on the fine
+grids (CELO, 54.6 ticks/spread: +$14 → +$29; EIGEN: −$11 → +$5) and the one loss is on HMSTR, the
+one-tick book, where snapping leaves barely two distinct levels no matter how many are nominally
+posted (+$91 → +$81). Mean postable levels against five nominal: **3.57**.
+
+**A bug worth recording as method.** The first implementation applied the per-fill notional
+budget to the ladder as a whole, so the first level absorbed it entirely and no deeper level ever
+filled. Every ladder configuration then returned results **identical to the control, to the last
+decimal** — which reads exactly like a clean, strong negative result, and was instead a
+simulator defect. The fix is the economically right comparison anyway: a maker with a fixed risk
+limit splits one clip across its levels rather than posting a full clip at each, so the budget is
+divided by the postable levels. Identical outputs across a swept parameter are evidence that the
+parameter is not wired up, not evidence that it does not matter; the distinction is easy to miss
+when the expected answer is "no effect".
+
+**Contribution.** Closes the last of the register's testable outstanding gaps, confirming that
+the queue-priority argument is per level and that laddering is not a route around it. Documents a
+failure mode of negative results — a sweep that silently does not vary.
 
 ---
 

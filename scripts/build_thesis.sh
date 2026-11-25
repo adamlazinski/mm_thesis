@@ -24,7 +24,7 @@ if [ "${1:-}" != "--check" ]; then
 fi
 
 echo "==> verifying contributions against committed experiment JSONs"
-"$PY" scripts/verify_contributions.py $(seq 1 69) > /tmp/verify_out.txt 2>&1 || true
+"$PY" scripts/verify_contributions.py $(seq 1 70) > /tmp/verify_out.txt 2>&1 || true
 ok=$(grep -c " OK " /tmp/verify_out.txt || true)
 chk=$(grep -c "CHECK" /tmp/verify_out.txt || true)
 mis=$(grep -c "MISMATCH" /tmp/verify_out.txt || true)

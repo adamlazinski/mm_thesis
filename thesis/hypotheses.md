@@ -7,7 +7,7 @@ This is the thesis's organizing skeleton — update the status markers as result
 `⊘` **retracted or superseded by a later contribution**
 
 Cross-references point to numbered entries in [contributions.md](contributions.md)
-(C1–C69) and to experiment folders. The `→` marker on each section head gives the chapter that
+(C1–C70) and to experiment folders. The `→` marker on each section head gives the chapter that
 now carries it.
 
 **Reading the `⊘` entries.** Four entries below — plus the meta-hypothesis itself — were
@@ -305,6 +305,11 @@ rather than below it, which is the register's single most important pattern.
   and its per-trip figure is conditioned on the trips that *closed* — 29/30 book-days for the
   control against 9/30 for the patient version. In A-S terms this is negative γ, a quadrant the
   project's sweeps (5e-5 to 3.7e4, all positive) had never sampled. *(C69)*
+- `✗` **…and a time stop repairs it.** No. Crossing out after 60s restores the trip count (8.6 → 257/day)
+  but **254 of those 257 exits are crossings rather than fills**, so the strategy pays the spread on
+  98% of its unwinds and margin collapses to ≈0 (−$12.50/day against the control's +$35.39).
+  Patience fails because the exit does not fill; impatience fails because crossing costs the
+  spread; no horizon in between recovers the control. *(C69)*
 - `✓` **…and its magnitude is priced by competition, not by technique.** The bridge control is the cleanest
   evidence in the thesis: USUAL, same coin and same strategy, fell from **+32.4 bps in July to
   −1.0 bps in August** (15 of 16 configurations fall; median 16.6 bps) as the tail's widest spread
@@ -353,8 +358,13 @@ rather than below it, which is the register's single most important pattern.
   empirical gap. Ch2 §8's dealer-window prediction is confirmed affirmatively on Hyperliquid's tail (C66),
   but Hyperliquid is a decentralised venue with a different participant mix and fee structure. The tick
   screen should precede the data purchase.
-- `⧖` **Ladder / multi-level quoting changes the verdict.** Never tested; single-order throughout. The
-  queue-priority argument applies per level, so the prior is that it does not.
+- `✗` **Ladder / multi-level quoting changes the verdict.** Tested 2026-11-25 and it does not — the
+  prior was right. Over 30 book-days, **every one of ten ladder configurations' paired differences
+  from the single-order control spans zero** (cluster bootstrap on coin; widest +$2.05
+  [−$6.85, +$10.57]). The queue-priority argument applies per level, as C29/C30 implies. What
+  per-book variation there is runs with grid fineness — gains on CELO (54.6 ticks/spread) and
+  EIGEN, the one loss on HMSTR, the one-tick book where snapping leaves barely two distinct levels
+  out of five nominal. A ladder needs a grid to stand on. *(C70)*
 - `⧖` **The market reacts to our own orders.** Every result is frozen-tape, which biases *toward* the
   strategy. Ch7's disappearing touch is direct evidence the channel is active and unmodelled.
 
