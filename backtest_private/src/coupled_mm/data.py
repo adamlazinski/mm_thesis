@@ -63,17 +63,23 @@ def _validate_price(price: Decimal, instrument: Instrument, label: str, row_numb
 
 
 def _validate_ordering(events: Iterable[BookQuote | Trade], path: Path) -> None:
-    previous: tuple[datetime, int] | None = None
-    seen: set[tuple[datetime, str, int]] = set()
+    previous_timestamp: datetime | None = None
+    previous_sequence: dict[str, int] = {}
+    seen_sequences: set[tuple[str, int]] = set()
     for event in events:
-        current = (event.timestamp, event.sequence)
-        if previous is not None and current < previous:
-            raise ValueError(f"{path}: rows are not sorted by timestamp/sequence")
-        previous = current
-        key = (event.timestamp, event.contract_id, event.sequence)
-        if key in seen:
-            raise ValueError(f"{path}: duplicate timestamp/contract/sequence key {key}")
-        seen.add(key)
+        if previous_timestamp is not None and event.timestamp < previous_timestamp:
+            raise ValueError(f"{path}: rows are not sorted by timestamp")
+        previous_timestamp = event.timestamp
+        prior = previous_sequence.get(event.contract_id)
+        if prior is not None and event.sequence <= prior:
+            raise ValueError(
+                f"{path}: sequence must increase within contract {event.contract_id!r}"
+            )
+        previous_sequence[event.contract_id] = event.sequence
+        key = (event.contract_id, event.sequence)
+        if key in seen_sequences:
+            raise ValueError(f"{path}: duplicate contract/sequence key {key}")
+        seen_sequences.add(key)
 
 
 def load_quotes(path: str | Path, instruments: dict[str, Instrument]) -> list[BookQuote]:
@@ -112,10 +118,16 @@ def load_quotes(path: str | Path, instruments: dict[str, Instrument]) -> list[Bo
 def load_trades(path: str | Path, instruments: dict[str, Instrument]) -> list[Trade]:
     csv_path = Path(path)
     events: list[Trade] = []
+    seen_trade_ids: set[str] = set()
     with csv_path.open(newline="", encoding="utf-8-sig") as handle:
         reader = csv.DictReader(handle)
         _headers(csv_path, reader.fieldnames, TRADE_COLUMNS)
         for row_number, row in enumerate(reader, start=2):
+            trade_id = (row.get("trade_id") or "").strip()
+            if trade_id:
+                if trade_id in seen_trade_ids:
+                    raise ValueError(f"{csv_path}: duplicate trade_id {trade_id!r}")
+                seen_trade_ids.add(trade_id)
             contract_id = row["contract_id"].strip()
             if contract_id not in instruments:
                 raise ValueError(f"row {row_number}: unknown contract_id {contract_id!r}")
@@ -144,4 +156,3 @@ def load_trades(path: str | Path, instruments: dict[str, Instrument]) -> list[Tr
             events.append(event)
     _validate_ordering(events, csv_path)
     return events
-

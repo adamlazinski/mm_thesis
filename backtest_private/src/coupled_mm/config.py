@@ -37,6 +37,8 @@ class PairConfig:
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "target_spread_b_minus_a", decimal(self.target_spread_b_minus_a))
+        if not self.target_spread_b_minus_a.is_finite():
+            raise ValueError("target spread must be finite")
         if not self.leg_a or not self.leg_b or self.leg_a == self.leg_b:
             raise ValueError("leg_a and leg_b must be distinct non-empty IDs")
 
@@ -70,9 +72,9 @@ class StrategyConfig:
     half_width_a: object
     half_width_b: object
     quote_interval_ms: int
-    target_weight_start: float
-    target_weight_end: float
-    convergence_gamma: float
+    target_weight_start: object
+    target_weight_end: object
+    convergence_gamma: object
     confidence_a: object
     confidence_b: object
     inventory_skew_common: object
@@ -88,8 +90,25 @@ class StrategyConfig:
             "confidence_b",
             "inventory_skew_common",
             "inventory_skew_spread",
+            "target_weight_start",
+            "target_weight_end",
+            "convergence_gamma",
         ):
             object.__setattr__(self, field_name, decimal(getattr(self, field_name)))
+        numeric_fields = (
+            "order_quantity",
+            "half_width_a",
+            "half_width_b",
+            "confidence_a",
+            "confidence_b",
+            "inventory_skew_common",
+            "inventory_skew_spread",
+            "target_weight_start",
+            "target_weight_end",
+            "convergence_gamma",
+        )
+        if not all(getattr(self, name).is_finite() for name in numeric_fields):
+            raise ValueError("strategy numerics must be finite")
         if self.order_quantity <= 0:
             raise ValueError("order_quantity must be positive")
         if self.half_width_a <= 0 or self.half_width_b <= 0:
@@ -106,6 +125,8 @@ class StrategyConfig:
             raise ValueError("convergence_gamma must be positive")
         if self.confidence_a <= 0 or self.confidence_b <= 0:
             raise ValueError("confidences must be positive")
+        if self.inventory_skew_common < 0 or self.inventory_skew_spread < 0:
+            raise ValueError("inventory skews cannot be negative")
 
 
 @dataclass(frozen=True, slots=True)
@@ -123,6 +144,8 @@ class RiskConfig:
             "max_gross_mwh",
         ):
             object.__setattr__(self, field_name, decimal(getattr(self, field_name)))
+            if not getattr(self, field_name).is_finite():
+                raise ValueError(f"{field_name} must be finite")
             if getattr(self, field_name) <= 0:
                 raise ValueError(f"{field_name} must be positive")
 
@@ -148,6 +171,8 @@ class ExecutionConfig:
             "taker_fee_rate",
         ):
             object.__setattr__(self, field_name, decimal(getattr(self, field_name)))
+            if not getattr(self, field_name).is_finite():
+                raise ValueError(f"{field_name} must be finite")
         if self.new_order_latency_ms < 0 or self.cancel_latency_ms < 0:
             raise ValueError("latencies cannot be negative")
         if self.fill_model not in {"trade_queue", "quote_through"}:
@@ -260,9 +285,9 @@ def config_from_dict(raw: dict[str, Any]) -> BacktestConfig:
         half_width_a=_require(strategy_raw, "half_width_a"),
         half_width_b=_require(strategy_raw, "half_width_b"),
         quote_interval_ms=int(strategy_raw.get("quote_interval_ms", 1_000)),
-        target_weight_start=float(strategy_raw.get("target_weight_start", 0.0)),
-        target_weight_end=float(strategy_raw.get("target_weight_end", 1.0)),
-        convergence_gamma=float(strategy_raw.get("convergence_gamma", 1.0)),
+        target_weight_start=strategy_raw.get("target_weight_start", 0),
+        target_weight_end=strategy_raw.get("target_weight_end", 1),
+        convergence_gamma=strategy_raw.get("convergence_gamma", 1),
         confidence_a=strategy_raw.get("confidence_a", 1),
         confidence_b=strategy_raw.get("confidence_b", 1),
         inventory_skew_common=strategy_raw.get("inventory_skew_common", 0),

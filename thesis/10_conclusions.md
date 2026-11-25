@@ -455,7 +455,12 @@ manufactures large negative autocorrelation that vanishes per instrument.
   a day. These are real strategies at a scale that will not support a fund, and the small scale
   is causally connected to their existence.
 - **Frozen-tape simulation.** No result models the market's reaction to our own orders. This
-  biases *toward* the strategy, and every positive result should be read accordingly.
+  biases *toward* the strategy, and every positive result should be read accordingly. Two parts
+  of that bias are now sized rather than asserted (Contribution 72): the median maker's fill rate
+  falls as 1/M when competitors enter, so joining one of Chapter 8's books dilutes the incumbents
+  and would dilute us; and the simulated maker runs at 0.82× the busiest real participant's fill
+  rate across the thirty book-days — **but 1.4 to 3.0× on HMSTR**, the largest contributor to the
+  premium, which is a queue position no real wallet held.
 - **No genuinely wide centralised book.** After Contribution 54, every centralised instrument
   tested has a spread of one true tick or nearly so. Chapter 2 §8's dealer-window prediction is
   confirmed on Hyperliquid's tail, but Hyperliquid is a decentralised venue with a different
@@ -512,10 +517,15 @@ manufactures large negative autocorrelation that vanishes per instrument.
   vendor data, and run the signal-conditioned inside-spread grid there with real L2 depth. This
   is the one prediction of Chapter 2 that remains untested on the venue class it was made about,
   and the tick screen should precede the data purchase.
-- **Model the reaction to our own orders.** Every result here is frozen-tape. A queue-reactive
-  simulator — even a crude one, in which the far side's makers withdraw on the same signal the
-  strategy acts on — would put an upper bound on how much of Part II's edge survives being
-  traded, and Chapter 7's disappearing touch is direct evidence that this channel is active.
+- **Model the reaction to our own orders — but note that half of it is now measured rather than
+  modelled.** Every simulation here is frozen-tape. The standard remedy is a queue-reactive
+  simulator, whose output is a monotone function of assumed reaction parameters. Contribution 72
+  shows that on a transparent venue the central quantity need not be assumed: with the filled
+  `maker_wallet` on every trade, maker entry is a natural experiment, and the median maker's fill
+  rate is measured to scale as 1/M. What a reactive simulator would still add is the *dynamic* —
+  whether competitors withdraw in response to **our** quote specifically, which entry data cannot
+  separate from entry itself. That remains worth building, and it is now a narrower question than
+  it was.
 - **Push the venue-clock law past three orders of magnitude.** The adverse-selection horizon
   spans 15 ms to beyond ten seconds across the venues captured here. Testing it on venue classes
   not represented — other decentralised exchanges, regional centralised venues, tokenised

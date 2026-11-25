@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from coupled_mm.data import load_quotes, parse_timestamp
+from coupled_mm.data import load_quotes, load_trades, parse_timestamp
 from coupled_mm.domain import Instrument
 
 
@@ -61,3 +61,31 @@ def test_crossed_book_is_rejected(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="ask_price > bid_price"):
         load_quotes(path, _instruments())
 
+
+def test_sequence_is_validated_per_contract_not_globally(tmp_path: Path) -> None:
+    path = tmp_path / "quotes.csv"
+    path.write_text(
+        "timestamp,contract_id,bid_price,bid_size,ask_price,ask_size,sequence\n"
+        "2026-01-15T11:00:00+01:00,A,99.5,8,100.0,10,100\n"
+        "2026-01-15T11:00:00+01:00,B,99.5,8,100.0,10,1\n",
+        encoding="utf-8",
+    )
+    instruments = {
+        "A": Instrument("A", tick_size=Decimal("0.5")),
+        "B": Instrument("B", tick_size=Decimal("0.5")),
+    }
+
+    assert len(load_quotes(path, instruments)) == 2
+
+
+def test_duplicate_trade_id_is_rejected(tmp_path: Path) -> None:
+    path = tmp_path / "trades.csv"
+    path.write_text(
+        "timestamp,contract_id,price,size,aggressor_side,trade_id,sequence\n"
+        "2026-01-15T11:00:00+01:00,A,99.5,1,SELL,T1,1\n"
+        "2026-01-15T11:00:01+01:00,A,99.5,1,SELL,T1,2\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="duplicate trade_id"):
+        load_trades(path, _instruments())

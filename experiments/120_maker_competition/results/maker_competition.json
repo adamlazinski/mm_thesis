@@ -1,0 +1,328 @@
+{
+  "n_book_hours": 1057,
+  "n_books": 12,
+  "elasticities": {
+    "fills_top": {
+      "beta_M": -0.5216,
+      "se": 0.0348,
+      "beta_flow": 1.0295,
+      "n": 1054
+    },
+    "fills_med": {
+      "beta_M": -0.9133,
+      "se": 0.0514,
+      "beta_flow": 0.6787,
+      "n": 1054
+    },
+    "usd_top": {
+      "beta_M": -0.078,
+      "se": 0.0766,
+      "beta_flow": 1.2563,
+      "n": 1054
+    }
+  },
+  "fill_validation": [
+    {
+      "book": "HL_CELO",
+      "date": "2026-07-17",
+      "M": 29,
+      "sim_fills_day": 1177.1,
+      "real_top_fills_day": 2212.0,
+      "real_median_fills_day": 6.83,
+      "sim_over_top": 0.532,
+      "sim_over_median": 172.2
+    },
+    {
+      "book": "HL_CELO",
+      "date": "2026-07-18",
+      "M": 34,
+      "sim_fills_day": 1175.2,
+      "real_top_fills_day": 2109.0,
+      "real_median_fills_day": 5.0,
+      "sim_over_top": 0.557,
+      "sim_over_median": 235.0
+    },
+    {
+      "book": "HL_CELO",
+      "date": "2026-07-19",
+      "M": 44,
+      "sim_fills_day": 1175.1,
+      "real_top_fills_day": 2080.3,
+      "real_median_fills_day": 3.0,
+      "sim_over_top": 0.565,
+      "sim_over_median": 391.4
+    },
+    {
+      "book": "HL_CELO",
+      "date": "2026-07-20",
+      "M": 33,
+      "sim_fills_day": 1131.5,
+      "real_top_fills_day": 2140.7,
+      "real_median_fills_day": 5.0,
+      "sim_over_top": 0.529,
+      "sim_over_median": 226.2
+    },
+    {
+      "book": "HL_CELO",
+      "date": "2026-07-21",
+      "M": 35,
+      "sim_fills_day": 1224.1,
+      "real_top_fills_day": 2285.1,
+      "real_median_fills_day": 3.5,
+      "sim_over_top": 0.536,
+      "sim_over_median": 349.8
+    },
+    {
+      "book": "HL_EIGEN",
+      "date": "2026-07-17",
+      "M": 78,
+      "sim_fills_day": 2228.0,
+      "real_top_fills_day": 2313.3,
+      "real_median_fills_day": 22.06,
+      "sim_over_top": 0.963,
+      "sim_over_median": 101.0
+    },
+    {
+      "book": "HL_EIGEN",
+      "date": "2026-07-18",
+      "M": 101,
+      "sim_fills_day": 1697.9,
+      "real_top_fills_day": 1536.8,
+      "real_median_fills_day": 3.74,
+      "sim_over_top": 1.105,
+      "sim_over_median": 453.7
+    },
+    {
+      "book": "HL_EIGEN",
+      "date": "2026-07-19",
+      "M": 80,
+      "sim_fills_day": 1370.2,
+      "real_top_fills_day": 1237.1,
+      "real_median_fills_day": 5.0,
+      "sim_over_top": 1.108,
+      "sim_over_median": 273.8
+    },
+    {
+      "book": "HL_EIGEN",
+      "date": "2026-07-20",
+      "M": 104,
+      "sim_fills_day": 1530.5,
+      "real_top_fills_day": 1374.3,
+      "real_median_fills_day": 4.5,
+      "sim_over_top": 1.114,
+      "sim_over_median": 340.0
+    },
+    {
+      "book": "HL_EIGEN",
+      "date": "2026-07-21",
+      "M": 84,
+      "sim_fills_day": 1270.5,
+      "real_top_fills_day": 1203.6,
+      "real_median_fills_day": 7.0,
+      "sim_over_top": 1.056,
+      "sim_over_median": 181.6
+    },
+    {
+      "book": "HL_HMSTR",
+      "date": "2026-07-17",
+      "M": 34,
+      "sim_fills_day": 1513.9,
+      "real_top_fills_day": 1088.1,
+      "real_median_fills_day": 34.22,
+      "sim_over_top": 1.391,
+      "sim_over_median": 44.2
+    },
+    {
+      "book": "HL_HMSTR",
+      "date": "2026-07-18",
+      "M": 49,
+      "sim_fills_day": 1022.6,
+      "real_top_fills_day": 646.2,
+      "real_median_fills_day": 21.25,
+      "sim_over_top": 1.582,
+      "sim_over_median": 48.1
+    },
+    {
+      "book": "HL_HMSTR",
+      "date": "2026-07-19",
+      "M": 43,
+      "sim_fills_day": 790.0,
+      "real_top_fills_day": 500.3,
+      "real_median_fills_day": 23.02,
+      "sim_over_top": 1.579,
+      "sim_over_median": 34.3
+    },
+    {
+      "book": "HL_HMSTR",
+      "date": "2026-07-20",
+      "M": 58,
+      "sim_fills_day": 1049.6,
+      "real_top_fills_day": 592.4,
+      "real_median_fills_day": 13.56,
+      "sim_over_top": 1.772,
+      "sim_over_median": 77.4
+    },
+    {
+      "book": "HL_HMSTR",
+      "date": "2026-07-21",
+      "M": 40,
+      "sim_fills_day": 956.0,
+      "real_top_fills_day": 315.1,
+      "real_median_fills_day": 28.16,
+      "sim_over_top": 3.034,
+      "sim_over_median": 33.9
+    },
+    {
+      "book": "HL_USUAL",
+      "date": "2026-07-17",
+      "M": 25,
+      "sim_fills_day": 777.4,
+      "real_top_fills_day": 918.5,
+      "real_median_fills_day": 6.74,
+      "sim_over_top": 0.846,
+      "sim_over_median": 115.4
+    },
+    {
+      "book": "HL_USUAL",
+      "date": "2026-07-18",
+      "M": 39,
+      "sim_fills_day": 972.7,
+      "real_top_fills_day": 1021.9,
+      "real_median_fills_day": 14.96,
+      "sim_over_top": 0.952,
+      "sim_over_median": 65.0
+    },
+    {
+      "book": "HL_USUAL",
+      "date": "2026-07-19",
+      "M": 38,
+      "sim_fills_day": 1068.0,
+      "real_top_fills_day": 1050.1,
+      "real_median_fills_day": 20.02,
+      "sim_over_top": 1.017,
+      "sim_over_median": 53.3
+    },
+    {
+      "book": "HL_USUAL",
+      "date": "2026-07-20",
+      "M": 37,
+      "sim_fills_day": 950.5,
+      "real_top_fills_day": 904.3,
+      "real_median_fills_day": 25.01,
+      "sim_over_top": 1.051,
+      "sim_over_median": 38.0
+    },
+    {
+      "book": "HL_USUAL",
+      "date": "2026-07-21",
+      "M": 39,
+      "sim_fills_day": 1076.2,
+      "real_top_fills_day": 1092.8,
+      "real_median_fills_day": 31.57,
+      "sim_over_top": 0.985,
+      "sim_over_median": 34.1
+    },
+    {
+      "book": "HL_VINE",
+      "date": "2026-07-17",
+      "M": 13,
+      "sim_fills_day": 672.2,
+      "real_top_fills_day": 839.4,
+      "real_median_fills_day": 18.1,
+      "sim_over_top": 0.801,
+      "sim_over_median": 37.1
+    },
+    {
+      "book": "HL_VINE",
+      "date": "2026-07-18",
+      "M": 30,
+      "sim_fills_day": 487.0,
+      "real_top_fills_day": 1217.3,
+      "real_median_fills_day": 9.36,
+      "sim_over_top": 0.4,
+      "sim_over_median": 52.0
+    },
+    {
+      "book": "HL_VINE",
+      "date": "2026-07-19",
+      "M": 36,
+      "sim_fills_day": 450.1,
+      "real_top_fills_day": 909.7,
+      "real_median_fills_day": 6.0,
+      "sim_over_top": 0.495,
+      "sim_over_median": 75.0
+    },
+    {
+      "book": "HL_VINE",
+      "date": "2026-07-20",
+      "M": 41,
+      "sim_fills_day": 449.8,
+      "real_top_fills_day": 921.9,
+      "real_median_fills_day": 8.01,
+      "sim_over_top": 0.488,
+      "sim_over_median": 56.2
+    },
+    {
+      "book": "HL_VINE",
+      "date": "2026-07-21",
+      "M": 46,
+      "sim_fills_day": 707.8,
+      "real_top_fills_day": 2047.2,
+      "real_median_fills_day": 12.25,
+      "sim_over_top": 0.346,
+      "sim_over_median": 57.8
+    },
+    {
+      "book": "HL_ZORA",
+      "date": "2026-07-17",
+      "M": 40,
+      "sim_fills_day": 1331.4,
+      "real_top_fills_day": 1936.1,
+      "real_median_fills_day": 6.94,
+      "sim_over_top": 0.688,
+      "sim_over_median": 191.9
+    },
+    {
+      "book": "HL_ZORA",
+      "date": "2026-07-18",
+      "M": 45,
+      "sim_fills_day": 1210.5,
+      "real_top_fills_day": 1825.6,
+      "real_median_fills_day": 6.23,
+      "sim_over_top": 0.663,
+      "sim_over_median": 194.1
+    },
+    {
+      "book": "HL_ZORA",
+      "date": "2026-07-19",
+      "M": 60,
+      "sim_fills_day": 1137.5,
+      "real_top_fills_day": 1595.0,
+      "real_median_fills_day": 4.0,
+      "sim_over_top": 0.713,
+      "sim_over_median": 284.2
+    },
+    {
+      "book": "HL_ZORA",
+      "date": "2026-07-20",
+      "M": 55,
+      "sim_fills_day": 1062.6,
+      "real_top_fills_day": 1523.1,
+      "real_median_fills_day": 3.0,
+      "sim_over_top": 0.698,
+      "sim_over_median": 353.9
+    },
+    {
+      "book": "HL_ZORA",
+      "date": "2026-07-21",
+      "M": 48,
+      "sim_fills_day": 1174.3,
+      "real_top_fills_day": 1824.3,
+      "real_median_fills_day": 3.5,
+      "sim_over_top": 0.644,
+      "sim_over_median": 335.7
+    }
+  ],
+  "sim_over_top_median": 0.824,
+  "sim_over_median_median": 108.2
+}

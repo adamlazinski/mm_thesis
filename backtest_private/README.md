@@ -38,6 +38,11 @@ Fixture jest syntetyczny i łatwy do ręcznego sprawdzenia:
 Pełny format wejścia opisuje [docs/csv_schema.md](docs/csv_schema.md), a założenia
 silnika i sprzężonego fair value — [docs/design.md](docs/design.md).
 
+Obok konfiguracji coupled są dwa obowiązkowe kontrolne warianty na ten sam
+tape: `configs/independent.json` wyłącza wagę targetu, a
+`configs/placebo.json` odwraca target na `+5`. Przewaga strategii ma znaczenie
+dopiero wtedy, gdy coupled pokonuje oba przy identycznym execution i limitach.
+
 ## Co konfiguruje przykład
 
 `configs/example.json` ustawia tick `0.5`, sesję 11:00–11:45 w strefie
@@ -66,6 +71,12 @@ To nadal przybliżenie oparte na L1:
 - końcowa pozycja jest zamykana po wykonywalnym bid/ask, a nie po midzie lub
   terminalnym targecie.
 
+Wymuszone wyjście nie może przekroczyć widocznego rozmiaru L1. Jeśli pozycja
+jest większa, run dostaje status `incomplete_exit` zamiast dopisywać fikcyjny
+fill. `exit_slippage_ticks` pozwala dodatkowo pogorszyć cenę dla mieszczącego
+się w L1 wyjścia; po dostarczeniu depthu L2 ten prosty model należy zastąpić
+rzeczywistym sweepem kolejnych poziomów.
+
 Wynik należy więc czytać jako rezultat pod jawnymi założeniami execution, nie
 jako dowód, że historycznie nieobecne zlecenia na pewno dostałyby takie fille.
 Sensowny eksperyment powinien obejmować kilka wartości `queue_fraction`, opłat
@@ -85,4 +96,6 @@ Zakres obejmuje walidowany JSON/CSV, przyczynowy replay zdarzeń, sprzężone fa
 value, pozycje i limity obu nóg, latency, kolejkę L1 oraz wymuszone wyjście o
 11:45. Kolejne kroki po wgraniu prywatnych danych to adapter ich dokładnego
 schematu, kalibracja wykonania, testy wielu dni oraz baseline i sensitivity
-analysis bez lookaheadu.
+analysis bez lookaheadu. W szczególności końcowy IOC ma w MVP zerową taker
+latency; przed oceną realnego wyniku trzeba dodać latency i sweep L2 właściwe dla
+konkretnego venue.

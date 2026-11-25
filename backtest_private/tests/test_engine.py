@@ -9,7 +9,16 @@ from coupled_mm.config import (
     SessionConfig,
     StrategyConfig,
 )
-from coupled_mm.domain import BookQuote, Fill, FillKind, Instrument, OrderStatus, Side
+from coupled_mm.domain import (
+    AggressorSide,
+    BookQuote,
+    Fill,
+    FillKind,
+    Instrument,
+    OrderStatus,
+    Side,
+    Trade,
+)
 from coupled_mm.engine import BacktestEngine
 
 
@@ -21,7 +30,11 @@ def _at(hour: int, minute: int, second: int, microsecond: int = 0) -> datetime:
     return DAY.replace(hour=hour, minute=minute, second=second, microsecond=microsecond)
 
 
-def _config(*, max_quote_age_ms: int = 1_000) -> BacktestConfig:
+def _config(
+    *,
+    max_quote_age_ms: int = 1_000,
+    quote_interval_ms: int = 100,
+) -> BacktestConfig:
     return BacktestConfig(
         pair=PairConfig("A", "B", "-5"),
         instruments={
@@ -40,7 +53,7 @@ def _config(*, max_quote_age_ms: int = 1_000) -> BacktestConfig:
             order_quantity="1",
             half_width_a="0.5",
             half_width_b="0.5",
-            quote_interval_ms=100,
+            quote_interval_ms=quote_interval_ms,
             target_weight_start=0,
             target_weight_end=1,
             convergence_gamma=1,
@@ -153,3 +166,89 @@ def test_stale_book_with_inventory_marks_session_as_incomplete_exit() -> None:
     assert not [fill for fill in result.fills if fill.kind is FillKind.EXIT]
     assert result.summary["end_positions"]["A"] == D("1")
     assert result.summary["status"] == "incomplete"
+
+
+def test_stale_quote_timer_cancels_orders_before_a_late_trade_can_fill() -> None:
+    engine = BacktestEngine(_config(max_quote_age_ms=1_000))
+    start = _at(11, 0, 0)
+    late_trade = Trade(
+        _at(11, 0, 10),
+        "A",
+        D("99.5"),
+        D("10"),
+        AggressorSide.SELL,
+    )
+    final = _at(11, 44, 59, 900_000)
+
+    result = engine.run(
+        [
+            _quote(start, "A"),
+            _quote(start, "B"),
+            late_trade,
+            _quote(final, "A"),
+            _quote(final, "B"),
+        ]
+    )
+
+    assert not [fill for fill in result.fills if fill.kind is FillKind.MAKER]
+    assert result.sessions[0].status == "complete"
+
+
+def test_decision_timer_reprices_relation_without_new_market_event() -> None:
+    engine = BacktestEngine(
+        _config(max_quote_age_ms=3_600_000, quote_interval_ms=15 * 60 * 1_000)
+    )
+    start = _at(11, 0, 0)
+    final = _at(11, 44, 59, 900_000)
+
+    result = engine.run(
+        [
+            _quote(start, "A"),
+            _quote(start, "B"),
+            _quote(final, "A"),
+            _quote(final, "B"),
+        ]
+    )
+
+    assert any(order.submitted_at == _at(11, 30, 0) for order in result.orders)
+    assert result.sessions[0].status == "complete"
+
+
+def test_previous_days_other_leg_is_not_used_for_new_session_quotes() -> None:
+    config = _config(max_quote_age_ms=100_000_000, quote_interval_ms=60_000)
+    engine = BacktestEngine(config)
+    day_two = DAY.replace(day=16)
+    events = [
+        _quote(_at(11, 44, 59, 900_000), "A"),
+        _quote(_at(11, 44, 59, 900_000), "B"),
+        _quote(day_two.replace(hour=11, minute=0, second=0), "A"),
+        _quote(day_two.replace(hour=11, minute=0, second=1), "B"),
+        _quote(day_two.replace(hour=11, minute=44, second=59, microsecond=900_000), "A"),
+        _quote(day_two.replace(hour=11, minute=44, second=59, microsecond=900_000), "B"),
+    ]
+
+    result = engine.run(events)
+    day_two_orders = [
+        order
+        for order in result.orders
+        if order.submitted_at.date() == day_two.date()
+    ]
+
+    assert day_two_orders
+    assert min(order.submitted_at for order in day_two_orders) == day_two.replace(
+        hour=11, minute=0, second=1
+    )
+
+
+def test_exit_never_invents_more_size_than_visible_l1_depth() -> None:
+    engine = BacktestEngine(_config())
+    _seed_position(engine, "A", Side.BID, "11")
+    final = _at(11, 44, 59, 900_000)
+
+    result = engine.run([_quote(final, "A"), _quote(final, "B")])
+
+    assert result.sessions[0].status == "incomplete_exit"
+    assert "insufficient L1 exit depth" in result.sessions[0].message
+    assert result.summary["net_pnl"] is None
+    assert result.summary["marked_liquidation_pnl"] is None
+    assert not [fill for fill in result.fills if fill.kind is FillKind.EXIT]

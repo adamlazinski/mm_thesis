@@ -6,8 +6,8 @@ Binance Spot, May–Jun 2025, Jun–Jul 2025, and April 2026).
 
 > **Verification status (2026-11-19).** `scripts/verify_contributions.py` pools every number
 > in the experiment JSONs each entry names and checks the entry's table cells and bold figures
-> against that pool at 1.2% tolerance. Of the 71 entries, **49 name at least one experiment and
-> are machine-checked**: 37 match every claim and 12 carry a small number of unmatched values. The flags are legitimate in every case inspected — derived
+> against that pool at 1.2% tolerance. Of the 72 entries, **50 name at least one experiment and
+> are machine-checked**: 38 match every claim and 12 carry a small number of unmatched values. The flags are legitimate in every case inspected — derived
 > quantities the pool cannot contain (C60's "edge" column is real minus placebo, e.g.
 > −$0.48 − (−$6.87) = +$6.4) and date fragments parsed as negative numbers. The screen is a
 > screen, not a proof; its value is that a *large* unmatched count on an entry whose numbers
@@ -4476,6 +4476,72 @@ measure it is a cross-venue capture running through an event like 2025-10-10.
 measurement on the half of it that the data can reach, and specifies exactly what data would
 reach the other half. Supplies a counter-example to the intuition that stress testing a
 negative result can only confirm it.
+
+---
+
+## C72 — The Competition Elasticity Is 1/M, and the Simulated Maker Out-Fills the Busiest Real One on HMSTR (exp 120)
+
+**Motivation.** Every result in this thesis is frozen-tape: the market does not react to our own
+orders. The standard remedy is a queue-reactive simulator, which requires *assuming* a reaction
+model — whether competitors withdraw when we quote, at what latency, with what probability. None
+of those is measured, so the output is a monotone function of the assumptions, and an
+acknowledged optimism would be replaced by an unacknowledged parameter choice.
+
+On Hyperliquid it does not have to be assumed. Every trade carries the **`maker_wallet` that was
+filled**, so the competitive structure of the book is directly observable, and the entry of a new
+maker is a natural experiment for exactly the counterfactual "what if we joined this book".
+
+**Measurement 1: the competition elasticity.** Per book-hour, M = distinct maker wallets filled.
+Regressing `log(incumbent fills)` on `log(M)` and `log(total flow)` with book fixed effects, over
+**1,057 book-hours across 12 books**:
+
+| incumbent | elasticity to M | 95% CI | elasticity to flow |
+|---|---|---|---|
+| **median maker's fills** | **−0.913** (se 0.051) | **[−1.014, −0.813]** | +0.68 |
+| top maker's fills | −0.522 (se 0.035) | [−0.590, −0.453] | +1.03 |
+| top maker's **notional** | −0.078 (se 0.077) | [−0.228, +0.072] | +1.26 |
+
+The median maker's fill rate scales as **1/M to within the measurement error — the interval
+contains −1.000 exactly**. This is Grossman-Miller's `1/M` (Ch2 §7), which this thesis has
+invoked since Chapter 2 and never measured. Adding a maker to one of these books costs the
+typical incumbent proportionally, as the theory requires.
+
+**The dilution is not uniform, and that is the second finding.** The *top* maker is largely
+insulated: its fill count falls at half the rate (−0.52), and its **notional does not fall at
+all** (−0.08, interval containing zero). Competition arrives and the dominant participant keeps
+its volume while the median participant is diluted one-for-one. That is a queue-priority result
+obtained from outside the simulator: C29/C30 argued that the rent accrues to whoever is at the
+front, and here the front is observably protected from entry while the middle of the book is not.
+
+**Measurement 2: validating the fill model against ground truth.** The project's fill model has
+been audited against L2 queue clearing (C20's 41x) but never against *what real makers on the
+same book actually achieved*. Comparing exp 103's simulated fills/day with the per-wallet fills
+on the same thirty book-days:
+
+| book | simulated / busiest real maker |
+|---|---|
+| **HMSTR** | **1.58** |
+| EIGEN | 1.10 |
+| USUAL | 0.98 |
+| ZORA | 0.69 |
+| CELO | 0.54 |
+| VINE | 0.49 |
+
+Median across 30 book-days: **0.82x the busiest real participant, and 108x the median one.**
+
+Two readings, both true. The simulator is modelling an *aggressive, top-decile* maker rather
+than a marginal one — which is what the chapter intends, and on four of six books it sits at or
+below what a real participant achieved. But **on HMSTR it takes 1.4 to 3.0 times more fills than
+the single busiest wallet on the book**, which is not an attainable queue position: that wallet
+won its fills against 34-58 competitors and the simulator did not compete for them. HMSTR is also
+the largest contributor to C66's premium (+13.36bps), so the qualification lands where it matters
+most.
+
+**Contribution.** Replaces the frozen-tape assumption with two measurements where the literature
+and this project would both have used a model. Supplies the first direct empirical estimate of
+Grossman-Miller's `1/M` in this thesis, finds it holds for the median maker and fails for the
+top one, and gives the fill model its first validation against observed per-participant fill
+rates — which it passes on four of six books and fails on the one that matters most.
 
 ---
 

@@ -64,4 +64,3 @@ def test_common_and_spread_mark_decomposition_is_exact() -> None:
     assert portfolio.common_mtm_pnl == 0
     assert portfolio.spread_mtm_pnl == Decimal("10")
     assert portfolio.equity_mid(new) == Decimal("10")
-

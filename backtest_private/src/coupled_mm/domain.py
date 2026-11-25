@@ -59,6 +59,7 @@ class FillKind(str, Enum):
 
 
 class TimerKind(str, Enum):
+    DECISION = "decision"
     QUOTE_CUTOFF = "quote_cutoff"
     EXIT = "exit"
 
@@ -72,8 +73,13 @@ class Instrument:
     allow_negative_price: bool = True
 
     def __post_init__(self) -> None:
+        for name in ("tick_size", "lot_size", "mwh_per_lot"):
+            object.__setattr__(self, name, decimal(getattr(self, name)))
         if not self.contract_id:
             raise ValueError("contract_id cannot be empty")
+        numeric_values = (self.tick_size, self.lot_size, self.mwh_per_lot)
+        if not all(value.is_finite() for value in numeric_values):
+            raise ValueError("instrument numerics must be finite")
         if self.tick_size <= 0 or self.lot_size <= 0 or self.mwh_per_lot <= 0:
             raise ValueError("tick_size, lot_size and mwh_per_lot must be positive")
 
@@ -90,8 +96,15 @@ class BookQuote:
     source_row: int = 0
 
     def __post_init__(self) -> None:
+        for name in ("bid_price", "ask_price", "bid_size", "ask_size"):
+            object.__setattr__(self, name, decimal(getattr(self, name)))
         if self.timestamp.tzinfo is None or self.timestamp.utcoffset() is None:
             raise ValueError("timestamp must be timezone-aware")
+        if not all(
+            value.is_finite()
+            for value in (self.bid_price, self.ask_price, self.bid_size, self.ask_size)
+        ):
+            raise ValueError("book numerics must be finite")
         if self.ask_price <= self.bid_price:
             raise ValueError("book must have ask_price > bid_price")
         if self.bid_size < 0 or self.ask_size < 0:
@@ -113,8 +126,12 @@ class Trade:
     source_row: int = 0
 
     def __post_init__(self) -> None:
+        object.__setattr__(self, "price", decimal(self.price))
+        object.__setattr__(self, "size", decimal(self.size))
         if self.timestamp.tzinfo is None or self.timestamp.utcoffset() is None:
             raise ValueError("timestamp must be timezone-aware")
+        if not self.price.is_finite() or not self.size.is_finite():
+            raise ValueError("trade numerics must be finite")
         if self.size <= 0:
             raise ValueError("trade size must be positive")
 
@@ -147,6 +164,10 @@ class Order:
     closed_at: datetime | None = None
 
     def __post_init__(self) -> None:
+        self.price = decimal(self.price)
+        self.quantity = decimal(self.quantity)
+        if not self.price.is_finite() or not self.quantity.is_finite():
+            raise ValueError("order numerics must be finite")
         if self.quantity <= 0:
             raise ValueError("order quantity must be positive")
         self.remaining = self.quantity
@@ -174,6 +195,20 @@ class Fill:
     reason: str
     reference_mid: Decimal | None = None
 
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "price", decimal(self.price))
+        object.__setattr__(self, "quantity", decimal(self.quantity))
+        object.__setattr__(self, "fee", decimal(self.fee))
+        if self.reference_mid is not None:
+            object.__setattr__(self, "reference_mid", decimal(self.reference_mid))
+        values = (self.price, self.quantity, self.fee)
+        if self.reference_mid is not None:
+            values += (self.reference_mid,)
+        if not all(value.is_finite() for value in values):
+            raise ValueError("fill numerics must be finite")
+        if self.quantity <= 0:
+            raise ValueError("fill quantity must be positive")
+
 
 @dataclass(frozen=True, slots=True)
 class QuoteIntent:
@@ -183,6 +218,17 @@ class QuoteIntent:
     quantity: Decimal
     fair_value: Decimal
     reason: str = "market_make"
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "price", decimal(self.price))
+        object.__setattr__(self, "quantity", decimal(self.quantity))
+        object.__setattr__(self, "fair_value", decimal(self.fair_value))
+        if not all(
+            value.is_finite() for value in (self.price, self.quantity, self.fair_value)
+        ):
+            raise ValueError("quote intent numerics must be finite")
+        if self.quantity <= 0:
+            raise ValueError("quote intent quantity must be positive")
 
 
 @dataclass(frozen=True, slots=True)

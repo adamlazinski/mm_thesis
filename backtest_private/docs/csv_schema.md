@@ -103,14 +103,13 @@ ask_size >= 0
 Cena może być równa zero lub ujemna. Bid i ask muszą leżeć na siatce tickowej
 kontraktu zapisanej w configu.
 
-### Kolumny opcjonalne
+### Kolumna opcjonalna
 
 ```text
-sequence,source_row_id
+sequence
 ```
 
-- `sequence` — całkowity numer sekwencyjny dostawcy w obrębie strumienia,
-- `source_row_id` — stabilny identyfikator rekordu do audytu.
+- `sequence` — całkowity numer sekwencyjny dostawcy w obrębie strumienia.
 
 Jeżeli `sequence` występuje, musi rosnąć dla danego kontraktu i nie może mieć
 duplikatów. Bez niego deterministycznym tie-breakerem jest numer wiersza w pliku.
@@ -154,12 +153,11 @@ aggressor_side in {BUY, SELL}
 ### Kolumny opcjonalne
 
 ```text
-trade_id,sequence,source_row_id
+trade_id,sequence
 ```
 
 - `trade_id` — id transakcji dostawcy; duplikaty są błędem,
-- `sequence` — numer sekwencyjny, jeśli dostawca go udostępnia,
-- `source_row_id` — id wiersza do audytu.
+- `sequence` — numer sekwencyjny, jeśli dostawca go udostępnia.
 
 ### Przykład
 
@@ -193,10 +191,12 @@ kontraktu:
 
 - `tick_size`,
 - `lot_size`,
-- `multiplier` — np. MWh przypadające na jednostkę pozycji,
-- walutę,
-- strefę sesji,
-- rolę A/B i czas dostawy.
+- `mwh_per_lot` — MWh przypadające na jeden lot,
+- `allow_negative_price`.
+
+Sekcja `pair` configu przypisuje identyfikatory do ról A/B, a sekcja `session`
+określa strefę i godziny sesji. Waluta i czas dostawy są na tym etapie cechami
+samego identyfikatora/datasetu; MVP nie prowadzi dla nich osobnych pól.
 
 Oba pliki muszą używać tych samych jednostek ceny i rozmiaru. Loader nie zgaduje
 czy `size` oznacza loty, MWh lub notional.
@@ -215,20 +215,18 @@ kontrole:
 7. Quote i trade leżą na poprawnej siatce tickowej, jeśli venue gwarantuje taki
    warunek dla trade.
 8. Trade ma dodatni size i stronę `BUY` albo `SELL`.
-9. `trade_id`, `sequence` i `source_row_id`, jeśli występują, nie mają
-   niedozwolonych duplikatów.
-10. W danych istnieje świeży quote obu nóg w pobliżu planowanego wyjścia.
+9. `trade_id` i `sequence`, jeśli występują, nie mają niedozwolonych duplikatów.
+10. Runtime potrafi znaleźć świeży quote obu nóg w pobliżu planowanego wyjścia.
 
-Ostatnia kontrola nie gwarantuje jeszcze wyjścia: jeśli runtime nie znajdzie
-świeżego, wykonywalnego booka po uwzględnieniu latency, wynik ma status
-`incomplete_exit`.
+Ostatnia kontrola jest wykonywana przez silnik: brak świeżego, wykonywalnego
+booka albo zbyt mały widoczny depth daje status `incomplete_exit`.
 
 ## 9. Brakujące lub niepełne dane
 
 - Brak quote jednej nogi blokuje coupled fair value i nowe kwoty.
 - Quote starszy niż `max_quote_age` powoduje cancel obu nóg.
-- Luka czasowa większa niż limit jest zapisywana w raporcie; nie jest wypełniana
-  interpolowanym midem.
+- Luka czasowa nie jest wypełniana interpolowanym midem; wygaśnięcie
+  `max_quote_age` anuluje kwoty.
 - Plik trade zawierający tylko nagłówek może być użyty wyłącznie w jawnym trybie
   diagnostycznym. W konserwatywnym modelu nie daje pasywnych filli.
 - Nie wolno forward-fillować poza skonfigurowany limit świeżości.
@@ -239,13 +237,12 @@ Ostatnia kontrola nie gwarantuje jeszcze wyjścia: jeśli runtime nie znajdzie
 Surowe pliki wejściowe powinny być ignorowane przez Git. Raport runu zapisuje
 co najmniej:
 
-- ścieżkę lub logiczną nazwę obu plików,
+- logiczną nazwę obu plików,
 - SHA-256 każdego pliku,
-- liczbę zaakceptowanych i odrzuconych rekordów,
+- liczbę zaakceptowanych rekordów quote i trade,
 - zakres timestampów,
 - kompletny snapshot configu,
 - wersję schematu, np. `energy_csv_v1`.
 
 Dzięki temu prywatnych danych nie trzeba publikować, aby jednoznacznie wskazać,
 na jakim zbiorze powstał wynik.
-

@@ -13,13 +13,14 @@ build/
 *.egg-info/
 
 # Private market data must never be committed.
-data/*
+data/**
 !data/.gitkeep
 !data/README.md
+*.csv
+!examples/data/*.csv
 *.parquet
 *.feather
 
 # Generated backtest artefacts.
 outputs/*
 !outputs/.gitkeep
-

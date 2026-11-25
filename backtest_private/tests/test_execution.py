@@ -31,6 +31,7 @@ def _config(
     queue_fraction: str = "1",
     new_order_latency_ms: int = 0,
     cancel_latency_ms: int = 0,
+    refresh_ticks: int = 1,
 ) -> BacktestConfig:
     return BacktestConfig(
         pair=PairConfig("A", "B", "-5"),
@@ -58,7 +59,7 @@ def _config(
             confidence_b="1",
             inventory_skew_common="0",
             inventory_skew_spread="0",
-            refresh_ticks=1,
+            refresh_ticks=refresh_ticks,
         ),
         risk=RiskConfig("100", "100", "100", "100"),
         execution=ExecutionConfig(
@@ -212,3 +213,40 @@ def test_quote_through_requires_strict_cross_and_does_not_fill_on_touch() -> Non
     assert through_fills[0].quantity == D("1")
     assert order.status is OrderStatus.FILLED
 
+
+def test_quote_through_batch_keeps_transient_cross_proof() -> None:
+    manager = OrderManager(_config(fill_model="quote_through"))
+    order = manager.submit(_intent(Side.BID, "99"), NOW)
+    manager.advance_through(NOW, {"A": _book()})
+    event_time = NOW + timedelta(seconds=1)
+    transient = _book(event_time, bid="98", ask="98.5")
+    final = _book(event_time, bid="99", ask="101")
+
+    fills = manager.match_quote_through_batch(
+        [transient, final],
+        {"A": final},
+        manager.eligible_order_ids(event_time),
+    )
+
+    assert len(fills) == 1
+    assert fills[0].reference_mid == final.mid
+    assert order.status is OrderStatus.FILLED
+
+
+def test_partial_order_is_cancelled_for_replenishment_but_exact_order_is_reused() -> None:
+    manager = OrderManager(_config(cancel_latency_ms=10))
+    order = manager.submit(_intent(Side.BID, "99", quantity="2"), NOW)
+    manager.advance_through(NOW, {"A": _book()})
+    order.remaining = D("1")
+    order.status = OrderStatus.PARTIAL
+
+    manager.reconcile([_intent(Side.BID, "99", quantity="2")], NOW, lambda _i, _o: True)
+
+    assert order.status is OrderStatus.CANCEL_PENDING
+    assert order.cancel_effective_at == NOW + timedelta(milliseconds=10)
+
+    exact = OrderManager(_config(refresh_ticks=0))
+    exact_order = exact.submit(_intent(Side.BID, "99"), NOW)
+    exact.advance_through(NOW, {"A": _book()})
+    exact.reconcile([_intent(Side.BID, "99")], NOW, lambda _i, _o: True)
+    assert exact_order.cancel_effective_at is None

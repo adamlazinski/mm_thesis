@@ -40,4 +40,3 @@ def test_example_cli_is_reproducible_and_writes_auditable_outputs(tmp_path: Path
     assert main(args) == 0
     second = json.loads((second_dir / "summary.json").read_text())
     assert second == first
-

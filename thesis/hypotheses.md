@@ -7,7 +7,7 @@ This is the thesis's organizing skeleton — update the status markers as result
 `⊘` **retracted or superseded by a later contribution**
 
 Cross-references point to numbered entries in [contributions.md](contributions.md)
-(C1–C71) and to experiment folders. The `→` marker on each section head gives the chapter that
+(C1–C72) and to experiment folders. The `→` marker on each section head gives the chapter that
 now carries it.
 
 **Reading the `⊘` entries.** Four entries below — plus the meta-hypothesis itself — were
@@ -373,8 +373,18 @@ rather than below it, which is the register's single most important pattern.
   per-book variation there is runs with grid fineness — gains on CELO (54.6 ticks/spread) and
   EIGEN, the one loss on HMSTR, the one-tick book where snapping leaves barely two distinct levels
   out of five nominal. A ladder needs a grid to stand on. *(C70)*
-- `⧖` **The market reacts to our own orders.** Every result is frozen-tape, which biases *toward* the
-  strategy. Ch7's disappearing touch is direct evidence the channel is active and unmodelled.
+- `◐` **The market reacts to our own orders.** Every *simulation* is frozen-tape, but the reaction
+  itself turned out to be measurable rather than needing a model: Hyperliquid reports the filled
+  `maker_wallet` on every trade, so maker entry is a natural experiment. Over 1,057 book-hours the
+  **median maker's fill rate scales as 1/M** (elasticity −0.913, CI [−1.014, −0.813], containing
+  −1 exactly) — Grossman-Miller's `1/M` measured for the first time here. The **top** maker is
+  insulated: fills fall at half the rate and **notional not at all** (−0.08, CI containing 0).
+  And the fill model, checked against real per-wallet rates for the first time, runs at 0.82x the
+  busiest real participant — but **1.4-3.0x on HMSTR**, a position nobody held. *(C72)*
+- `⧖` **…and a queue-reactive simulator would add to that.** Unresolved, and now looks lower-value:
+  its output would be a monotone function of assumed reaction parameters, where C72 measures the
+  quantity directly. What remains unmeasured is the *dynamic* — whether competitors withdraw in
+  response to our quote specifically, which entry data cannot separate from entry itself.
 
 ---
 

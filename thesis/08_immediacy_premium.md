@@ -275,6 +275,28 @@ rather than a thin-competition spread, and a maker on them has nowhere to stand 
 Only ZORA, VINE and CELO have grids fine enough for "quote further from fair value" to describe
 a real choice.
 
+**A second qualification, from outside the simulator.** Hyperliquid reports the `maker_wallet`
+filled on every trade, so the competitive structure of these books is observable rather than
+assumed — and so is the answer to the question a queue-reactive simulator would have to assume:
+what does a new maker cost the incumbents? Over 1,057 book-hours across twelve books, regressing
+an incumbent's fills on the number of competing makers and the total flow, **the median maker's
+fill rate scales as 1/M to within measurement error** (elasticity −0.913, 95% interval
+[−1.014, −0.813], which contains −1 exactly). That is Grossman–Miller's `1/M` from Chapter 2 §7,
+measured directly for the first time in this thesis. The dilution is not uniform: the *top*
+maker's fills fall at half that rate and its **notional does not fall at all** (−0.08, interval
+containing zero). Competition arrives, the dominant participant keeps its volume, and the middle
+of the book absorbs it — Chapter 5 §2's queue rent, visible from outside the backtest.
+
+The same data validates this chapter's fill model against something it has never been checked
+against: what real makers on the same book-days actually achieved. The simulator runs at **0.82×
+the busiest real participant's fill rate** (median over the thirty book-days) and 108× the median
+participant's, which is the right shape for the aggressive maker the chapter intends to model. On
+four of six books it sits at or below what a real wallet achieved. **On HMSTR it does not** — it
+takes 1.4 to 3.0 times more fills than the single busiest wallet on that book, a queue position
+nobody held, won against 34 to 58 competitors the simulator never faced. HMSTR is the largest
+contributor to the premium, so this is a qualification on the headline rather than a footnote,
+and it is reported in Contribution 72 rather than left to the frozen-tape caveat.
+
 That distinction does not dissolve the chapter's result — §5's round trip joins the *prevailing
 touch*, which is on-grid by construction and therefore untouched by this correction — but it
 qualifies the interpretation. Across the six books the round trip correlates with spread measured

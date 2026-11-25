@@ -112,4 +112,3 @@ def test_inventory_on_leg_a_cross_skews_quotes_on_leg_b() -> None:
     # cross = k_common - k_spread = 1.5, so long A lowers both B quotes by 1.5.
     assert long_a[("B", Side.BID)].price == flat[("B", Side.BID)].price - D("1.5")
     assert long_a[("B", Side.ASK)].price == flat[("B", Side.ASK)].price - D("1.5")
-

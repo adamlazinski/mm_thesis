@@ -80,7 +80,8 @@ intencje zleceń. Nie księguje filli i nie modyfikuje silnika wykonania.
 
 Risk manager sprawdza intencje razem z aktualną pozycją oraz wszystkimi live i
 pending orders. Kontroluje limity każdej nogi, ekspozycję wspólną, ekspozycję na
-spread oraz gross. Odrzucona intencja jest zapisywana z powodem.
+spread oraz gross. Raport MVP zlicza odrzucone intencje; log powodów per order
+jest następnym rozszerzeniem.
 
 ### Execution model
 
@@ -218,12 +219,12 @@ Następnie stosujemy post-only:
 - bid nie może przecinać aktualnego aska,
 - ask nie może przecinać aktualnego bida,
 - crossed lub pusty book wyłącza kwotowanie,
-- cena zbyt daleka od rynku jest odrzucana,
 - po jednej aktywnej kwocie na stronę i kontrakt.
 
 Cancel/replace następuje dopiero po zmianie co najmniej `refresh_ticks`, zmianie
-rozmiaru, naruszeniu ryzyka albo przekroczeniu maksymalnego wieku orderu. Samo
-przeliczenie fair value nie powinno automatycznie zerować pozycji w kolejce.
+rozmiaru albo naruszeniu ryzyka. Zegar `quote_interval_ms` przelicza relację
+również wtedy, gdy L1 jest rzadki; niezmieniona cena zachowuje istniejący order
+i jego kolejkę.
 
 ## 9. Model wykonania L1
 
@@ -282,12 +283,14 @@ Od cutoffu silnik:
 4. o 11:45 zamyka pozostałe pozycje po wykonywalnym rynku.
 
 Long jest sprzedawany po bidzie, short odkupowany po asku, z taker fee i
-konfigurowanym slippage. Przy latency wyjścia używamy pierwszego quote dostępnego
-po czasie skuteczności zlecenia, nigdy wcześniejszego.
+konfigurowanym slippage. Rozmiar nie może przekroczyć widocznego L1; większa
+pozycja daje `incomplete_exit` zamiast fikcyjnego sweepu.
 
-Jeśli brakuje świeżego rynku którejkolwiek nogi w `max_exit_delay`, run otrzymuje
-status `incomplete_exit`. Nie wolno zastępować brakującej ceny midem ani targetem
-`-5`.
+W obecnym MVP końcowy IOC ma jawnie założoną zerową taker latency i korzysta z
+booka świeżego dokładnie przy zaplanowanym wyjściu. Jeśli go brakuje, run
+otrzymuje status `incomplete_exit`; cena nie jest zastępowana midem ani targetem
+`-5`. Przed wnioskami z realnych danych należy dodać `taker_latency` oraz replay
+L2 kolejnych poziomów — są to świadomie niewbudowane jeszcze elementy.
 
 ## 11. Księgowanie PnL
 
@@ -309,20 +312,22 @@ Po pełnym zamknięciu wszystkich nóg cash jest autorytatywnym net PnL. Raport
 powinien dodatkowo pokazać wynik na matched volume, koszt wymuszonego wyjścia i
 różnicę między mid markiem a likwidacją.
 
-## 12. Minimalny raport
+## 12. Raport MVP
 
 - gross i net PnL,
 - maker fees/rebates, taker fees i koszt końcowej likwidacji,
 - PnL przypisany spread capture oraz zmianie basis,
-- turnover, liczba i rozmiar filli per kontrakt,
-- quote uptime i fill ratio,
-- peak/average inventory A, B, common, spread i gross,
+- turnover i liczba filli maker/exit,
+- peak inventory A, B, common, spread i gross,
 - czas spędzony z niezhędżowaną nogą,
 - maksymalny drawdown liquidation equity,
 - rzeczywisty `B - A` o wyjściu i błąd względem `-5`,
 - status wyjścia i końcowe pozycje,
 - hash configu i plików wejściowych,
 - nazwa i wersja modelu filli.
+
+Quote uptime, średnie inventory, rozmiary filli per kontrakt i dokładny czas
+leggingu pozostają metrykami do dodania po poznaniu schematu prywatnego feedu.
 
 ## 13. Najważniejsze testy akceptacyjne
 
@@ -340,5 +345,5 @@ różnicę między mid markiem a likwidacją.
 12. Po cutoffie nie powstają pasywne zlecenia.
 13. Finalny long wychodzi po bidzie, short po asku; nigdy po midzie.
 14. Brak świeżego rynku przy wyjściu daje `incomplete_exit`.
-15. Dwa replaye tych samych danych i configu są bitowo zgodne w raportach.
-
+15. Dwa replaye tych samych danych i configu dają identyczne wyniki ekonomiczne;
+    różnić może się wyłącznie czas utworzenia manifestu.

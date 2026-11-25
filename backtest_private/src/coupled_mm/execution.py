@@ -110,7 +110,10 @@ class OrderManager:
         order.activated_at = timestamp
 
     def _advance(self, timestamp: datetime, books: dict[str, BookQuote], inclusive: bool) -> None:
-        before = (lambda value: value <= timestamp) if inclusive else (lambda value: value < timestamp)
+        if inclusive:
+            before = lambda value: value <= timestamp
+        else:
+            before = lambda value: value < timestamp
         for order in self.open_orders():
             if order.cancel_effective_at is not None and before(order.cancel_effective_at):
                 self._cancel(order, order.cancel_effective_at)
@@ -259,6 +262,46 @@ class OrderManager:
                 )
         return fills
 
+    def match_quote_through_batch(
+        self,
+        quotes: Iterable[BookQuote],
+        final_quotes: dict[str, BookQuote],
+        eligible_ids: set[str],
+    ) -> list[Fill]:
+        """Use every same-timestamp snapshot as fill proof, but final mids for accounting.
+
+        This preserves atomic batch semantics for strategy/PnL while avoiding a
+        false negative when an earlier vendor snapshot traded through our level
+        and a later snapshot at the same timestamp returned inside it.
+        """
+        if self.config.execution.fill_model != "quote_through":
+            return []
+        by_contract: dict[str, list[BookQuote]] = {}
+        for quote in quotes:
+            by_contract.setdefault(quote.contract_id, []).append(quote)
+        fills: list[Fill] = []
+        for order in list(self.open_orders()):
+            if order.order_id not in eligible_ids:
+                continue
+            proofs = by_contract.get(order.contract_id, [])
+            crossed_through = any(
+                (order.side is Side.BID and quote.ask_price < order.price)
+                or (order.side is Side.ASK and quote.bid_price > order.price)
+                for quote in proofs
+            )
+            if not crossed_through:
+                continue
+            final_quote = final_quotes[order.contract_id]
+            fills.append(
+                self._maker_fill(
+                    order,
+                    final_quote.timestamp,
+                    order.remaining,
+                    final_quote.mid,
+                )
+            )
+        return fills
+
     def reconcile(
         self,
         intents: list[QuoteIntent],
@@ -285,13 +328,19 @@ class OrderManager:
 
             instrument = self.config.instruments[intent.contract_id]
             threshold = instrument.tick_size * self.config.strategy.refresh_ticks
+
+            def price_reusable(order: Order) -> bool:
+                if self.config.strategy.refresh_ticks == 0:
+                    return order.price == intent.price
+                return abs(order.price - intent.price) < threshold
+
             reusable = next(
                 (
                     order
                     for order in existing
                     if order.cancel_effective_at is None
-                    and abs(order.price - intent.price) < threshold
-                    and order.quantity == intent.quantity
+                    and price_reusable(order)
+                    and order.remaining == intent.quantity
                 ),
                 None,
             )
@@ -306,4 +355,3 @@ class OrderManager:
                 self.submit(intent, now)
             else:
                 self.n_risk_rejects += 1
-

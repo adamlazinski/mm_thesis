@@ -235,4 +235,3 @@ MVP jest gotowy do przyjęcia prywatnych danych dopiero, gdy:
 - brak wykonywalnej ceny daje `incomplete_exit`, nie mark po midzie,
 - cash po pełnym zamknięciu zgadza się z ręcznie policzonym PnL,
 - drugi replay jest deterministycznie identyczny.
-

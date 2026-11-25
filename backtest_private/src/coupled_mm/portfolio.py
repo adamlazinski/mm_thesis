@@ -128,4 +128,3 @@ class Portfolio:
             price = book.bid_price if qty > 0 else book.ask_price if qty < 0 else book.mid
             marked += qty * instrument.mwh_per_lot * price
         return marked
-

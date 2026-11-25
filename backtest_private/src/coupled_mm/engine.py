@@ -96,7 +96,9 @@ class BacktestResult:
                         "fee": str(fill.fee),
                         "kind": fill.kind.value,
                         "reason": fill.reason,
-                        "reference_mid": "" if fill.reference_mid is None else str(fill.reference_mid),
+                        "reference_mid": (
+                            "" if fill.reference_mid is None else str(fill.reference_mid)
+                        ),
                     }
                 )
 
@@ -133,10 +135,14 @@ class BacktestResult:
                         "active_at": order.active_at.isoformat(),
                         "status": order.status.value,
                         "cancel_requested_at": (
-                            "" if order.cancel_requested_at is None else order.cancel_requested_at.isoformat()
+                            ""
+                            if order.cancel_requested_at is None
+                            else order.cancel_requested_at.isoformat()
                         ),
                         "cancel_effective_at": (
-                            "" if order.cancel_effective_at is None else order.cancel_effective_at.isoformat()
+                            ""
+                            if order.cancel_effective_at is None
+                            else order.cancel_effective_at.isoformat()
                         ),
                         "queue_ahead": "" if order.queue_ahead is None else str(order.queue_ahead),
                         "reason": order.reason,
@@ -191,6 +197,17 @@ class BacktestEngine:
         timers: list[TimerEvent] = []
         for local_date in sorted(dates):
             cutoff, exit_timestamp = self._session_times(local_date)
+            interval_ms = self.config.strategy.quote_interval_ms
+            if interval_ms > 0:
+                decision = datetime.combine(
+                    local_date,
+                    self.config.session.quote_start,
+                    tzinfo=self.config.session.zone,
+                )
+                step = timedelta(milliseconds=interval_ms)
+                while decision < cutoff:
+                    timers.append(TimerEvent(decision, TimerKind.DECISION))
+                    decision += step
             timers.append(TimerEvent(cutoff, TimerKind.QUOTE_CUTOFF))
             timers.append(TimerEvent(exit_timestamp, TimerKind.EXIT))
         return timers
@@ -200,8 +217,13 @@ class BacktestEngine:
             book = self.books.get(contract_id)
             if book is None:
                 return False
+            if (
+                book.timestamp.astimezone(self.config.session.zone).date()
+                != timestamp.astimezone(self.config.session.zone).date()
+            ):
+                return False
             age_ms = Decimal(str((timestamp - book.timestamp).total_seconds())) * Decimal("1000")
-            if age_ms < 0 or age_ms > self.config.session.max_quote_age_ms:
+            if age_ms < 0 or age_ms >= self.config.session.max_quote_age_ms:
                 return False
         return True
 
@@ -214,6 +236,24 @@ class BacktestEngine:
             local.date(), self.config.session.quote_start, tzinfo=self.config.session.zone
         )
         return quote_start <= timestamp < cutoff
+
+    def _expire_stale_orders_before(self, timestamp: datetime) -> None:
+        """Replay the cancel timer that would have fired between sparse events.
+
+        We do this lazily instead of materialising one expiry event for every L1
+        update.  If the last book of either leg expired strictly before the next
+        event, cancellation is timestamped at that historical expiry, preserving
+        the configured cancel/fill race without doubling a large event stream.
+        """
+        if not self.order_manager.open_orders():
+            return
+        required = set(self.config.instruments)
+        if not required.issubset(self.books):
+            return
+        max_age = timedelta(milliseconds=self.config.session.max_quote_age_ms)
+        expiry = min(self.books[key].timestamp + max_age for key in required)
+        if expiry < timestamp:
+            self.order_manager.cancel_all(expiry)
 
     def _record_fills(self, fills: Iterable[Fill]) -> int:
         count_fills = 0
@@ -253,6 +293,18 @@ class BacktestEngine:
         has_inventory = any(self.portfolio.quantity(key) != 0 for key in self.config.instruments)
         if has_inventory and not books_fresh:
             problems.append("cannot liquidate inventory")
+        if has_inventory and books_fresh:
+            for contract_id in self.config.instruments:
+                position = self.portfolio.quantity(contract_id)
+                if position == 0:
+                    continue
+                book = self.books[contract_id]
+                visible_exit_size = book.bid_size if position > 0 else book.ask_size
+                if abs(position) > visible_exit_size:
+                    problems.append(
+                        f"insufficient L1 exit depth for {contract_id}: "
+                        f"need {abs(position)}, visible {visible_exit_size}"
+                    )
 
         if not problems:
             for contract_id, instrument in self.config.instruments.items():
@@ -305,7 +357,7 @@ class BacktestEngine:
                 timestamp=timestamp,
                 cash=self.portfolio.cash,
                 equity_mid=self.portfolio.equity_mid(self.books),
-                equity_liquidation=self.portfolio.equity_liquidation(self.books),
+                equity_liquidation=self._marked_liquidation_equity(),
                 position_a=self.portfolio.quantity(pair.leg_a),
                 position_b=self.portfolio.quantity(pair.leg_b),
                 common_mwh=exposures.common_mwh,
@@ -313,6 +365,26 @@ class BacktestEngine:
                 gross_mwh=exposures.gross_mwh,
             )
         )
+
+    def _marked_liquidation_equity(self) -> Decimal | None:
+        """Executable diagnostic mark including configured slippage and taker fees."""
+        if not all(contract_id in self.books for contract_id in self.config.instruments):
+            return None
+        value = self.portfolio.cash
+        for contract_id, instrument in self.config.instruments.items():
+            position = self.portfolio.quantity(contract_id)
+            if position == 0:
+                continue
+            book = self.books[contract_id]
+            available = book.bid_size if position > 0 else book.ask_size
+            if abs(position) > available:
+                return None
+            slip = instrument.tick_size * self.config.execution.exit_slippage_ticks
+            price = book.bid_price - slip if position > 0 else book.ask_price + slip
+            quantity = abs(position)
+            value += position * instrument.mwh_per_lot * price
+            value -= self._taker_fee(contract_id, price, quantity)
+        return value
 
     def _summary(self) -> dict[str, object]:
         pair = self.config.pair
@@ -338,21 +410,32 @@ class BacktestEngine:
                     str((right.timestamp - left.timestamp).total_seconds())
                 )
 
-        final_liquidation = (
-            self.portfolio.equity_liquidation(self.books)
-            if self.books
-            else None
-        )
-        net_pnl = self.portfolio.cash if all(
+        final_mid = self.portfolio.equity_mid(self.books) if self.books else None
+        final_liquidation = self._marked_liquidation_equity() if self.books else None
+        positions_flat = all(
             position.quantity == 0 for position in self.portfolio.positions.values()
-        ) else final_liquidation
+        )
+        sessions_complete = bool(self.sessions) and all(
+            session.status == "complete" for session in self.sessions
+        )
+        net_pnl = self.portfolio.cash if positions_flat and sessions_complete else None
         decomposition = (
             self.portfolio.execution_edge
             + self.portfolio.common_mtm_pnl
             + self.portfolio.spread_mtm_pnl
             - self.portfolio.total_fees
         )
-        identity_error = None if net_pnl is None else net_pnl - decomposition
+        liquidation_haircut = (
+            None
+            if final_mid is None or final_liquidation is None
+            else final_mid - final_liquidation
+        )
+        mid_identity_error = None if final_mid is None else final_mid - decomposition
+        identity_error = (
+            None
+            if net_pnl is None or liquidation_haircut is None
+            else net_pnl - (decomposition - liquidation_haircut)
+        )
         maker_fills = [fill for fill in self.order_manager.fills if fill.kind is FillKind.MAKER]
         exit_fills = [fill for fill in self.order_manager.fills if fill.kind is FillKind.EXIT]
         maker_fees = sum((fill.fee for fill in maker_fills), ZERO)
@@ -378,6 +461,8 @@ class BacktestEngine:
                 else "incomplete"
             ),
             "net_pnl": net_pnl,
+            "marked_mid_pnl": final_mid,
+            "marked_liquidation_pnl": final_liquidation,
             "cash": self.portfolio.cash,
             "fees": self.portfolio.total_fees,
             "maker_fees": maker_fees,
@@ -386,6 +471,8 @@ class BacktestEngine:
             "forced_exit_edge": forced_exit_edge,
             "common_mtm_pnl": self.portfolio.common_mtm_pnl,
             "spread_mtm_pnl": self.portfolio.spread_mtm_pnl,
+            "terminal_liquidation_haircut": liquidation_haircut,
+            "mid_pnl_identity_error": mid_identity_error,
             "pnl_identity_error": identity_error,
             "realized_gross": sum(
                 (position.realized_gross for position in self.portfolio.positions.values()), ZERO
@@ -434,9 +521,14 @@ class BacktestEngine:
             quotes = [event for event in batch if isinstance(event, BookQuote)]
             timers = sorted(
                 (event for event in batch if isinstance(event, TimerEvent)),
-                key=lambda event: 0 if event.kind is TimerKind.QUOTE_CUTOFF else 1,
+                key=lambda event: {
+                    TimerKind.DECISION: 0,
+                    TimerKind.QUOTE_CUTOFF: 1,
+                    TimerKind.EXIT: 2,
+                }[event.kind],
             )
 
+            self._expire_stale_orders_before(timestamp)
             self.order_manager.advance_before(timestamp, self.books)
             eligible_ids = self.order_manager.eligible_order_ids(timestamp)
             fills_in_batch = 0
@@ -468,17 +560,22 @@ class BacktestEngine:
                     self.config.pair.leg_b,
                 )
                 self.books = new_books
-                for quote in final_quotes.values():
-                    fills_in_batch += self._record_fills(
-                        self.order_manager.match_quote_through(quote, eligible_ids)
+                fills_in_batch += self._record_fills(
+                    self.order_manager.match_quote_through_batch(
+                        quotes,
+                        final_quotes,
+                        eligible_ids,
                     )
+                )
 
             # An activation tied with this market batch becomes live only afterwards;
             # a cancellation tied with it can still have filled above.
             self.order_manager.advance_through(timestamp, self.books)
 
             for timer in timers:
-                if timer.kind is TimerKind.QUOTE_CUTOFF:
+                if timer.kind is TimerKind.DECISION:
+                    pass
+                elif timer.kind is TimerKind.QUOTE_CUTOFF:
                     self.order_manager.cancel_all(timestamp)
                     self.order_manager.advance_through(timestamp, self.books)
                 else:

@@ -1,0 +1,60 @@
+{
+  "pair": {
+    "leg_a": "POWER_1200",
+    "leg_b": "POWER_1230",
+    "target_spread_b_minus_a": "5.0"
+  },
+  "instruments": {
+    "POWER_1200": {
+      "tick_size": "0.5",
+      "lot_size": "1",
+      "mwh_per_lot": "1",
+      "allow_negative_price": true
+    },
+    "POWER_1230": {
+      "tick_size": "0.5",
+      "lot_size": "1",
+      "mwh_per_lot": "1",
+      "allow_negative_price": true
+    }
+  },
+  "session": {
+    "timezone": "Europe/Warsaw",
+    "quote_start": "11:00:00",
+    "signal_start": "11:00:00",
+    "exit_time": "11:45:00",
+    "cancel_before_exit_ms": 500,
+    "max_quote_age_ms": 600000
+  },
+  "strategy": {
+    "order_quantity": "1",
+    "half_width_a": "0.5",
+    "half_width_b": "0.5",
+    "quote_interval_ms": 1000,
+    "target_weight_start": 0.25,
+    "target_weight_end": 1.0,
+    "convergence_gamma": 1.0,
+    "confidence_a": "1",
+    "confidence_b": "1",
+    "inventory_skew_common": "0.25",
+    "inventory_skew_spread": "0.25",
+    "refresh_ticks": 1
+  },
+  "risk": {
+    "max_leg_mwh": "4",
+    "max_common_mwh": "4",
+    "max_spread_mwh": "8",
+    "max_gross_mwh": "8"
+  },
+  "execution": {
+    "new_order_latency_ms": 100,
+    "cancel_latency_ms": 250,
+    "fill_model": "trade_queue",
+    "queue_fraction": "0.5",
+    "maker_fee_per_mwh": "0",
+    "taker_fee_per_mwh": "0",
+    "maker_fee_rate": "0",
+    "taker_fee_rate": "0",
+    "exit_slippage_ticks": 0
+  }
+}
