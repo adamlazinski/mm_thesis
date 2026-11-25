@@ -7,7 +7,7 @@ This is the thesis's organizing skeleton — update the status markers as result
 `⊘` **retracted or superseded by a later contribution**
 
 Cross-references point to numbered entries in [contributions.md](contributions.md)
-(C1–C68) and to experiment folders. The `→` marker on each section head gives the chapter that
+(C1–C69) and to experiment folders. The `→` marker on each section head gives the chapter that
 now carries it.
 
 **Reading the `⊘` entries.** Four entries below — plus the meta-hypothesis itself — were
@@ -297,6 +297,14 @@ rather than below it, which is the register's single most important pattern.
   **pre-registered** replication on disjoint coins, with micro-price ≥ mid on 3/4 — a majority,
   which is what was registered. All hold under liquidation and on the venue's tick grid; micro ≥
   mid was 4/4 before the grid correction. *(C66)*
+- `✗` **Holding out for a wider exit after a fill beats flattening.** No — and it is the cleanest
+  survivorship trap in the thesis. Quoting the exit 2/3/4x out instead of 1x loses monotonically
+  (+$35 → +$9 → +$3 → −$11/day, micro anchor, 30 book-days), because the exit does not fill,
+  inventory pins at the cap and the adding side stops too. **But per completed round trip it earns
+  5x more** (+$14.67 vs +$2.85): the rule does what it was meant to, completes 20x fewer trips,
+  and its per-trip figure is conditioned on the trips that *closed* — 29/30 book-days for the
+  control against 9/30 for the patient version. In A-S terms this is negative γ, a quadrant the
+  project's sweeps (5e-5 to 3.7e4, all positive) had never sampled. *(C69)*
 - `✓` **…and its magnitude is priced by competition, not by technique.** The bridge control is the cleanest
   evidence in the thesis: USUAL, same coin and same strategy, fell from **+32.4 bps in July to
   −1.0 bps in August** (15 of 16 configurations fall; median 16.6 bps) as the tail's widest spread

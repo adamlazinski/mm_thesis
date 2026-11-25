@@ -6,9 +6,8 @@ Binance Spot, May–Jun 2025, Jun–Jul 2025, and April 2026).
 
 > **Verification status (2026-11-19).** `scripts/verify_contributions.py` pools every number
 > in the experiment JSONs each entry names and checks the entry's table cells and bold figures
-> against that pool at 1.2% tolerance. Of the 68 entries, **46 name at least one experiment and
-> are machine-checked**: 34 match every claim, 11 carry a small number of unmatched values, and
-> one (C60) is flagged outright. The flags are legitimate in every case inspected — derived
+> against that pool at 1.2% tolerance. Of the 69 entries, **47 name at least one experiment and
+> are machine-checked**: 35 match every claim and 12 carry a small number of unmatched values. The flags are legitimate in every case inspected — derived
 > quantities the pool cannot contain (C60's "edge" column is real minus placebo, e.g.
 > −$0.48 − (−$6.87) = +$6.4) and date fragments parsed as negative numbers. The screen is a
 > screen, not a proof; its value is that a *large* unmatched count on an entry whose numbers
@@ -4297,6 +4296,58 @@ different asset class and at a fee of zero.**
 venue type, at the strongest possible fee assumption. Also documents two data-handling traps
 specific to options microstructure, either of which is severe enough to produce a false
 positive on its own.
+
+---
+
+## C69 — The Patient Exit: Holding Out for a Wider Unwind Earns More Per Round Trip and Loses Overall (exp 118)
+
+**Motivation.** A natural rule that the project had never sampled: quote the bid 1x the reference
+half-spread from fair value; when it is hit, place the ask **3x** out and wait, and mirror for a
+short. In Avellaneda-Stoikov terms this is a **negative gamma** — A-S skews the reservation price
+*against* inventory, pulling the exit side closer to the mid to offload faster, so it pays to
+flatten. This rule pays to wait instead. The project's gamma sweeps span 5e-5 to 3.7e4 and are
+all positive, so the quadrant was never tested. C16 found LINK's profitable configuration to be a
+mean-reversion cycler with ~1,800 inventory sign changes a day, which is the regime where waiting
+ought to pay if it ever does.
+
+**Experiment (exp 118).** Exp 111's accounting unchanged and honest by construction — venue tick
+grid, post-only, per-fill notional cap, +/-$2,000 inventory cap, average-cost matched-volume P&L,
+terminal residual liquidated at the closing touch. Entry fixed at `k_in = 1`; exit swept at
+`k_out` in {1, 2, 3, 4}, where **k_out = 1 is the symmetric control**. Two readings of "3x from
+the same mid", because they differ: `floating` measures the exit from the current anchor (the
+target follows the mid), `anchored` fixes it at the anchor observed when the position opened (the
+strategy waits for a price). Anchors mid and micro. Six HL tail books x 5 days = 30 book-days,
+plus LINK spot x 5 days.
+
+**Result: it loses, monotonically.** Tail books, mean over 30 book-days, liquidated:
+
+| k_out | mid anchor $/day | micro anchor $/day | fills/day (mid) | round trips/day | mean hold |
+|---|---|---|---|---|---|
+| **1 (symmetric)** | **+$31.93** | **+$35.39** | 957 | 12.4 | 2.0 h |
+| 2 | +$11.70 | +$9.07 | 234 | 2.3 | 2.9 h |
+| 3 | −$2.95 | +$3.43 | 115 | 1.1 | 4.4 h |
+| 4 | −$9.22 | −$11.34 | 76 | 0.4 | 4.9 h |
+
+The `anchored` variant is worse still, negative at every k_out. On LINK every configuration is
+negative; widening reduces the loss only by trading less, which is not an edge.
+
+**But the steelman is where the finding is.** Per *completed* round trip the patient exit earns
+**more**, and substantially: micro-anchored at k_out = 4 returns **+$14.67 per round trip against
+the symmetric control's +$2.85**, over five times as much, with matched-volume margin of +21.2bps
+against +12.6. The rule does what it was supposed to do. It still loses, for two compounding
+reasons. It completes **twenty times fewer** round trips (0.4/day against 12.4), because the exit
+does not fill, inventory pins at the cap, and the adding side then stops quoting too — C64's
+failure mechanism arriving by a different route. And the per-trip figure is **conditioned on
+success**: the symmetric control completes a round trip on 29 of 30 book-days, k_out = 4 on only
+9. The sixteen-odd book-days where the position never closed contribute no "trip" to the average
+and all of the loss.
+
+**Contribution.** Closes the negative-gamma quadrant the project had never sampled, and supplies
+the cleanest in-sample instance of the thesis's fifth mirage (C32, maker fill selection) in a new
+guise: *evaluating only the round trips that completed*. A per-trip statistic conditioned on the
+position having closed is a survivorship statistic, and here it points the opposite way to the
+P&L. The user's own description of the rule — that it "slowly stops being market making" — is
+confirmed quantitatively: at k_out = 4 the strategy completes 0.4 round trips a day.
 
 ---
 

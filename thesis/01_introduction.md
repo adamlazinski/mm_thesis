@@ -236,8 +236,8 @@ Four substantive contributions, in the order the thesis establishes them.
 A fifth is methodological and negative: the thesis reports the strategies that *failed*, at the
 same level of detail as those that worked, because the asymmetry between the two is the finding.
 
-These rest on **68 numbered contributions** logged in `contributions.md`, which is the
-exhaustive record and the source of truth for every number in these chapters. Most of the 68 are
+These rest on **69 numbered contributions** logged in `contributions.md`, which is the
+exhaustive record and the source of truth for every number in these chapters. Most of the 69 are
 calibrations, controls, retractions and bounding negatives rather than claims in their own
 right; the count is a measure of the work, not of the result. The seven groups below summarise
 them by theme.
@@ -276,13 +276,15 @@ premises (C55, C58); the perpetual lead and the wall it fails to clear (C56, C57
 instruments — model-free markout (C59), speed and co-location (C60), observable state (C61), and
 counterparty identity (C62).
 
-**The three structural positions, and the negatives that bound them** (C63–C68). The cross-venue
+**The three structural positions, and the negatives that bound them** (C63–C69). The cross-venue
 dislocation taker (C63); maker withdrawal as a real but sub-toll signal, together with the
 defended-maker retraction (C64); the closure of the flow-analysis family, including meta-order
 drift priced to 0.06 bps of the wall (C65); the immediacy premium and its regime dependence
 (C66); the cointegration null with the funding-carry book that replaces it (C67); and the
 extension of the central result to a second asset class, where Deribit options market making
-fails at a hypothetical *zero* maker fee (C68).
+fails at a hypothetical *zero* maker fee (C68); and the patient-exit rule, which earns five
+times more per completed round trip than flattening and loses anyway, because the per-trip
+figure is conditioned on the trips that closed (C69).
 
 **Methodological contribution.** The honest-accounting discipline of Chapter 3 §7, its ten rules
 each traced to a specific failure, and the two self-retractions (C64, C66) that demonstrate the

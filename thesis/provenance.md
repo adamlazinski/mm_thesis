@@ -127,7 +127,7 @@ An experiment's results bear on a claim only if they were generated after the co
 | `108_funding_book` | capture | `1e3c202` | 2026-07-28 | yes | yes | **no** |
 | `109_premium_gated` | capture | `c6d7068` | 2026-07-28 | yes | yes | **no** |
 | `110_leadlag_matrix` | capture | `533755d` | 2026-07-28 | yes | yes | **no** |
-| `111_fair_value_wide` | capture | `ae928b4` | 2026-11-19 | yes | yes | yes |
+| `111_fair_value_wide` | capture | `9b837ad` | 2026-11-20 | yes | yes | yes |
 | `112_options_markout` | — | `505f8fa` | 2026-08-20 | yes | yes | **no** |
 | `113_iv_autocorr` | — | `6e874a7` | 2026-08-20 | yes | yes | **no** |
 | `114_regime_markout` | capture | `08831a7` | 2026-08-22 | yes | yes | **no** |

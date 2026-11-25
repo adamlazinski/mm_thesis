@@ -324,7 +324,38 @@ single mid-marked column would have ranked k = 2.5 best in the sweep.
 second instance in Contribution 66 of a subset quoted as the full sample. The other was computed
 off the tick grid. Both are corrected here; the monotonicity survived both.)*
 
-One refinement failed and is reported as a negative. A depth-conditioned rule for choosing the
+**A third refinement failed, and failed instructively.** If the spread exceeds the
+adverse-selection cost, then after a fill it ought to pay to hold out for a wider price on the
+unwinding side rather than flatten at the normal distance — quote the bid one reference
+half-spread out, and when it is hit put the ask three out and wait. In Avellaneda–Stoikov terms
+this is a *negative* risk aversion: A-S skews the reservation price against inventory precisely
+to pull the exit closer and offload faster, so the rule inverts what the model is for. Every γ
+swept in this project is positive, so the quadrant had never been sampled (Contribution 69).
+
+It loses, monotonically in how patient it is. Over the same thirty book-days, exit distance
+swept at one, two, three and four reference half-spreads against an unchanged entry:
+
+| exit distance | mid anchor | micro anchor | fills/day | round trips/day |
+|---|---|---|---|---|
+| **1× (symmetric)** | **+$31.93** | **+$35.39** | 957 | 12.4 |
+| 2× | +$11.70 | +$9.07 | 234 | 2.3 |
+| 3× | −$2.95 | +$3.43 | 115 | 1.1 |
+| 4× | −$9.22 | −$11.34 | 76 | 0.4 |
+
+The interesting part is that the rule *works* on its own terms. Per completed round trip it earns
+**+$14.67 against the symmetric control's +$2.85** — five times as much, at a matched-volume
+margin of +21.2 bps against +12.6. Waiting does get a better price. It loses anyway for two
+reasons that compound: it completes twenty times fewer round trips, because the exit does not
+fill, inventory pins at the cap and the adding side then stops quoting too — §4's mechanism
+again; and the per-trip figure is **conditioned on the position having closed**. The symmetric
+control completes a round trip on 29 of the 30 book-days and the most patient setting on 9. The
+days where the position never closed contribute no trip to the average and all of the loss.
+
+That is the fifth mirage of Chapter 5 §5 in a form this thesis had not met: not selection on
+which fills arrive, but selection on which *round trips finish*. A per-trip statistic computed
+over completed trips is a survivorship statistic, and here it points the opposite way to the P&L.
+
+One further refinement failed and is reported as a negative. A depth-conditioned rule for choosing the
 anchor per coin — micro where the touch has depth, mid where it is thin — was fitted on two days
 and looked persistent. Out of sample it delivered +$228/day against +$218/day for simply using
 the micro anchor everywhere: no meaningful edge over the simpler rule. The mechanism was a
