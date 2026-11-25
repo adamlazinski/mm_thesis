@@ -71,6 +71,21 @@ computed across *all* times — classical errors-in-variables — while the trad
 event occurred. The correlation measure is the fragile one; the event study is not. Every
 cross-venue claim in this thesis is validated on the common clock for this reason.
 
+The same problem explains a methodological choice. The standard instrument for apportioning
+price discovery across venues is Hasbrouck's (1995) information share, which decomposes the
+variance of the innovation in the common efficient price within a vector error-correction model
+of the venues' quotes. It is finer than a cross-correlation peak and it is the natural tool for
+the question of §2. It is also the more clock-sensitive of the two, and in a way that is harder
+to see: an information share is estimated on *synchronised* observations, so a venue-specific
+stamp offset of the magnitude measured above — tens to hundreds of milliseconds, against events
+whose own horizon is tens of milliseconds — does not merely attenuate the estimate, it
+reassigns variance from the lagging venue to the leading one in exactly the direction the offset
+points, and the output still looks like a well-behaved decomposition. The cruder time-domain
+instrument has the compensating virtue that its failure mode is legible: the peak moves, and one
+can watch it move, which is how the offset in this section was found at all. The lead-lag matrix
+is reported here as the weaker claim it is, and what carries the chapter is the trading result on
+the common clock rather than any decomposition of price discovery.
+
 ## 4. The Trade, Priced Honestly
 
 The strategy is deliberately plain. The deviation `dev(t) = leader_mid − laggard_mid` is

@@ -339,6 +339,12 @@ that a true one-tick LINK must behave like the one-tick perpetual, and it does; 
 predicted that positive maker returns should be found by conditioning on competition rather than
 on strategy, and Chapter 8's screen found them that way.
 
+The axis is not idiosyncratic to this thesis. Kurth et al. (2026) account for the decay of
+short-term trend-following by the same variable in volatility-normalised form, finding that where
+the tick is large relative to volatility the strategies that survive are the ones the grid
+permits. That is the present result read from the taker's side of the same book: the tick decides
+which strategies can exist before it decides which are profitable.
+
 ---
 
 ## 6. Methodological Contribution
@@ -525,7 +531,10 @@ manufactures large negative autocorrelation that vanishes per instrument.
   rate is measured to scale as 1/M. What a reactive simulator would still add is the *dynamic* —
   whether competitors withdraw in response to **our** quote specifically, which entry data cannot
   separate from entry itself. That remains worth building, and it is now a narrower question than
-  it was.
+  it was. Lalor and Swishchuk (2024) is the closest existing treatment — a market simulation that
+  carries adverse selection explicitly rather than leaving it to the replayed tape — and the
+  measurement of Contribution 72 is what such a simulator would need in order to be calibrated
+  rather than parameterised.
 - **Push the venue-clock law past three orders of magnitude.** The adverse-selection horizon
   spans 15 ms to beyond ten seconds across the venues captured here. Testing it on venue classes
   not represented — other decentralised exchanges, regional centralised venues, tokenised

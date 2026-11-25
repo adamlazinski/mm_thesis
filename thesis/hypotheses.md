@@ -351,9 +351,13 @@ rather than below it, which is the register's single most important pattern.
   rarely and expensively — a low adverse-fill rate was a liability. Every headline window in the
   thesis is calm (1.6–2.5x median), so the intervals of Ch3 §8 are conditional on no such day.
   *(C71)*
-- `⧖` **The cascade tail.** The principal unmeasured quantity in the thesis. Both carry windows were benign
-  (drawdown <20 bps), so the measured basis volatility is the *calm* volatility and the BTC Sharpe is
-  conditional on no cascade. Requires a stressed window. *(C67)*
+- `⧖` **The cascade tail of the *carry* book.** Both carry windows were benign (drawdown <20 bps), so the
+  measured basis volatility is the *calm* volatility and the BTC Sharpe is conditional on no cascade.
+  C71 found a cascade in the data and tested it, but on the wrong instrument: the 2025-10-10 event is in
+  the purchased **single-venue** history, while the carry's risk is the cross-venue **basis**, which
+  exists only in the July–August 2026 capture. The two do not overlap, so this is not merely unmeasured
+  but **unmeasurable with the data in hand** — it needs a cross-venue capture running through an event
+  like 2025-10-10. *(C67, C71)*
 
 ## L. Other asset classes and remaining gaps
 

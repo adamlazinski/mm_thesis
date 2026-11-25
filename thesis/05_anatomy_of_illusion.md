@@ -35,6 +35,14 @@ touches its price. On a book where the quoter is the only participant at that le
 correct. On a real book it grants **absolute queue priority** — the simulated maker is always
 at the front, ahead of everything already resting there.
 
+That the position is worth something is not in dispute, and it has been priced. Moallemi and
+Yuan (2017) value queue position as an option whose payoff is the cost a resting order avoids by
+not having to re-enter at the back, and find that value increasing in the depth resting ahead
+and in the coarseness of the tick relative to volatility — the regime the next paragraph
+describes. The mirage is not that priority has value. It is that the simulator hands it over at
+no cost and with no competition for it, so a real rent shows up in the P&L as though the
+strategy had earned it.
+
 On LINK the consequence is severe and precisely identifiable. The natural spread is exactly
 one tick for 99.9% of April 2026 — $0.01 on a price near $9, so **11.1 bps quote to quote**,
 with median, mean, p10 and p90 all identical. (On the $0.001 grid the experiments were
@@ -264,7 +272,14 @@ assumptions, are clearly profitable — so the implementations are sound and the
 not rigged. On a high-volatility martingale the same quoter loses, which is the correct
 short-gamma behaviour rather than an engine defect, and connects to Contribution 35's framing
 of market making as a short-straddle position: the maker is paid a premium and is short
-realized variance.
+realized variance. The framing is older than the market-making literature that this thesis
+tests: Copeland and Galai (1983) show that a dealer's pair of quotes *is* a written straddle,
+priced by the dealer at a premium that must cover the option's value to whoever has better
+information, and the practitioner treatments of short-gamma books (Taleb, 1997; Sinclair, 2013)
+describe the resulting P&L in the terms this table shows — a premium collected steadily against
+a loss that scales with realized variance and arrives unevenly. Contribution 71's cascade day is
+that asymmetry at full size, and Contribution 68's options result is the same position taken
+explicitly on Deribit, where it also fails.
 
 The decisive part is the breakeven analysis. Sweeping dollar volatility and solving for the
 half-spread at which a fixed quoter breaks even gives:
@@ -290,6 +305,20 @@ an empirical regularity across real assets rather than an identity in a simulati
 "exactly as Wyart-Bouchaud requires" appeared here in earlier drafts and claimed more than the
 exercise supports.
 
+The exercise has two well-known antecedents, and naming them fixes what kind of statement it
+is. Kyle (1985) makes the depth-against-information trade-off structural: in his equilibrium the
+market maker's price schedule has slope λ, set so that the expected loss to the informed trader
+is exactly recovered from the uninformed, and λ rises with the informed trader's information
+advantage. This thesis never estimates λ. The breakeven ratio of the table is a reduced-form
+statement of the same trade-off — the half-spread a quoter must charge to survive a given
+dollar volatility — and it is coarser than λ because it is read off a simulator's P&L rather
+than identified from price impact. Smith, Farmer, Gillemot and Krishnamurthy (2003) supply the
+other antecedent: a zero-intelligence continuous double auction, with no strategic behaviour at
+all, already reproduces spread and impact scalings of this form from order-arrival rates and
+tick size alone. That is a caution about what the constant can be made to mean, and it is the
+reason this section is framed as an engine check rather than a result: scalings of this shape
+survive the removal of the optimising agent.
+
 What survives is the structural point, which does not depend on the constant's value: the
 breakeven spread is not a free parameter to be optimised. A quoter narrower than δ_be loses, one
 wider does not fill, and the equality is the zero-profit condition. The empirical content comes
@@ -310,7 +339,7 @@ credited in full to a five-LINK order that had no claim on it.
 
 ![Figure 3](figures/f3_breakeven_equilibrium.png)
 
-**Figure 3** is why the residue is zero rather than merely small. The breakeven half-spread and the dollar volatility move together across a tenfold range of σ, holding their ratio at about 76 — a *derived* zero, not a measured one, and the same constant the spread-axis and queue-axis regimes both land on.
+**Figure 3** is why the residue is zero rather than merely small. The breakeven half-spread and the dollar volatility move together across a tenfold range of σ, holding their ratio at about 76. Read as this section's text requires — an engine check on a world where the answer is known, not a derivation of a market equilibrium — the panel shows the machinery reproducing the scaling theory predicts, and the same structural zero that the spread-axis and queue-axis regimes both land on.
 
 ## 8. Synthesis
 

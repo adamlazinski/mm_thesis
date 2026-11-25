@@ -186,6 +186,24 @@ before the co-located limit, and the binding constraint was never latency — bu
 grid shows, is it queue position, because the best queue position at the best latency is still
 zero.
 
+It is worth being precise about what this does and does not contradict. Budish, Cramton and Shim
+(2015) model the latency race as a rent: speed is valuable because it is *relative*, so
+competitors bid up to the value of the prize and the surplus dissipates into technology rather
+than accruing to anyone. That mechanism is not in question here — this grid measures the end
+state it predicts, on a book where the race has already been run, and finds the marginal
+millisecond worth $0.38 a day. The frozen tape makes even that an upper bound, since the
+simulated maker dodges fills while every competitor stands still. Menkveld (2013) is the
+reminder that a real high-frequency market maker does earn: his subject is profitable, but as a
+designated provider quoting two venues under a rebate schedule arranged for the purpose, and its
+gross revenue is passive-side income net of a substantial loss on the positions that income
+builds — the same two terms as Chapter 4 §3 and every markout in this chapter, differing in sign
+through the rebate. Baron, Brogaard, Hagströmer and Kirilenko (2019) then describe the
+cross-section: high-frequency returns are concentrated in a few persistently profitable firms,
+with speed the discriminating variable between them. This chapter supplies the complementary
+negative — at the retail-accessible margin the discriminating variable does not discriminate —
+and Chapter 8 §6 measures the concentration itself, on a venue where the participants can be
+counted.
+
 ## 6. Instrument Three: Observable State
 
 The second class of information is the market's own state at the moment of quoting.
@@ -207,6 +225,21 @@ negative at every horizon.
 Chapter 5's fifth mirage appears here in miniature. Because a fitted classifier cannot beat
 the most-benign *observable* bucket, and those buckets are negative, the result is robust to
 model sophistication rather than being a statement about the particular six features chosen.
+
+This is the point of contact with the machine-learning literature on order books, and the
+argument above is what lets this thesis decline to extend it. That literature is predominantly
+about *predictive* performance: Kearns and Nevmyvaka (2013) survey the programme, and DeepLOB
+(Zhang, Zohren and Roberts, 2019) is its strongest form, a convolutional network predicting the
+direction of the next mid-price move from raw book levels with accuracy well above chance. The
+quantity those models report is classification accuracy, not P&L net of the spread they must
+cross or the queue they must wait in, and the two come apart precisely as measured here — flow
+is rankable while every rank is unprofitable. The crypto-specific results point the same way:
+Silantyev (2019) finds order-flow imbalance informative for returns on BTC, and
+*Explainable patterns in cryptocurrency microstructure* (2026) finds that the same
+predictability does not survive transaction costs. A better classifier moves the ranking, not the sign, so long as the most-benign
+observable bucket is itself negative — which is the measurement this section contributes, and
+the reason Contribution 30's reinforcement-learning null is a statement about the state space
+rather than about the learner.
 
 ## 7. Instrument Four: Counterparty Identity
 
@@ -234,6 +267,20 @@ better sorting variable than the counterparty's identity, and it does not cross 
 pooling in Glosten-Milgrom is not an artefact of anonymity: the toxicity that is *predictable*
 is already priced into who trades, when, and at what spread, so perfect sorting recovers the
 maker to the equilibrium and stops there.
+
+This is the measurement that the PIN literature has to approximate. Easley, Kiefer, O'Hara and
+Paperman (1996) infer a *probability of informed trading* from the imbalance between buy and
+sell counts under a model of how informed and uninformed arrivals mix, and VPIN (Easley, López
+de Prado and O'Hara, 2012) does the same on a volume clock at high frequency. Both exist because
+counterparty identity is unobservable on an anonymous book: toxicity has to be backed out of the
+trade sequence. Hyperliquid removes the need for the inference, and Contribution 62 takes the
+direct route — not the probability that a counterparty was informed, but which counterparty it
+was and what the markout after its trades actually was. The structure those measures posit is
+confirmed: toxicity is real, concentrated and persistent enough to be learnable. The trading
+implication is nevertheless negative, and this is what an inferred measure could not have
+established, because a null would always have been attributable to estimation error. Here there
+is none to attribute it to. Sorting fails not because the estimate is noisy but because the
+quantity it estimates is already in the price.
 
 ![Figure 4](figures/f4_four_instruments.png)
 

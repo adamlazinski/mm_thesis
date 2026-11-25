@@ -136,8 +136,9 @@ An experiment's results bear on a claim only if they were generated after the co
 | `117_glft_formula_rerun` | purchased | `1fb7233` | 2026-11-19 | yes | yes | yes |
 | `118_patient_exit` | capture | `5bd7d55` | 2026-11-25 | yes | yes | yes |
 | `119_ladder` | capture | `5bd7d55` | 2026-11-25 | yes | yes | yes |
+| `120_maker_competition` | capture | `df63909` | 2026-11-25 | yes | yes | yes |
 
-**117 experiments.** Counts after / before each correction: taker-on-arrival 81/36; GLFT closed form 77/40; terminal accounting 8/109. By data tier: capture 23, capture + purchased 4, purchased 84, — 6.
+**118 experiments.** Counts after / before each correction: taker-on-arrival 82/36; GLFT closed form 78/40; terminal accounting 9/109. By data tier: capture 24, capture + purchased 4, purchased 84, — 6.
 
 
 ## How to read a 'no'

@@ -1,9 +1,11 @@
 # References
 
-Cited in the chapters and in the "Corroborating literature" notes of `contributions.md`.
-Page numbers were checked against the originals on 2026-11-19 for every entry carrying
-volume-and-page detail; the arXiv preprints are cited by identifier because that is where they
-were read.
+Forty-two entries, **every one cited at a specific point in the chapters** — checked
+mechanically by `scripts/check_citations.py`, which `scripts/build_thesis.sh` runs, in both
+directions: no entry here goes uncited, and no citation in the text is missing from here. Page
+numbers were checked against the
+originals on 2026-11-19 for every entry carrying volume-and-page detail; the arXiv preprints are
+cited by identifier because that is where they were read.
 
 ## Optimal market making
 
@@ -21,7 +23,7 @@ were read.
   Cambridge University Press. (Exposition of the A-S HJB solution used in Chapter 2 §2.)
 - Guéant, O. (2017). Optimal market making. *Applied Mathematical Finance*, 24(2), 112–154.
   (arXiv:1605.01862)
-- Guéant, O., Lehalle, C.-A. & Fernandez-Tapia, J. (2013). Dealing with the inventory risk:
+- Guéant, O., Lehalle, C.-A. & Fernández-Tapia, J. (2013). Dealing with the inventory risk:
   a solution to the market making problem. *Mathematics and Financial Economics*, 7(4),
   477–507. (The ergodic closed form of Chapter 2 §3; the implementation error corrected in
   Contribution 17's addendum is an error of transcription, not of the paper.)

@@ -287,6 +287,15 @@ maker's fills fall at half that rate and its **notional does not fall at all** (
 containing zero). Competition arrives, the dominant participant keeps its volume, and the middle
 of the book absorbs it — Chapter 5 §2's queue rent, visible from outside the backtest.
 
+The asymmetry matches what the equity-market evidence reports about who earns in this business.
+Baron, Brogaard, Hagströmer and Kirilenko (2019) find high-frequency trading returns concentrated
+in a small set of persistently profitable firms, with the newest and smallest entrants earning
+least and exiting most. The elasticities above are the mechanism behind that cross-section,
+measured on a venue where the participants can be counted rather than inferred from a regulator's
+account identifiers: the incumbent at the front of the queue is insulated from entry, and
+everyone behind it is diluted roughly one-for-one. A retail maker joins as the `M+1`th
+participant, and the measurement says what that position is worth.
+
 The same data validates this chapter's fill model against something it has never been checked
 against: what real makers on the same book-days actually achieved. The simulator runs at **0.82×
 the busiest real participant's fill rate** (median over the thirty book-days) and 108× the median

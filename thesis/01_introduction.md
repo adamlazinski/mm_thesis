@@ -267,8 +267,9 @@ spread-width gate.
 
 **The zero-profit equilibrium and its boundary** (C33–C35, C37). C33 generalises C30 into a
 theory-grounded law, validated on synthetic data, and unifies the spread-axis and queue-axis
-mechanisms. C34 values ten-second foresight at roughly twelve times the honest causal P&L,
-locating the binding constraint in information rather than in execution. C35 frames the maker as
+mechanisms. C34 values ten-second foresight at **+$37.24/day on a book where the honest causal
+quoter loses $2.87/day**, locating the binding constraint in information rather than in
+execution. C35 frames the maker as
 a short-straddle writer, and C37 maps the curable part of the boundary.
 
 **The competitive zero, measured four ways** (C55–C62). Capture validation and the three measured

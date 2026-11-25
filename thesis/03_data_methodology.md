@@ -239,6 +239,21 @@ taker fee, is the final methodological change this thesis makes to the engine. I
 the headline LINK result, and the full queue-priority decomposition this section has been
 building toward, is the subject of Chapter 5.
 
+**Why simulate the queue rather than estimate the fill probability.** There is an established
+alternative. Lo, MacKinlay and Zhang (2002) estimate limit-order execution times econometrically,
+as a survival model in the order's limit price and the prevailing market conditions, and
+Hollifield, Miller and Sandås (2004) estimate execution and picking-off probabilities structurally
+from an order-book sample and recover the implied order-placement trade-off. Either would give a
+fill probability as a function of depth — the empirical object A-S and GLFT assume in closed form.
+This thesis replays the recorded book instead, for a reason that the audit above makes concrete:
+an estimated fill probability is a *marginal* quantity, fitted across orders and conditions, and
+the error that mattered here was not in the average fill rate but in *which* fills were granted.
+A 41-fold overstatement at the touch coexisting with a well-calibrated rate inside the spread is
+invisible to any model whose output is one probability per depth, and it is the composition, not
+the rate, that carries the adverse selection. The estimated-hazard approach is reported in §3 as
+one of the three calibrations of `λ(δ)` and used there as intended — to characterise the fill
+curve — while every P&L figure in this thesis comes from clearing the recorded queue.
+
 ---
 
 ## 6. The 2026 Live Multi-Venue Capture

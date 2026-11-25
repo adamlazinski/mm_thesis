@@ -52,6 +52,9 @@ print("    all Chapter N §M references resolve" if not bad else
       "    BROKEN:\n      " + "\n      ".join(bad))
 PYEOF
 
+echo "==> citation check"
+"$PY" scripts/check_citations.py
+
 echo "==> figure embedding check"
 n=$(grep -ho "](figures/f[0-9]*" thesis/[01]*.md | sort -u | wc -l | tr -d ' ')
 echo "    $n of 9 figures embedded in chapters"

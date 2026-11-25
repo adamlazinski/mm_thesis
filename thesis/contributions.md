@@ -12,7 +12,9 @@ Binance Spot, May–Jun 2025, Jun–Jul 2025, and April 2026).
 > −$0.48 − (−$6.87) = +$6.4) and date fragments parsed as negative numbers. The screen is a
 > screen, not a proof; its value is that a *large* unmatched count on an entry whose numbers
 > should all be primary is visible, which is how C34 was caught quoting a superseded
-> pre-engine-fix table.
+> pre-engine-fix table. That entry was restated on its committed run on 2026-11-25; the
+> superseded rows are retained there, labelled, as the one table in this log with no JSON
+> behind it.
 >
 > **The remaining 22 cannot be reached by that check**: C1–C14, C16, C18, C19, C21, C24, C26,
 > C27 and C31. These are the oldest work in the project — the microstructure characterisation behind
@@ -203,7 +205,7 @@ ergodic solution under this fill intensity, showing that A in all formulas is re
 spread term unchanged.
 
 **Corroborating literature:** The exponential intensity λ(δ) = A·exp(−κδ) is a *modeling
-assumption* of Avellaneda & Stoikov (2008) and Guéant, Lehalle & Fernandez-Tapia (2013), not
+assumption* of Avellaneda & Stoikov (2008) and Guéant, Lehalle & Fernández-Tapia (2013), not
 an empirical claim; the empirical execution literature has long found limit-order fill times
 poorly described by simple parametric forms (Lo, MacKinlay & Zhang 2002, survival analysis of
 limit-order executions). Finding a two-component deviation therefore contradicts no empirical
@@ -1625,36 +1627,46 @@ actually receives (3,595/day). Each fill's forward markout is computed at horizo
 honest MM, no foresight) and over **positive-markout** fills only (a perfect-foresight oracle that
 skips every adverse fill).
 
+**Primary result — corrected engine** (`experiments/60_foresight_oracle/results/foresight_oracle.json`,
+5,768 fills/day). This is the run the committed JSON holds and the one the chapters cite:
+
 | Horizon | honest PnL/day (Σ all) | oracle ceiling/day (Σ positive) | % fills positive | mean markout (ticks) |
 |---|---|---|---|---|
-| 1 s | $0.60 | **$19.76** | 39.7% | −1.04 |
-| 5 s | $2.18 | **$22.41** | 45.6% | −0.47 |
-| 10 s | $2.03 | **$24.07** | 46.3% | −0.48 |
-| 30 s | $4.06 | **$30.03** | 48.9% | −0.13 |
+| 1 s | **−$9.78** | **$28.62** | 35.9% | −1.41 |
+| 5 s | −$3.87 | **$34.03** | 43.0% | −0.71 |
+| 10 s | −$2.87 | **$37.24** | 44.4% | −0.63 |
+| 30 s | +$1.35 | **$47.24** | 48.2% | −0.24 |
 
-*(Corrected-engine update — exp 62. On the corrected fill engine that converts marketable-on-arrival
-orders to takers, fills/day rise 3,595 → 5,768 and the honest causal markout flips negative even at
-zero fee: −$9.78 / −$2.87 / +$1.35 per day at H = 1 / 10 / 30 s, with the oracle ceiling rising to
-$28.62 / $37.24 / $47.24. The causal-vs-foresight gap widens and the honest side is now negative
-pre-fee — the conclusion below is unchanged and sharpened.)*
+*(Superseded pre-engine-fix run, retained for the record. Before marketable-on-arrival orders were
+converted to takers the same quoter took 3,595 fills/day and the honest side was weakly positive:
+$0.60 / $2.18 / $2.03 / $4.06 against ceilings $19.76 / $22.41 / $24.07 / $30.03 at
+H = 1 / 5 / 10 / 30 s. The rerun overwrote that file in place, so these four rows are the one table
+in this log with no committed JSON behind them — which is why `verify_contributions.py` flags this
+entry, and the flag is doing its job. The correction moves the honest side from ≈breakeven to
+negative and raises the ceiling by about 50%: the conclusion below is unchanged and sharpened.)*
 
 **Findings:**
-- **In-sample honest profit exists — with foresight.** Keeping only the ~40–49% of fills with
-  positive markout earns ~$20–30/day, roughly **10× the honest causal ~$2/day**. The honest causal
-  figure reproduces the C30 at-touch cell (≈breakeven; mean markout negative ~−0.5 ticks = the
-  at-touch adverse selection).
+- **In-sample honest profit exists — but only with foresight.** Keeping only the 36–48% of fills
+  with positive markout earns **$28.62–$47.24/day**, on a book where the causal quoter taking *all*
+  of those fills **loses money at every horizon under thirty seconds**. The ratio is not a multiple;
+  it is a sign change. Mean markout is negative at every horizon (−1.41 to −0.24 ticks) — the
+  at-touch adverse selection of C30, now unmasked by the taker correction.
 - **Exp 58's null is representational, not absolute.** A TabularQ over 120 microstructure buckets
   (or a 9-feature DQN) cannot condition on the future, so within any state bucket favourable and
   adverse fills aggregate and the learnable optimum is the bucket average — ≈0 honestly. The RL
   found ≈0 because its state cannot *separate* the good fills from the bad, not because no in-sample
   edge exists.
-- **Foresight is worth less than the queue artifact.** The ~$24/day foresight ceiling sits *below*
-  the queue-priority artifact (+$45–58/day, exp 58 control): the artifact wins on volume (2,600–7,000
-  inside-spread fills with free priority), foresight on selection within the thinner honest stream.
-  The ceiling is conservative — it only keeps/drops the touch-quoter's existing fills, not where or
+- **Foresight and the queue artifact are worth about the same, and the correction reversed their
+  order.** On the pre-fix engine the ~$24/day ceiling sat *below* the queue-priority artifact
+  (+$45–58/day, exp 58 control). On the corrected engine the artifact falls to **+$25.9/day**
+  (`experiments/62_engine_fix_reruns/results/eval_rl_corrected.json`, control arm) while the ceiling
+  rises to **$37.24/day** at ten seconds — so foresight now *exceeds* free priority rather than
+  trailing it. Both remain the same order of magnitude, which is the point: perfect selection and
+  free priority are substitutes of comparable value, and neither is retail-accessible. The ceiling
+  is still conservative — it only keeps or drops the touch-quoter's existing fills, not where or
   when to quote.
 
-**Conclusion:** the honest edge is **zero causally, ≈$24/day with perfect 10 s foresight.** Both
+**Conclusion:** the honest edge is **negative causally, +$37/day with perfect 10 s foresight.** Both
 halves are the thesis. The profit lives entirely in *information retail does not have* — knowing
 which fills are adverse — or equivalently in the *queue priority* that substitutes for that
 information by letting uninformed flow fill you first. This refines Contribution 30's verdict to its

@@ -178,6 +178,17 @@ this shape to the exchange's price grid being ten times coarser than the measure
 Chapter 5 not as failures of A-S/GLFT *per se*, but as symptoms of the independence
 assumption above breaking down (§6; Contribution 33).
 
+The gap this leaves has been addressed inside the optimal-control literature itself rather than
+only by critics of it. Barzykin, Bergault, Guéant and Lemmel (2025) let the maker read the price
+signal that the intensity hides, and Barucci, Mathieu and Sánchez-Betancourt (2025) split the
+arriving flow into informed, uninformed and trend-following components, so that `λ` becomes a
+function of the counterparty's type and not of distance alone. These models restore what the
+exponential-intensity form abstracts away, and in doing so they identify what a maker would need
+to know to act on it: which flow is which, in advance. That is exactly the quantity Chapter 6
+measures four independent ways, and the measurement is the one this thesis contributes to the
+exchange — the models say what the maker should do given the decomposition; the data say what
+the decomposition is worth when it is estimated rather than assumed.
+
 ---
 
 ## 5. Price-Time Priority and Queue Position
@@ -227,6 +238,22 @@ fill intensities satisfying
 fill rate. This single inequality is the formal counterpart of this section's "front-of-queue
 orders fill far more often" observation, expressed as a *control variable* rather than an
 empirical regularity.
+
+**What a resting order is.** The two reasons above are the modern, queue-level form of an older
+observation, and it is worth stating in its original form because the rest of this thesis is an
+attempt to price it. A resting limit order is a **free option written to the market**: it grants
+every other participant the right, for as long as it rests, to trade at its price, and it is
+exercised precisely when doing so is profitable for the exerciser (Copeland & Galai, 1983;
+Foucault, Pagano & Röell, 2013). The premium is the spread; the option's value to its
+holder is the information the maker does not have. Handa and Schwartz (1996) put the resulting
+trade-off empirically: limit orders earn the spread *and* bear the adverse selection, and whether
+the net is positive is a question about the mix of flow rather than about the order's placement.
+Price-time priority then determines who writes the option and who merely offers to: at the front
+of the queue, the maker is paid by the uninformed flow that arrives first; at the back, the
+option is exercised only by flow large enough to clear the queue ahead, which is the flow most
+likely to be right. Chapter 5 §2 measures this as the difference between a simulated and an
+earned queue position, and Chapter 6 measures what the premium nets out to once the option is
+honestly written.
 
 The resulting dynamic-programming equation is a quasi-variational inequality: a regular
 Hamilton–Jacobi–Bellman term, with a supremum over the `{B,B+}` choice on each side, combined
@@ -316,6 +343,14 @@ The two results below are not about queue position directly — they are about w
 *determines the spread* in a competitive market, and they supply the theoretical reason
 Chapter 5's honest result is not merely "the queue model found a smaller edge" but "the
 honest edge is, in expectation, zero or negative by construction."
+
+The argument has a pre-formal statement that is worth quoting because it is the whole of Part I
+in one sentence. Writing as Walter Bagehot, Treynor (1971) observed that a dealer's counterparties
+divide into those who know something and those who do not, that the dealer loses to the first
+group and must therefore be paid by the second, and that the dealer cannot tell them apart at the
+moment of trading — so the spread is set to break even against the *mixture*. Everything below
+formalises that, and Chapter 6 is an attempt to defeat it with information Bagehot's dealer did
+not have: speed, book state, and ultimately the counterparty's identity.
 
 **Glosten & Milgrom (1985).** In a market with a competitive (zero-expected-profit) dealer
 and a mix of informed and uninformed order flow, the bid-ask spread is set exactly wide
