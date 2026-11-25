@@ -419,8 +419,16 @@ manufactures large negative autocorrelation that vanishes per instrument.
   it.
 - **Assets, venues and period.** Binance spot BTC/USDT and LINK/USDT plus LINK perpetuals (May
   2025 - April 2026, with 182 further days for out-of-sample work), and a four-venue live capture
-  (Binance, Coinbase, Hyperliquid, Deribit) from July to September 2026. Crypto only, and a
-  period with no market-wide stress event.
+  (Binance, Coinbase, Hyperliquid, Deribit) from July to September 2026. Crypto only. **Every
+  window a headline is taken from is calm** — a scan of all 320 instrument-days puts their worst
+  day between 1.6 and 2.5 times the median daily range — and the one cascade in the data
+  (10 October 2025, LINK trading a 67.8% range, thirteen times median) falls outside all of them.
+  Contribution 71 measures it: it is a ±7 standard-deviation day whose *sign flips with
+  configuration*, moving one month's total by 36% and another's by 153%. A cascade is therefore
+  not a uniform worsening of a negative result, and **the daily-mean-with-interval framing used
+  throughout this thesis cannot represent it** — a 7-sigma day is not a draw from the
+  distribution the other thirty days describe. The intervals of Chapter 3 §8 should be read as
+  conditional on the absence of such a day.
 - **Part II rests on short windows.** Chapter 7's alpha is two days and two leaders; Chapter 8's
   premium is five days plus a four-day replication; Chapter 9's carry is two windows. These are
   adequate to establish existence and to price the bounds, and inadequate to estimate a
@@ -485,11 +493,16 @@ manufactures large negative autocorrelation that vanishes per instrument.
   committed, but they were done before the project adopted the convention that every number
   lives in a results JSON a script can check. Porting them would close the verification gap
   listed in §7 and is the cheapest remaining item on this list.
-- **Measure the cascade tail.** This is the single most valuable missing quantity, and it is a
-  data-collection problem rather than an analytical one: run the Chapter 9 book's reconstruction
-  through a stressed window and size the carry position against the tail rather than the
-  observed volatility. The collector already captures what is required; what is needed is an
-  episode.
+- **Capture a cascade across venues.** Still the single most valuable missing quantity, and
+  Contribution 71 now says precisely what is missing. A cascade *is* in this project's data —
+  10 October 2025, LINK trading thirteen times its median daily range — and running a maker
+  through it is informative. But Chapter 9's exposure is a cross-venue basis, and that cascade
+  sits in the purchased single-venue history while the carry lives in the captured cross-venue
+  window. The two do not overlap, so the carry's tail is not merely unmeasured but
+  **unmeasurable with the data in hand**. What would measure it is the existing collector,
+  already running on both venues, present during an episode of that magnitude. The requirement
+  is now specific: simultaneous funding and price on both legs, through a day of >5x median
+  range, which the scan puts at roughly 0.4% of days.
 - **Extend Part II's windows.** Each of the three survivors was established on days, not months.
   The pre-registration apparatus of Chapter 8 should be applied to Chapters 7 and 9 as well —
   register the prediction, then capture the sample — which converts three existence proofs into

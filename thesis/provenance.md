@@ -134,9 +134,10 @@ An experiment's results bear on a claim only if they were generated after the co
 | `115_regime_gated_maker` | capture | `ea0df16` | 2026-08-22 | yes | yes | **no** |
 | `116_momentum_taker` | capture + purchased | `9aec1cb` | 2026-08-23 | yes | yes | **no** |
 | `117_glft_formula_rerun` | purchased | `1fb7233` | 2026-11-19 | yes | yes | yes |
-| `118_patient_exit` | capture | `6f58b35` | 2026-11-25 | yes | yes | yes |
+| `118_patient_exit` | capture | `5bd7d55` | 2026-11-25 | yes | yes | yes |
+| `119_ladder` | capture | `5bd7d55` | 2026-11-25 | yes | yes | yes |
 
-**116 experiments.** Counts after / before each correction: taker-on-arrival 80/36; GLFT closed form 76/40; terminal accounting 7/109. By data tier: capture 22, capture + purchased 4, purchased 84, — 6.
+**117 experiments.** Counts after / before each correction: taker-on-arrival 81/36; GLFT closed form 77/40; terminal accounting 8/109. By data tier: capture 23, capture + purchased 4, purchased 84, — 6.
 
 
 ## How to read a 'no'

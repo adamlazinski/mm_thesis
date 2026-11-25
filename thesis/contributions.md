@@ -6,8 +6,8 @@ Binance Spot, May–Jun 2025, Jun–Jul 2025, and April 2026).
 
 > **Verification status (2026-11-19).** `scripts/verify_contributions.py` pools every number
 > in the experiment JSONs each entry names and checks the entry's table cells and bold figures
-> against that pool at 1.2% tolerance. Of the 70 entries, **48 name at least one experiment and
-> are machine-checked**: 36 match every claim and 12 carry a small number of unmatched values. The flags are legitimate in every case inspected — derived
+> against that pool at 1.2% tolerance. Of the 71 entries, **49 name at least one experiment and
+> are machine-checked**: 37 match every claim and 12 carry a small number of unmatched values. The flags are legitimate in every case inspected — derived
 > quantities the pool cannot contain (C60's "edge" column is real minus placebo, e.g.
 > −$0.48 − (−$6.87) = +$6.4) and date fragments parsed as negative numbers. The screen is a
 > screen, not a proof; its value is that a *large* unmatched count on an entry whose numbers
@@ -4410,6 +4410,72 @@ when the expected answer is "no effect".
 **Contribution.** Closes the last of the register's testable outstanding gaps, confirming that
 the queue-priority argument is per level and that laddering is not a route around it. Documents a
 failure mode of negative results — a sweep that silently does not vary.
+
+---
+
+## C71 — One Cascade Is in the Data, and It Is a +/-7 Sigma Day Whose Sign Depends on Configuration (exp 43)
+
+**Motivation.** Chapter 9 §5 and Chapter 10 §7 both name the cascade tail as the principal
+unmeasured quantity in this thesis, and Chapter 10's scope note says the capture covers "a period
+with no market-wide stress event". The second claim is true of the *windows the headlines are
+computed on*, and false of the data as a whole. Scanning all 320 committed instrument-days for
+realised volatility and daily range locates one:
+
+| | LINK daily range | multiple of median |
+|---|---|---|
+| median, 242 LINK days | 5.21% | 1.0x |
+| >2x median | 10.4% | **21 days (8.7%)** |
+| >3x median | 15.6% | 6 days (2.5%) |
+| >5x median | 26.0% | **1 day (0.4%)** |
+| **2025-10-10** | **67.80%** | **13.0x** |
+
+**The headline windows really are calm**, which the scan now establishes rather than assumes: the
+Ch4 headline window (Jun 11 – Jul 10 2025) tops out at 2.5x median, the GLFT OOS window at 1.6x,
+the April 2026 sweeps at 1.8x. The only window containing the cascade is October 2025, which exp
+43 ran and which was never written up as a stress result.
+
+**Result.** The cascade is the largest-magnitude day of its month for both strategies, at seven
+standard deviations — **and its sign flips with configuration**:
+
+| | calm days (n=30) | **cascade 2025-10-10** | |
+|---|---|---|---|
+| A-S, P&L | −$17.79 ± 22.15 | **+$141.26** | **+7.2 sd — best day of the month** |
+| A-S, max drawdown | worst −$85.17 | **−$395.40** | 4.6x the worst calm day |
+| A-S, adverse fills | 87.4% | 81.3% | 2,086 fills, max inventory 45 |
+| GLFT, P&L | +$4.24 ± 52.52 | **−$365.27** | **−7.0 sd — worst day of the month** |
+| GLFT, max drawdown | worst −$143.30 | **−$1,023.11** | 7.1x the worst calm day |
+| GLFT, adverse fills | 33.3% | 9.0% | 244 fills, max inventory 75 |
+
+The cascade moves A-S's month from −$534 to −$392 (it **rescues** 36% of the month's loss) and
+GLFT's month from +$127 to −$238 (it **destroys** a profitable month, 153% of the total).
+
+**Mechanism.** The two strategies meet the cascade from opposite sides of the fill/inventory
+trade-off. A-S quotes tight, takes 2,086 fills at 81% adverse, and is run over continuously — but
+in a day with a 68% range the reversion between those fills is enormous, and the round trips pay.
+GLFT quotes wide, takes 244 fills at only 9% adverse, and those few fills are *directional*: its
+inventory reaches 75 against A-S's 45 and the price keeps going. **Being picked off often and
+cheaply beat being picked off rarely and expensively.** A low adverse-fill rate was a liability
+here, which inverts its usual reading.
+
+**What this settles and what it does not.** It settles that a cascade is not "more of the same" —
+it does not simply make a zero-to-negative result more negative, which is the natural expectation.
+It is a tail event that dominates the month, in whichever direction the configuration points, and
+the thesis's daily-mean-with-interval framing cannot represent it: a 7-sigma day in a 31-day
+window is not a draw from the distribution the other 30 days describe.
+
+It does **not** settle the quantity Chapter 9 actually needs. That chapter's exposure is the
+*carry*, whose risk is the cross-venue **basis**, and measuring a cascade there requires
+simultaneous funding and price data on both venues. The only cross-venue data in this project is
+the July-August 2026 capture, whose worst day is unremarkable. The cascade is in the purchased
+single-venue history; the carry lives in the captured cross-venue window; the two do not overlap.
+So C67's "+8.4%/yr conditional on no cascade" remains conditional, and the honest statement is
+now sharper than "unmeasured": it is **unmeasurable with the data in hand**, and what would
+measure it is a cross-venue capture running through an event like 2025-10-10.
+
+**Contribution.** Converts the thesis's largest acknowledged gap from an assumption into a
+measurement on the half of it that the data can reach, and specifies exactly what data would
+reach the other half. Supplies a counter-example to the intuition that stress testing a
+negative result can only confirm it.
 
 ---
 

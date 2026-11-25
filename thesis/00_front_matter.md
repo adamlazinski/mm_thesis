@@ -66,7 +66,7 @@ Glosten–Milgrom, queue priority, tick size, cryptocurrency, Hyperliquid, backt
 
 Ten chapters in two co-equal parts, with a three-chapter foundation. `structure.md` carries the reading order and what each chapter holds. Three files support them and are referenced throughout rather than read in sequence:
 
-- **`contributions.md`** — the C1–C70 log, the source of truth for every number. Each entry states its experiment, its result and its scope; corrections are appended in place and dated rather than overwritten, so the record of what was believed when is intact.
+- **`contributions.md`** — the C1–C71 log, the source of truth for every number. Each entry states its experiment, its result and its scope; corrections are appended in place and dated rather than overwritten, so the record of what was believed when is intact.
 - **`hypotheses.md`** — what was predicted against what the data said, including the retractions, marked `⊘`.
 - **`intervals.md`** — 95% bootstrap intervals for every headline quantity.
 - **`references.md`** — the bibliography, grouped by theme.

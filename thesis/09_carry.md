@@ -156,8 +156,29 @@ strategy safe — the cash flow is certain and the basis is not.
 
 The same caveat has a constructive form. A carry book's sizing should be governed by the cascade
 tail rather than the observed volatility, which means the quantity a practitioner most needs is
-the one this capture could not supply. Measuring it requires a stressed window, and that is a
-data-collection problem rather than an analytical one.
+the one this capture could not supply.
+
+**A cascade is in this project's data, and it is worth being precise about why it does not
+answer this chapter's question.** Scanning all 320 committed instrument-days for daily range
+locates one event of the right magnitude: **10 October 2025, when LINK traded a 67.8% range —
+thirteen times the median day, and the only day above five times in 242** (Contribution 71). The
+same scan establishes that every window the thesis takes a headline from really is calm, topping
+out between 1.6 and 2.5 times median. Run on that day, a maker is not simply "worse": the
+Avellaneda-Stoikov configuration returns **+$141, a 7.2 standard-deviation day and the best of
+its month**, while GLFT returns **−$365, a 7.0 standard-deviation day and the worst of its
+month**, turning a profitable month into a losing one. A cascade is a tail that dominates the
+sample in whichever direction the configuration points, not a uniform worsening — which is itself
+a result, and it is reported in Chapter 10 §7 as a limit on how the daily-mean-with-interval
+framing of this thesis should be read.
+
+But it is a *maker* on a *single venue*, and this chapter's exposure is a carry whose risk is the
+cross-venue **basis**. Measuring a cascade there needs simultaneous funding and price data on
+both venues during the event. The cascade sits in the purchased single-venue history; the carry
+lives in the captured cross-venue window; the two do not overlap. So the honest statement is
+sharper than "unmeasured" — it is **unmeasurable with the data in hand**, and what would measure
+it is a cross-venue capture running through an episode like 10 October 2025. That is a
+data-collection problem rather than an analytical one, and it is the first item of further work
+in Chapter 10 §8.
 
 ## 6. Synthesis
 

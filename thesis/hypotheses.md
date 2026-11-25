@@ -7,7 +7,7 @@ This is the thesis's organizing skeleton — update the status markers as result
 `⊘` **retracted or superseded by a later contribution**
 
 Cross-references point to numbered entries in [contributions.md](contributions.md)
-(C1–C70) and to experiment folders. The `→` marker on each section head gives the chapter that
+(C1–C71) and to experiment folders. The `→` marker on each section head gives the chapter that
 now carries it.
 
 **Reading the `⊘` entries.** Four entries below — plus the meta-hypothesis itself — were
@@ -343,6 +343,14 @@ rather than below it, which is the register's single most important pattern.
 - `✗` **Premium-gating stacks with the dislocation trade.** Clean null — Hyperliquid's premium is ≈ −dev, a
   slower read of the same quantity, because the oracle is built from centralised prices. The dislocation
   taker and the funding carry are one object at two timescales. *(C63, C67)*
+- `◐` **A cascade is simply "more of the same", only worse.** No — and this was the natural
+  expectation. The one cascade in the data (2025-10-10, LINK 67.8% range, 13x median, the only
+  >5x day in 242) is a **±7 standard-deviation day whose sign flips with configuration**: A-S
+  +$141 (best day of its month, rescuing 36% of the month's loss), GLFT −$365 (worst day,
+  destroying a profitable month). Being picked off often and cheaply beat being picked off
+  rarely and expensively — a low adverse-fill rate was a liability. Every headline window in the
+  thesis is calm (1.6–2.5x median), so the intervals of Ch3 §8 are conditional on no such day.
+  *(C71)*
 - `⧖` **The cascade tail.** The principal unmeasured quantity in the thesis. Both carry windows were benign
   (drawdown <20 bps), so the measured basis volatility is the *calm* volatility and the BTC Sharpe is
   conditional on no cascade. Requires a stressed window. *(C67)*
